@@ -1,0 +1,28 @@
+#-------------------------------------------------
+# Files to be ignored by Git
+#-------------------------------------------------
+
+# Eclipse project file and settings directory
+.project
+.settings/
+
+# ignore swap files
+*.swp
+
+# Composer 3rd-party software
+/vendor
+
+# Composer PHP archive file
+composer.phar
+
+# tests configuration file
+/tests/config.ini
+
+# tests coverage directory
+/tests/coverage
+
+# certificate files
+*.crt
+
+# properties files
+*.properties
