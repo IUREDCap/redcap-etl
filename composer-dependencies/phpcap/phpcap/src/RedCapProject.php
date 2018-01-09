@@ -1,0 +1,2647 @@
+<?php
+/**
+ * This file contains the REDCap project class for PHPCap.
+ */
+namespace IU\PHPCap;
+
+/**
+ * REDCap project class used to retrieve data from, and modify, REDCap projects.
+ */
+class RedCapProject
+{
+    /** string REDCap API token for the project */
+    protected $apiToken;
+    
+    /** RedCapApiConnection connection to the REDCap API at the $apiURL. */
+    protected $connection;
+    
+    /** Error handler for the project. */
+    protected $errorHandler;
+ 
+    
+    /**
+     * Creates a REDCapProject object for the specifed project.
+     *
+     * Example Usage:
+     * <code>
+     * $apiUrl = 'https://redcap.someplace.edu/api/'; # replace with your API URL
+     * $apiToken = '11111111112222222222333333333344'; # replace with your API token
+     * $sslVerify = true;
+     *
+     * # See the PHPCap documentation for information on how to set this file up
+     * $caCertificateFile = 'USERTrustRSACertificationAuthority.crt';
+     *
+     * $project = new RedCapProject($apiUrl, $apiToken, $sslVerify, $caCertificateFile);
+     * </code>
+     *
+     * @param string $apiUrl the URL for the API for the REDCap site that has the project.
+     * @param string $apiToken the API token for this project.
+     * @param boolean $sslVerify indicates if SSL connection to REDCap web site should be verified.
+     * @param string $caCertificateFile the full path name of the CA (Certificate Authority)
+     *     certificate file.
+     * @param ErrorHandlerInterface $errorHandler the error handler used by the project.
+     *    This would normally only be set if you want to override the PHPCap's default
+     *    error handler.
+     * @param RedCapApiConnectionInterface $connection the connection used by the project.
+     *    This would normally only be set if you want to override the PHPCap's default
+     *    connection. If this argument is specified, the $apiUrl, $sslVerify, and
+     *    $caCertificateFile arguments will be ignored, and the values for these
+     *    set in the connection will be used.
+     * @throws PhpCapException if any of the arguments are invalid
+     */
+    public function __construct(
+        $apiUrl,
+        $apiToken,
+        $sslVerify = false,
+        $caCertificateFile = null,
+        $errorHandler = null,
+        $connection = null
+    ) {
+        # Need to set errorHandler to default to start in case there is an
+        # error with the errorHandler passed as an argument
+        # (to be able to handle that error!)
+        $this->errorHandler = new ErrorHandler();
+        if (isset($errorHandler)) {
+            $this->errorHandler = $this->processErrorHandlerArgument($errorHandler);
+        }
+        
+        $this->apiToken = $this->processApiTokenArgument($apiToken);
+        
+        if (isset($connection)) {
+            $this->connection = $this->processConnectionArgument($connection);
+        } else {
+            $this->apiUrl      = $this->processApiUrlArgument($apiUrl);
+            $sslVerify         = $this->processSslVerifyArgument($sslVerify);
+            $caCertificateFile = $this->processCaCertificateFileArgument($caCertificateFile);
+            
+            $this->connection = new RedCapApiConnection($apiUrl, $sslVerify, $caCertificateFile);
+        }
+    }
+
+    
+    /**
+     * Exports the numbers and names of the arms in the project.
+     *
+     * @param $format string the format used to export the arm data.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param array $arms array of integers or numeric strings that are the numbers of the arms to export.
+     *     If no arms are specified, then information for all arms will be returned.
+     *
+     * @return mixed For 'php' format, array of arrays that have the following keys:
+     *     <ul>
+     *       <li>'arm_num'</li>
+     *       <li>'name'</li>
+     *     </ul>
+     */
+    public function exportArms($format = 'php', $arms = [])
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'arm',
+                'returnFormat' => 'json'
+        );
+        
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        $data['arms']   = $this->processArmsArgument($arms);
+        
+        $arms = $this->connection->callWithArray($data);
+        $arms = $this->processExportResult($arms, $format);
+        
+        return $arms;
+    }
+    
+    /**
+     * Imports the specified arms into the project.
+     *
+     * @param mixed $arms the arms to import. This will
+     *     be a PHP array of associative arrays if no format, or 'php' format was specified,
+     *     and a string otherwise. The field names (keys) used in both cases
+     *     are: arm_num, name
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param boolean $override
+     *     <ul>
+     *       <li> false - [default] don't delete existing arms; only add new
+     *       arms or renames existing arms.
+     *       </li>
+     *       <li> true - delete all existing arms before importing.</li>
+     *     </ul>
+     * @throws PhpCapException if an error occurs.
+     *
+     * @return integer the number of arms imported.
+     */
+    public function importArms($arms, $format = 'php', $override = false)
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'arm',
+                'action'       => 'import',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process arguments
+        #---------------------------------------
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format']   = $this->processFormatArgument($format, $legalFormats);
+        $data['data']     = $this->processImportDataArgument($arms, 'arms', $format);
+        $data['override'] = $this->processOverrideArgument($override);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return (integer) $result;
+    }
+    
+    /**
+     * Deletes the specified arms from the project.
+     *
+     * @param array $arms array of arm numbers to delete.
+     *
+     * @throws PhpCapException if an error occurs, including if the arms array is null or empty
+     *
+     * @return integer the number of arms deleted.
+     */
+    public function deleteArms($arms)
+    {
+        $data = array (
+                'token'        => $this->apiToken,
+                'content'      => 'arm',
+                'action'       => 'delete',
+                'returnFormat' => 'json',
+        );
+        
+        $data['arms'] = $this->processArmsArgument($arms, $required = true);
+       
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return (integer) $result;
+    }
+
+
+    /**
+     * Exports information about the specified events.
+     *
+     * Example usage:
+     * <code>
+     * #export information about all events in CSV (Comma-Separated Values) format.
+     * $eventInfo = $project->exportEvents('csv');
+     *
+     * # export events in XML format for arms 1 and 2.
+     * $eventInfo = $project->exportEvents('xml', [1, 2]);
+     * </code>
+     *
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param array $arms array of integers or numeric strings that are the arm numbers for
+     *     which events should be exported.
+     *     If no arms are specified, then all events will be returned.
+     *
+     * @return array information about the specified events. Each element of the
+     *     array is an associative array with the following keys: 'event_name', 'arm_num',
+     *         'day_offset', 'offset_min', 'offset_max', 'unique_event_name', 'custom_event_label'
+     */
+    public function exportEvents($format = 'php', $arms = [])
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'event',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process arguments
+        #---------------------------------------
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        $data['arms'] = $this->processArmsArgument($arms);
+        
+        
+        #------------------------------------------------------
+        # Get and process events
+        #------------------------------------------------------
+        $events = $this->connection->callWithArray($data);
+        $events = $this->processExportResult($events, $format);
+        
+        return $events;
+    }
+    
+    
+    /**
+     * Imports the specified events into the project.
+     *
+     * @param mixed $events the events to import. This will
+     *     be a PHP array of associative arrays if no format, or 'php' format is specified,
+     *     and a string otherwise. The field names (keys) used in both cases
+     *     are: event_name, arm_num
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param boolean $override
+     *     <ul>
+     *       <li> false - [default] don't delete existing arms; only add new
+     *       arms or renames existing arms.
+     *       </li>
+     *       <li> true - delete all existing arms before importing.</li>
+     *     </ul>
+     *
+     * @throws PhpCapException if an error occurs.
+     *
+     * @return integer the number of events imported.
+     */
+    public function importEvents($events, $format = 'php', $override = false)
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'event',
+                'action'       => 'import',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process arguments
+        #---------------------------------------
+        $data['data'] = $this->processImportDataArgument($events, 'arms', $format);
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        $data['override'] = $this->processOverrideArgument($override);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return (integer) $result;
+    }
+
+    
+    /**
+     * Deletes the specified events from the project.
+     *
+     * @param array $events array of event names of events to delete.
+     *
+     * @throws PhpCapException if an error occurs, including if the events array is null or empty.
+     *
+     * @return integer the number of events deleted.
+     */
+    public function deleteEvents($events)
+    {
+        $data = array (
+                'token'        => $this->apiToken,
+                'content'      => 'event',
+                'action'       => 'delete',
+                'returnFormat' => 'json',
+        );
+        
+        $data['events'] = $this->processEventsArgument($events, $required = true);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return (integer) $result;
+    }
+    
+    
+    /**
+     * Exports the fields names for a project.
+     *
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param string $field the name of the field for which to export field
+     *     name information. If no field is specified, information for all
+     *     fields is exported.
+     *
+     * @return mixed information on the field specified, or all fields if no
+     *     field was specified. If 'php' or no format was specified, results
+     *     will be returned as a PHP array of maps (associative arrays), where the
+     *     keys for the maps:
+     *     <ul>
+     *       <li>original_field_name</li>
+     *       <li>choice_value</li>
+     *       <li>export_field_name</li>
+     *     </ul>
+     */
+    public function exportFieldNames($format = 'php', $field = null)
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'exportFieldNames',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process arguments
+        #---------------------------------------
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        $data['field']  = $this->processFieldArgument($field, $required = false);
+        
+        $fieldNames = $this->connection->callWithArray($data);
+        $fieldNames = $this->processExportResult($fieldNames, $format);
+        
+        return $fieldNames;
+    }
+
+    /**
+     * Exports the specified file.
+     *
+     * @param string $recordId the record ID for the file to be exported.
+     * @param string $field the name of the field containing the file to export.
+     * @param string $event name of event for file export (for longitudinal studies).
+     * @param integer $repeatInstance
+     *
+     * @throws PhpCapException if an error occurs.
+     *
+     * @return string the contents of the file that was exported.
+     */
+    public function exportFile($recordId, $field, $event = null, $repeatInstance = null)
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'file',
+                'action'       => 'export',
+                'returnFormat' => 'json'
+        );
+        
+        #--------------------------------------------
+        # Process arguments
+        #--------------------------------------------
+        $data['record']           = $this->processRecordIdArgument($recordId);
+        $data['field']            = $this->processFieldArgument($field);
+        $data['event']            = $this->processEventArgument($event);
+        $data['repeat_instance']  = $this->processRepeatInstanceArgument($repeatInstance);
+        
+        #-------------------------------
+        # Get and process file
+        #-------------------------------
+        $file = $this->connection->callWithArray($data);
+        $file = $this->processExportResult($file, $format = 'file');
+        
+        return $file;
+    }
+    
+    
+    /**
+     * Imports the file into the field of the record
+     * with the specified event and/or repeat istance, if any.
+     *
+     * Example usage:
+     * <code>
+     * ...
+     * $file     = '../data/consent1001.txt';
+     * $recordId = '1001';
+     * $field    = 'patient_document';
+     * $event    = 'enrollment_arm_1';
+     * $project->importFile($file, $recordId, $field, $event);
+     * ...
+     * </code>
+     *
+     * @param string $filename the name of the file to import.
+     * @param string $recordId the record ID of the record to import the file into.
+     * @param string $field the field of the record to import the file into.
+     * @param string $event the event of the record to import the file into
+     *     (only for longitudinal studies).
+     * @param integer $repeatInstance the repeat instance of the record to import
+     *     the file into (only for studies that have repeating events
+     *     and/or instruments).
+     *
+     * @throws PhpCapException
+     */
+    public function importFile($filename, $recordId, $field, $event = null, $repeatInstance = null)
+    {
+        $data = array (
+                'token'        => $this->apiToken,
+                'content'      => 'file',
+                'action'       => 'import',
+                'returnFormat' => 'json'
+        );
+        
+        #----------------------------------------
+        # Process non-file arguments
+        #----------------------------------------
+        $data['file']             = $this->processFilenameArgument($filename);
+        $data['record']           = $this->processRecordIdArgument($recordId);
+        $data['field']            = $this->processFieldArgument($field);
+        $data['event']            = $this->processEventArgument($event);
+        $data['repeat_instance']  = $this->processRepeatInstanceArgument($repeatInstance);
+        
+        
+        #---------------------------------------------------------------------
+        # For unknown reasons, "call" (instead of "callWithArray") needs to
+        # be used here (probably something to do with the 'file' data).
+        # REDCap's "API Playground" (also) makes no data conversion for this
+        # method.
+        #---------------------------------------------------------------------
+        $result = $this->connection->call($data);
+        
+        $this->processNonExportResult($result);
+    }
+
+
+    /**
+     * Deletes the specified file.
+     *
+     * @param string $recordId the record ID of the file to delete.
+     * @param string $field the field name of the file to delete.
+     * @param string $event the event of the file to delete
+     *     (only for longitudinal studies).
+     * @param integer $repeatInstance repeat instance of the file to delete
+     *     (only for studies that have repeating events
+     *     and/or instruments).
+     */
+    public function deleteFile($recordId, $field, $event = null, $repeatInstance = null)
+    {
+        $data = array (
+                'token'        => $this->apiToken,
+                'content'      => 'file',
+                'action'       => 'delete',
+                'returnFormat' => 'json'
+        );
+        
+        #----------------------------------------
+        # Process arguments
+        #----------------------------------------
+        $data['record']           = $this->processRecordIdArgument($recordId);
+        $data['field']            = $this->processFieldArgument($field);
+        $data['event']            = $this->processEventArgument($event);
+        $data['repeat_instance']  = $this->processRepeatInstanceArgument($repeatInstance);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return $result;
+    }
+    
+    
+    /**
+     * Exports information about the instruments (data entry forms) for the project.
+     *
+     * Example usage:
+     * <code>
+     * $instruments = $project->getInstruments();
+     * foreach ($instruments as $instrumentName => $instrumentLabel) {
+     *     print "{$instrumentName} : {$instrumentLabel}\n";
+     * }
+     * </code>
+     *
+     * @param $format string format instruments are exported in:
+     *     <ul>
+     *       <li>'php' - [default] returns data as a PHP array</li>
+     *       <li>'csv' - string of CSV (comma-separated values)</li>
+     *       <li>'json' - string of JSON encoded data</li>
+     *       <li>'xml' - string of XML encoded data</li>
+     *     </ul>
+     *
+     * @return mixed For the 'php' format, and array map of instrument names to instrument labels is returned.
+     *     For all other formats a string is returned.
+     */
+    public function exportInstruments($format = 'php')
+    {
+        $data = array(
+                'token'       => $this->apiToken,
+                'content'     => 'instrument',
+                'returnFormat' => 'json'
+        );
+        
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        
+        $instrumentsData = $this->connection->callWithArray($data);
+        
+        $instrumentsData = $this->processExportResult($instrumentsData, $format);
+        
+        #------------------------------------------------------
+        # If format is 'php', reformat the data as
+        # a map from "instrument name" to "instrument label"
+        #------------------------------------------------------
+        if ($format == 'php') {
+            $instruments = array ();
+            foreach ($instrumentsData as $instr) {
+                $instruments [$instr ['instrument_name']] = $instr ['instrument_label'];
+            }
+        } else {
+            $instruments = $instrumentsData;
+        }
+        
+        return $instruments;
+    }
+    
+    /**
+     * Exports a PDF version of the requested instruments (forms).
+     *
+     * @param string $file the name of the file (possibly with a path specified also)
+     *     to store the PDF instruments in.
+     * @param string $recordId if record ID is specified, the forms retrieved will
+     *     be filled with values for that record. Otherwise, they will be blank.
+     * @param string $event (only for longitudinal projects) a unique event name
+     *     that is used when a record ID has been specified to return only
+     *     forms that are in that event (for the specified records).
+     * @param string $form if this is specified, only this form will be
+     *     returned.
+     * @param boolean $allRecords if this is set to true, all forms for all
+     *     records will be retrieved (the $recordId, $event, and $form arguments
+     *     will be ignored).
+     *
+     * @throws PhpCapException if an error occurs.
+     *
+     * @return string PDF content of requested instruments (forms).
+     */
+    public function exportPdfFileOfInstruments(
+        $file = null,
+        $recordId = null,
+        $event = null,
+        $form = null,
+        $allRecords = null
+    ) {
+        $data = array(
+                'token'       => $this->apiToken,
+                'content'     => 'pdf',
+                'returnFormat' => 'json'
+        );
+        
+        $file = $this->processFileArgument($file);
+        
+        $data['record']     = $this->processRecordIdArgument($recordId, $required = false);
+        $data['event']      = $this->processEventArgument($event);
+        $data['instrument'] = $this->processFormArgument($form);
+        $data['allRecords'] = $this->processAllRecordsArgument($allRecords);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        if (isset($file)) {
+            FileUtil::writeStringToFile($result, $file);
+        }
+        
+        return $result;
+    }
+   
+    
+    /**
+     * Gets the instrument to event mapping for the project.
+     *
+     * For example, the following code:
+     * <code>
+     * $map = $project->exportInstrumentEventMappings();
+     * print_r($map[0]); # print first element of map
+     * </code>
+     * might generate the following output:
+     * <pre>
+     * Array
+     * (
+     *     [arm_num] => 1
+     *     [unique_event_name] => enrollment_arm_1
+     *     [form] => demographics
+     * )
+     * </pre>
+     *
+     * @param string $format the format in which to export the records:
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param array $arms array of integers or numeric strings that are the numbers of the arms
+     *     for which instrument/event mapping infomation should be exported.
+     *     If no arms are specified, then information for all arms will be exported.
+     *
+     * @return arrray an array of arrays that have the following keys:
+     *     <ul>
+     *       <li>'arm_num'</li>
+     *       <li>'unique_event_name'</li>
+     *       <li>'form'</li>
+     *     </ul>
+     */
+    public function exportInstrumentEventMappings($format = 'php', $arms = [])
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'formEventMapping',
+                'format'       => 'json',
+                'returnFormat' => 'json'
+        );
+        
+        #------------------------------------------
+        # Process arguments
+        #------------------------------------------
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        $data['arms']   = $this->processArmsArgument($arms);
+        
+        #---------------------------------------------
+        # Get and process instrument-event mappings
+        #---------------------------------------------
+        $instrumentEventMappings = $this->connection->callWithArray($data);
+        $instrumentEventMappings = $this->processExportResult($instrumentEventMappings, $format);
+        
+        return $instrumentEventMappings;
+    }
+
+    /**
+     * Imports the specified instrument-event mappings into the project.
+     *
+     * @param mixed $mappings the mappings to import. This will
+     *     be a PHP array of associative arrays if no format, or
+     *     'php' format, was specified,
+     *     and a string otherwise. In all cases, the field names that
+     *     are used in the mappings are:
+     *     arm_num, unique_event_name, form
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     *
+     * @throws PhpCapException if an error occurs.
+     *
+     * @return integer the number of mappings imported.
+     */
+    public function importInstrumentEventMappings($mappings, $format = 'php')
+    {
+        $data = array(
+            'token'        => $this->apiToken,
+            'content'      => 'formEventMapping',
+            'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process arguments
+        #---------------------------------------
+        $data['data'] = $this->processImportDataArgument($mappings, 'mappings', $format);
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return (integer) $result;
+    }
+    
+    
+    /**
+     * Exports metadata about the project, i.e., information about the fields in the project.
+     *
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param array $fields array of field names for which metadata should be exported
+     * @param array $forms array of form names. Metadata will be exported for all fields in the
+     *     specified forms.
+     *
+     * @return array associative array (map) of metatdata for the project, which consists of
+     *         information about each field. Some examples of the information
+     *         provided are: 'field_name', 'form_name', 'field_type', 'field_label'.
+     *         See REDCap API documentation
+     *         for more information, or use the print_r function on the results of this method.
+     */
+    public function exportMetadata($format = 'php', $fields = [], $forms = [])
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'metadata',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process format
+        #---------------------------------------
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        $data['forms']  = $this->processFormsArgument($forms);
+        $data['fields'] = $this->processFieldsArgument($fields);
+        
+        #-------------------------------------------
+        # Get and process metadata
+        #-------------------------------------------
+        $metadata = $this->connection->callWithArray($data);
+        $metadata = $this->processExportResult($metadata, $format);
+        
+        return $metadata;
+    }
+    
+    /**
+     * Imports the specified metadata (field information) into the project.
+     *
+     * @param mixed $metadata the metadata to import. This will
+     *     be a PHP associative array if no format, or 'php' format was specified,
+     *     and a string otherwise.
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     *
+     * @throws PhpCapException if an error occurs.
+     *
+     * @return integer the number of fields imported.
+     */
+    public function importMetadata($metadata, $format = 'php')
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'metadata',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process arguments
+        #---------------------------------------
+        $data['data'] = $this->processImportDataArgument($metadata, 'metadata', $format);
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return (integer) $result;
+    }
+
+    
+    /**
+     * Exports information about the project, e.g., project ID, project title, creation time.
+     *
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     *
+     * @return array associative array (map) of project information. See REDCap API documentation
+     *         for a list of the fields, or use the print_r function on the results of this method.
+     */
+    public function exportProjectInfo($format = 'php')
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'project',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process format
+        #---------------------------------------
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        
+        #---------------------------------------
+        # Get and process project information
+        #---------------------------------------
+        $projectInfo = $this->connection->callWithArray($data);
+        $projectInfo = $this->processExportResult($projectInfo, $format);
+        
+        return $projectInfo;
+    }
+    
+    /**
+     * Imports the specified project information into the project.
+     * The valid fields that can be imported are:
+     *
+     * project_title, project_language, purpose, purpose_other, project_notes,
+     * custom_record_label, secondary_unique_field, is_longitudinal,
+     * surveys_enabled, scheduling_enabled, record_autonumbering_enabled,
+     * randomization_enabled, project_irb_number, project_grant_number,
+     * project_pi_firstname, project_pi_lastname, display_today_now_button
+     *
+     * You do not need to specify all of these fields when doing an import,
+     * only the ones that you actually want to change. For example:
+     * <code>
+     * ...
+     * # Set the project to be longitudinal and enable surveys
+     * $projectInfo = ['is_longitudinal' => 1, 'surveys_enabled' => 1];
+     * $project->importProjectInfo($projectInfo);
+     * ...
+     * </code>
+     *
+     * @param mixed $projectInfo the project information to import. This will
+     *     be a PHP associative array if no format, or 'php' format was specified,
+     *     and a string otherwise.
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     *
+     * @throws PhpCapException if an error occurs.
+     *
+     * @return integer the number of project info values specified that were valid,
+     *     whether or not each valid value actually caused an update (i.e., was different
+     *     from the existing value before the method call).
+     */
+    public function importProjectInfo($projectInfo, $format = 'php')
+    {
+        $data = array(
+            'token'        => $this->apiToken,
+            'content'      => 'project_settings',
+            'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process arguments
+        #---------------------------------------
+        $data['data'] = $this->processImportDataArgument($projectInfo, 'projectInfo', $format);
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return (integer) $result;
+    }
+    
+    /**
+     * Exports the specified information of project in XML format.
+     *
+     * @param boolean $returnMetadataOnly if this is set to true, only the metadata for
+     *     the project is returned. If it is not set to true, the metadata and data for the project
+     *     is returned.
+     * @param array $recordIds array of strings with record id's that are to be retrieved.
+     * @param array $fields array of field names to export
+     * @param array $events array of event names for which fields should be exported
+     * @param array $filterLogic logic used to restrict the records retrieved, e.g.,
+     *     "[last_name] = 'Smith'".
+     * @param boolean $exportSurveyFields specifies whether survey fields should be exported.
+     *     <ul>
+     *       <li> true - export the following survey fields:
+     *         <ul>
+     *           <li> survey identifier field ('redcap_survey_identifier') </li>
+     *           <li> survey timestamp fields (instrument+'_timestamp') </li>
+     *         </ul>
+     *       </li>
+     *       <li> false - [default] survey fields are not exported.</li>
+     *     </ul>
+     * @param boolean $exportDataAccessGroups specifies whether the data access group field
+     *      ('redcap_data_access_group') should be exported.
+     *     <ul>
+     *       <li> true - export the data access group field if there is at least one data access group, and
+     *                   the user calling the method (as identified by the API token) is not
+     *                   in a data access group.</li>
+     *       <li> false - [default] don't export the data access group field.</li>
+     *     </ul>
+     * @param boolean $exportFiles If this is set to true, files will be exported in the XML.
+     *     If it is not set to true, files will not be exported.
+     * @return string the specified information for the project in XML format.
+     */
+    public function exportProjectXml(
+        $returnMetadataOnly = false,
+        $recordIds = null,
+        $fields = null,
+        $events = null,
+        $filterLogic = null,
+        $exportSurveyFields = false,
+        $exportDataAccessGroups = false,
+        $exportFiles = false
+    ) {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'project_xml',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------------
+        # Process the arguments
+        #---------------------------------------------
+        $data['returnMetadataOnly'] = $this->processReturnMetadataOnlyArgument($returnMetadataOnly);
+
+        $data['records']     = $this->processRecordIdsArgument($recordIds);
+        $data['fields']      = $this->processFieldsArgument($fields);
+        $data['events']      = $this->processEventsArgument($events);
+        $data['filterLogic'] = $this->processFilterLogicArgument($filterLogic);
+        
+        $data['exportSurveyFields']     = $this->processExportSurveyFieldsArgument($exportSurveyFields);
+        $data['exportDataAccessGroups'] = $this->processExportDataAccessGroupsArgument($exportDataAccessGroups);
+        $data['exportFiles']            = $this->processExportFilesArgument($exportFiles);
+        
+        #---------------------------------------
+        # Get the Project XML and process it
+        #---------------------------------------
+        $projectXml = $this->connection->callWithArray($data);
+        $projectXml = $this->processExportResult($projectXml, $format = 'xml');
+        
+        return $projectXml;
+    }
+    
+    /**
+     * This method returns the next potential record ID for a project, but it does NOT
+     * actually create a new record. The record ID returned will generally be the current maximum
+     * record ID number incremented by one (but see the REDCap documentation for the case
+     * where Data Access Groups are being used).
+     * This method is intended for use with projects that have record-autonumbering enabled.
+     *
+     * @return string the next record name.
+     */
+    public function generateNextRecordName()
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'generateNextRecordName',
+                'returnFormat' => 'json'
+        );
+        
+        $nextRecordName = $this->connection->callWithArray($data);
+        $nextRecordName = $this->processExportResult($nextRecordName, $format = 'number');
+        
+        return $nextRecordName;
+    }
+    
+    
+    /**
+     * Exports the specified records.
+     *
+     * Example usage:
+     * <code>
+     * $records = $project->exportRecords($format = 'csv', $type = 'flat');
+     * $recordIds = [1001, 1002, 1003];
+     * $records = $project->exportRecords('xml', 'eav', $recordIds);
+     * </code>
+     *
+     * @param string $format the format in which to export the records:
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *       <li> 'odm' - string with CDISC ODM XML format, specifically ODM version 1.3.1</li>
+     *     </ul>
+     * @param string $type the type of records exported:
+     *     <ul>
+     *       <li>'flat' - [default] exports one record per row.</li>
+     *       <li>'eav'  - exports one data point per row:, so,
+     *         for non-longitudinal studies, each record will have the following
+     *         fields: record_id, field_name, value. For longitudinal studies, each record
+     *         will have the fields: record_id, field_name, value, redcap_event_name.
+     *       </li>
+     *     </ul>
+     * @param array $recordIds array of strings with record id's that are to be retrieved.
+     * @param array $fields array of field names to export
+     * @param array $forms array of form names for which fields should be exported
+     * @param array $events array of event names for which fields should be exported
+     * @param array $filterLogic logic used to restrict the records retrieved, e.g.,
+     *         "[last_name] = 'Smith'".
+     * @param string $rawOrLabel indicates what should be exported for options of multiple choice fields:
+     *     <ul>
+     *       <li> 'raw' - [default] export the raw coded values</li>
+     *       <li> 'label' - export the labels</li>
+     *     </ul>
+     * @param string $rawOrLabelHeaders when exporting with 'csv' format 'flat' type, indicates what format
+     *         should be used for the CSV headers:
+     *         <ul>
+     *           <li> 'raw' - [default] export the variable/field names</li>
+     *           <li> 'label' - export the field labels</li>
+     *         </ul>
+     * @param boolean $exportCheckboxLabel specifies the format for checkbox fields for the case where
+     *         $format = 'csv', $rawOrLabel = true, and $type = 'flat'. For other cases this
+     *         parameter is effectively ignored.
+     *     <ul>
+     *       <li> true - checked checkboxes will have a value equal to the checkbox option's label
+     *           (e.g., 'Choice 1'), and unchecked checkboxes will have a blank value.
+     *       </li>
+     *       <li> false - [default] checked checkboxes will have a value of 'Checked', and
+     *            unchecked checkboxes will have a value of 'Unchecked'.
+     *       </li>
+     *     </ul>
+     * @param boolean $exportSurveyFields specifies whether survey fields should be exported.
+     *     <ul>
+     *       <li> true - export the following survey fields:
+     *         <ul>
+     *           <li> survey identifier field ('redcap_survey_identifier') </li>
+     *           <li> survey timestamp fields (instrument+'_timestamp') </li>
+     *         </ul>
+     *       </li>
+     *       <li> false - [default] survey fields are not exported.</li>
+     *     </ul>
+     * @param boolean $exportDataAccessGroups specifies whether the data access group field
+     *      ('redcap_data_access_group') should be exported.
+     *     <ul>
+     *       <li> true - export the data access group field if there is at least one data access group, and
+     *                   the user calling the method (as identified by the API token) is not
+     *                   in a data access group.</li>
+     *       <li> false - [default] don't export the data access group field.</li>
+     *     </ul>
+     *
+     * @return mixed If 'php' format is specified, an array of records will be returned where the format
+     *     of the records depends on the 'type'parameter (see above). For other
+     *     formats, a string is returned that contains the records in the specified format.
+     */
+    public function exportRecords(
+        $format = 'php',
+        $type = 'flat',
+        $recordIds = null,
+        $fields = null,
+        $forms = null,
+        $events = null,
+        $filterLogic = null,
+        $rawOrLabel = 'raw',
+        $rawOrLabelHeaders = 'raw',
+        $exportCheckboxLabel = false,
+        $exportSurveyFields = false,
+        $exportDataAccessGroups = false
+    ) {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'record',
+                'returnFormat' => 'json'
+        );
+        
+        #---------------------------------------
+        # Process the arguments
+        #---------------------------------------
+        $legalFormats = array('php', 'csv', 'json', 'xml', 'odm');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        
+        $data['type']    = $this->processTypeArgument($type);
+        $data['records'] = $this->processRecordIdsArgument($recordIds);
+        $data['fields']  = $this->processFieldsArgument($fields);
+        $data['forms']   = $this->processFormsArgument($forms);
+        $data['events']  = $this->processEventsArgument($events);
+        
+        $data['rawOrLabel']             = $this->processRawOrLabelArgument($rawOrLabel);
+        $data['rawOrLabelHeaders']      = $this->processRawOrLabelHeadersArgument($rawOrLabelHeaders);
+        $data['exportCheckboxLabel']    = $this->processExportCheckboxLabelArgument($exportCheckboxLabel);
+        $data['exportSurveyFields']     = $this->processExportSurveyFieldsArgument($exportSurveyFields);
+        $data['exportDataAccessGroups'] = $this->processExportDataAccessGroupsArgument($exportDataAccessGroups);
+        
+        $data['filterLogic'] = $this->processFilterLogicArgument($filterLogic);
+        
+        #---------------------------------------
+        # Get the records and process them
+        #---------------------------------------
+        $records = $this->connection->callWithArray($data);
+        $records = $this->processExportResult($records, $format);
+      
+        return $records;
+    }
+
+    /**
+     * Export records using an array parameter, where the keys of the array
+     * passed to this method are the argument names, and the values are the
+     * argument values. The argument names to use correspond to the variable
+     * names in the exportRecords method.
+     *
+     * Example usage:
+     *
+     * <code>
+     * # return all records with last name "Smith" in CSV format
+     * $records = $project->exportRecordsAp(['format' => 'csv', 'filterLogic' => "[last_name] = 'Smith'"]);
+     *
+     * # export only records that have record ID 1001, 1002, or 1003
+     * $result = $project->exportRecordsAp(['recordIds' => [1001, 1002, 1003]]);
+     *
+     * # export only the fields on the 'lab_data' form and field 'study_id'
+     * $records = $project->exportRecordsAp(['forms' => ['lab_data'], 'fields' => ['study_id']]);
+     * </code>
+     *
+     * @see exportRecords()
+     *
+     * @param array $argumentArray array of arguments.
+     * @return mixed the specified records.
+     */
+    public function exportRecordsAp($arrayParameter = [])
+    {
+        if (func_num_args() > 1) {
+            $message = __METHOD__.'() was called with '.func_num_args().' arguments, but '
+                    .' it accepts at most 1 argument.';
+            $this->errorHandler->throwException($message, ErrorHandlerInterface::TOO_MANY_ARGUMENTS);
+        } elseif (!isset($arrayParameter)) {
+            $arrayParameter = [];
+        } elseif (!is_array($arrayParameter)) {
+            $message = 'The argument has type "'
+                    .gettype($arrayParameter)
+                    .'", but it needs to be an array.';
+            $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+        } // @codeCoverageIgnore
+        
+        $num = 1;
+        foreach ($arrayParameter as $name => $value) {
+            if (gettype($name) !== 'string') {
+                $message = 'Argument name number '.$num.' in the array argument has type '
+                        .gettype($name).', but it needs to be a string.';
+                $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+            } // @codeCoverageIgnore
+            
+            switch ($name) {
+                case 'format':
+                    $format = $value;
+                    break;
+                case 'type':
+                    $type = $value;
+                    break;
+                case 'recordIds':
+                    $recordIds = $value;
+                    break;
+                case 'fields':
+                    $fields = $value;
+                    break;
+                case 'forms':
+                    $forms = $value;
+                    break;
+                case 'events':
+                    $events = $value;
+                    break;
+                case 'filterLogic':
+                    $filterLogic = $value;
+                    break;
+                case 'rawOrLabel':
+                    $rawOrLabel = $value;
+                    break;
+                case 'rawOrLabelHeaders':
+                    $rawOrLabelHeaders = $value;
+                    break;
+                case 'exportCheckboxLabel':
+                    $exportCheckboxLabel = $value;
+                    break;
+                case 'exportSurveyFields':
+                    $exportSurveyFields = $value;
+                    break;
+                case 'exportDataAccessGroups':
+                    $exportDataAccessGroups = $value;
+                    break;
+                default:
+                    $this->errorHandler->throwException(
+                        'Unrecognized argument name "' . $name . '".',
+                        ErrorHandlerInterface::INVALID_ARGUMENT
+                    );
+                    break; // @codeCoverageIgnore
+            }
+            $num++;
+        }
+        
+        $records = $this->exportRecords(
+            isset($format)                 ? $format                 : 'php',
+            isset($type)                   ? $type                   : 'flat',
+            isset($recordIds)              ? $recordIds              : null,
+            isset($fields)                 ? $fields                 : null,
+            isset($forms)                  ? $forms                  : null,
+            isset($events)                 ? $events                 : null,
+            isset($filterLogic)            ? $filterLogic            : null,
+            isset($rawOrLabel)             ? $rawOrLabel             : 'raw',
+            isset($rawOrLabelHeaders)      ? $rawOrLabelHeaders      : 'raw',
+            isset($exportCheckboxLabel)    ? $exportCheckboxLabel    : false,
+            isset($exportSurveyFields)     ? $exportSurveyFields     : false,
+            isset($exportDataAccessGroups) ? $exportDataAccessGroups : false
+        );
+        
+        return $records;
+    }
+
+    
+    /**
+     * Imports the specified records into the project.
+     *
+     * @param mixed $records
+     *            If the 'php' (default) format is being used, an array of associated arrays (maps)
+     *            where each key is a field name,
+     *            and its value is the value to store in that field. If any other format is being used, then
+     *            the records are represented by a string.
+     * @param string $format One of the following formats can be specified
+     *            <ul>
+     *              <li> 'php' - [default] array of maps of values</li>
+     *              <li> 'csv' - string of CSV (comma-separated values)</li>
+     *              <li> 'json' - string of JSON encoded values</li>
+     *              <li> 'xml' - string of XML encoded data</li>
+     *              <li> 'odm' - CDISC ODM XML format, specifically ODM version 1.3.1</li>
+     *            </ul>
+     * @param string $type
+     *            <ul>
+     *              <li> 'flat' - [default] each data element is a record</li>
+     *              <li> 'eav' - each data element is one value</li>
+     *            </ul>
+     * @param string $overwriteBehavior
+     *            <ul>
+     *              <li>normal - [default] blank/empty values will be ignored</li>
+     *              <li>overwrite - blank/empty values are valid and will overwrite data</li>
+     *            </ul>
+     * @param string $dateFormat date format which can be one of the following:
+     *            <ul>
+     *              <li>'YMD' - [default] Y-M-D format (e.g., 2016-12-31)</li>
+     *              <li>'MDY' - M/D/Y format (e.g., 12/31/2016)</li>
+     *              <li>'DMY' - D/M/Y format (e.g., 31/12/2016)</li>
+     *           </ul>
+     * @param string $returnContent specifies what should be returned:
+     *           <ul>
+     *             <li>'count' - [default] the number of records imported</li>
+     *             <li> ids' - an array of the record IDs imported is returned</li>
+     *           </ul>
+     *
+     * @return mixed if 'count' was specified for 'returnContent', then an integer will
+     *         be returned that is the number of records imported.
+     *         If 'ids' was specified, then an array of record IDs that were imported will
+     *         be returned.
+     */
+    public function importRecords(
+        $records,
+        $format = 'php',
+        $type = 'flat',
+        $overwriteBehavior = 'normal',
+        $dateFormat = 'YMD',
+        $returnContent = 'count'
+    ) {
+            
+        $data = array (
+            'token'         => $this->apiToken,
+            'content'       => 'record',
+            'returnFormat'  => 'json'
+        );
+            
+        #---------------------------------------
+        # Process format
+        #---------------------------------------
+        $legalFormats = array('csv', 'json', 'odm', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        $data['data']   = $this->processImportDataArgument($records, 'records', $format);
+        $data['type']   = $this->processTypeArgument($type);
+            
+        $data['overwriteBehavior'] = $this->processOverwriteBehaviorArgument($overwriteBehavior);
+        $data['returnContent']     = $this->processReturnContentArgument($returnContent);
+        $data['dateFormat']        = $this->processDateFormatArgument($dateFormat);
+            
+        $result = $this->connection->callWithArray($data);
+            
+        $this->processNonExportResult($result);
+        
+        
+        #--------------------------------------------------------------------------
+        # Process result, which should either be a count of the records imported,
+        # or a list of the record IDs that were imported
+        #
+        # The result should be a string in JSON for all formats.
+        # Need to convert the result to a PHP data structure.
+        #--------------------------------------------------------------------------
+        $phpResult = json_decode($result, true); // true => return as array instead of object
+        
+        $jsonError = json_last_error();
+        
+        switch ($jsonError) {
+            case JSON_ERROR_NONE:
+                $result = $phpResult;
+                # If this is a count, then just return the count, and not an
+                # array that has a count index with the count
+                if (isset($result) && is_array($result) && array_key_exists('count', $result)) {
+                    $result = $result['count'];
+                }
+                break;
+            default:
+                # Hopefully the REDCap API will always return valid JSON, and this
+                # will never happen.
+                $message =  'JSON error ('.$jsonError.') "'.json_last_error_msg().
+                    '" while processing import return value: "'.
+                $result.'".';
+                $this->errorHandler->throwException($message, ErrorHandlerInterface::JSON_ERROR);
+                break; // @codeCoverageIgnore
+        }
+        
+        return $result;
+    }
+    
+    
+    /**
+     * Deletes the specified records from the project.
+     *
+     * @param array $recordIds array of record IDs to delete
+     * @param string $arm if an arm is specified, only records that have
+     *     one of the specified record IDs that are in that arm will
+     *     be deleted.
+     *
+     * @throws PhpCapException
+     *
+     * @return integer the number of records deleted. Note that as of
+     *     REDCap version 7.0.15 (at least) the number of records
+     *     deleted will not be correct for the case where an arm
+     *     is specified and some of the record IDs specified are
+     *     not in that arm.
+     */
+    public function deleteRecords($recordIds, $arm = null)
+    {
+        $data = array (
+                'token'        => $this->apiToken,
+                'content'      => 'record',
+                'action'       => 'delete',
+                'returnFormat' => 'json',
+        );
+        
+        $data['records'] = $this->processRecordIdsArgument($recordIds);
+        $data['arm']     = $this->processArmArgument($arm);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return $result;
+    }
+
+    
+    /**
+     * Gets the REDCap version number of the REDCap instance being used by the project.
+     *
+     * @return string the REDCap version number of the REDCap instance being used by the project.
+     */
+    public function exportRedcapVersion()
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'version'
+        );
+        
+        $redcapVersion = $this->connection->callWithArray($data);
+        $recapVersion = $this->processExportResult($redcapVersion, 'string');
+        
+        return $redcapVersion;
+    }
+    
+    
+    
+    /**
+     * Exports the records produced by the specified report.
+     *
+     * @param mixed $reportId integer or numeric string ID of the report to use.
+     * @param string $format output data format.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param string $rawOrLabel indicates what should be exported for options of multiple choice fields:
+     *     <ul>
+     *       <li> 'raw' - [default] export the raw coded values</li>
+     *       <li> 'label' - export the labels</li>
+     *     </ul>
+     * @param string $rawOrLabelHeaders when exporting with 'csv' format 'flat' type, indicates what format
+     *         should be used for the CSV headers:
+     *         <ul>
+     *           <li> 'raw' - [default] export the variable/field names</li>
+     *           <li> 'label' - export the field labels</li>
+     *         </ul>
+     * @param boolean $exportCheckboxLabel specifies the format for checkbox fields for the case where
+     *         $format = 'csv', $rawOrLabel = true, and $type = 'flat'. For other cases this
+     *         parameter is effectively ignored.
+     *     <ul>
+     *       <li> true - checked checkboxes will have a value equal to the checkbox option's label
+     *           (e.g., 'Choice 1'), and unchecked checkboxes will have a blank value.
+     *       </li>
+     *       <li> false - [default] checked checkboxes will have a value of 'Checked', and
+     *            unchecked checkboxes will have a value of 'Unchecked'.
+     *       </li>
+     *     </ul>
+     *
+     * @return mixed the records generated by the specefied report in the specified format.
+     */
+    public function exportReports(
+        $reportId,
+        $format = 'php',
+        $rawOrLabel = 'raw',
+        $rawOrLabelHeaders = 'raw',
+        $exportCheckboxLabel = false
+    ) {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'report',
+                'returnFormat' => 'json'
+        );
+        
+        #------------------------------------------------
+        # Process arguments
+        #------------------------------------------------
+        $data['report_id'] = $this->processReportIdArgument($reportId);
+
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+
+        $data['rawOrLabel']          = $this->processRawOrLabelArgument($rawOrLabel);
+        $data['rawOrLabelHeaders']   = $this->processRawOrLabelHeadersArgument($rawOrLabelHeaders);
+        $data['exportCheckboxLabel'] = $this->processExportCheckboxLabelArgument($exportCheckboxLabel);
+        
+        #---------------------------------------------------
+        # Get and process records
+        #---------------------------------------------------
+        $records = $this->connection->callWithArray($data);
+        $records = $this->processExportResult($records, $format);
+         
+        return $records;
+    }
+
+    
+    /**
+     * Exports the survey link for the specified inputs.
+     *
+     * @param string $recordId the record ID for the link.
+     * @param string $form the form for the link.
+     * @param string $event event for link (for longitudinal studies only).
+     * @param integer $repeatInstance for repeatable forms, the instance of the form
+     *     to return a link for.
+     *
+     * @return string survey link.
+     */
+    public function exportSurveyLink($recordId, $form, $event = null, $repeatInstance = null)
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'surveyLink',
+                'returnFormat' => 'json'
+        );
+        
+        #----------------------------------------------
+        # Process arguments
+        #----------------------------------------------
+        $data['record']          = $this->processRecordIdArgument($recordId, $required = true);
+        $data['instrument']      = $this->ProcessFormArgument($form, $required = true);
+        $data['event']           = $this->ProcessEventArgument($event);
+        $data['repeat_instance'] = $this->ProcessRepeatInstanceArgument($repeatInstance);
+        
+        $surveyLink = $this->connection->callWithArray($data);
+        $surveyLink = $this->processExportResult($surveyLink, 'string');
+        
+        return $surveyLink;
+    }
+    
+    /**
+     * Exports the list of survey participants for the specified form and, for
+     * longitudinal studies, event.
+     *
+     * @param string $form the form for which the participants should be exported.
+     * @param string $format output data format.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param string $event the event name for which survey participants should be
+     *     exported.
+     *
+     * @return mixed for the 'php' format, an array of arrays of participant
+     *     information is returned, for all other formats, the data is returned
+     *     in the specified format as a string.
+     */
+    public function exportSurveyParticipants($form, $format = 'php', $event = null)
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'participantList',
+                'returnFormat' => 'json'
+        );
+        
+        #----------------------------------------------
+        # Process arguments
+        #----------------------------------------------
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format']     = $this->processFormatArgument($format, $legalFormats);
+        $data['instrument'] = $this->ProcessFormArgument($form, $required = true);
+        $data['event']      = $this->ProcessEventArgument($event);
+        
+        $surveyParticipants = $this->connection->callWithArray($data);
+        $surveyParticipants = $this->processExportResult($surveyParticipants, $format);
+        
+        return $surveyParticipants;
+    }
+    
+    /**
+     * Exports the survey queue link for the specified record ID.
+     *
+     * @param string $recordId the record ID of the survey queue link that should be returned.
+     *
+     * @return string survey queue link.
+     */
+    public function exportSurveyQueueLink($recordId)
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'surveyQueueLink',
+                'returnFormat' => 'json'
+        );
+        
+        #----------------------------------------------
+        # Process arguments
+        #----------------------------------------------
+        $data['record'] = $this->processRecordIdArgument($recordId, $required = true);
+        
+        $surveyQueueLink = $this->connection->callWithArray($data);
+        $surveyQueueLink = $this->processExportResult($surveyQueueLink, 'string');
+        
+        return $surveyQueueLink;
+    }
+    
+    /**
+     * Exports the code for returning to a survey that was not completed.
+     *
+     * @param string $recordId the record ID for the survey to return to.
+     * @param string $form the form name of the survey to return to.
+     * @param string $event the unique event name (for longitudinal studies) for the survey
+     *     to return to.
+     * @param integer $repeatInstance the repeat instance (if any) for the survey to return to.
+     * @return string survey return code.
+     */
+    public function exportSurveyReturnCode($recordId, $form, $event = null, $repeatInstance = null)
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'surveyReturnCode',
+                'returnFormat' => 'json'
+        );
+        
+        #----------------------------------------------
+        # Process arguments
+        #----------------------------------------------
+        $data['record']          = $this->processRecordIdArgument($recordId, $required = true);
+        $data['instrument']      = $this->ProcessFormArgument($form, $required = true);
+        $data['event']           = $this->ProcessEventArgument($event);
+        $data['repeat_instance'] = $this->ProcessRepeatInstanceArgument($repeatInstance);
+        
+        $surveyReturnCode = $this->connection->callWithArray($data);
+        $surveyReturnCode = $this->processExportResult($surveyReturnCode, 'string');
+        
+        return $surveyReturnCode;
+    }
+    
+    
+    /**
+     * Exports the users of the project.
+     *
+     * @param string $format output data format.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     *
+     * @return mixed a list of users. For the 'php' format an array of associative
+     *     arrays is returned, where the keys are the field names and the values
+     *     are the field values. For all other formats, a string is returned with
+     *     the data in the specified format.
+     */
+    public function exportUsers($format = 'php')
+    {
+        $data = array(
+                'token' => $this->apiToken,
+                'content' => 'user',
+                'returnFormat' => 'json'
+        );
+        
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        
+        #---------------------------------------------------
+        # Get and process users
+        #---------------------------------------------------
+        $users = $this->connection->callWithArray($data);
+        $users = $this->processExportResult($users, $format);
+        
+        return $users;
+    }
+    
+    /**
+     * Imports the specified users into the project. This method
+     * can also be used to update user priveleges by importing
+     * a users that already exist in the project and
+     * specifying new privleges for that user in the user
+     * data that is imported.
+     *
+     * The available field names for user import are:
+     * <code>
+     * username, expiration, data_access_group, design,
+     * user_rights, data_access_groups, data_export, reports, stats_and_charts,
+     * manage_survey_participants, calendar, data_import_tool, data_comparison_tool,
+     * logging, file_repository, data_quality_create, data_quality_execute,
+     * api_export, api_import, mobile_app, mobile_app_download_data,
+     * record_create, record_rename, record_delete,
+     * lock_records_customization, lock_records, lock_records_all_forms,
+     * forms
+     * </code>
+     *
+     *
+     * Privileges for fields above can be set as follows:
+     * <ul>
+     *   <li><b>Data Export:</b> 0=No Access, 2=De-Identified, 1=Full Data Set</li>
+     *   <li><b>Form Rights:</b> 0=No Access, 2=Read Only,
+     *       1=View records/responses and edit records (survey responses are read-only),
+     *       3=Edit survey responses</li>
+     *   <li><b>Other field values:</b> 0=No Access, 1=Access.</li>
+     * </ul>
+     *
+     * See the REDCap API documentation for more information, or print the results
+     * of PHPCap's exportUsers method to see what the data looks like for the current users.
+     *
+     * @param mixed $users for 'php' format, an array should be used that
+     *     maps field names to field values. For all other formats a string
+     *     should be used that has the data in the correct format.
+     * @param string $format output data format.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     *
+     * @return integer the number of users added or updated.
+     */
+    public function importUsers($users, $format = 'php')
+    {
+        $data = array(
+            'token' => $this->apiToken,
+            'content' => 'user',
+            'returnFormat' => 'json'
+        );
+        
+        #----------------------------------------------------
+        # Process arguments
+        #----------------------------------------------------
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
+        $data['data']   = $this->processImportDataArgument($users, 'users', $format);
+        
+        #---------------------------------------------------
+        # Get and process users
+        #---------------------------------------------------
+        $result = $this->connection->callWithArray($data);
+        $this->processNonExportResult($result);
+        
+        return (integer) $result;
+    }
+    
+ 
+    /**
+     * Gets an array of record ID batches.
+     *
+     * These can be used for batch
+     * processing of records exports to lessen memory requirements, for example:
+     * <code>
+     * ...
+     * # Get all the record IDs of the project in 10 batches
+     * $recordIdBatches = $project->getRecordIdBatches(10);
+     * foreach ($recordIdBatches as $recordIdBatch) {
+     *     $records = $project->exportRecordsAp(['recordIds' => $recordIdBatch]);
+     *     ...
+     * }
+     * ...
+     * </code>
+     *
+     * @param integer $batchSize the batch size in number of record IDs.
+     *     The last batch may have less record IDs. For example, if you had 500
+     *     record IDs and specified a batch size of 200, the first 2 batches would have
+     *     200 record IDs, and the last batch would have 100.
+     * @param array $filterLogic logic used to restrict the records retrieved, e.g.,
+     *     "[last_name] = 'Smith'". This could be used for batch processing a subset
+     *     of the records.
+     * @param $recordIdFieldName the name of the record ID field. Specifying this is not
+     *     necessary, but will speed things up, because it will eliminate the need for
+     *     this method to call the REDCap API to retrieve the value.
+     * @return array an array or record ID arrays, where each record ID array
+     *     is considered to be a batch. Each batch can be used as the value
+     *     for the records IDs parameter for an export records method.
+     */
+    public function getRecordIdBatches($batchSize = null, $filterLogic = null, $recordIdFieldName = null)
+    {
+        $recordIdBatches = array();
+        
+        #-----------------------------------
+        # Check arguments
+        #-----------------------------------
+        if (!isset($batchSize)) {
+            $message = 'The number of batches was not specified.';
+            $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+        } elseif (!is_int($batchSize)) {
+            $message = "The batch size argument has type '".gettype($batchSize).'", '
+                .'but it should have type integer.';
+                $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+        } elseif ($batchSize < 1) {
+            $message = 'The batch size argument is less than 1. It needs to be at least 1.';
+            $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+        } // @codeCoverageIgnore
+        
+        $filterLogic = $this->processFilterLogicArgument($filterLogic);
+        
+        if (!isset($recordIdFieldName)) {
+            $recordIdFieldName = $this->getRecordIdFieldName();
+        }
+        
+        $records = $this->exportRecordsAp(
+            ['fields' => [$recordIdFieldName], 'filterLogic' => $filterLogic]
+        );
+        $recordIds = array_column($records, $recordIdFieldName);
+        $recordIds = array_unique($recordIds);  # Remove duplicate record IDs
+        
+        $numberOfRecordIds = count($recordIds);
+        
+        $position = 0;
+        for ($position = 0; $position < $numberOfRecordIds; $position += $batchSize) {
+            $recordIdBatch = array();
+            $recordIdBatch = array_slice($recordIds, $position, $batchSize);
+            array_push($recordIdBatches, $recordIdBatch);
+        }
+        
+        return $recordIdBatches;
+    }
+    
+    
+    
+    /**
+     * Gets the record ID field name for the project.
+     *
+     * @return string the field name of the record ID field of the project.
+     */
+    public function getRecordIdFieldName()
+    {
+        $metadata = $this->exportMetaData();
+        $recordIdFieldName = $metadata[0]['field_name'];
+        return $recordIdFieldName;
+    }
+
+    /**
+     * Gets the API token for the project.
+     *
+     * @return string the API token for the project.
+     */
+    public function getApiToken()
+    {
+        return $this->apiToken;
+    }
+    
+    
+    /**
+     * Returns the underlying REDCap API connection being used by the project.
+     * This can be used to make calls to the REDCap API, possibly to access functionality
+     * not supported by PHPCap.
+     *
+     * @return RedCapApiConnectionInterface the underlying REDCap API connection being
+     *         used by the project.
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+    
+    /**
+     * Sets the connection used for calling the REDCap API.
+     *
+     * @param RedCapApiConnectionInterface $connection the connection to use
+     *     for calls to the REDCap API.
+     */
+    public function setConnection($connection)
+    {
+        $this->connection = $this->processConnectionArgument($connection);
+    }
+    
+    /**
+     * Gets the error handler.
+     *
+     * @return ErrorHandlerInterface the error handler being used.
+     */
+    public function getErrorHandler()
+    {
+        return $this->errorHandler;
+    }
+    
+    /**
+     * Sets the error handler used by the project.
+     *
+     * @param ErrorHandlerInterface $errorHandler the error handler to use.
+     */
+    public function setErrorHandler($errorHandler)
+    {
+        $this->errorHandler = $this->processErrorHandlerArgument($errorHandler);
+    }
+
+
+    protected function processAllRecordsArgument($allRecords)
+    {
+        if (!isset($allRecords)) {
+            ;  // That's OK
+        } elseif (!is_bool($allRecords)) {
+            $message = 'The allRecords argument has type "'.gettype($allRecords).
+            '", but it should be a boolean (true/false).';
+            $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+        } elseif ($allRecords !== true) {
+            $allRecords = null; // need to reset to null, because ANY (non-null) value
+                                // will cause the REDCap API to return all records
+        }
+        
+        return $allRecords;
+    }
+
+    protected function processApiTokenArgument($apiToken)
+    {
+        if (!isset($apiToken)) {
+            $message = 'The REDCap API token specified for the project was null or blank.';
+            $code    =  ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } elseif (gettype($apiToken) !== 'string') {
+            $message = 'The REDCap API token provided should be a string, but has type: '
+                .gettype($apiToken);
+            $code =  ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } elseif (!ctype_xdigit($apiToken)) {   // ctype_xdigit - check token for hexidecimal
+            $message = 'The REDCap API token has an invalid format.'
+                .' It should only contain numbers and the letters A, B, C, D, E and F.';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } elseif (strlen($apiToken) != 32) { # Note: super tokens are not valid for project methods
+            $message = 'The REDCap API token has an invalid format.'
+                .' It has a length of '.strlen($apiToken).' characters, but should have a length of'
+                .' 32.';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        return $apiToken;
+    }
+    
+    protected function processApiUrlArgument($apiUrl)
+    {
+        # Note: standard PHP URL validation will fail for non-ASCII URLs (so it was not used)
+        if (!isset($apiUrl)) {
+            $message = 'The REDCap API URL specified for the project was null or blank.';
+            $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } elseif (gettype($apiUrl) !== 'string') {
+            $message = 'The REDCap API URL provided ('.$apiUrl.') should be a string, but has type: '
+                . gettype($apiUrl);
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        return $apiUrl;
+    }
+    
+    
+    protected function processArmArgument($arm)
+    {
+        if (!isset($arm)) {
+            ;  // That's OK
+        } elseif (is_string($arm)) {
+            if (! preg_match('/^[0-9]+$/', $arm)) {
+                $this->errorHandler->throwException(
+                    'Arm number "' . $arm . '" is non-numeric string.',
+                    ErrorHandlerInterface::INVALID_ARGUMENT
+                );
+            } // @codeCoverageIgnore
+        } elseif (is_int($arm)) {
+            if ($arm < 0) {
+                $this->errorHandler->throwException(
+                    'Arm number "' . $arm . '" is a negative integer.',
+                    ErrorHandlerInterface::INVALID_ARGUMENT
+                );
+            } // @codeCoverageIgnore
+        } else {
+            $message = 'The arm argument has type "'.gettype($arm)
+                .'"; it should be an integer or a (numeric) string.';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        
+        return $arm;
+    }
+    
+    protected function processArmsArgument($arms, $required = false)
+    {
+        if (!isset($arms)) {
+            if ($required === true) {
+                $this->errorHandler->throwException(
+                    'The arms argument was not set.',
+                    ErrorHandlerInterface::INVALID_ARGUMENT
+                );
+            } // @codeCoverageIgnore
+            $arms = array();
+        } else {
+            if (!is_array($arms)) {
+                $this->errorHandler->throwException(
+                    'The arms argument has invalid type "'.gettype($arms).'"; it should be an array.',
+                    ErrorHandlerInterface::INVALID_ARGUMENT
+                );
+            } elseif ($required === true && count($arms) < 1) {
+                $this->errorHandler->throwException(
+                    'No arms were specified in the arms argument; at least one must be specified.',
+                    ErrorHandlerInterface::INVALID_ARGUMENT
+                );
+            } // @codeCoverageIgnore
+        }
+        
+        foreach ($arms as $arm) {
+            if (is_string($arm)) {
+                if (! preg_match('/^[0-9]+$/', $arm)) {
+                    $this->errorHandler->throwException(
+                        'Arm number "' . $arm . '" is non-numeric string.',
+                        ErrorHandlerInterface::INVALID_ARGUMENT
+                    );
+                } // @codeCoverageIgnore
+            } elseif (is_int($arm)) {
+                if ($arm < 0) {
+                    $this->errorHandler->throwException(
+                        'Arm number "' . $arm . '" is a negative integer.',
+                        ErrorHandlerInterface::INVALID_ARGUMENT
+                    );
+                } // @codeCoverageIgnore
+            } else {
+                $message = 'An arm was found in the arms array that has type "'.gettype($arm).
+                '"; it should be an integer or a (numeric) string.';
+                $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+            } // @codeCoverageIgnore
+        }
+        
+        return $arms;
+    }
+    
+    protected function processCaCertificateFileArgument($caCertificateFile)
+    {
+        if (isset($caCertificateFile) && gettype($caCertificateFile) !== 'string') {
+            $message = 'The value for $sslVerify must be a string, but has type: '
+                .gettype($caCertificateFile);
+            $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        return $caCertificateFile;
+    }
+    
+    protected function processConnectionArgument($connection)
+    {
+        if (!($connection instanceof RedCapApiConnectionInterface)) {
+            $message = 'The connection argument is not valid, because it doesn\'t implement '
+                .RedCapApiConnectionInterface::class.'.';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        return $connection;
+    }
+    
+    protected function processDateFormatArgument($dateFormat)
+    {
+        if (!isset($dateFormat)) {
+            $dateFormat = 'YMD';
+        } else {
+            if (gettype($dateFormat) === 'string') {
+                $dateFormat = strtoupper($dateFormat);
+            }
+            
+            $legalDateFormats = ['MDY', 'DMY', 'YMD'];
+            if (!in_array($dateFormat, $legalDateFormats)) {
+                $message = 'Invalid date format "'.$dateFormat.'" specified.'
+                    .' The date format should be one of the following: "'
+                    .implode('", "', $legalDateFormats).'".';
+                    $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        
+        return $dateFormat;
+    }
+    
+    protected function processErrorHandlerArgument($errorHandler)
+    {
+        if (!($errorHandler instanceof ErrorHandlerInterface)) {
+            $message = 'The error handler argument is not valid, because it doesn\'t implement '
+                .ErrorHandlerInterface::class.'.';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        return $errorHandler;
+    }
+    
+    protected function processEventArgument($event)
+    {
+        if (!isset($event)) {
+            ; // This might be OK
+        } elseif (gettype($event) !== 'string') {
+            $message = 'Event has type "'.gettype($event).'", but should be a string.';
+            $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+        } // @codeCoverageIgnore
+        return $event;
+    }
+    
+    protected function processEventsArgument($events, $required = false)
+    {
+        if (!isset($events)) {
+            if ($required === true) {
+                $message = 'The events argument was not set.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+            $events = array();
+        } else {
+            if (!is_array($events)) {
+                $message = 'The events argument has invalid type "'.gettype($events)
+                    .'"; it should be an array.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } elseif ($required === true && count($events) < 1) {
+                $message = 'No events were specified in the events argument;'
+                    .' at least one must be specified.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } else { // @codeCoverageIgnore
+                foreach ($events as $event) {
+                    $type = gettype($event);
+                    if (strcmp($type, 'string') !== 0) {
+                        $message = 'An event with type "'.$type.'" was found in the events array.'.
+                            ' Events should be strings.';
+                        $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                        $this->errorHandler->throwException($message, $code);
+                    } // @codeCoverageIgnore
+                }
+            }
+        }
+        
+        return $events;
+    }
+    
+    
+    protected function processExportCheckboxLabelArgument($exportCheckboxLabel)
+    {
+        if ($exportCheckboxLabel == null) {
+            $exportCheckboxLabel = false;
+        } else {
+            if (gettype($exportCheckboxLabel) !== 'boolean') {
+                $this->errorHandler->throwException(
+                    'Invalid type for exportCheckboxLabel. It should be a boolean (true or false),'
+                    .' but has type: '.gettype($exportCheckboxLabel).'.',
+                    ErrorHandlerInterface::INVALID_ARGUMENT
+                );
+            } // @codeCoverageIgnore
+        }
+        return $exportCheckboxLabel;
+    }
+    
+    protected function processExportDataAccessGroupsArgument($exportDataAccessGroups)
+    {
+        if ($exportDataAccessGroups == null) {
+            $exportDataAccessGroups = false;
+        } else {
+            if (gettype($exportDataAccessGroups) !== 'boolean') {
+                $message = 'Invalid type for exportDataAccessGroups.'
+                    .' It should be a boolean (true or false),'
+                    .' but has type: '.gettype($exportDataAccessGroups).'.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $exportDataAccessGroups;
+    }
+    
+    protected function processExportFilesArgument($exportFiles)
+    {
+        if ($exportFiles== null) {
+            $exportFiles= false;
+        } else {
+            if (gettype($exportFiles) !== 'boolean') {
+                $message = 'Invalid type for exportFiles. It should be a boolean (true or false),'
+                    .' but has type: '.gettype($exportFiles).'.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $exportFiles;
+    }
+    
+    /**
+     * Processes an export result from the REDCap API.
+     *
+     * @param string $result
+     * @param string $format
+     * @throws PhpCapException
+     */
+    protected function processExportResult(& $result, $format)
+    {
+        if ($format == 'php') {
+            $phpResult = json_decode($result, true); // true => return as array instead of object
+                
+            $jsonError = json_last_error();
+                
+            switch ($jsonError) {
+                case JSON_ERROR_NONE:
+                    $result = $phpResult;
+                    break;
+                default:
+                    $message =  "JSON error (" . $jsonError . ") \"" . json_last_error_msg()
+                        ."\" in REDCap API output."
+                        ."\nThe first 1,000 characters of output returned from REDCap are:\n"
+                        .substr($result, 0, 1000);
+                    $code = ErrorHandlerInterface::JSON_ERROR;
+                    $this->errorHandler->throwException($message, $code);
+                    break; // @codeCoverageIgnore
+            }
+                
+            if (array_key_exists('error', $result)) {
+                $this->errorHandler->throwException($result ['error'], ErrorHandlerInterface::REDCAP_API_ERROR);
+            } // @codeCoverageIgnore
+        } else {
+            // If this is a format other than 'php', look for a JSON error, because
+            // all formats return errors as JSON
+            $matches = array();
+            $hasMatch = preg_match('/^[\s]*{"error":"([^"]+)"}[\s]*$/', $result, $matches);
+            if ($hasMatch === 1) {
+                // note: $matches[0] is the complete string that matched
+                //       $matches[1] is just the error message part
+                $message = $matches[1];
+                $this->errorHandler->throwException($message, ErrorHandlerInterface::REDCAP_API_ERROR);
+            } // @codeCoverageIgnore
+        }
+        
+        return $result;
+    }
+    
+    protected function processExportSurveyFieldsArgument($exportSurveyFields)
+    {
+        if ($exportSurveyFields == null) {
+            $exportSurveyFields = false;
+        } else {
+            if (gettype($exportSurveyFields) !== 'boolean') {
+                $message =  'Invalid type for exportSurveyFields.'
+                    .' It should be a boolean (true or false),'
+                    .' but has type: '.gettype($exportSurveyFields).'.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $exportSurveyFields;
+    }
+    
+    protected function processFieldArgument($field, $required = true)
+    {
+        if (!isset($field)) {
+            if ($required) {
+                $message = 'No field was specified.';
+                $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+            }  // @codeCoverageIgnore
+            // else OK
+        } elseif (gettype($field) !== 'string') {
+            $message = 'Field has type "'.gettype($field).'", but should be a string.';
+            $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+        } // @codeCoverageIgnore
+        return $field;
+    }
+    
+    
+    protected function processFieldsArgument($fields)
+    {
+        if (!isset($fields)) {
+            $fields = array();
+        } else {
+            if (!is_array($fields)) {
+                $message = 'Argument "fields" has the wrong type; it should be an array.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } else { // @codeCoverageIgnore
+                foreach ($fields as $field) {
+                    $type = gettype($field);
+                    if (strcmp($type, 'string') !== 0) {
+                        $message = 'A field with type "'.$type.'" was found in the fields array.'.
+                            ' Fields should be strings.';
+                        $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                        $this->errorHandler->throwException($message, $code);
+                    } // @codeCoverageIgnore
+                }
+            }
+        }
+        
+        return $fields;
+    }
+
+    protected function processFileArgument($file)
+    {
+        if (isset($file)) {
+            if (gettype($file) !== 'string') {
+                $message = "Argument 'file' has type '".gettype($file)."', but should be a string.";
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $file;
+    }
+    
+    protected function processFilenameArgument($filename)
+    {
+        if (!isset($filename)) {
+            $message = 'No filename specified.';
+            $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } elseif (gettype($filename) !== 'string') {
+            $message = "Argument 'filename' has type '".gettype($filename)."', but should be a string.";
+            $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } elseif (!file_exists($filename)) {
+            $message = 'The input file "'.$filename.'" could not be found.';
+            $code    = ErrorHandlerInterface::INPUT_FILE_NOT_FOUND;
+            $this->errorHandler->throwException($message, $code);
+        } elseif (!is_readable($filename)) {
+            $message = 'The input file "'.$filename.'" was unreadable.';
+            $code    = ErrorHandlerInterface::INPUT_FILE_UNREADABLE;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        
+        $basename = pathinfo($filename, PATHINFO_BASENAME);
+        $curlFile = curl_file_create($filename, 'text/plain', $basename);
+        
+        return $curlFile;
+    }
+    
+    
+    protected function processFilterLogicArgument($filterLogic)
+    {
+        if ($filterLogic == null) {
+            $filterLogic = '';
+        } else {
+            if (gettype($filterLogic) !== 'string') {
+                $message = 'Invalid type for filterLogic. It should be a string, but has type "'
+                    .gettype($filterLogic).'".';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $filterLogic;
+    }
+    
+    
+    protected function processFormArgument($form, $required = false)
+    {
+        if (!isset($form)) {
+            if ($required === true) {
+                $message = 'The form argument was not set.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+            $form = '';
+        } elseif (!is_string($form)) {
+            $message = 'The form argument has invalid type "'.gettype($form)
+                .'"; it should be a string.';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        
+        return $form;
+    }
+    
+    protected function processFormatArgument(& $format, $legalFormats)
+    {
+        if (!isset($format)) {
+            $format = 'php';
+        }
+        
+        if (gettype($format) !== 'string') {
+            $message = 'The format specified has type "'.gettype($format)
+                .'", but it should be a string.';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        
+        $format = strtolower(trim($format));
+        
+        if (!in_array($format, $legalFormats)) {
+            $message = 'Invalid format "'.$format.'" specified.'
+                .' The format should be one of the following: "'.
+                implode('", "', $legalFormats).'".';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        
+        $dataFormat = '';
+        if (strcmp($format, 'php') === 0) {
+            $dataFormat = 'json';
+        } else {
+            $dataFormat = $format;
+        }
+        
+        return $dataFormat;
+    }
+    
+    protected function processFormsArgument($forms)
+    {
+        if (!isset($forms)) {
+            $forms = array();
+        } else {
+            if (!is_array($forms)) {
+                $message = 'The forms argument has invalid type "'.gettype($forms)
+                    .'"; it should be an array.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } else { // @codeCoverageIgnore
+                foreach ($forms as $form) {
+                    $type = gettype($form);
+                    if (strcmp($type, 'string') !== 0) {
+                        $message = 'A form with type "'.$type.'" was found in the forms array.'.
+                            ' Forms should be strings.';
+                        $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+                    } // @codeCoverageIgnore
+                }
+            }
+        }
+        
+        return $forms;
+    }
+
+    protected function processImportDataArgument($data, $dataName, $format)
+    {
+        if (!isset($data)) {
+            $message = "No value specified for required argument '".$dataName."'.";
+            $this->errorHandler->throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+        } elseif ($format === 'php') {
+            if (!is_array($data)) {
+                $message = "Argument '".$dataName."' has type '".gettype($data)."'"
+                    .", but should be an array.";
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+            $data = json_encode($data);
+            
+            $jsonError = json_last_error();
+            
+            switch ($jsonError) {
+                case JSON_ERROR_NONE:
+                    break;
+                default:
+                    $message =  'JSON error ('.$jsonError.') "'. json_last_error_msg().
+                    '"'." while processing argument '".$dataName."'.";
+                    $this->errorHandler->throwException($message, ErrorHandlerInterface::JSON_ERROR);
+                    break; // @codeCoverageIgnore
+            }
+        } else { // All other formats
+            if (gettype($data) !== 'string') {
+                $message = "Argument '".$dataName."' has type '".gettype($data)."'"
+                    .", but should be a string.";
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        
+        return $data;
+    }
+    
+    /**
+     * Checks the result returned from the REDCap API for non-export methods.
+     * PHPCap is set to return errors from REDCap using JSON, so the result
+     * string is checked to see if there is a JSON format error, and if so,
+     * and exception is thrown using the error message returned from the
+     * REDCap API.
+     *
+     * @param string $result a result returned from the REDCap API, which
+     *     should be for a non-export method.
+     */
+    protected function processNonExportResult(& $result)
+    {
+        $matches = array();
+        $hasMatch = preg_match('/^[\s]*{"error":\s*"([^"]+)"}[\s]*$/', $result, $matches);
+        if ($hasMatch === 1) {
+            // note: $matches[0] is the complete string that matched
+            //       $matches[1] is just the error message part
+            $message = $matches[1];
+            $code    = ErrorHandlerInterface::REDCAP_API_ERROR;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+    }
+    
+    
+    protected function processOverrideArgument($override)
+    {
+        if ($override == null) {
+            $override = false;
+        } else {
+            if (gettype($override) !== 'boolean') {
+                $message = 'Invalid type for override. It should be a boolean (true or false),'
+                    .' but has type: '.gettype($override).'.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        
+        if ($override === true) {
+            $override = 1;
+        } else {
+            $override = 0;
+        }
+        
+        return $override;
+    }
+    
+    protected function processOverwriteBehaviorArgument($overwriteBehavior)
+    {
+        if (!isset($overwriteBehavior)) {
+            $overwriteBehavior = 'normal';
+        } elseif ($overwriteBehavior !== 'normal' && $overwriteBehavior !== 'overwrite') {
+            $message = 'Invalid value "'.$overwriteBehavior.'" specified for overwriteBehavior.'.
+                " Valid values are 'normal' and 'overwrite'.";
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        
+        return $overwriteBehavior;
+    }
+    
+    protected function processRawOrLabelArgument($rawOrLabel)
+    {
+        if (!isset($rawOrLabel)) {
+            $rawOrLabel = 'raw';
+        } else {
+            if ($rawOrLabel !== 'raw' && $rawOrLabel !== 'label') {
+                $message =   'Invalid value "'.$rawOrLabel.'" specified for rawOrLabel.'
+                    ." Valid values are 'raw' and 'label'.";
+                    $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $rawOrLabel;
+    }
+    
+    
+    protected function processRawOrLabelHeadersArgument($rawOrLabelHeaders)
+    {
+        if (!isset($rawOrLabelHeaders)) {
+            $rawOrLabelHeaders = 'raw';
+        } else {
+            if ($rawOrLabelHeaders !== 'raw' && $rawOrLabelHeaders !== 'label') {
+                $message = 'Invalid value "'.$rawOrLabelHeaders.'" specified for rawOrLabelHeaders.'
+                    ." Valid values are 'raw' and 'label'.";
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $rawOrLabelHeaders;
+    }
+    
+    
+    protected function processRecordIdArgument($recordId, $required = true)
+    {
+        if (!isset($recordId)) {
+            if ($required) {
+                $message = 'No record ID specified.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        } elseif (!is_string($recordId) && !is_int($recordId)) {
+            $message = 'The record ID has type "'.gettype($recordId)
+                .'", but it should be a string or integer.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        }  // @codeCoverageIgnore
+        
+        return $recordId;
+    }
+    
+    protected function processRecordIdsArgument($recordIds)
+    {
+        if (!isset($recordIds)) {
+            $recordIds = array();
+        } else {
+            if (!is_array($recordIds)) {
+                $message = 'The record IDs argument has type "'.gettype($recordIds)
+                    .'"; it should be an array.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } else { // @codeCoverageIgnore
+                foreach ($recordIds as $recordId) {
+                    $type = gettype($recordId);
+                    if (strcmp($type, 'integer') !== 0 && strcmp($type, 'string') !== 0) {
+                        $message = 'A record ID with type "'.$type.'" was found.'
+                            .' Record IDs should be integers or strings.';
+                            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+                        $this->errorHandler->throwException($message, $code);
+                    } // @codeCoverageIgnore
+                }
+            }
+        }
+        return $recordIds;
+    }
+    
+
+    
+    protected function processRepeatInstanceArgument($repeatInstance)
+    {
+        if (!isset($repeatInstance)) {
+            ; // Might be OK
+        } elseif (!is_int($repeatInstance)) {
+            $message = 'The repeat instance has type "'.gettype($repeatInstance)
+                .'", but it should be an integer.';
+            $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        
+        return $repeatInstance;
+    }
+    
+
+    protected function processReportIdArgument($reportId)
+    {
+        if (!isset($reportId)) {
+            $message = 'No report ID specified for export.';
+            $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+
+        if (is_string($reportId)) {
+            if (!preg_match('/^[0-9]+$/', $reportId)) {
+                $message = 'Report ID "'.$reportId.'" is non-numeric string.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        } elseif (is_int($reportId)) {
+            if ($reportId < 0) {
+                $message = 'Report ID "'.$reportId.'" is a negative integer.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        } else {
+            $message = 'The report ID has type "'.gettype($reportId)
+                .'", but it should be an integer or a (numeric) string.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        
+        return $reportId;
+    }
+    
+
+    protected function processReturnContentArgument($returnContent)
+    {
+        if (!isset($returnContent)) {
+            $overwriteBehavior = 'count';
+        } elseif ($returnContent !== 'count' && $returnContent !== 'ids') {
+            $message = 'Invalid value "'.$returnContent.'" specified for overwriteBehavior.'.
+                    " Valid values are 'count' and 'ids'.";
+            $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+    
+        return $returnContent;
+    }
+    
+    protected function processReturnMetadataOnlyArgument($returnMetadataOnly)
+    {
+        if ($returnMetadataOnly== null) {
+            $returnMetadataOnly= false;
+        } else {
+            if (gettype($returnMetadataOnly) !== 'boolean') {
+                $message = 'Invalid type for returnMetadataOnly.'
+                    .' It should be a boolean (true or false),'
+                    .' but has type: '.gettype($returnMetadataOnly).'.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $returnMetadataOnly;
+    }
+    
+    protected function processSslVerifyArgument($sslVerify)
+    {
+        if (isset($sslVerify) && gettype($sslVerify) !== 'boolean') {
+            $message = 'The value for $sslVerify must be a boolean (true/false), but has type: '
+                .gettype($sslVerify);
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        return $sslVerify;
+    }
+    
+    
+    protected function processTypeArgument($type)
+    {
+        if (!isset($type)) {
+            $type = 'flat';
+        }
+        $type = strtolower(trim($type));
+        
+        if (strcmp($type, 'flat') !== 0 && strcmp($type, 'eav') !== 0) {
+            $message = "Invalid type '".$type."' specified. Type should be either 'flat' or 'eav'";
+            $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } // @codeCoverageIgnore
+        return $type;
+    }
+}

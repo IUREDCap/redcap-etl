@@ -1,0 +1,64 @@
+/* CSS for PHPCap non-API documentation */
+
+blockquote {
+	padding: .6em;
+	background: #fcfcf7;
+	border-left: 8px solid #ecede5;
+}
+
+span#overview {
+	padding-bottom: 1.0em;
+	display: block;
+}
+
+h3 {    /* Was coming out as the same size or bigger than h2 */
+	font-size: 134%;
+	font-weight: normal;
+	margin-bottom: 2px;
+}
+
+#content .description {
+	background: #ecede5;
+	padding: 1px 8px;
+	margin: 1.2em 0;
+}
+
+#content .description pre {
+	margin: .5em 0;
+}
+
+li img {
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+
+/* Try to match summary class */
+table {
+	border: 1px solid #cccccc;
+	border-collapse: collapse;
+	font-size: 1em;
+	width: 100%;
+	margin: 1.2em 0 2.4em;
+}
+
+th {
+	border: 1px solid #cccccc;
+    background-color: #ecede5;	
+}
+
+td {
+	border: 1px solid #cccccc;
+	margin: 0;
+	padding: 3px 10px;
+	font-size: 1em;
+	vertical-align: top;
+}
+
+ul.intrapage {
+	padding-left: 20px;
+}
+
+#menu ul.intraPage a {
+	font-size: 90%;
+	font-weight: normal;
+}

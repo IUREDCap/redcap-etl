@@ -1,0 +1,49 @@
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
+         bootstrap="vendor/autoload.php">
+  <testsuites>
+
+    <!--
+        Unit Tests
+    -->
+    <testsuite name="unit">
+      <file>tests/unit/EtlErrorHandlerTest.php</file>
+      <file>tests/unit/EtlExceptionTest.php</file>
+      <file>tests/unit/Logger2Test.php</file>
+      <file>tests/unit/RedCapDetHandlerTest.php</file>
+
+      <file>tests/unit/Schema/FieldTest.php</file>
+      <file>tests/unit/Schema/FieldTypeTest.php</file>
+      <file>tests/unit/Schema/RowTest.php</file>
+      <file>tests/unit/Schema/SchemaTest.php</file>
+      <file>tests/unit/Schema/TableTest.php</file>
+    </testsuite>
+
+    <!--
+        Integration Tests
+        - tests integration of REDCap ETL classes
+        - require a REDCap instance and test configuration
+    -->
+    <testsuite name="integration">
+      <file>tests/integration/BasicDemographyTest.php</file>
+    </testsuite>
+
+    <!--
+        System Tests
+        - test a REDCap ETL installed system
+        - require a REDCap instance,  test configuration,
+          and installation of the REDCap ETL software on
+          a server
+    -->
+    <testsuite name="system">
+      <file>tests/system/TablesTest.php</file>
+    </testsuite>
+
+  </testsuites>
+  <filter>
+    <whitelist>
+      <directory suffix=".php">src</directory>
+    </whitelist>
+  </filter>
+</phpunit>
+

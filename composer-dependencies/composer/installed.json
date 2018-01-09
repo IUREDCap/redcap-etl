@@ -1,0 +1,46 @@
+[
+    {
+        "name": "phpcap/phpcap",
+        "version": "0.3.0",
+        "version_normalized": "0.3.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/aarenson/PHPCap.git",
+            "reference": "cc76d0f939262d927f52c4b3e9cdd916e67f5ad4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/aarenson/PHPCap/zipball/cc76d0f939262d927f52c4b3e9cdd916e67f5ad4",
+            "reference": "cc76d0f939262d927f52c4b3e9cdd916e67f5ad4",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "ext-openssl": "*",
+            "php": ">=5.6.0"
+        },
+        "require-dev": {
+            "apigen/apigen": "v4.1.2",
+            "erusev/parsedown": "1.6.2",
+            "kzykhys/php-csv-parser": "1.4.1",
+            "phpunit/phpunit": "5.7.15",
+            "squizlabs/php_codesniffer": "2.8.1"
+        },
+        "time": "2017-08-22 13:11:53",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "IU\\PHPCap\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "description": "PHP API for REDCap",
+        "keywords": [
+            "redcap"
+        ]
+    }
+]
