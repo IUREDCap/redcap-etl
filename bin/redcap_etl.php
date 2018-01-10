@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 #-------------------------------------------------------------
@@ -13,7 +14,7 @@
 #
 #-------------------------------------------------------------
 
-require(__DIR__.'/../vendor/autoload.php');
+require(__DIR__.'/../dependencies/autoload.php');
 
 use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\EtlException;

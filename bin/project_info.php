@@ -1,6 +1,7 @@
+#!/usr/bin/env php
 <?php
 
-require(__DIR__.'/../vendor/autoload.php');
+require(__DIR__.'/../dependencies/autoload.php');
 
 #-----------------------------------------------------------
 # Script for getting information about the REDCap projects
