@@ -335,8 +335,8 @@ class RedCapEtl
         #----------------------------------------------------------------
         # $startDataProject = microtime(true);
         $dataToken = '';
-        if (array_key_exists('token_data', $configuration)) {
-            $dataToken = $configuration['token_data'];
+        if (array_key_exists('data_source_api_token', $configuration)) {
+            $dataToken = $configuration['data_source_api_token'];
         } else {
             $message = 'No token_data field (with the REDCap API token for the data project)'
                 .' was found in the configuration project.';
@@ -357,11 +357,21 @@ class RedCapEtl
         # Get the logging project (where log records are written to)
         #------------------------------------------------------------
         # $startLog = microtime(true);
-        $this->logProject  = $redCap->getProject($configuration['token_log']);
-        $this->logProject->setApp($this->logger->getApp());
+        if (array_key_exists('log_project_api_token', $configuration)) {
+            $logToken = $configuration['log_project_api_token'];
+            if ($logToken == null || $logToken.trim() === '') {
+                $this->logProject = null;
+            } else {
+                $this->logProject  = $redCap->getProject($configuration['log_project_api_token']);
+                $this->logProject->setApp($this->logger->getApp());
+            }
+        } else {
+            $this->logProject = null;
+        }
 
         // Set the logging project
         $this->logger->setLogProject($this->logProject);
+
 
         // Record whether or not the actual ETL should be run. This is
         // used by the DET handler program, but not the batch program
@@ -383,37 +393,26 @@ class RedCapEtl
         #---------------------------------------------
         $this->log('REDCap ETL version '.Version::RELEASE_NUMBER);
 
-        #------------------------------------------
-        # Get file for Schema Map (if any)
-        #------------------------------------------
-        try {
-            $results = $this->configProject->exportFile($configuration['record_id'], 'schema_map_file');
-        } catch (PhpCapException $exception) {
-            # An exception here may just indicate that there is no schema map file,
-            # which may be OK, because the schema map may be defined in the
-            # schema map text field
-            $schemaMapFileError = $exception->getMessage();
-            $results = null;
-        }
 
-        
-        #-----------------------------------------------------------
-        # Use the schema map file if it was found and its contents
-        # are a string. Otherwise, us the 'schema_map' field
-        # that was set in the configuration project.
-        #-----------------------------------------------------------
-        if (isset($results) && is_string($results)) {
+        #-----------------------------------------------
+        # Get the Transformation Rules
+        #-----------------------------------------------
+        $transformRulesSource = $configuration['transform_rules_source'];
+        if ($transformRulesSource === 2) {
+            $results = $this->configProject->exportFile(
+                $configuration['record_id'],
+                'transform_rules_file'
+            );
             $this->schema_map = $results;
         } else {
-            // Otherwise, get the schema map from the input box
-            $this->schema_map = trim($configuration['schema_map']);
-            if ($this->schema_map == '') {
-                $error = 'No schema map file was found, and the schema map text field is empty.'
+            $this->schema_map = $configuration['transform_rules_text'];
+        }
+
+        if ($this->schema_map == '') {
+            $error = 'No schema map file was found, and the schema map text field is empty.'
                     .' Either a schema map file needs to be uploaded, or the schema map'
-                    .' text field needs to be set.'
-                    .' Schema map file upload message: '.$schemMapFileError;
-                $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
-            }
+                    .' text field needs to be set.';
+            $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
         }
 
         # $endSchemaMap = microtime(true);
@@ -477,10 +476,10 @@ class RedCapEtl
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
         #---------------------------------------------------
-        if (array_key_exists('dbcon', $configuration)) {
+        if (array_key_exists('db_connection', $configuration)) {
             $dbconfactory = new DBConnectFactory();
             $this->dbcon = $dbconfactory->createDbcon(
-                $configuration['dbcon'],
+                $configuration['db_connection'],
                 $this->tablePrefix,
                 $this->labelViewSuffix
             );
