@@ -39,20 +39,27 @@ try {
 
     $records = $configProject->exportRecords();
 
-    $logToken = $records[0]['token_log'];
-    $logProject = new RedCapProject($apiUrl, $logToken);
-    $logInfo  = $logProject->exportProjectInfo();
-    $logId    = $logInfo['project_id'];
-    $logTitle = $logInfo['project_title'];
+    $logToken = $records[0]['log_project_api_token'];
+    if ($logToken !== '') {
+        $logProject = new RedCapProject($apiUrl, $logToken);
+        $logInfo  = $logProject->exportProjectInfo();
+        $logId    = $logInfo['project_id'];
+        $logTitle = $logInfo['project_title'];
+    }
 
-    $dataToken = $records[0]['token_data'];
+    $dataToken = $records[0]['data_source_api_token'];
     $dataProject = new RedCapProject($apiUrl, $dataToken);
     $dataInfo  = $dataProject->exportProjectInfo();
     $dataId    = $dataInfo['project_id'];
     $dataTitle = $dataInfo['project_title'];
 
     print "Config Project: [".$configId."] ".$configTitle."\n";
-    print "Log Project:    [".$logId."] ".$logTitle."\n";
+    if ($logToken === '') {
+        print "Log Project:    not set\n";
+    }
+    else {
+        print "Log Project:    [".$logId."] ".$logTitle."\n";
+    }
     print "Data Project:   [".$dataId."] ".$dataTitle."\n";
 } catch (Exception $exception) {
     print "Error: ".$exception->getMessage()."\n";
