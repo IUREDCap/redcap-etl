@@ -9,14 +9,28 @@ class Configuration
 {
     const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
 
-    const DATA_SOURCE_TOKEN_KEY = 'data_source_api_token';
-
-    const LOG_FILE_PROPERTY_NAME = 'log_file';
+    const ADMIN_EMAIL_PROPERTY            = 'admin_email';
+    const ALLOWED_SERVERS_PROPERTY        = 'allowed_servers';
+    const API_TOKEN_PROPERTY              = 'api_token';
+    const BATCH_SIZE_PROPERTY             = 'batch_size';
+    const DATA_SOURCE_API_TOKEN_PROPERTY  = 'data_source_api_token';
+    const DB_CONNECTION_PROPERTY          = 'db_connection';
+    const EMAIL_SUBJECT_PROPERTY          = 'email_subject';
+    const FROM_EMAIL_ADDRESS_PROPERTY     = 'from_email_address';
+    const INITIAL_EMAIL_ADDRESS_PROPERTY  = 'initial_email_address';
+    const LABEL_VIEW_SUFFIX_PROPERTY      = 'label_view_suffix';
+    const LOG_FILE_PROPERTY               = 'log_file';
+    const LOG_PROJECT_API_TOKEN_PROPERTY  = 'log_project_api_token';
+    const REDCAP_API_URL_PROPERTY         = 'redcap_api_url';
+    const TABLE_PREFIX_PROPERTY           = 'table_prefix';
+    const TRANSFORM_RULES_FILE_PROPERTY   = 'transform_rules_file';
+    const TRANSFORM_RULES_SOURCE_PROPERTY = 'transform_rules_source';
+    const TRANSFORM_RULES_TEXT_PROPERTY   = 'transform_rules_text';
+    const TRIGGER_ETL_PROPERTY            = 'trigger_etl';
 
     // Properties file
     const PROPERTIES_FILE = 'redcap_etl.properties';
 
-    const ALLOWED_SERVERS_FIELD = 'allowed_servers';
 
     private $logger;
     private $errorHandler;
@@ -29,8 +43,10 @@ class Configuration
     private $dbConnection;
     private $labelViewSuffix;
     private $logProjectApiToken;
+    private $projectId;
     private $redcapApiUrl;
     private $tablePrefix;
+    private $transformationRules;
     private $triggerEtl;
 
     private $emailSubject;
@@ -81,8 +97,8 @@ class Configuration
         # will start to log to the file
         #-----------------------------------------------------------------------------
         $this->logFile = null;
-        if (array_key_exists('log_file', $properties)) {
-            $this->logFile = $properties['log_file'];
+        if (array_key_exists(Configuration::LOG_FILE_PROPERTY, $properties)) {
+            $this->logFile = $properties[Configuration::LOG_FILE_PROPERTY];
             $extension = pathinfo($this->logFile, PATHINFO_EXTENSION);
             if ($extension === '') {
                 $this->logFile = preg_replace("/$extension$/", '.'.$this->app, $this->logFile);
@@ -95,23 +111,23 @@ class Configuration
 
 
         $this->fromEmailAddress = '';
-        if (array_key_exists('from_email_address', $properties)) {
-            $this->fromEmailAddress = $properties['from_email_address'];
+        if (array_key_exists(Configuration::FROM_EMAIL_ADDRESS_PROPERTY, $properties)) {
+            $this->fromEmailAddress = $properties[Configuration::FROM_EMAIL_ADDRESS_PROPERTY];
         }
 
         $this->emailSubject = Configuration::DEFAULT_EMAIL_SUBJECT;
-        if (array_key_exists('email_subject', $properties)) {
-            $this->emailSubject = $properties['email_subject'];
+        if (array_key_exists(Configuration::EMAIL_SUBJECT_PROPERTY, $properties)) {
+            $this->emailSubject = $properties[Configuration::EMAIL_SUBJECT_PROPERTY];
         }
 
         #------------------------------------------------------
         # Set email logging information
         #------------------------------------------------------
-        if (isset($this->fromEmailAddress) && array_key_exists('initial_email_address', $properties)) {
-            $this->adminEmailAddress = $properties['initial_email_address'];
+        if (isset($this->fromEmailAddress) && array_key_exists(Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY, $properties)) {
+            $this->adminEmailAddress = $properties[Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY];
             $this->logger->setLogEmail(
                 $this->fromEmailAddress,
-                $properties['initial_email_address'],
+                $properties[Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY],
                 $this->emailSubject
             );
         }
@@ -120,8 +136,8 @@ class Configuration
         #------------------------------------------------
         # Get the REDCap API URL
         #------------------------------------------------
-        if (array_key_exists('redcap_api_url', $properties)) {
-            $this->redcapApiUrl = $properties['redcap_api_url'];
+        if (array_key_exists(Configuration::REDCAP_API_URL_PROPERTY, $properties)) {
+            $this->redcapApiUrl = $properties[Configuration::REDCAP_API_URL_PROPERTY];
         } else {
             $this->errorHandler->throwException('No REDCap API URL property was defined.', EtlException::INPUT_ERROR);
         }
@@ -129,8 +145,8 @@ class Configuration
         #--------------------------------------------------
         # Get the API token for the configuration project
         #--------------------------------------------------
-        if (array_key_exists('api_token', $properties)) {
-            $configProjectApiToken = $properties['api_token'];
+        if (array_key_exists(Configuration::API_TOKEN_PROPERTY, $properties)) {
+            $configProjectApiToken = $properties[Configuration::API_TOKEN_PROPERTY];
         } else {
             $this->errorHandler->throwException('No API token property was defined.', EtlException::INPUT_ERROR);
         }
@@ -165,64 +181,62 @@ class Configuration
         # if it specified an admin e-mail, replace the notifier
         # sender with this e-mail address.
         #--------------------------------------------------------------
-        if (array_key_exists('admin_email', $configuration)) {
-            $this->adminEmail = $configuration['admin_email'];
-            $this->logger->setLogEmailFrom($configuration['admin_email']);
+        if (array_key_exists(Configuration::ADMIN_EMAIL_PROPERTY, $configuration)) {
+            $this->adminEmail = $configuration[Configuration::ADMIN_EMAIL_PROPERTY];
+            $this->logger->setLogEmailFrom($configuration[Configuration::ADMIN_EMAIL_PROPERTY]);
         }
 
         #------------------------------------------------------
-        # Create a REDCap DET (Data Entry Trigger) Handler,
-        # in case it's needed.
+        # Get project id
         #------------------------------------------------------
-        # $startDet = microtime(true);
         try {
-            $projectId = $this->configProject->exportProjectInfo()['project_id'];
+            $this->projectId = $this->configProject->exportProjectInfo()['project_id'];
         } catch (PhpCapException $exception) {
             $message = "Unable to retrieve project_id.";
             $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
-        $this->allowedServers = $configuration['allowed_servers'];
+        $this->allowedServers = $configuration[Configuration::ALLOWED_SERVERS_PROPERTY];
 
 
         #----------------------------------------------------------------
         # Get the data source project API token
         #----------------------------------------------------------------
         $this->dataSourceApiToken = '';
-        if (array_key_exists('data_source_api_token', $configuration)) {
-            $this->dataSourceApiToken = $configuration['data_source_api_token'];
+        if (array_key_exists(Configuration::DATA_SOURCE_API_TOKEN_PROPERTY,  $configuration)) {
+            $this->dataSourceApiToken = $configuration[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
         } else {
             $message = 'No data source API token was found in the configuration project.';
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR, $exception);
+            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
         }
         
         #------------------------------------------------------------
         # Get the logging project (where log records are written to)
         #------------------------------------------------------------
         # $startLog = microtime(true);
-        if (array_key_exists('log_project_api_token', $configuration)) {
-            $this->logProjectApiToken = $configuration['log_project_api_token'];
+        if (array_key_exists(Configuration::LOG_PROJECT_API_TOKEN_PROPERTY, $configuration)) {
+            $this->logProjectApiToken = $configuration[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
         } else {
             $this->logProjectApiToken = null;
         }
 
         // Record whether or not the actual ETL should be run. This is
         // used by the DET handler program, but not the batch program
-        $this->triggerEtl = $configuration['trigger_etl'];
+        $this->triggerEtl = $configuration[Configuration::TRIGGER_ETL_PROPERTY];
 
         // Determine the batch size to use (how many records to process at once)
         // Batch size is expected to be a positive integer. The Configuration
         // project should enforce that.
-        $this->batchSize = $configuration['batch_size'];
+        $this->batchSize = $configuration[Configuration::BATCH_SIZE_PROPERTY];
 
         #-----------------------------------------------
         # Get the Transformation Rules
         #-----------------------------------------------
-        $transformRulesSource = $configuration['transform_rules_source'];
+        $transformRulesSource = $configuration[Configuration::TRANSFORM_RULES_SOURCE_PROPERTY];
         if ($transformRulesSource === 2) {
             $results = $this->configProject->exportFile(
                 $configuration['record_id'],
-                'transform_rules_file'
+                Configuration::TRANSFORM_RULES_FILE_PROPERTY
             );
             $this->transformationRules = $results;
             if ($this->transformationRules == '') {
@@ -230,7 +244,7 @@ class Configuration
                 $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
             }
         } else {
-            $this->transformationRules = $configuration['transform_rules_text'];
+            $this->transformationRules = $configuration[Configuration::TRANSFORM_RULES_TEXT_PROPERTY];
             if ($this->transformationRules == '') {
                 $error = 'No transformation rules were entered.';
                 $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
@@ -241,16 +255,16 @@ class Configuration
         #----------------------------------------------------------------
         # Get the table prefix (if any)
         #----------------------------------------------------------------
-        if (array_key_exists('table_prefix', $configuration)) {
-            $this->tablePrefix = $configuration['table_prefix'];
+        if (array_key_exists(Configuration::TABLE_PREFIX_PROPERTY, $configuration)) {
+            $this->tablePrefix = $configuration[Configuration::TABLE_PREFIX_PROPERTY];
         }
 
 
         #----------------------------------------------------------------
         # Get the label view suffix (if any)
         #----------------------------------------------------------------
-        if (array_key_exists('label_view_suffix', $configuration)) {
-            $this->labelViewSuffix = $configuration['label_view_suffix'];
+        if (array_key_exists(Configuration::LABEL_VIEW_SUFFIX_PROPERTY, $configuration)) {
+            $this->labelViewSuffix = $configuration[Configuration::LABEL_VIEW_SUFFIX_PROPERTY];
         }
 
 
@@ -258,8 +272,8 @@ class Configuration
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
         #---------------------------------------------------
-        if (array_key_exists('db_connection', $configuration)) {
-            $this->dbConnection = $configuration['db_connection'];
+        if (array_key_exists(Configuration::DB_CONNECTION_PROPERTY, $configuration)) {
+            $this->dbConnection = $configuration[Configuration::DB_CONNECTION_PROPERTY];
         } else {
             $message = 'No database connection was specified in the '
                 . 'configuration project.';
@@ -314,6 +328,11 @@ class Configuration
         return $this->logFile;
     }
 
+    public function getProjectId()
+    {
+        return $this->projectId;
+    }
+
     public function getRedCapApiUrl()
     {
         return $this->redcapApiUrl;
@@ -322,6 +341,11 @@ class Configuration
     public function getTablePrefix()
     {
         return $this->tablePrefix;
+    }
+
+    public function getTransformationRules()
+    {
+        return $this->transformationRules;
     }
 
     public function getTriggerEtl()
