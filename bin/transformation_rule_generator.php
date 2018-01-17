@@ -9,6 +9,7 @@
 require(__DIR__ . '/../dependencies/autoload.php');
 
 use IU\PHPCap\RedCapProject;
+
 if (count($argv) != 2) {
     print "Usage: php $argv[0] <properties-file>\n";
     exit(1);
@@ -52,7 +53,7 @@ try {
                 
                 if ($fieldType === 'checkbox') {
                     $type = 'checkbox';
-                } elseif ($validationType === 'integer' ) { # value may be too large for db int
+                } elseif ($validationType === 'integer') { # value may be too large for db int
                     $type = 'string';
                 } elseif ($fieldType === 'dropdown' || $fieldType === 'radio') {
                     $type = 'int';
@@ -69,9 +70,7 @@ try {
         }
         print "\n";
     }
-
 } catch (Exception $exception) {
     print "Error: ".$exception->getMessage()."\n";
     exit(1);
 }
-
