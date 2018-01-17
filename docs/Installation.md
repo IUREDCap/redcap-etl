@@ -69,7 +69,7 @@ Create a database and database user that will be used as the place to store the 
     GRANT ALL ON `etl_user`.* TO 'etl'@'localhost';
 
 
-### Step 3 - Get the REDCap ETL
+### Step 3 - Get the REDCap ETL Software
 
 Get the code:
     git clone https://github.iu.edu/ABITC/redcap-etl
@@ -102,6 +102,7 @@ In REDCap, create a new project using the "Upload a REDCap project XML file " op
 
 Configuration files need to be stored in the config directory of the REDCap ETL installation.
 
+
 ### Step 7 (Optional) - Set up an E-mail Server
 
 On Ubuntu 16, for example, this is all you need to do:
@@ -117,7 +118,7 @@ For example, to install the Apache web server on Ubuntu 16, use:
 ### Step 9 (Optional) - Set up Scheduled Runs of the ETL Process
 
 There are 3 ways to run REDCap ETL:
-1. Execute the reacap-etl.php command on the server
+1. Execute the **bin/redcap-etl.php** command on the server
 2. Save the "Run" form of the configuration project, with the option to run ETL set
 3. Set up a cron job to run the ETL process at specific recurring times
 
