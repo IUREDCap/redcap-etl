@@ -145,6 +145,8 @@ class RedCapEtl
 
     private $recordIdFieldName;   // The field name for the record ID
                                   // for the data project in REDCap
+
+    private $configuration;
   
 
     /**
@@ -171,6 +173,9 @@ class RedCapEtl
 
         $this->app = $logger->getApp();
 
+        $this->configuration = new Configuration($logger, $sslVerify, $caCertificateFile, $properties, $propertiesFile);
+
+
         #--------------------------------------------------------------------
         # If there isn't a properties array, then read the properties file
         #--------------------------------------------------------------------
@@ -184,42 +189,6 @@ class RedCapEtl
                 $code    = RedCapEtl::PROPERTIES_FILE;
                 $this->errorHandler->throwException($message, $code);
             }
-        }
-
-
-        $this->logFile = null;
-        if (array_key_exists('log_file', $properties)) {
-            $this->logFile = $properties['log_file'];
-            $extension = pathinfo($this->logFile, PATHINFO_EXTENSION);
-            if ($extension === '') {
-                $this->logFile = preg_replace("/$extension$/", '.'.$this->app, $this->logFile);
-            } else {
-                $this->logFile = preg_replace("/$extension$/", $this->app.'.'.$extension, $this->logFile);
-            }
-
-            $this->logger->setLogFile($this->logFile);
-        }
-
-
-        $this->fromEmailAddress = '';
-        if (array_key_exists('from_email_address', $properties)) {
-            $this->fromEmailAddress = $properties['from_email_address'];
-        }
-
-        $this->emailSubject = RedCapETL::DEFAULT_EMAIL_SUBJECT;
-        if (array_key_exists('email_subject', $properties)) {
-            $this->emailSubject = $properties['email_subject'];
-        }
-
-        #------------------------------------------------------
-        # Set email logging information
-        #------------------------------------------------------
-        if (isset($this->fromEmailAddress) && array_key_exists('initial_email_address', $properties)) {
-            $this->logger->setLogEmail(
-                $this->fromEmailAddress,
-                $properties['initial_email_address'],
-                $this->emailSubject
-            );
         }
 
 
@@ -258,16 +227,7 @@ class RedCapEtl
         };
 
 
-        #------------------------------------------------
-        # Get the REDCap API URL
-        #------------------------------------------------
-        if (array_key_exists('redcap_api_url', $properties)) {
-            $apiUrl = $properties['redcap_api_url'];
-        } elseif (array_key_exists('redcap_url', $properties)) {
-            $apiUrl = $properties['redcap_url'].'api/';
-        } else {
-            $this->errorHandler->throwException('No REDCap API URL property was defined.', EtlException::INPUT_ERROR);
-        }
+        $apiUrl = $this->configuration->getRedCapApiUrl();
 
         #-----------------------------------------------------------
         # Create RedCap object to use for getting REDCap projects
@@ -282,50 +242,13 @@ class RedCapEtl
             $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
-        # $endRedCap = microtime(true);
-        # print "    RedCap creation time: ".($endRedCap - $startRedCap)." seconds\n";
-
-        //-----------------------------------------------------------------------
-        // Read in Project Configuration
-        //-----------------------------------------------------------------------
-        # $startConfig = microtime(true);
-        try {
-            $this->configProject = $redCap->getProject($properties['api_token']);
-            $results = $this->configProject->exportRecords();
-        } catch (PhpCapException $exception) {
-            $error = "Could not get Configuration data.\n";
-            $this->errorHandler->throwException($error, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        $configuration = $results[0];
-
-        #--------------------------------------------------------------
-        # Now that the configuration project has been read,
-        # if it specified an admin e-mail, replace the notifier
-        # sender with this e-mail address.
-        #--------------------------------------------------------------
-        if (array_key_exists('admin_email', $configuration)) {
-            $this->logger->setLogEmailFrom($configuration['admin_email']);
-        }
-
-
 
         #------------------------------------------------------
         # Create a REDCap DET (Data Entry Trigger) Handler,
         # in case it's needed.
         #------------------------------------------------------
-        # $startDet = microtime(true);
-        try {
-            $projectId = $this->configProject->exportProjectInfo()['project_id'];
-        } catch (PhpCapException $exception) {
-            $message = "Unable to retrieve project_id.";
-            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        $this->det = new RedCapDetHandler($projectId, $configuration['allowed_servers'], $this->notifier);
-
-        # $endDet = microtime(true);
-        # print "    DET time: ".($endDet - $startDet)." seconds\n";
+        $projectId = $this->configuration->getProjectId();
+        $this->det = new RedCapDetHandler($projectId, $this->configuration->getAllowedServers(), $this->notifier);
 
         #----------------------------------------------------------------
         # Get the project that has the actual data
@@ -333,16 +256,7 @@ class RedCapEtl
         # Allow 'token_opt2' as the name of the data project token
         # for backward compatibility with the OPTIMISTIC project
         #----------------------------------------------------------------
-        # $startDataProject = microtime(true);
-        $dataToken = '';
-        if (array_key_exists('data_source_api_token', $configuration)) {
-            $dataToken = $configuration['data_source_api_token'];
-        } else {
-            $message = 'No token_data field (with the REDCap API token for the data project)'
-                .' was found in the configuration project.';
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR, $exception);
-        }
-        
+        $dataToken = $this->configuration->getDataSourceApiToken();
         try {
             $this->dataProject = $redCap->getProject($dataToken);
         } catch (PhpCapException $exception) {
@@ -353,34 +267,6 @@ class RedCapEtl
         # $endDataProject = microtime(true);
         # print "    Data project time: ".($endDataProject - $startDataProject)." seconds\n";
 
-        #------------------------------------------------------------
-        # Get the logging project (where log records are written to)
-        #------------------------------------------------------------
-        # $startLog = microtime(true);
-        if (array_key_exists('log_project_api_token', $configuration)) {
-            $logToken = $configuration['log_project_api_token'];
-            if ($logToken == null || $logToken.trim() === '') {
-                $this->logProject = null;
-            } else {
-                $this->logProject  = $redCap->getProject($configuration['log_project_api_token']);
-                $this->logProject->setApp($this->logger->getApp());
-            }
-        } else {
-            $this->logProject = null;
-        }
-
-        // Set the logging project
-        $this->logger->setLogProject($this->logProject);
-
-
-        // Record whether or not the actual ETL should be run. This is
-        // used by the DET handler program, but not the batch program
-        $this->trigger_etl = $configuration['trigger_etl'];
-
-        // Determine the batch size to use (how many records to process at once)
-        // Batch size is expected to be a positive integer. The Configuration
-        // project should enforce that.
-        $this->batch_size = $configuration['batch_size'];
 
         // Create a new Schema
         $this->schema = new Schema();
@@ -394,36 +280,7 @@ class RedCapEtl
         $this->log('REDCap ETL version '.Version::RELEASE_NUMBER);
 
 
-        #-----------------------------------------------
-        # Get the Transformation Rules
-        #-----------------------------------------------
-        $transformRulesSource = $configuration['transform_rules_source'];
-        if ($transformRulesSource === 2) {
-            $results = $this->configProject->exportFile(
-                $configuration['record_id'],
-                'transform_rules_file'
-            );
-            $this->schema_map = $results;
-        } else {
-            $this->schema_map = $configuration['transform_rules_text'];
-        }
-
-        if ($this->schema_map == '') {
-            $error = 'No schema map file was found, and the schema map text field is empty.'
-                    .' Either a schema map file needs to be uploaded, or the schema map'
-                    .' text field needs to be set.';
-            $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
-        }
-
-        # $endSchemaMap = microtime(true);
-        # print "    Schema Map setup time: ".($endSchemaMap - $startSchemaMap)." seconds\n";
-
-        #----------------------------------------------------------------
-        # Get the table prefix (if any)
-        #----------------------------------------------------------------
-        if (array_key_exists('table_prefix', $configuration)) {
-            $this->tablePrefix = $configuration['table_prefix'];
-        }
+        $this->schema_map = $this->configuration->getTransformationRules();
 
         // Create another Schema just for lookup tables
         $this->lookup_table = new Table(
@@ -432,14 +289,6 @@ class RedCapEtl
             RedCapEtl::ENCODE_ROOT,
             array()
         );
-
-        #----------------------------------------------------------------
-        # Get the label view suffix (if any)
-        #----------------------------------------------------------------
-        if (array_key_exists('label_view_suffix', $configuration)) {
-            $this->labelViewSuffix = $configuration['label_view_suffix'];
-        }
-
 
         #-----------------------------------------------
         # Create and add fields for the lookup table
@@ -476,20 +325,12 @@ class RedCapEtl
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
         #---------------------------------------------------
-        if (array_key_exists('db_connection', $configuration)) {
-            $dbconfactory = new DBConnectFactory();
-            $this->dbcon = $dbconfactory->createDbcon(
-                $configuration['db_connection'],
-                $this->tablePrefix,
-                $this->labelViewSuffix
-            );
-        } else {
-            $message = 'No database connection was specified in the '
-                . 'configuration project.';
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
-        }
-    
-        return true;
+        $dbconfactory = new DBConnectFactory();
+        $this->dbcon = $dbconfactory->createDbcon(
+            $this->configuration->getDbConnection(),
+            $this->tablePrefix,
+            $this->labelViewSuffix
+        );
     }
 
 
