@@ -56,8 +56,7 @@ try {
     print "Config Project: [".$configId."] ".$configTitle."\n";
     if ($logToken === '') {
         print "Log Project:    not set\n";
-    }
-    else {
+    } else {
         print "Log Project:    [".$logId."] ".$logTitle."\n";
     }
     print "Data Project:   [".$dataId."] ".$dataTitle."\n";

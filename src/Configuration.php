@@ -123,7 +123,8 @@ class Configuration
         #------------------------------------------------------
         # Set email logging information
         #------------------------------------------------------
-        if (isset($this->fromEmailAddress) && array_key_exists(Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY, $properties)) {
+        if (isset($this->fromEmailAddress)
+                && array_key_exists(Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY, $properties)) {
             $this->adminEmailAddress = $properties[Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY];
             $this->logger->setLogEmail(
                 $this->fromEmailAddress,
@@ -203,7 +204,7 @@ class Configuration
         # Get the data source project API token
         #----------------------------------------------------------------
         $this->dataSourceApiToken = '';
-        if (array_key_exists(Configuration::DATA_SOURCE_API_TOKEN_PROPERTY,  $configuration)) {
+        if (array_key_exists(Configuration::DATA_SOURCE_API_TOKEN_PROPERTY, $configuration)) {
             $this->dataSourceApiToken = $configuration[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
         } else {
             $message = 'No data source API token was found in the configuration project.';
