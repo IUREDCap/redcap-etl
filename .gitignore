@@ -25,4 +25,6 @@ composer.phar
 *.crt
 
 # properties files
+*.ini
 *.properties
+
