@@ -1,10 +1,10 @@
 <?php
 
 #--------------------------------------------------------------------------
-# This is a handler that is called from REDCap to validate a SchemaMap
-# and, possibly, to do ETL: Extracting data from REDCap,
+# This is a handler that is called from REDCap to validate transformation
+# Rules and, possibly, run the ETL process: Extracting data from REDCap,
 # transforming REDCap Records into Tables/Rows and then
-# storing it in the database.
+# loading it in the database.
 #
 # The handler is called by REDCap's Data Entry Trigger for the
 # Configuration project. This handler will attempt to parse the SchemaMap
@@ -26,7 +26,7 @@
 // NOTE: INSTALL_DIR will be replaced by the installation program
 set_include_path(get_include_path() . PATH_SEPARATOR . 'REPLACE_INSTALL_DIR');
 
-require('REPLACE_INSTALL_DIRvendor/autoload.php');
+require('REPLACE_INSTALL_DIR'.'dependencies/autoload.php');
 
 // In case it's not set in php.ini, set the timezone, explicitly
 date_default_timezone_set('America/New_York');
