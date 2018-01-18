@@ -6,36 +6,35 @@ use PHPUnit\Framework\TestCase;
 
 class DemographyTest extends TestCase
 {
-    private static $config;
     private static $csvDir;
+    private static $logger;
     private static $properties;
+
+    const CONFIG_FILE = __DIR__.'/../config/basic-demography.ini';
 
     public static function setUpBeforeClass()
     {
-        self::$config = parse_ini_file(__DIR__.'/../config.ini');
-
-        self::$properties = array();
-        self::$properties['redcap_api_url'] = self::$config['api.url'];
-        self::$properties['api_token'] = self::$config['basic.demography.api.token'];
-        self::$properties['initial_email_address'] = self::$config['test.email'];
-
-        self::$csvDir = self::$config['basic.demography.directory'];
-        if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
-            self::$csvDir .= DIRECTORY_SEPARATOR;
-        }
     }
+
 
     public function testDemographyTable()
     {
         try {
             $app = basename(__FILE__, '.php');
-            $logger = new Logger2($app);
+            self::$logger = new Logger2($app);
 
-            $redCapEtl = new RedCapEtl($logger, self::$properties);
-
+            $redCapEtl = new RedCapEtl(self::$logger, null, self::CONFIG_FILE);
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
-            $logger->logInfo("Starting processing.");
+            $config = $redCapEtl->getConfiguration();
+            $this->assertNotNull($config, 'redCapEtl configuration not null');
+
+            self::$csvDir = str_ireplace('CSV:', '', $config->getDbConnection());
+            if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
+                self::$csvDir .= DIRECTORY_SEPARATOR;
+            }
+
+            self::$logger->logInfo("Starting processing.");
 
             list($parse_status,$result) = $redCapEtl->parseMap();
 
@@ -44,11 +43,11 @@ class DemographyTest extends TestCase
             } else {
                 $redCapEtl->loadTables();
                 $redCapEtl->extractTransformLoad();
-                $logger->logInfo("Processing complete.");
+                self::$logger->logInfo("Processing complete.");
             }
         } catch (EtlException $exception) {
-            $logger->logException($exception);
-            $logger->logError('Processing failed.');
+            self::$logger->logException($exception);
+            self::$logger->logError('Processing failed.');
         }
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvDir . 'Demography.csv');
         $csv = $parser->parse();

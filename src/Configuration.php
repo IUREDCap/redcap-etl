@@ -9,6 +9,9 @@ class Configuration
 {
     const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
 
+    #----------------------------------------------------------------
+    # Configuration properties
+    #----------------------------------------------------------------
     const ADMIN_EMAIL_PROPERTY            = 'admin_email';
     const ALLOWED_SERVERS_PROPERTY        = 'allowed_servers';
     const API_TOKEN_PROPERTY              = 'api_token';
@@ -64,11 +67,8 @@ class Configuration
      * @param string $propertiesFile the name of the properties file to use
      *     (used as an alternative to the properties array).
      */
-    public function __construct(
-        $logger,
-        $properties = null,
-        $propertiesFile = RedCapEtl::PROPERTIES_FILE
-    ) {
+    public function __construct($logger, $properties = null, $propertiesFile = null)
+    {
         $this->logger = $logger;
         $this->errorHandler = new EtlErrorHandler();
 
@@ -79,13 +79,17 @@ class Configuration
         #--------------------------------------------------------------------
         if (!isset($properties) || !is_array($properties)) {
             if (!isset($propertiesFile) || trim($propertiesFile) === '') {
-                $propertiesFile = RedCapEtl::PROPERTIES_FILE;
-            }
-            $properties = parse_ini_file($propertiesFile);
-            if ($properties === false) {
-                $message = 'No properties argument, and unable to read properties file.';
-                $code    = RedCapEtl::PROPERTIES_FILE;
+                $message = 'No properties or properties file was specified.';
+                $code    = EtlException::INPUT_ERROR;
                 $this->errorHandler->throwException($message, $code);
+            } else {
+                $propertiesFile = trim($propertiesFile);
+                $properties = parse_ini_file($propertiesFile);
+                if ($properties === false) {
+                    $message = 'The properties file \"'.$propertiesFile.'\" could not be read.';
+                    $code    = EtlException::INPUT_ERROR;
+                    $this->errorHandler->throwException($message, $code);
+                }
             }
         }
 
@@ -102,7 +106,7 @@ class Configuration
                 $this->logFile = preg_replace("/$extension$/", '.'.$this->app, $this->logFile);
             } else {
                 $this->logFile = preg_replace(
-                    "/$extension$/", 
+                    "/$extension$/",
                     $this->app.'.'.$extension,
                     $this->logFile
                 );
@@ -115,7 +119,8 @@ class Configuration
         #-----------------------------------------------------------
         # Error e-mail notification information
         #-----------------------------------------------------------
-        $this->fromEmailAddress = '';
+        $this->fromEmailAddress  = null;
+        $this->adminEmailAddress = null;
         if (array_key_exists(Configuration::FROM_EMAIL_ADDRESS_PROPERTY, $properties)) {
             $this->fromEmailAddress = $properties[Configuration::FROM_EMAIL_ADDRESS_PROPERTY];
         }
@@ -125,20 +130,20 @@ class Configuration
             $this->emailSubject = $properties[Configuration::EMAIL_SUBJECT_PROPERTY];
         }
 
+        if (array_key_exists(Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY, $properties)) {
+            $this->adminEmailAddress = $properties[Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY];
+        }
+
         #------------------------------------------------------
         # Set email logging information
         #------------------------------------------------------
-        if (isset($this->fromEmailAddress)
-                && array_key_exists(Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY, $properties)) {
-            $this->adminEmailAddress = $properties[Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY];
+        if (!empty($this->fromEmailAddress) && !empty($this->adminEmailAddress)) {
             $this->logger->setLogEmail(
                 $this->fromEmailAddress,
-                $properties[Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY],
+                $this->adminEmailAddress,
                 $this->emailSubject
             );
         }
-
-        # Check to e-mail!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         #------------------------------------------------
         # Get the REDCap API URL
@@ -158,12 +163,12 @@ class Configuration
         #---------------------------------------------------------------
         if (array_key_exists(Configuration::SSL_VERIFY_PROPERTY, $properties)) {
             $sslVerify = $properties[Configuration::SSL_VERIFY_PROPERTY];
-            if (!isset($sslVerify) || $sslVerify === '' || $sslVerify === 0) {
+            if (!isset($sslVerify) || $sslVerify === '' || $sslVerify === '0') {
                 $this->sslVerify = false;
-            } elseif ($sslVerify === 1)  {
+            } elseif ($sslVerify === '1') {
                 $this->sslVerify = true;
             } else {
-                $message = 'Unrecognized value for '
+                $message = 'Unrecognized value \"'.$sslVerify.'\" for '
                     .Configuration::SSL_VERIFY_PROPERTY
                     .' property; a true a false value should be specified.';
                 $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
@@ -184,7 +189,7 @@ class Configuration
             $this->caCertFile = null;
             $caCertFile = $properties[Configuration::CA_CERT_FILE_PROPERTY];
             if (isset($caCertFile)) {
-                $caCertFile = trim(caCertFile);
+                $caCertFile = trim($caCertFile);
                 if ($caCertFile !== '') {
                     $this->caCertFile = $caCertFile;
                 }
@@ -237,9 +242,13 @@ class Configuration
         # if it specified an admin e-mail, replace the notifier
         # sender with this e-mail address.
         #--------------------------------------------------------------
-        if (array_key_exists(Configuration::ADMIN_EMAIL_PROPERTY, $configuration)) {
-            $this->adminEmail = $configuration[Configuration::ADMIN_EMAIL_PROPERTY];
-            $this->logger->setLogEmailFrom($configuration[Configuration::ADMIN_EMAIL_PROPERTY]);
+        if (!empty($this->fromEmailAddress)) {
+            if (array_key_exists(Configuration::ADMIN_EMAIL_PROPERTY, $configuration)) {
+                $this->adminEmail = trim($configuration[Configuration::ADMIN_EMAIL_PROPERTY]);
+                if (!empty($this->adminEmail)) {
+                    $this->logger->setLogEmailTo($this->adminEmail);
+                }
+            }
         }
 
         #------------------------------------------------------
@@ -337,6 +346,15 @@ class Configuration
         }
     
         return true;
+    }
+
+    public function isValidEmail($email)
+    {
+        $isValid = false;
+        if (preg_match('/^[^@]+@[^@]+$/', $email) === 1) {
+            $isValid = true;
+        }
+        return $isValid;
     }
 
     public function getAllowedServers()

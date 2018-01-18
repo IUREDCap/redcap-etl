@@ -187,7 +187,7 @@ class Logger2
         $loggedToEmail   = $this->logToEmail($message);
 
         if ($loggedToFile === false && $loggedToProject === false && $loggedToEmail === false) {
-            $logged = error_log($error, 0);
+            $logged = error_log($message, 0);
         }
     }
 
@@ -322,5 +322,10 @@ class Logger2
     public function getApp()
     {
         return $this->app;
+    }
+
+    public function getNotifier()
+    {
+        return $this->notifier;
     }
 }

@@ -45,9 +45,6 @@ class RedCapEtl
 
     const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
 
-    // Properties file
-    const PROPERTIES_FILE = 'redcap_etl.properties';
-
     // Methods for encoding 1:many relationships as a 'rows_def'
     const ENCODE_ROOT            = 'ROOT';
     const ENCODE_EVENTS          = 'EVENTS';
@@ -160,7 +157,7 @@ class RedCapEtl
     public function __construct(
         $logger,
         $properties = null,
-        $propertiesFile = RedCapEtl::PROPERTIES_FILE
+        $propertiesFile = null
     ) {
         $this->logger = $logger;
         $this->errorHandler = new EtlErrorHandler();
@@ -168,22 +165,6 @@ class RedCapEtl
         $this->app = $logger->getApp();
 
         $this->configuration = new Configuration($logger, $properties, $propertiesFile);
-
-
-        #--------------------------------------------------------------------
-        # If there isn't a properties array, then read the properties file
-        #--------------------------------------------------------------------
-        if (!isset($properties) || !is_array($properties)) {
-            if (!isset($propertiesFile) || trim($propertiesFile) === '') {
-                $propertiesFile = RedCapEtl::PROPERTIES_FILE;
-            }
-            $properties = parse_ini_file($propertiesFile);
-            if ($properties === false) {
-                $message = 'No properties argument, and unable to read properties file ';
-                $code    = RedCapEtl::PROPERTIES_FILE;
-                $this->errorHandler->throwException($message, $code);
-            }
-        }
 
 
         $this->date = date('g:i:s a d-M-Y T');
@@ -244,7 +225,11 @@ class RedCapEtl
         # in case it's needed.
         #------------------------------------------------------
         $projectId = $this->configuration->getProjectId();
-        $this->det = new RedCapDetHandler($projectId, $this->configuration->getAllowedServers(), $this->notifier);
+        $this->det = new RedCapDetHandler(
+            $projectId,
+            $this->configuration->getAllowedServers(),
+            $this->logger->getNotifier()
+        );
 
         #----------------------------------------------------------------
         # Get the project that has the actual data
@@ -1173,5 +1158,10 @@ class RedCapEtl
     public function getTablePrefix()
     {
         return $this->tablePrefix;
+    }
+
+    public function getConfiguration()
+    {
+        return $this->configuration;
     }
 }

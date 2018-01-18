@@ -13,7 +13,6 @@ use IU\REDCapETL\Configuration;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\Logger2;
 
-
 if (count($argv) != 2) {
     print "Usage: php $argv[0] <config-file>\n";
     exit(1);
@@ -40,4 +39,3 @@ try {
         print "Error found: ".$exception->getMessage()."\n";
     }
 }
-

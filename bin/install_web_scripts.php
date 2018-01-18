@@ -21,8 +21,8 @@ if (!isset($options['w'])) {
     $webDir = trim($options['w']);
     print "webDir: $webDir\n";
     if (!is_writeable($webDir)) {
-       print "Web directory $webDir is not writeable\n"; 
-       exit(1);
+        print "Web directory $webDir is not writeable\n";
+        exit(1);
     }
 }
 
@@ -47,7 +47,6 @@ $iterator = new RecursiveIteratorIterator($configDir);
 $regex = new RegexIterator($iterator, '/^.+\.ini$/i', RecursiveRegexIterator::GET_MATCH);
 
 foreach ($regex as $iniFile => $object) {
-
     print ".ini file: $iniFile \n";
 
     $values = parse_ini_file($iniFile);
@@ -66,5 +65,4 @@ foreach ($regex as $iniFile => $object) {
         $file_contents = str_replace('propertiesFile = null;', 'propertiesFile = '.$iniFile, $file_contents);
         file_put_contents($webFile, $file_contents);
     }
-
 }
