@@ -101,18 +101,20 @@ class Configuration
         $this->logFile = null;
         if (array_key_exists(Configuration::LOG_FILE_PROPERTY, $properties)) {
             $this->logFile = $properties[Configuration::LOG_FILE_PROPERTY];
-            $extension = pathinfo($this->logFile, PATHINFO_EXTENSION);
-            if ($extension === '') {
-                $this->logFile = preg_replace("/$extension$/", '.'.$this->app, $this->logFile);
-            } else {
-                $this->logFile = preg_replace(
-                    "/$extension$/",
-                    $this->app.'.'.$extension,
-                    $this->logFile
-                );
-            }
+            if (!empty($this->logFile)) {
+                $extension = pathinfo($this->logFile, PATHINFO_EXTENSION);
+                if ($extension === '') {
+                    $this->logFile = preg_replace("/$extension$/", '.'.$this->app, $this->logFile);
+                } else {
+                    $this->logFile = preg_replace(
+                        "/$extension$/",
+                        $this->app.'.'.$extension,
+                        $this->logFile
+                    );
+                }
 
-            $this->logger->setLogFile($this->logFile);
+                $this->logger->setLogFile($this->logFile);
+            }
         }
 
 

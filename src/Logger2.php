@@ -227,7 +227,7 @@ class Logger2
         $error  = null;
         $logged = false;
 
-        if (isset($this->logFile)) {
+        if (!empty($this->logFile)) {
             $timestamp = date('Y-m-d H:i:s');
             $message = $timestamp.': '.$message."\n";
 
