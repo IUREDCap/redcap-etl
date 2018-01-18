@@ -83,7 +83,7 @@ class Configuration
             }
             $properties = parse_ini_file($propertiesFile);
             if ($properties === false) {
-                $message = 'No properties argument, and unable to read properties file ';
+                $message = 'No properties argument, and unable to read properties file.';
                 $code    = RedCapEtl::PROPERTIES_FILE;
                 $this->errorHandler->throwException($message, $code);
             }
@@ -226,7 +226,7 @@ class Configuration
             $this->configProject = $redCap->getProject($configProjectApiToken);
             $results = $this->configProject->exportRecords();
         } catch (PhpCapException $exception) {
-            $error = "Could not get Configuration data.\n";
+            $error = "Could not get Configuration data";
             $this->errorHandler->throwException($error, EtlException::PHPCAP_ERROR, $exception);
         }
 
