@@ -24,7 +24,8 @@ composer.phar
 # certificate files
 *.crt
 
-# properties files
-*.ini
+# config files (except example)
+/config/*
+!/config/config-example.ini
 *.properties
 

@@ -100,8 +100,9 @@ In REDCap, create a new project using the "Upload a REDCap project XML file " op
 
 ### Step 6 - Create a Configuration File
 
-Configuration files need to be stored in the config directory of the REDCap ETL installation.
-
+Configuration files need to be stored in the config directory of the REDCap ETL installation. The file
+**config/config-example.ini** can be copied and then modified.  See this file for more information
+about the properties that need to be set.
 
 ### Step 7 (Optional) - Set up an E-mail Server
 
