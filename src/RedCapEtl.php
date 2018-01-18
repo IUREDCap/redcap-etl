@@ -153,18 +153,12 @@ class RedCapEtl
      * Constructor.
      *
      * @param Logger2 $logger logger for information and errors
-     * @param boolean $sslVerify indicates if verification should be done for the SSL
-     *     connection to REDCap. Setting this to false is not secure.
-     * @param string $caCertificateFile
-     *     the CA (Certificate Authority) certificate file used for veriying the REDCap site's
-     *     SSL certificate (i.e., for verifying that the REDCap site that is
-     *     connected to is the one specified).
      * @param array $properties associative array or property names and values.
+     * @param string $propertiesFile the name of the properties file to use
+     *     (used as an alternative to the properties array).
      */
     public function __construct(
         $logger,
-        $sslVerify = true,
-        $caCertificateFile = null,
         $properties = null,
         $propertiesFile = RedCapEtl::PROPERTIES_FILE
     ) {
@@ -173,7 +167,7 @@ class RedCapEtl
 
         $this->app = $logger->getApp();
 
-        $this->configuration = new Configuration($logger, $sslVerify, $caCertificateFile, $properties, $propertiesFile);
+        $this->configuration = new Configuration($logger, $properties, $propertiesFile);
 
 
         #--------------------------------------------------------------------
@@ -233,9 +227,11 @@ class RedCapEtl
         # Create RedCap object to use for getting REDCap projects
         #-----------------------------------------------------------
         $superToken = null; // There is no need to create projects, so this is not needed
+        $sslVerify  = $this->configuration->getSslVerify();
+        $caCertFile = $this->configuration->getCaCertFile();
 
         try {
-            $redCap = new RedCap($apiUrl, $superToken, $sslVerify, $caCertificateFile);
+            $redCap = new RedCap($apiUrl, $superToken, $sslVerify, $caCertFile);
             $redCap->setProjectConstructorCallback($callback);
         } catch (PhpCapException $exception) {
             $message = 'Unable to set up RedCap object.';
@@ -1109,6 +1105,45 @@ class RedCapEtl
         }
 
         return true;
+    }
+
+
+    /**
+     * Runs the entire ETL process
+     *
+     * WORK IN PROGRESS!!!
+     */
+    public function run()
+    {
+        try {
+            $this->log("Starting processing.");
+
+            //-------------------------------------------------------------------------
+            // Parse Transformation Rules
+            //-------------------------------------------------------------------------
+            // NOTE: The $result is not used in batch mode. It is used
+            //       by the DET handler to give feedback within REDCap.
+            list($parseStatus, $result) = $this->parseMap();
+
+            if ($parseStatus === RedCapEtl::PARSE_ERROR) {
+                $message = "Transformation rules not parsed. Processing stopped.";
+                $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+            } else {
+                //----------------------------------------------------------------------
+                // Extract, Transform, and Load
+                //
+                // These three steps are joined together at this level so that
+                // the data from REDCap can be worked on in batches
+                //----------------------------------------------------------------------
+                $redCapEtl->loadTables();
+                $redCapEtl->extractTransformLoad();
+
+                $this->log("Processing complete.");
+            }
+        } catch (EtlException $exception) {
+            $this->log('Processing failed.');
+            throw $exception;  // re-throw the exception
+        }
     }
 
 

@@ -55,7 +55,7 @@ if (array_key_exists('l', $options)) {
 
 
 try {
-    $redCapEtl = new RedCapEtl($logger, true, null, null, $propertiesFile);
+    $redCapEtl = new RedCapEtl($logger, null, $propertiesFile);
 
     $logger->logInfo("Starting processing.");
 
