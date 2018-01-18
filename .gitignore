@@ -25,7 +25,7 @@ composer.phar
 *.crt
 
 # config files (except example)
-/config/*
-!/config/config-example.ini
 *.properties
+*.ini
+!/config/config-example.ini
 
