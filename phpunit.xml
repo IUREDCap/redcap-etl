@@ -36,7 +36,8 @@
           a server
     -->
     <testsuite name="system">
-      <file>tests/system/TablesTest.php</file>
+      <!-- <file>tests/system/TablesTest.php</file> -->
+      <file>tests/system/VisitsTest.php</file>
     </testsuite>
 
   </testsuites>

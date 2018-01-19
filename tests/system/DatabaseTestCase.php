@@ -14,7 +14,7 @@ use PHPUnit\DbUnit\DataSet\CsvDataSet;
  * tests in a single place, and to store the database connection parameters
  * in an XML file.
  *
- * Configuration information comes from the tests/config.ini file.
+ * Configuration information comes from the tests/config/visits.ini file.
  *
  * Also, because all of our data is coming from a REDCap project, and all
  * tables in our MySQL database will be dropped and recreated when the
@@ -24,6 +24,10 @@ use PHPUnit\DbUnit\DataSet\CsvDataSet;
 abstract class DatabaseTestCase extends TestCase
 {
     use TestCaseTrait;
+
+    const CONFIG_FILE = __DIR__.'/../config/visits.ini';
+    const BIN_DIR     = __DIR__.'/../../bin';
+    const ETL_COMMAND = 'redcap_etl.php';
 
     private $config = null;
 
@@ -43,21 +47,30 @@ abstract class DatabaseTestCase extends TestCase
 
     final public function getConnection()
     {
+        $logger = new Logger2('visits_test');
+
         $config = $this->getConfig();
+
+        $configuration = new Configuration($logger, $config);
+
+        list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
+
+        $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
+
         if ($this->conn === null) {
             if (self::$pdo == null) {
                 // Note global information comes from phpunit.xml file
                 self::$pdo = new \PDO(
-                    $config['database.dsn'],
-                    $config['database.user'],
-                    $config['database.password']
+                    $dsn,
+                    $dbUser,
+                    $dbPassword
                 );
             }
 
             $this->conn =
             $this->createDefaultDBConnection(
                 self::$pdo,
-                $config['database.name']
+                $dbName
             );
         }
 
@@ -110,7 +123,8 @@ abstract class DatabaseTestCase extends TestCase
                 } else { // Run batch script
                     // Execute the Extract Transform Load program we're testing.
                     $etl_output = array();
-                    $command = "cd ".$config['etl.directory']."; php ".$config['etl.command'];
+                    $command = "cd ".self::BIN_DIR.";"
+                        ." php ".self::ETL_COMMAND." -p ".self::CONFIG_FILE;
 
                     $etl_result = exec($command, $etl_output);
                     $expectedResult = 'Processing complete.';
@@ -129,7 +143,7 @@ abstract class DatabaseTestCase extends TestCase
     private function getConfig()
     {
         if (!isset($this->config)) {
-            $this->config = parse_ini_file(__DIR__.'/../config.ini');
+            $this->config = parse_ini_file(self::CONFIG_FILE);
         }
         return $this->config;
     }

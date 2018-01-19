@@ -359,6 +359,25 @@ class Configuration
         return $isValid;
     }
 
+    /**
+     * Gets the MySQL connection information.
+     *
+     * @return array string array with (host, user, password, dbname),
+     *               or null if there is no MySQL connection.
+     */
+    public function getMySqlConnectionInfo()
+    {
+        $connectionInfo = null;
+        list($dbType, $dbInfo) = explode(':', $this->dbConnection, 2);
+
+        if (strcasecmp($dbType, 'MySQL') === 0) {
+            $connectionInfo = explode(':', $dbInfo);
+        }
+
+        return $connectionInfo;
+    }
+
+
     public function getAllowedServers()
     {
         return $this->allowedServers;
