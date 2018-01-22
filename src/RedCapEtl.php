@@ -1120,8 +1120,8 @@ class RedCapEtl
                 // These three steps are joined together at this level so that
                 // the data from REDCap can be worked on in batches
                 //----------------------------------------------------------------------
-                $redCapEtl->loadTables();
-                $redCapEtl->extractTransformLoad();
+                $this->loadTables();
+                $this->extractTransformLoad();
 
                 $this->log("Processing complete.");
             }

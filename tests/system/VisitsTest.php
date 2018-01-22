@@ -23,7 +23,6 @@ class VisitsTest extends TestCase
         $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
         self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
         VisitsTestUtility::dropTablesAndViews(self::$dbh);
-        self::runBatchEtl();
     }
 
 
@@ -43,69 +42,7 @@ class VisitsTest extends TestCase
 
     public function testDemographyTable()
     {
-        VisitsTestUtility::testDemographyTable($this, self::$dbh);
-    }
-
-    public function testBmiTable()
-    {
-        VisitsTestUtility::testBmiTable($this, self::$dbh);
-    }
-
-    public function testVisitInfoTable()
-    {
-        VisitsTestUtility::testVisitInfoTable($this, self::$dbh);
-    }
-
-    public function testVisitResultsTable()
-    {
-        VisitsTestUtility::testVisitResultsTable($this, self::$dbh);
-    }
-
-
-    public function testContactTable()
-    {
-        VisitsTestUtility::testContactTable($this, self::$dbh);
-    }
-
-
-    public function testLabsTable()
-    {
-        VisitsTestUtility::testLabsTable($this, self::$dbh);
-    }
-
-
-    public function testRecipientsTable()
-    {
-        VisitsTestUtility::testRecipientsTable($this, self::$dbh);
-    }
-
-
-    public function testSentTable()
-    {
-        VisitsTestUtility::testSentTable($this, self::$dbh);
-    }
-
-
-    public function testLookupTable()
-    {
-        VisitsTestUtility::testLookupTable($this, self::$dbh);
-    }
-
-
-
-    public function testDemographyView()
-    {
-        VisitsTestUtility::testDemographyView($this, self::$dbh);
-    }
-
-    public function testContactView()
-    {
-        VisitsTestUtility::testContactView($this, self::$dbh);
-    }
-
-
-    public function testFollowupTable()
-    {
-        VisitsTestUtility::testFollowupTable($this, self::$dbh);
+        self::runBatchEtl();
+        VisitsTestUtility::testAll($this, self::$dbh);
     }
 }

@@ -24,6 +24,22 @@ class VisitsTestUtility
         $dbh->exec("DROP TABLE IF EXISTS VisitResults");
     }
 
+    public static function testAll($testCase, $dbh)
+    {
+        self::testDemographyTable($testCase, $dbh);
+        self::testBmiTable($testCase, $dbh);
+        self::testVisitInfoTable($testCase, $dbh);
+        self::testVisitResultsTable($testCase, $dbh);
+        self::testContactTable($testCase, $dbh);
+        self::testLabsTable($testCase, $dbh);
+        self::testRecipientsTable($testCase, $dbh);
+        self::testSentTable($testCase, $dbh);
+        self::testLookupTable($testCase, $dbh);
+        self::testDemographyView($testCase, $dbh);
+        self::testContactView($testCase, $dbh);
+        self::testFollowupTable($testCase, $dbh);
+    }
+
 
     public static function testDemographyTable($testCase, $dbh)
     {
