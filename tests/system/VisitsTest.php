@@ -40,7 +40,7 @@ class VisitsTest extends TestCase
         }
     }
 
-    public function testDemographyTable()
+    public function testAll()
     {
         self::runBatchEtl();
         VisitsTestUtility::testAll($this, self::$dbh);

@@ -26,7 +26,7 @@
 // NOTE: INSTALL_DIR will be replaced by the installation program
 set_include_path(get_include_path() . PATH_SEPARATOR . 'REPLACE_INSTALL_DIR');
 
-require('REPLACE_INSTALL_DIR'.'dependencies/autoload.php');
+require('REPLACE_INSTALL_DIR'.'/dependencies/autoload.php');
 
 // In case it's not set in php.ini, set the timezone, explicitly
 date_default_timezone_set('America/New_York');
@@ -50,7 +50,7 @@ $propertiesFile = null;
 # Try to create a REDCap ETL Object
 #------------------------------------------------------------
 try {
-    $redCapEtl = new RedCapEtl($logger, true, null, null, $propertiesFile);
+    $redCapEtl = new RedCapEtl($logger, null, $propertiesFile);
     $logger->logInfo('Executing web script '.__FILE__);
     $detHandler = $redCapEtl->getDetHandler();
     list($project_id,$record_id) = $detHandler->getDetParams();

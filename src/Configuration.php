@@ -28,10 +28,13 @@ class Configuration
     const REDCAP_API_URL_PROPERTY         = 'redcap_api_url';
     const SSL_VERIFY_PROPERTY             = 'ssl_verify';
     const TABLE_PREFIX_PROPERTY           = 'table_prefix';
+    const TRANSFORM_RULES_CHECK_PROPERTY  = 'transform_rules_check';
     const TRANSFORM_RULES_FILE_PROPERTY   = 'transform_rules_file';
     const TRANSFORM_RULES_SOURCE_PROPERTY = 'transform_rules_source';
     const TRANSFORM_RULES_TEXT_PROPERTY   = 'transform_rules_text';
     const TRIGGER_ETL_PROPERTY            = 'trigger_etl';
+
+    const WEB_SCRIPT_PROPERTY             = 'web_script';
 
     // Properties file
     const PROPERTIES_FILE = 'redcap_etl.properties';
@@ -56,6 +59,7 @@ class Configuration
     private $transformationRules;
     private $triggerEtl;
 
+    private $properties;
     private $emailSubject;
     private $fromEmailAddres;
 
@@ -92,6 +96,8 @@ class Configuration
                 }
             }
         }
+
+        $this->properties = $properties;
 
 
         #-----------------------------------------------------------------------------
@@ -378,6 +384,15 @@ class Configuration
     }
 
 
+    /**
+     * Gets the specified (configuration file) property
+     */
+    public function getProperty($name)
+    {
+        return $this->properties[$name];
+    }
+
+
     public function getAllowedServers()
     {
         return $this->allowedServers;
@@ -396,6 +411,11 @@ class Configuration
     public function getCaCertFile()
     {
         return $this->caCertFile;
+    }
+
+    public function getConfigProject()
+    {
+        return $this->configProject;
     }
 
     public function getDataSourceApiToken()

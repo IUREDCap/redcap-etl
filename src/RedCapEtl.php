@@ -107,7 +107,6 @@ class RedCapEtl
 
     protected $schema_map;
 
-    protected $trigger_etl;
     protected $batch_size = 1;   // In effect batch size of 1 is no batching
 
     protected $schema;
@@ -165,6 +164,7 @@ class RedCapEtl
         $this->app = $logger->getApp();
 
         $this->configuration = new Configuration($logger, $properties, $propertiesFile);
+        $this->configProject = $this->configuration->configProject;
 
 
         $this->date = date('g:i:s a d-M-Y T');
@@ -1074,12 +1074,11 @@ class RedCapEtl
      */
     public function uploadResultAndReset($result, $record_id)
     {
-
         $records = array();
         $records[0] = array(
             'record_id' => $record_id,
-            'trigger_etl' => RedCapEtl::TRIGGER_ETL_NO,
-            'parse_feedback' => $result
+            Configuration::TRIGGER_ETL_PROPERTY => RedCapEtl::TRIGGER_ETL_NO,
+            Configuration::TRANSFORM_RULES_CHECK_PROPERTY => $result
         );
 
         try {
@@ -1090,6 +1089,14 @@ class RedCapEtl
         }
 
         return true;
+    }
+
+    public function setTriggerEtl()
+    {
+        $records = $this->configProject->exportRecordsAp();
+        $records = array($records[0]);
+        $records[0][Configuration::TRIGGER_ETL_PROPERTY] = RedCapEtl::TRIGGER_ETL_YES;
+        $this->configProject->importRecords($records);
     }
 
 
@@ -1142,7 +1149,9 @@ class RedCapEtl
 
     public function getTriggerEtl()
     {
-        return $this->trigger_etl;
+        $records = $this->configProject->exportRecords();
+        $triggerEtl = $records[0][Configuration::TRIGGER_ETL_PROPERTY];
+        return $triggerEtl;
     }
 
     public function log($message)
