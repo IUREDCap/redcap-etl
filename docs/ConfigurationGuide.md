@@ -1,8 +1,9 @@
-REDCap ETL Configuration Project Information
-============================================
+REDCap ETL Configuration
+========================
 
-REDCap ETL requires a configuration project that has information including the following:
+REDCap ETL requires a configuration file and REDCap project that have information including the following:
 
+* the URL for your REDCap API
 * an API token for the REDCap project that contains the actual data
 * an API token for a logging project that is used by REDCap ETL to log information
 * database connection information for the the database where the extracted data are to be stored
@@ -12,17 +13,70 @@ REDCap ETL requires a configuration project that has information including the f
 REDCap ETL Configuration Properties
 --------------------------------------
 <table>
+
 <thead>
-<tr> <th>Property</th> <th>Description</th> </tr>
+<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
 </thead>
+
 <tbody>
+
 <tr>
-<td>from_address</td><td>The from address for e-mail notifications
-sent by REDCap ETL</td>
+<td>admin_email_list</td>
+<td> X </td> <td> X </td>
+
+<td>The to address list for e-mail notifications sent by REDCap ETL</td>
 </tr>
-<td>redcapapi_url</td><td>The URL for your REDCap API</td>
-</tr> 
+
+<tr>
+<td>ca_cert_file</td>
+<td> X </td> <td> &nbsp; </td>
+<td>Certificate authority certificate file. This can be used to support
+SSL verification of the connection to REDCap if your system does not
+provide support for it by default</td>
 </tr>
+
+
+<tr>
+<td>email_subject</td>
+<td> X </td> <td> X </td>
+<td>The subject for e-mail notifications sent by REDCap ETL</td>
+</tr>
+
+<tr>
+<td>from_address</td>
+<td> X </td> <td> X </td>
+<td>The from address for e-mail notifications sent by REDCap ETL</td>
+</tr>
+<tr>
+
+<td>log_file</td>
+<td> X </td> <td> &nbsp; </td>
+<td>File to use for logging</td>
+</tr>
+
+<tr>
+<td>redcap_api_url</td>
+<td> X </td> <td> &nbsp; </td>
+<td>The URL for your REDCap API</td> 
+</tr>
+
+<tr>
+<td>ssl_verify</td>
+<td> X </td> <td> &nbsp; </td>
+<td>Indicates is SSL verification is used for the connection to REDCap.
+This defaults to true. Setting it to false is insecure.</td> 
+</tr>
+
+<tr>
+<td>web_script</td>
+<td> X </td> <td> &nbsp; </td>
+<td>The file name to use for the installed web script used to handle
+REDCap DETs (Data Entry Triggers). The file name 
+should normally end with .php. This is used to allow the ETL
+process to be started from REDCap. You can leave this blank if you
+are not using DETs.</td> 
+</tr>
+
 </tbody>
 </table>
 
