@@ -12,16 +12,15 @@ class Configuration
     #----------------------------------------------------------------
     # Configuration properties
     #----------------------------------------------------------------
-    const ADMIN_EMAIL_PROPERTY            = 'admin_email';
+    const ADMIN_EMAIL_LIST_PROPERTY       = 'admin_list_email';
     const ALLOWED_SERVERS_PROPERTY        = 'allowed_servers';
-    const API_TOKEN_PROPERTY              = 'api_token';
     const BATCH_SIZE_PROPERTY             = 'batch_size';
     const CA_CERT_FILE_PROPERTY           = 'ca_cert_file';
+    const CONFIG_API_TOKEN_PROPERTY       = 'config_api_token';
     const DATA_SOURCE_API_TOKEN_PROPERTY  = 'data_source_api_token';
     const DB_CONNECTION_PROPERTY          = 'db_connection';
     const EMAIL_SUBJECT_PROPERTY          = 'email_subject';
     const FROM_EMAIL_ADDRESS_PROPERTY     = 'from_email_address';
-    const INITIAL_EMAIL_ADDRESS_PROPERTY  = 'initial_email_address';
     const LABEL_VIEW_SUFFIX_PROPERTY      = 'label_view_suffix';
     const LOG_FILE_PROPERTY               = 'log_file';
     const LOG_PROJECT_API_TOKEN_PROPERTY  = 'log_project_api_token';
@@ -36,15 +35,12 @@ class Configuration
 
     const WEB_SCRIPT_PROPERTY             = 'web_script';
 
-    // Properties file
-    const PROPERTIES_FILE = 'redcap_etl.properties';
-
 
     private $logger;
     private $errorHandler;
 
     private $app;
-    private $adminEmail;
+    private $adminEmailList;
     private $allowedServers;
     private $batchSize;
     private $caCertFile;
@@ -128,7 +124,7 @@ class Configuration
         # Error e-mail notification information
         #-----------------------------------------------------------
         $this->fromEmailAddress  = null;
-        $this->adminEmailAddress = null;
+        $this->adminEmailList   = null;
         if (array_key_exists(Configuration::FROM_EMAIL_ADDRESS_PROPERTY, $properties)) {
             $this->fromEmailAddress = $properties[Configuration::FROM_EMAIL_ADDRESS_PROPERTY];
         }
@@ -138,17 +134,17 @@ class Configuration
             $this->emailSubject = $properties[Configuration::EMAIL_SUBJECT_PROPERTY];
         }
 
-        if (array_key_exists(Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY, $properties)) {
-            $this->adminEmailAddress = $properties[Configuration::INITIAL_EMAIL_ADDRESS_PROPERTY];
+        if (array_key_exists(Configuration::ADMIN_EMAIL_LIST_PROPERTY, $properties)) {
+            $this->adminEmailList = $properties[Configuration::ADMIN_EMAIL_LIST];
         }
 
         #------------------------------------------------------
         # Set email logging information
         #------------------------------------------------------
-        if (!empty($this->fromEmailAddress) && !empty($this->adminEmailAddress)) {
+        if (!empty($this->fromEmailAddress) && !empty($this->adminEmailList)) {
             $this->logger->setLogEmail(
                 $this->fromEmailAddress,
-                $this->adminEmailAddress,
+                $this->adminEmailList,
                 $this->emailSubject
             );
         }
@@ -208,8 +204,8 @@ class Configuration
         #--------------------------------------------------
         # Get the API token for the configuration project
         #--------------------------------------------------
-        if (array_key_exists(Configuration::API_TOKEN_PROPERTY, $properties)) {
-            $configProjectApiToken = $properties[Configuration::API_TOKEN_PROPERTY];
+        if (array_key_exists(Configuration::CONFIG_API_TOKEN_PROPERTY, $properties)) {
+            $configProjectApiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
         } else {
             $message = 'No API token property was defined.';
             $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
@@ -251,10 +247,10 @@ class Configuration
         # sender with this e-mail address.
         #--------------------------------------------------------------
         if (!empty($this->fromEmailAddress)) {
-            if (array_key_exists(Configuration::ADMIN_EMAIL_PROPERTY, $configuration)) {
-                $this->adminEmail = trim($configuration[Configuration::ADMIN_EMAIL_PROPERTY]);
-                if (!empty($this->adminEmail)) {
-                    $this->logger->setLogEmailTo($this->adminEmail);
+            if (array_key_exists(Configuration::ADMIN_EMAIL_LIST_PROPERTY, $configuration)) {
+                $this->adminEmailList = trim($configuration[Configuration::ADMIN_EMAIL_LIST_PROPERTY]);
+                if (!empty($this->adminEmailList)) {
+                    $this->logger->setLogEmailTo($this->adminEmailList);
                 }
             }
         }
