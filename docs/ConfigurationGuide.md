@@ -9,6 +9,23 @@ REDCap ETL requires a configuration project that has information including the f
 * a schema map that indicates how data should be mapped from REDCap to the databases
 
 
+REDCap ETL Configuration Properties
+--------------------------------------
+<table>
+<thead>
+<tr> <th>Property</th> <th>Description</th> </tr>
+</thead>
+<tbody>
+<tr>
+<td>from_address</td><td>The from address for e-mail notifications
+sent by REDCap ETL</td>
+</tr>
+<td>redcapapi_url</td><td>The URL for your REDCap API</td>
+</tr> 
+</tr>
+</tbody>
+</table>
+
 Database connection string
 -----------------------------------
 The database connection string has the following format:
