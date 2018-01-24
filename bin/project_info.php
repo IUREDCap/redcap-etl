@@ -12,6 +12,7 @@ require(__DIR__.'/../dependencies/autoload.php');
 # Arguments: <properties-file>
 #-----------------------------------------------------------
 
+use IU\REDCapETL\Configuration;
 use IU\PHPCap\RedCapProject;
 use IU\PHPCap\PhpCapException;
 
@@ -29,8 +30,8 @@ try {
         throw new Exception($message);
     }
 
-    $apiUrl   = $properties['redcap_api_url'];
-    $apiToken = $properties['api_token'];
+    $apiUrl   = $properties[Configuration::REDCAP_API_URL_PROPERTY];
+    $apiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
 
     $configProject = new RedCapProject($apiUrl, $apiToken);
     $configInfo = $configProject->exportProjectInfo();
@@ -39,7 +40,7 @@ try {
 
     $records = $configProject->exportRecords();
 
-    $logToken = $records[0]['log_project_api_token'];
+    $logToken = $records[0][Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
     if ($logToken !== '') {
         $logProject = new RedCapProject($apiUrl, $logToken);
         $logInfo  = $logProject->exportProjectInfo();
@@ -47,19 +48,19 @@ try {
         $logTitle = $logInfo['project_title'];
     }
 
-    $dataToken = $records[0]['data_source_api_token'];
+    $dataToken = $records[0][Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
     $dataProject = new RedCapProject($apiUrl, $dataToken);
     $dataInfo  = $dataProject->exportProjectInfo();
     $dataId    = $dataInfo['project_id'];
     $dataTitle = $dataInfo['project_title'];
 
-    print "Config Project: [".$configId."] ".$configTitle."\n";
+    print "Config Project: [ID = ".$configId."] ".$configTitle."\n";
+    print "Data Project:   [ID = ".$dataId."] ".$dataTitle."\n";
     if ($logToken === '') {
         print "Log Project:    not set\n";
     } else {
-        print "Log Project:    [".$logId."] ".$logTitle."\n";
+        print "Log Project:    [ID = ".$logId."] ".$logTitle."\n";
     }
-    print "Data Project:   [".$dataId."] ".$dataTitle."\n";
 } catch (Exception $exception) {
     print "Error: ".$exception->getMessage()."\n";
     exit(1);
