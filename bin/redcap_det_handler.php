@@ -28,13 +28,6 @@ set_include_path(get_include_path() . PATH_SEPARATOR . 'REPLACE_INSTALL_DIR');
 
 require('REPLACE_INSTALL_DIR'.'/dependencies/autoload.php');
 
-// In case it's not set in php.ini, set the timezone, explicitly
-date_default_timezone_set('America/New_York');
-
-// Remove any limit on execution time
-set_time_limit(0);
-
-
 use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\Logger2;
 

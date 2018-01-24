@@ -27,6 +27,8 @@ class Configuration
     const REDCAP_API_URL_PROPERTY         = 'redcap_api_url';
     const SSL_VERIFY_PROPERTY             = 'ssl_verify';
     const TABLE_PREFIX_PROPERTY           = 'table_prefix';
+    const TIME_LIMIT_PROPERTY             = 'time_limit';
+    const TIMEZONE_PROPERTY               = 'timezone';
     const TRANSFORM_RULES_CHECK_PROPERTY  = 'transform_rules_check';
     const TRANSFORM_RULES_FILE_PROPERTY   = 'transform_rules_file';
     const TRANSFORM_RULES_SOURCE_PROPERTY = 'transform_rules_source';
@@ -52,6 +54,8 @@ class Configuration
     private $redcapApiUrl;
     private $sslVerify;
     private $tablePrefix;
+    private $timeLimit;
+    private $timezone;
     private $transformationRules;
     private $triggerEtl;
 
@@ -289,6 +293,21 @@ class Configuration
             $this->logProjectApiToken = null;
         }
 
+        #-----------------------------------------------
+        # Get the time limit, if any
+        #-----------------------------------------------
+        if (array_key_exists(Configuration::TIME_LIMIT_PROPERTY, $properties)) {
+            $this->timeLimit = $properties[Configuration::TIME_LIMIT_PROPERTY];
+        }
+
+        #-----------------------------------------------
+        # Get the timezone, if any
+        #-----------------------------------------------
+        if (array_key_exists(Configuration::TIMEZONE_PROPERTY, $properties)) {
+            $this->timeZone = $properties[Configuration::TIMEZONE_PROPERTY];
+        }
+
+
         // Record whether or not the actual ETL should be run. This is
         // used by the DET handler program, but not the batch program
         $this->triggerEtl = $configuration[Configuration::TRIGGER_ETL_PROPERTY];
@@ -462,6 +481,16 @@ class Configuration
     public function getTablePrefix()
     {
         return $this->tablePrefix;
+    }
+
+    public function getTimeLimit()
+    {
+        return $this->timeLimit;
+    }
+
+    public function getTimezone()
+    {
+        return $this->timezone;
     }
 
     public function getTransformationRules()

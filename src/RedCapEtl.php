@@ -18,7 +18,7 @@ use IU\REDCapETL\Database\DBConnectFactory;
  *
  * This class has several data dependencies:
  *
- * * properties file - that contains the initial e-mail address to use for notifications
+ * * configuration file - that contains the initial e-mail address to use for notifications
  *   the URL for the REDCap instance being used, the API token of the REDCap configuration
  *   project to use
  * * REDCap configuration project - provides information on the data and logging projects
@@ -201,6 +201,25 @@ class RedCapEtl
             );
         };
 
+        
+        #---------------------------------------------------------
+        # Set time limit
+        #---------------------------------------------------------
+        $timeLimit = $this->configuration->getTimeLimit();
+        if (isset($timeLimit) && trim($timeLimit) !== '') {
+            set_time_limit($this->timeLimit);
+        } else {
+            set_time_limit(0);   # no time limit
+        }
+
+        #---------------------------------------------------------
+        # Set timezone if one was specified
+        #---------------------------------------------------------
+        $timezone = $this->configuration->getTimezone();
+        if (isset($timezone) && trim($timezone) !== '') {
+            date_default_timezone_set($timezone);
+        }
+
 
         $apiUrl = $this->configuration->getRedCapApiUrl();
 
@@ -233,9 +252,6 @@ class RedCapEtl
 
         #----------------------------------------------------------------
         # Get the project that has the actual data
-        #
-        # Allow 'token_opt2' as the name of the data project token
-        # for backward compatibility with the OPTIMISTIC project
         #----------------------------------------------------------------
         $dataToken = $this->configuration->getDataSourceApiToken();
         try {
