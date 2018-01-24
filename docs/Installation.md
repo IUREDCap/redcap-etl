@@ -17,7 +17,7 @@ When the ETL process runs, this is the first file that will be accessed.
     * **Logging Project.** This optional project is used for logging. The advatage of using this project is that
 users who have access to REDCap, but not the REDCap ETL server, can access the log information. This disadvantages of
 using this project are that it increases the complexity of the installation and slows down performace.
-* **REDCap ETL.** The software that actually does the ETL.
+* **REDCap ETL.** The software that actually does the Extract Transform and Load.
 * **Database.** There needs to be some kind of database where the extracted and transformed data
 can be loaded, such as a MySQL database, although this could be as simple as a directory for CSV files.
 * **Apache Web Server.** The Apache web server is necessary if you want to use REDCap's date entry triggers to check the transformation rules and/or start
@@ -35,10 +35,11 @@ Installation Steps
 ### Step 1 - Set up the Server
 
 **Install the System Requirements:**
+
 * PHP 5.6+ or 7+, with:
     * curl extension
     * openssl extension
-* Subversion or Git, for retrieving the code
+* Subversion or Git, for retrieving the RDCap ETL code
 * MySQL (if you want to store the extracted data in a database)
 * Apache web server (if you want to allow REDCap data entry triggers for starting the ETL process)
 * E-mail server (if you want to support e-mail error notifications)
@@ -88,9 +89,12 @@ system:
 
 In REDCap, create a new project using the "Upload a REDCap project XML file " option using the file **projects/redcap-etl-config.xml** from REDCap ETL downloaded in the previous step.
 
-Set the required fields for this project, and get a REDCap API token for the project.
+Set at least all of the required fields for this project, and get a REDCap API token for the project. This token will need to be placed in your configuration
+file that you will also need to set up.
 
 To be able to set up the configuration project, you will need a data project and an API token for that project.
+
+See [Configuration Guide](ConfigurationGuide.md) for more information.
 
 ### Step 5 (Optional) - Set up a Logging Project
 
@@ -110,11 +114,39 @@ On Ubuntu 16, for example, this is all you need to do:
 
         sudo apt install sendmail
 
-### Step 8 (Optional) - Set up a Web Server and Data Entry Trigger Web Script
+### Step 8 (Optional) - Set up a Data Entry Trigger
+
+Setting up a Data Entry Trigger (DET) will allow you to run the ETL process from REDCap. Once set up, when you save the "Run" form in the configuration project, with the option to run the ETL process, a DET will be generated that will execute a web script on the REDCap ETL server that will start the ETL process. This can be useful if there are users who need to manually start the ETL process, but do not have access to the REDCap ETL server.
+
+#### Web server setup
+You need to set up a web server to run web scripts that will process DETs.
 
 For example, to install the Apache web server on Ubuntu 16, use:
 
         sudo apt install apache2 libapache2-mod-php
+
+#### Web script installation
+To set up the Data Entry Trigger (DET) web script, that will process the DET, use the following command:
+
+        bin/install_web_scripts.php
+    
+You need to specify the directory where you want the web scripts installed. And, if you placed you configuration file(s) in a directory other that REDCap ETL's config directory, you will also need to specify a configuration directory. When this web script is run, it will recurse through the config directory, and install the web scripts (if any) specified in the configuration (.ini) files that it finds to the specified web directory. For example:
+
+        php install_web_scripts.php -w /var/www/html
+    
+would install all web scripts specified in configuration (.ini) files in REDCap ETL's config directory to the /var/www/html directory.
+
+#### Configure the DET in REDCap
+You need to configure the DET in REDCap. To do this:
+
+1. Go to **Project Setup** for your configuration project in REDCap.
+2. In the **Enable optional modules and customization** section, click on the **Additional customizations** button.
+3. In the customizations dialog, check the **Data Entry Trigger** box, and enter the URL for your installed web script.
+4. Click on the **Save** button
+
+
+
+
 
 ### Step 9 (Optional) - Set up Scheduled Runs of the ETL Process
 
@@ -124,6 +156,7 @@ There are 3 ways to run REDCap ETL:
 3. Set up a cron job to run the ETL process at specific recurring times
 
 This section discuss how to set up the third option.
+
 
 
 

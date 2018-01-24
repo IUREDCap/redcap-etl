@@ -37,6 +37,12 @@ provide support for it by default</td>
 
 
 <tr>
+<td>config_api_token</td>
+<td> X </td> <td> &nbsp; </td>
+<td>The REDCap API token for the configuration project</td>
+</tr>
+
+<tr>
 <td>email_subject</td>
 <td> X </td> <td> X </td>
 <td>The subject for e-mail notifications sent by REDCap ETL</td>
