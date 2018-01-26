@@ -52,11 +52,6 @@ class RedCapEtl
     const COLUMN_REPEATING_INSTANCE        = 'redcap_repeat_instance';
     const COLUMN_REPEATING_INSTANCE_TYPE   = FieldType::INT;
 
-    // For parsing feedback
-    const PARSE_VALID = 'valid';
-    const PARSE_ERROR = 'error';
-    const PARSE_WARN  = 'warn';
-
     // For setting whether or not DET invokes the ETL or just parses
     const TRIGGER_ETL_NO  = '0';
     const TRIGGER_ETL_YES = '1';
@@ -80,8 +75,6 @@ class RedCapEtl
     protected $logProject;
 
     protected $logger;
-
-    protected $transformationRules;
 
     protected $batch_size = 1;   // In effect batch size of 1 is no batching
 
@@ -251,9 +244,6 @@ class RedCapEtl
         $this->log('REDCap ETL version '.Version::RELEASE_NUMBER);
 
 
-        $this->transformationRules = $this->configuration->getTransformationRules();
-
-
         #---------------------------------------------------
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
@@ -276,7 +266,8 @@ class RedCapEtl
      */
     public function parseMap()
     {
-        $rules = new TransformationRules($this->transformationRules);
+        $transformationRules = $this->configuration->getTransformationRules();
+        $rules = new TransformationRules($transformationRules);
         list($schema, $lookupTable, $parseResult) = $rules->parse($this->dataProject, $this->tablePrefix, $this->logger);
         #print_r($lookupTable);
         #print_r($parseResult);
@@ -596,7 +587,7 @@ class RedCapEtl
 
             list($parseStatus, $result) = $this->parseMap();
 
-            if ($parseStatus === RedCapEtl::PARSE_ERROR) {
+            if ($parseStatus === TransformationRules::PARSE_ERROR) {
                 $message = "Transformation rules not parsed. Processing stopped.";
                 $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
             } else {

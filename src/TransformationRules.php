@@ -50,7 +50,10 @@ class TransformationRules
     const SUFFIXES              = 'SUFFIXES';
     const REPEATING_INSTRUMENTS = 'REPEATING_INSTRUMENTS';
 
-    
+    # Parse status
+    const PARSE_VALID = 'valid';
+    const PARSE_ERROR = 'error';
+    const PARSE_WARN  = 'warn';
 
 
     private $rules;
@@ -454,11 +457,11 @@ class TransformationRules
 
         $messages = array();
         if ('' !== $errors) {
-            $messages = array(RedCapEtl::PARSE_ERROR,$errors.$info.$warnings);
+            $messages = array(self::PARSE_ERROR,$errors.$info.$warnings);
         } elseif ('' !== $warnings) {
-            $messages = array(RedCapEtl::PARSE_WARN,$info.$warnings);
+            $messages = array(self::PARSE_WARN,$info.$warnings);
         } else {
-            $messages = array(RedCapEtl::PARSE_VALID,$info);
+            $messages = array(self::PARSE_VALID,$info);
         }
 
         return array($schema, $this->lookupTable, $messages);

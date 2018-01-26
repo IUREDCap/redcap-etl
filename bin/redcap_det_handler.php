@@ -60,7 +60,7 @@ try {
     list($parse_status, $result) = $redCapEtl->parseMap();
  
     # If the parsing of the schema map failed.
-    if ($parse_status === RedCapEtl::PARSE_ERROR) {
+    if ($parse_status === TransformationRules::PARSE_ERROR) {
         $msg = "Schema map not fully parsed. Processing stopped.";
         $redCapEtl->log($msg);
         $result .= $msg."\n";
