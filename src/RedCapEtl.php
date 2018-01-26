@@ -34,15 +34,6 @@ class RedCapEtl
 
     const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
 
-    // Methods for encoding 1:many relationships as a 'rows_def'
-    const ENCODE_ROOT            = 'ROOT';
-    const ENCODE_EVENTS          = 'EVENTS';
-    const ENCODE_SUFFIXES        = 'SUFFIXES';
-    const ENCODE_REPEATING_INSTRUMENTS = 'REPEATING_INSTRUMENTS';
-
-    const ROWS_DEF_SEPARATOR   = ':';
-    const SUFFIXES_SEPARATOR   = ';';
-
     const ROOT                 = 0;
     const BY_EVENTS            = 1;
     const BY_SUFFIXES          = 2;
@@ -105,7 +96,6 @@ class RedCapEtl
 
     protected $lookup_table_in;  // Array of which table/fields have
                                        // already been entered into Lookup
-    protected $lookup_choices;     // Takes $field name and returns cat/labels
     protected $redcapFields;      // Array of fields available for mapping
 
     protected $rowsLoadedForTable = array();
@@ -268,32 +258,6 @@ class RedCapEtl
 
         $this->transformationRules = $this->configuration->getTransformationRules();
 
-        // Create another Schema just for lookup tables
-        $this->lookup_table = new Table(
-            $this->tablePrefix . RedCapEtl::LOOKUP_TABLE_NAME,
-            RedCapEtl::LOOKUP_TABLE_PRIMARY_ID,
-            RedCapEtl::ENCODE_ROOT,
-            array()
-        );
-
-        #-----------------------------------------------
-        # Create and add fields for the lookup table
-        #-----------------------------------------------
-        $field_primary = new Field(RedCapEtl::LOOKUP_TABLE_PRIMARY_ID, FieldType::INT);
-        $field_field_name = new Field(RedCapEtl::LOOKUP_FIELD_TABLE_NAME, FieldType::STRING);
-        $field_table_name = new Field(RedCapEtl::LOOKUP_FIELD_FIELD_NAME, FieldType::STRING);
-        $field_category = new Field(RedCapEtl::LOOKUP_FIELD_CATEGORY, FieldType::STRING);
-        $field_value = new Field(RedCapEtl::LOOKUP_FIELD_LABEL, FieldType::STRING);
-        $this->lookup_table->addField($field_primary);
-        $this->lookup_table->addField($field_table_name);
-        $this->lookup_table->addField($field_field_name);
-        $this->lookup_table->addField($field_category);
-        $this->lookup_table->addField($field_value);
-
-        #--------------------------------------------------------
-        # Get metadata for fields that use categories and labels
-        #--------------------------------------------------------
-        $this->lookup_choices = $this->dataProject->getLookupChoices();
 
         #--------------------------------------------------
         # Get set of REDCap fields available for mapping
@@ -646,19 +610,6 @@ class RedCapEtl
             // NOTE: The $result is not used in batch mode. It is used
             //       by the DET handler to give feedback within REDCap.
 
-
-            # TEST CODE
-            #$rules = new TransformationRules($this->transformationRules);
-            #print "RULES:\n";
-            #print_r($rules);
-            #print "\n\n";
-            #$rules->parse(
-            #    $this->logger,
-            #    $this->recordIdFieldName,
-            #    $this->redcapFields,
-            #    $this->lookup_choices,
-            #    $this->tablePrefix
-            #);
 
             list($parseStatus, $result) = $this->parseMap();
 

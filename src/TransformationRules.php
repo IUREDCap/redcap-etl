@@ -27,8 +27,11 @@ use IU\REDCapETL\Database\DBConnectFactory;
  */
 class TransformationRules
 {
-    // For the Schema Map
+    # Separators; example: "TABLE,  Fifth, Main, EVENTS:a;b"
     const ELEMENTS_SEPARATOR  = ',';
+    const ROWS_DEF_SEPARATOR   = ':';   # row type separator
+    const SUFFIXES_SEPARATOR   = ';';
+
     const ELEMENT_POS         = 0;
     const ELEMENT_TABLE       = 'TABLE';
     const ELEMENT_FIELD       = 'FIELD';
@@ -38,12 +41,16 @@ class TransformationRules
     const FIELD_NAME_POS      = 1;
     const FIELD_TYPE_POS      = 2;
 
+    # Table types (non-ROOT types represent 1:many relationships)
+    const ROOT                  = 'ROOT';
+    const EVENTS                = 'EVENTS';
+    const SUFFIXES              = 'SUFFIXES';
+    const REPEATING_INSTRUMENTS = 'REPEATING_INSTRUMENTS';
+
+    
+
+
     private $rules;
-
-    private $errorHandler;
-
-    private $fieldNames;
-    private $recordIdFieldName;
 
     private $lookupChoices;
     private $lookupTable;
@@ -56,7 +63,6 @@ class TransformationRules
      * Constructor.
      *
      * @param string $rules the transformation rules
-     *     (used as an alternative to the properties array).
      */
     public function __construct($rules) {
         $this->rules = $rules;
@@ -73,7 +79,7 @@ class TransformationRules
     {
         $this->tablePrefix = $tablePrefix;
         $this->logger      = $logger;
-        $this->recordIdFieldName = $dataProject->getRecordIdFieldName();
+        $recordIdFieldName = $dataProject->getRecordIdFieldName();
 
         $fieldNames        = $dataProject->getFieldNames();
 
@@ -162,7 +168,7 @@ class TransformationRules
                         $parent_table,
                         $rows_type,
                         $suffixes,
-                        $this->recordIdFieldName
+                        $recordIdFieldName
                     );
 
                     #---------------------------------------------------------
@@ -177,8 +183,8 @@ class TransformationRules
                     # specified), so a value can be entered that the
                     # database will not be able to handle.
                     #---------------------------------------------------------
-                    if ($table->primary !== $this->recordIdFieldName) {
-                        $field = new Field($this->recordIdFieldName, FieldType::STRING);
+                    if ($table->primary !== $recordIdFieldName) {
+                        $field = new Field($recordIdFieldName, FieldType::STRING);
                         $table->addField($field);
                     }
 
@@ -393,7 +399,7 @@ class TransformationRules
                             unset($redCapFields[$fname]);
                         }
         
-                        if ($fname !== $this->recordIdFieldName) {
+                        if ($fname !== $recordIdFieldName) {
                             // Create a new Field
                             $field = new Field($fname, $ftype);
 
@@ -498,34 +504,34 @@ class TransformationRules
     {
         $rows_def = trim($rows_def);
 
-        $regex = '/'.RedCapEtl::SUFFIXES_SEPARATOR.'/';
+        $regex = '/'.self::SUFFIXES_SEPARATOR.'/';
 
         $rows_type = '';
         $suffixes = array();
 
-        list($rows_encode, $suffixes_def) = array_pad(explode(RedCapEtl::ROWS_DEF_SEPARATOR, $rows_def), 2, null);
+        list($rows_encode, $suffixes_def) = array_pad(explode(self::ROWS_DEF_SEPARATOR, $rows_def), 2, null);
 
         switch ($rows_encode) {
-            case RedCapEtl::ENCODE_ROOT:
+            case self::ROOT:
                 $rows_type = RedCapEtl::ROOT;
                 break;
 
-            case RedCapEtl::ENCODE_EVENTS:
-                $suffixes = explode(RedCapEtl::SUFFIXES_SEPARATOR, $suffixes_def);
+            case self::EVENTS:
+                $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixes_def);
                 $rows_type = (empty($suffixes[0])) ? RedCapEtl::BY_EVENTS : RedCapEtl::BY_EVENTS_SUFFIXES;
                 break;
 
-            case RedCapEtl::ENCODE_REPEATING_INSTRUMENTS:
+            case self::REPEATING_INSTRUMENTS:
                 $rows_type = RedCapEtl::BY_REPEATING_INSTRUMENTS;
                 break;
 
-            case RedCapEtl::ENCODE_SUFFIXES:
-                $suffixes = explode(RedCapEtl::SUFFIXES_SEPARATOR, $suffixes_def);
+            case self::SUFFIXES:
+                $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixes_def);
                 $rows_type = (empty($suffixes[0])) ? false : RedCapEtl::BY_SUFFIXES;
                 break;
 
             case (preg_match($regex, $rows_encode) ? true : false):
-                $suffixes = explode(RedCapEtl::SUFFIXES_SEPARATOR, $rows_encode);
+                $suffixes = explode(self::SUFFIXES_SEPARATOR, $rows_encode);
                 $rows_type = (empty($suffixes[0])) ? false : RedCapEtl::BY_SUFFIXES;
                 break;
 
@@ -542,7 +548,7 @@ class TransformationRules
         $this->lookupTable = new Table(
             $this->tablePrefix . RedCapEtl::LOOKUP_TABLE_NAME,
             RedCapEtl::LOOKUP_TABLE_PRIMARY_ID,
-            RedCapEtl::ENCODE_ROOT,
+            self::ROOT,
             array()
         );
 
