@@ -40,7 +40,9 @@ try {
 
     $records = $configProject->exportRecords();
 
-    $logToken = $records[0][Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
+    $config = $records[0];
+
+    $logToken = $config[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
     if ($logToken !== '') {
         $logProject = new RedCapProject($apiUrl, $logToken);
         $logInfo  = $logProject->exportProjectInfo();
@@ -48,7 +50,7 @@ try {
         $logTitle = $logInfo['project_title'];
     }
 
-    $dataToken = $records[0][Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
+    $dataToken = $config[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
     $dataProject = new RedCapProject($apiUrl, $dataToken);
     $dataInfo  = $dataProject->exportProjectInfo();
     $dataId    = $dataInfo['project_id'];
