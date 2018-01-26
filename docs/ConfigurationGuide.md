@@ -1,129 +1,80 @@
 REDCap ETL Configuration
 ========================
 
-REDCap ETL requires a configuration file and REDCap project that have information including the following:
+REDCap ETL requires both a configuration file and REDCap configuration project.
+REDCap ETL uses the configuration file to locate the configuration project, so
+the file needs to contain:
 
 * the URL for your REDCap API
-* an API token for the REDCap project that contains the actual data
-* an API token for a logging project that is used by REDCap ETL to log information
-* database connection information for the the database where the extracted data are to be stored
-* a schema map that indicates how data should be mapped from REDCap to the databases
+* the API token for your REDCap configuration project
+
+In addition to these properties, the configuration file can also contain
+optional system properties, such as specification of a file
+that REDCap ETL will log to.
+
+The 3 main things that need to be spefied in the configuration project are:
+
+1. The data source - where the data is extracted from.
+2. The transformation rules - how to transform the data in the data source
+to the target for the data load.
+3. The database - where the extracted and transformed data is loaded
+
+There are some properties that can be specified in both the configuration file
+and configuration project. For these properties, a non-blank value in the 
+configuration project will replace the value in the configuration file
+(which is read first).
 
 
-REDCap ETL Configuration Properties
---------------------------------------
-<table>
-
-<thead>
-<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
-</thead>
-
-<tbody>
-
-<tr>
-<td>admin_email_list</td>
-<td> X </td> <td> X </td>
-
-<td>The to address list for e-mail notifications sent by REDCap ETL</td>
-</tr>
-
-<tr>
-<td>ca_cert_file</td>
-<td> X </td> <td> &nbsp; </td>
-<td>Certificate authority certificate file. This can be used to support
-SSL verification of the connection to REDCap if your system does not
-provide support for it by default</td>
-</tr>
-
-
-<tr>
-<td>config_api_token</td>
-<td> X </td> <td> &nbsp; </td>
-<td>The REDCap API token for the configuration project</td>
-</tr>
-
-<tr>
-<td>email_subject</td>
-<td> X </td> <td> X </td>
-<td>The subject for e-mail notifications sent by REDCap ETL</td>
-</tr>
-
-<tr>
-<td>from_address</td>
-<td> X </td> <td> X </td>
-<td>The from address for e-mail notifications sent by REDCap ETL</td>
-</tr>
-<tr>
-
-<td>log_file</td>
-<td> X </td> <td> &nbsp; </td>
-<td>File to use for logging</td>
-</tr>
-
-<tr>
-<td>redcap_api_url</td>
-<td> X </td> <td> &nbsp; </td>
-<td>The URL for your REDCap API</td> 
-</tr>
-
-<tr>
-<td>ssl_verify</td>
-<td> X </td> <td> &nbsp; </td>
-<td>Indicates is SSL verification is used for the connection to REDCap.
-This defaults to true. Setting it to false is insecure.</td> 
-</tr>
-
-<tr>
-<td>web_script</td>
-<td> X </td> <td> &nbsp; </td>
-<td>The file name to use for the installed web script used to handle
-REDCap DETs (Data Entry Triggers). The file name 
-should normally end with .php. This is used to allow the ETL
-process to be started from REDCap. You can leave this blank if you
-are not using DETs.</td> 
-</tr>
-
-</tbody>
-</table>
-
-Database connection string
+Data Source
 -----------------------------------
-The database connection string has the following format:
-
-*database-connection-type* : *database-connection-values*
-
-Currently, the only supported database connection types are MySQL and CSV.
+The data source is specified as the REDCap API token for the data project,
+i.e., the REDCap project that has the data to be extracted.
 
 
-### MySSQL
-For MySQL, the *database-connnection-values* format is
+Database
+-----------------------------------
 
-    <host>:<username>:<password>:<database>
+The database where the data is loaded is specified as a
+database connection string. This string has the following format:
+
+        <database-connection-type> : <database-connection-values>
+
+Currently, the supported database connection types are
+
+* **MySQL**
+* **CSV** (comma-separated values).
+
+
+### MySQL
+For MySQL, the format of the database connnection string is:
+
+        MySQL:<host>:<username>:<password>:<database>
 
 Example MySQL database connection strings:
 
-    MySQL:localhost:etl_user:etl_password:etl_test_db
+        MySQL:localhost:etl_user:etl_password:etl_test_db
 
-    MySQL:someplace.edu:admin:admin_password_123:etl_prod_db
+        MySQL:someplace.edu:admin:admin_password_123:etl_prod_db
 
 ### CSV
-For CSV, the *database-connnection-values* format is
+For CSV, the database connnection string format is:
 
-    <output-directory>
+        CSV:<output-directory>
 
 For example:
 
-    CSV:/home/redcapetl/csv/project1
+        CSV:/home/redcap-etl/csv/project1
 
 
-Schema Map
+Transformation Rules
 ---------------------------------------------------
-The schema map specifies how the records in REDCap should be transformed into records in your database. You can enter the map in the Schema Map text box provided, or upload a file containing the map. An uploaded file takes precedence over the Schema Map text box.
+The transformation rules specify how the records in REDCap should be transformed into records in your database. You can enter the map in the transformation rules 
+text box, or upload a file containing the rules.
 
 
-### Relational Schema Map syntax
+### Transformation Rules syntax
 
-Schema maps consists of one or more TABLE statements, where each TABLE statement is followed by one or more FIELD statements.
+Transformation rules consists of one or more TABLE statements, where each TABLE statement is followed by one or more FIELD statements.
 
     TABLE, <table_name>, <parent_table|primary_key_name>, <rows_type>
     FIELD, <field_name>, <field_type>
@@ -270,3 +221,79 @@ Mapping
     TABLE,  Fifth, Main, EVENTS:a;b
     FIELD,  var8, st
 
+
+REDCap ETL Configuration Properties
+--------------------------------------
+<table>
+
+<thead>
+<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>admin_email_list</td>
+<td> X </td> <td> X </td>
+
+<td>The to address list for e-mail notifications sent by REDCap ETL</td>
+</tr>
+
+<tr>
+<td>ca_cert_file</td>
+<td> X </td> <td> &nbsp; </td>
+<td>Certificate authority certificate file. This can be used to support
+SSL verification of the connection to REDCap if your system does not
+provide support for it by default</td>
+</tr>
+
+
+<tr>
+<td>config_api_token</td>
+<td> X </td> <td> &nbsp; </td>
+<td>The REDCap API token for the configuration project</td>
+</tr>
+
+<tr>
+<td>email_subject</td>
+<td> X </td> <td> X </td>
+<td>The subject for e-mail notifications sent by REDCap ETL</td>
+</tr>
+
+<tr>
+<td>from_address</td>
+<td> X </td> <td> X </td>
+<td>The from address for e-mail notifications sent by REDCap ETL</td>
+</tr>
+<tr>
+
+<td>log_file</td>
+<td> X </td> <td> &nbsp; </td>
+<td>File to use for logging</td>
+</tr>
+
+<tr>
+<td>redcap_api_url</td>
+<td> X </td> <td> &nbsp; </td>
+<td>The URL for your REDCap API</td> 
+</tr>
+
+<tr>
+<td>ssl_verify</td>
+<td> X </td> <td> &nbsp; </td>
+<td>Indicates is SSL verification is used for the connection to REDCap.
+This defaults to true. Setting it to false is insecure.</td> 
+</tr>
+
+<tr>
+<td>web_script</td>
+<td> X </td> <td> &nbsp; </td>
+<td>The file name to use for the installed web script used to handle
+REDCap DETs (Data Entry Triggers). The file name 
+should normally end with .php. This is used to allow the ETL
+process to be started from REDCap. You can leave this blank if you
+are not using DETs.</td> 
+</tr>
+
+</tbody>
+</table>

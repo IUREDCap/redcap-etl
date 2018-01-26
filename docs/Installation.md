@@ -9,7 +9,7 @@ are shown in the diagram below, and described in the text below.
 
 ![alt text](etl-process.png "ETL Process")
 
-* **Properties File.** This file contains the REDCap API URL and REDCap API token for the configuration project, so that it can be accessed by REDCap ETL. In addition, this file contains some server properties, such as the location for writing REDCap ETL log files.
+* **Configuration File.** This file contains the REDCap API URL and REDCap API token for the configuration project, so that it can be accessed by REDCap ETL. In addition, this file contains some server properties, such as the location for writing REDCap ETL log files.
 When the ETL process runs, this is the first file that will be accessed.
 * **REDCap Projects**
     * **Configuration Project.** This project contains configuration         information for the ETL process.
@@ -104,9 +104,20 @@ In REDCap, create a new project using the "Upload a REDCap project XML file " op
 
 ### Step 6 - Create a Configuration File
 
-Configuration files need to be stored in the config directory of the REDCap ETL installation. The file
-**config/config-example.ini** can be copied and then modified.  See this file for more information
-about the properties that need to be set.
+A configuration file needs to be created in addition to the
+configuration project. At a minimum, this file needs to have your
+REDCap API's URL, and the REDCap API token of your configuration project,
+so that REDCap ETL knows how to access your configuration project.
+
+The standard place to store configuration files is in the **config/**
+directory of the REDCap ETL installation. This is the default directory
+that the web script installation script (see below) will search for configuration
+files.
+
+To create a new configuration file, the file **config/config-example.ini**
+can be copied and then modified.
+See this file for more information about the properties that need to be set.
+
 
 ### Step 7 (Optional) - Set up an E-mail Server
 
