@@ -34,6 +34,8 @@ class DemographyTest extends TestCase
                 self::$csvDir .= DIRECTORY_SEPARATOR;
             }
 
+            $redCapEtl->run();
+            /***
             self::$logger->logInfo("Starting processing.");
 
             list($parse_status,$result) = $redCapEtl->parseMap();
@@ -45,6 +47,7 @@ class DemographyTest extends TestCase
                 $redCapEtl->extractTransformLoad();
                 self::$logger->logInfo("Processing complete.");
             }
+            ****/
         } catch (EtlException $exception) {
             self::$logger->logException($exception);
             self::$logger->logError('Processing failed.');
