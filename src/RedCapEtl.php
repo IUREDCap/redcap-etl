@@ -34,6 +34,7 @@ class RedCapEtl
 
     const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
 
+    # Rows Type
     const ROOT                 = 0;
     const BY_EVENTS            = 1;
     const BY_SUFFIXES          = 2;
@@ -460,7 +461,7 @@ class RedCapEtl
      * creates some views based on those tables. If there are existing
      * tables, then those tables are dropped first.
      */
-    public function loadTables()
+    public function createLoadTables()
     {
         // Used to speed up processing
         $lookup = new Lookup($this->lookup_table);
@@ -597,7 +598,7 @@ class RedCapEtl
                 // These three steps are joined together at this level so that
                 // the data from REDCap can be worked on in batches
                 //----------------------------------------------------------------------
-                $this->loadTables();
+                $this->createLoadTables();
                 $this->extractTransformLoad();
 
                 $this->log("Processing complete.");
