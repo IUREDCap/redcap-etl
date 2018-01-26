@@ -95,13 +95,15 @@ Note: if the table is a root table, it has no parent table, and the field after 
 
 * __rows_type__ is one of:
 
-    ROOT
-    EVENTS
-    EVENTS:<suffixes>
-    <suffixes>
-    REPEATING_INSTRUMENTS
+        ROOT
+        EVENTS
+        EVENTS:<suffixes>
+        <suffixes>
+        REPEATING_INSTRUMENTS
 
-    where suffixes is in the format suffix1; suffix2; ...
+* __suffixes__ is in the format
+
+        suffix1; suffix2; ...
 
 * Root tables currently need a synthetic primary key (usually <table_name\>_id) in the place of &lt;parent_table&gt;
 
