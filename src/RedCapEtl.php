@@ -39,10 +39,6 @@ class RedCapEtl
     const BY_SUFFIXES          = 2;
     const BY_EVENTS_SUFFIXES   = 3;
     const BY_REPEATING_INSTRUMENTS   = 4;
-    const FORM_COMPLETE_SUFFIX = '_complete';
-
-    // For Schema Map files
-    const FILE_NOT_FOUND = 'NOFILE';
 
     // For creating output fields to represent events and suffixes
     const COLUMN_EVENT             = 'redcap_event';
@@ -96,7 +92,6 @@ class RedCapEtl
 
     protected $lookup_table_in;  // Array of which table/fields have
                                        // already been entered into Lookup
-    protected $redcapFields;      // Array of fields available for mapping
 
     protected $rowsLoadedForTable = array();
   
@@ -258,18 +253,6 @@ class RedCapEtl
 
         $this->transformationRules = $this->configuration->getTransformationRules();
 
-
-        #--------------------------------------------------
-        # Get set of REDCap fields available for mapping
-        #--------------------------------------------------
-        $this->redcapFields = $this->dataProject->getFieldNames();
-
-        // Remove each instrument's completion field from the field list
-        foreach ($this->redcapFields as $field_name => $val) {
-            if (preg_match('/'.RedCapEtl::FORM_COMPLETE_SUFFIX.'$/', $field_name)) {
-                unset($this->redcapFields[$field_name]);
-            }
-        }
 
         #---------------------------------------------------
         # Create a database connection for the database

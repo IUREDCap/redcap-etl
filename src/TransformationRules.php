@@ -32,6 +32,9 @@ class TransformationRules
     const ROWS_DEF_SEPARATOR   = ':';   # row type separator
     const SUFFIXES_SEPARATOR   = ';';
 
+    # Suffix for the REDCap field indicated the form has been completed
+    const FORM_COMPLETE_SUFFIX = '_complete';
+
     const ELEMENT_POS         = 0;
     const ELEMENT_TABLE       = 'TABLE';
     const ELEMENT_FIELD       = 'FIELD';
@@ -86,7 +89,7 @@ class TransformationRules
         $redCapFields      = $dataProject->getFieldNames();
         // Remove each instrument's completion field from the field list
         foreach ($redCapFields as $field_name => $val) {
-            if (preg_match('/'.RedCapEtl::FORM_COMPLETE_SUFFIX.'$/', $field_name)) {
+            if (preg_match('/'.self::FORM_COMPLETE_SUFFIX.'$/', $field_name)) {
                 unset($redCapFields[$field_name]);
             }
         }
