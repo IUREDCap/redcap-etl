@@ -9,30 +9,31 @@
 require(__DIR__ . '/../dependencies/autoload.php');
 
 use IU\PHPCap\RedCapProject;
+use IU\REDCapETL\Configuration;
 
 if (count($argv) != 2) {
-    print "Usage: php $argv[0] <properties-file>\n";
+    print "Usage: php $argv[0] <configuration-file>\n";
     exit(1);
 } else {
-    $propertiesFile = $argv[1];
+    $configurationFile = $argv[1];
 }
 
 try {
-    $properties = parse_ini_file($propertiesFile);
+    $properties = parse_ini_file($configurationFile);
     if ($properties === false) {
         $message = 'Unable to read properties file ';
         throw new Exception($message);
     }
 
-    $apiUrl   = $properties['redcap_api_url'];
-    $apiToken = $properties['api_token'];
+    $apiUrl   = $properties[Configuration::REDCAP_API_URL_PROPERTY];
+    $apiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
 
     $configProject = new RedCapProject($apiUrl, $apiToken, true);
     $configInfo = $configProject->exportProjectInfo();
 
     $records = $configProject->exportRecords();
 
-    $dataToken = $records[0]['data_source_api_token'];
+    $dataToken = $records[0][Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
     $dataProject = new RedCapProject($apiUrl, $dataToken, true);
 
     $projectInfo = $dataProject->exportProjectInfo();
