@@ -608,4 +608,57 @@ class TransformationRules
     {
         $this->logger->logInfo($message);
     }
+
+    
+    /**
+     * Generates default transformation rules for the
+     * specified data project, sets the rules for the
+     * object to the generated ones, and then returns
+     * the rules.
+     *
+     * @return string the generated transformation rules
+     */
+    public function generateDefaultRules($dataProject)
+    {
+        $rules = '';
+
+        $projectInfo = $dataProject->exportProjectInfo();
+        $instruments = $dataProject->exportInstruments();
+        $metadata    = $dataProject->exportMetadata();
+
+        $recordId = $metadata[0]['field_name'];
+
+        foreach ($instruments as $formName => $formLabel) {
+            $rules .= "TABLE,".$formName.",".$recordId.",".'ROOT'."\n";
+
+            foreach ($metadata as $field) {
+                if ($field['form_name'] == $formName) {
+                    $type = 'string';
+                
+                    $validationType = $field['text_validation_type_or_show_slider_number'];
+                    $fieldType      = $field['field_type'];
+                
+                    if ($fieldType === 'checkbox') {
+                        $type = 'checkbox';
+                    } elseif ($validationType === 'integer') { # value may be too large for db int
+                        $type = 'string';
+                    } elseif ($fieldType === 'dropdown' || $fieldType === 'radio') {
+                        $type = 'int';
+                    } elseif ($validationType === 'date_mdy') {
+                        $type = 'date';
+                    }
+                
+                    if ($fieldType === 'descriptive' || $fieldType === 'file') {
+                        ; // Don't do anything
+                    } else {
+                        $rules .= "FIELD,".$field['field_name'].",".$type."\n";
+                    }
+                }
+            }
+            $rules .= "\n";
+        }
+        $this->rules = $rules;
+        return $rules;
+    }
 }
+

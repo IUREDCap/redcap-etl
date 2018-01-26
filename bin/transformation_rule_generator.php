@@ -10,6 +10,7 @@ require(__DIR__ . '/../dependencies/autoload.php');
 
 use IU\PHPCap\RedCapProject;
 use IU\REDCapETL\Configuration;
+use IU\REDCapETL\TransformationRules;
 
 if (count($argv) != 2) {
     print "Usage: php $argv[0] <configuration-file>\n";
@@ -36,41 +37,10 @@ try {
     $dataToken = $records[0][Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
     $dataProject = new RedCapProject($apiUrl, $dataToken, true);
 
-    $projectInfo = $dataProject->exportProjectInfo();
-    $instruments = $dataProject->exportInstruments();
-    $metadata    = $dataProject->exportMetadata();
+    $transformationRules = new TransformationRules('');
+    $rules = $transformationRules->generateDefaultRules($dataProject);
 
-    $recordId = $metadata[0]['field_name'];
-
-    foreach ($instruments as $formName => $formLabel) {
-        print "TABLE,".$formName.",".$recordId.",".'ROOT'."\n";
-
-        foreach ($metadata as $field) {
-            if ($field['form_name'] == $formName) {
-                $type = 'string';
-                
-                $validationType = $field['text_validation_type_or_show_slider_number'];
-                $fieldType      = $field['field_type'];
-                
-                if ($fieldType === 'checkbox') {
-                    $type = 'checkbox';
-                } elseif ($validationType === 'integer') { # value may be too large for db int
-                    $type = 'string';
-                } elseif ($fieldType === 'dropdown' || $fieldType === 'radio') {
-                    $type = 'int';
-                } elseif ($validationType === 'date_mdy') {
-                    $type = 'date';
-                }
-                
-                if ($fieldType === 'descriptive' || $fieldType === 'file') {
-                    ; // Don't do anything
-                } else {
-                    print "FIELD,".$field['field_name'].",".$type."\n";
-                }
-            }
-        }
-        print "\n";
-    }
+    print $rules;
 } catch (Exception $exception) {
     print "Error: ".$exception->getMessage()."\n";
     exit(1);
