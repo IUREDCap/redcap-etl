@@ -30,16 +30,6 @@ use IU\REDCapETL\Database\DBConnectFactory;
  */
 class RedCapEtl
 {
-    // For the Schema Map
-    const SCHEMA_ELEMENTS_SEPARATOR  = ',';
-    const SCHEMA_ELEMENT_POS         = 0;
-    const SCHEMA_ELEMENT_TABLE       = 'TABLE';
-    const SCHEMA_ELEMENT_FIELD       = 'FIELD';
-    const SCHEMA_TABLE_NAME_POS      = 1;
-    const SCHEMA_TABLE_PARENT_POS    = 2;
-    const SCHEMA_TABLE_ROWSTYPE_POS  = 3;
-    const SCHEMA_FIELD_NAME_POS      = 1;
-    const SCHEMA_FIELD_TYPE_POS      = 2;
     const CHECKBOX_SEPARATOR         = '___';
 
     const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';

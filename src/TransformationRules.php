@@ -28,66 +28,15 @@ use IU\REDCapETL\Database\DBConnectFactory;
 class TransformationRules
 {
     // For the Schema Map
-    const SCHEMA_ELEMENTS_SEPARATOR  = ',';
-    const SCHEMA_ELEMENT_POS         = 0;
-    const SCHEMA_ELEMENT_TABLE       = 'TABLE';
-    const SCHEMA_ELEMENT_FIELD       = 'FIELD';
-    const SCHEMA_TABLE_NAME_POS      = 1;
-    const SCHEMA_TABLE_PARENT_POS    = 2;
-    const SCHEMA_TABLE_ROWSTYPE_POS  = 3;
-    const SCHEMA_FIELD_NAME_POS      = 1;
-    const SCHEMA_FIELD_TYPE_POS      = 2;
-    const CHECKBOX_SEPARATOR         = '___';
-
-    const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
-
-    // Methods for encoding 1:many relationships as a 'rows_def'
-    const ENCODE_ROOT            = 'ROOT';
-    const ENCODE_EVENTS          = 'EVENTS';
-    const ENCODE_SUFFIXES        = 'SUFFIXES';
-    const ENCODE_REPEATING_INSTRUMENTS = 'REPEATING_INSTRUMENTS';
-
-    const ROWS_DEF_SEPARATOR   = ':';
-    const SUFFIXES_SEPARATOR   = ';';
-
-    const ROOT                 = 0;
-    const BY_EVENTS            = 1;
-    const BY_SUFFIXES          = 2;
-    const BY_EVENTS_SUFFIXES   = 3;
-    const BY_REPEATING_INSTRUMENTS   = 4;
-    const FORM_COMPLETE_SUFFIX = '_complete';
-
-    // For Schema Map files
-    const FILE_NOT_FOUND = 'NOFILE';
-
-    // For creating output fields to represent events and suffixes
-    const COLUMN_EVENT             = 'redcap_event';
-    const COLUMN_SUFFIXES          = 'redcap_suffix';
-    const COLUMN_EVENT_TYPE        = FieldType::STRING;
-    const COLUMN_SUFFIXES_TYPE     = FieldType::STRING;
-    const REDCAP_EVENT_NAME        = 'redcap_event_name';
-
-    const COLUMN_REPEATING_INSTRUMENT      = 'redcap_repeat_instrument';
-    const COLUMN_REPEATING_INSTRUMENT_TYPE = FieldType::STRING;
-    const COLUMN_REPEATING_INSTANCE        = 'redcap_repeat_instance';
-    const COLUMN_REPEATING_INSTANCE_TYPE   = FieldType::INT;
-
-    // For parsing feedback
-    const PARSE_VALID = 'valid';
-    const PARSE_ERROR = 'error';
-    const PARSE_WARN  = 'warn';
-
-    // For setting whether or not DET invokes the ETL or just parses
-    const TRIGGER_ETL_NO  = '0';
-    const TRIGGER_ETL_YES = '1';
-
-    // For Lookup tables
-    const LOOKUP_TABLE_NAME        = 'Lookup';
-    const LOOKUP_TABLE_PRIMARY_ID  = 'lookup_id';
-    const LOOKUP_FIELD_TABLE_NAME  = 'table_name';
-    const LOOKUP_FIELD_FIELD_NAME  = 'field_name';
-    const LOOKUP_FIELD_CATEGORY    = 'category';
-    const LOOKUP_FIELD_LABEL       = 'label';
+    const ELEMENTS_SEPARATOR  = ',';
+    const ELEMENT_POS         = 0;
+    const ELEMENT_TABLE       = 'TABLE';
+    const ELEMENT_FIELD       = 'FIELD';
+    const TABLE_NAME_POS      = 1;
+    const TABLE_PARENT_POS    = 2;
+    const TABLE_ROWSTYPE_POS  = 3;
+    const FIELD_NAME_POS      = 1;
+    const FIELD_TYPE_POS      = 2;
 
     private $rules;
 
@@ -167,22 +116,22 @@ class TransformationRules
 
             // Get elements of the line, trimmed
             // trim removes leading and trailing whitespace
-            $elements = array_map('trim', explode(RedCapEtl::SCHEMA_ELEMENTS_SEPARATOR, $line));
+            $elements = array_map('trim', explode(self::ELEMENTS_SEPARATOR, $line));
 
             #print 'LINE: '.$line."\n";
 
             // Check first element
-            switch ($elements[RedCapEtl::SCHEMA_ELEMENT_POS]) {
+            switch ($elements[self::ELEMENT_POS]) {
                 // Start with Table?
-                case RedCapEtl::SCHEMA_ELEMENT_TABLE:
+                case self::ELEMENT_TABLE:
                     // Retrieve Table parameters
                     $parent_table_name = $tablePrefix
-                        . $this->cleanTableName($elements[RedCapEtl::SCHEMA_TABLE_PARENT_POS]);
+                        . $this->cleanTableName($elements[self::TABLE_PARENT_POS]);
 
                     $table_name = $tablePrefix
-                        . $this->cleanTableName($elements[RedCapEtl::SCHEMA_TABLE_NAME_POS]);
+                        . $this->cleanTableName($elements[self::TABLE_NAME_POS]);
 
-                    $rows_def = $this->cleanRowsDef($elements[RedCapEtl::SCHEMA_TABLE_ROWSTYPE_POS]);
+                    $rows_def = $this->cleanRowsDef($elements[self::TABLE_ROWSTYPE_POS]);
 
                     // Validate all Table parameters found
                     if (($this->isEmptyString($parent_table_name)) ||
@@ -286,11 +235,11 @@ class TransformationRules
                     break;
 
                 // Start with Field?
-                case RedCapEtl::SCHEMA_ELEMENT_FIELD:
+                case self::ELEMENT_FIELD:
                     //------------------------------------------------------------
                     // Retrieve Field parameters
-                    $field_name = $this->cleanFieldName($elements[RedCapEtl::SCHEMA_FIELD_NAME_POS]);
-                    $field_type = $this->cleanFieldType($elements[RedCapEtl::SCHEMA_FIELD_TYPE_POS]);
+                    $field_name = $this->cleanFieldName($elements[self::FIELD_NAME_POS]);
+                    $field_type = $this->cleanFieldType($elements[self::FIELD_TYPE_POS]);
 
                     //------------------------------------------------------------
                     // Validate all Field parameters found
