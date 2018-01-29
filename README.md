@@ -9,5 +9,5 @@ REDCap ETL (Extract, Transform, and Load)
 
 Documentations:
 * [Installation Guide](docs/InstallationGuide.md)
-* [Configuration Guide](docs/CofigurationGuide.md)
+* [Configuration Guide](docs/ConfigurationGuide.md)
 * [Developer Guide](docs/DeveloperGuide.md)
