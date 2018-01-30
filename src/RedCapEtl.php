@@ -611,6 +611,64 @@ class RedCapEtl
 
 
     /**
+     * Run the ETL process for a DET (Data Entry Trigger)
+     */
+    public function runForDet()
+    {
+        $this->logger->logInfo('Executing web script '.$this->logger->getApp());
+
+        $detHandler = $redCapEtl->getDetHandler();
+        list($project_id,$record_id) = $detHandler->getDetParams();
+
+        #-----------------------------------------------------------------------
+        # Data Entry Trigger: Check for allowed project/servers
+        #-----------------------------------------------------------------------
+        $detHandler->checkDetId($project_id);
+        $detHandler->checkAllowedServers();
+
+        #-----------------------------------------------------------------------
+        # Parse Map
+        #-----------------------------------------------------------------------
+        list($parse_status, $result) = $redCapEtl->parseMap();
+
+        # If the parsing of the schema map failed.
+        if ($parse_status === TransformationRules::PARSE_ERROR) {
+            $msg = "Schema map not fully parsed. Processing stopped.";
+            $redCapEtl->log($msg);
+            $result .= $msg."\n";
+        } else {
+            $result .= "Schema map is valid.\n";
+
+            if ($redCapEtl->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
+                // ETL not requested
+                $msg = "Web-invoked process stopped after parsing, per default.";
+                $redCapEtl->log($msg);
+                $result .= $msg."\n";
+            } else {
+                $result .= "ETL proceeding. Please see log for results\n";
+
+                $redCapEtl->createLoadTables();
+                //--------------------------------------------------------------------
+                // Extract, Transform, and Load
+                //
+                // These three steps are joined together at this level so that
+                // the data from REDCap can be worked on in batches
+                //--------------------------------------------------------------------
+                $redCapEtl->extractTransformLoad();
+            } // ETL requested
+        } // parseMap valid
+
+        // Provide a timestamp for the results
+        $result = date('g:i:s a d-M-Y T') . "\n" . $result;
+
+        #-----------------------------------------------------------
+        # Upload the results, and set ETL trigger back to default
+        #-----------------------------------------------------------
+        $redCapEtl->uploadResultAndReset($result, $record_id);
+    }
+
+
+    /**
      * Gets the DET (Data Entry Trigger) handler.
      */
     public function getDetHandler()
