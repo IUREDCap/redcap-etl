@@ -37,6 +37,10 @@ class Configuration
 
     const WEB_SCRIPT_PROPERTY             = 'web_script';
 
+    # Transform rules source values
+    const TRANSFORM_RULES_TEXT    = '1';
+    const TRANSFORM_RULES_FILE    = '2';
+    const TRANSFORM_RULES_DEFAULT = '3';
 
     private $logger;
     private $errorHandler;
@@ -57,14 +61,21 @@ class Configuration
     private $timeLimit;
     private $timezone;
     private $transformationRules;
+    private $transformRulesSource;
     private $triggerEtl;
 
     private $properties;
+    private $propertiesFile;
+    private $configuration;
+    private $configProject;
     private $emailSubject;
     private $fromEmailAddres;
 
     /**
-     * Constructor.
+     * Creates a Configuration object from either an array or properties
+     * or the configuration file, and the configuration project,
+     * and updates the logger based on the configuration information
+     * found.
      *
      * @param Logger2 $logger logger for information and errors
      * @param array $properties associative array or property names and values.
@@ -77,6 +88,8 @@ class Configuration
         $this->errorHandler = new EtlErrorHandler();
 
         $this->app = $logger->getApp();
+
+        $this->propertiesFile = $propertiesFile;
 
         #--------------------------------------------------------------------
         # If there isn't a properties array, then read the properties file
@@ -160,7 +173,7 @@ class Configuration
             $this->redcapApiUrl = $properties[Configuration::REDCAP_API_URL_PROPERTY];
         } else {
             $message = 'No REDCap API URL property was defined.';
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+            $this->logger->logInfo($message);
         }
 
         #---------------------------------------------------------------
@@ -208,87 +221,45 @@ class Configuration
         #--------------------------------------------------
         # Get the API token for the configuration project
         #--------------------------------------------------
+        $configProjectApiToken = null;
         if (array_key_exists(Configuration::CONFIG_API_TOKEN_PROPERTY, $properties)) {
             $configProjectApiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
         } else {
-            $message = 'No API token property was defined.';
+            $message = 'No configuration project API token property was defined.';
             $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
         }
 
-        #---------------------------------------------------------------------
-        # Create RedCap object to use for getting the configuration projects
-        #---------------------------------------------------------------------
-        $superToken = null; // There is no need to create projects, so this is not needed
-
-        try {
-            $redCap = new RedCap(
-                $this->redcapApiUrl,
-                $superToken,
-                $this->sslVerify,
-                $this->caCertFile
-            );
-        } catch (PhpCapException $exception) {
-            $message = 'Unable to set up RedCap object.';
-            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        #-----------------------------------------------------------------------
-        # Read in Configuration Project
-        #-----------------------------------------------------------------------
-        try {
-            $this->configProject = $redCap->getProject($configProjectApiToken);
-            $results = $this->configProject->exportRecords();
-        } catch (PhpCapException $exception) {
-            $error = "Could not get Configuration data";
-            $this->errorHandler->throwException($error, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        $configuration = $results[0];
-
-        #--------------------------------------------------------------
-        # Now that the configuration project has been read,
-        # if it specified an admin e-mail, replace the notifier
-        # sender with this e-mail address.
-        #--------------------------------------------------------------
-        if (!empty($this->fromEmailAddress)) {
-            if (array_key_exists(Configuration::ADMIN_EMAIL_LIST_PROPERTY, $configuration)) {
-                $this->adminEmailList = trim($configuration[Configuration::ADMIN_EMAIL_LIST_PROPERTY]);
-                if (!empty($this->adminEmailList)) {
-                    $this->logger->setLogEmailTo($this->adminEmailList);
-                }
-            }
-        }
-
         #------------------------------------------------------
-        # Get project id
+        # If a configuration project API token was defined,
+        # process the configuration project
         #------------------------------------------------------
-        try {
-            $this->projectId = $this->configProject->exportProjectInfo()['project_id'];
-        } catch (PhpCapException $exception) {
-            $message = "Unable to retrieve project_id.";
-            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
+        if (!empty($configProjectApiToken)) {
+            $properties = $this->processConfigurationProject($configProjectApiToken, $properties);
         }
 
-        $this->allowedServers = $configuration[Configuration::ALLOWED_SERVERS_PROPERTY];
+
+        if (array_key_exists(Configuration::ALLOWED_SERVERS_PROPERTY, $properties)) {
+            $this->allowedServers = $properties[Configuration::ALLOWED_SERVERS_PROPERTY];
+        }
 
 
         #----------------------------------------------------------------
         # Get the data source project API token
         #----------------------------------------------------------------
         $this->dataSourceApiToken = '';
-        if (array_key_exists(Configuration::DATA_SOURCE_API_TOKEN_PROPERTY, $configuration)) {
-            $this->dataSourceApiToken = $configuration[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
+        if (array_key_exists(Configuration::DATA_SOURCE_API_TOKEN_PROPERTY, $properties)) {
+            $this->dataSourceApiToken = $properties[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
         } else {
             $message = 'No data source API token was found in the configuration project.';
             $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
         }
         
-        #------------------------------------------------------------
-        # Get the logging project (where log records are written to)
-        #------------------------------------------------------------
+        #-------------------------------------------------------------------------------
+        # Get the logging project (where log records are written to) API token (if any)
+        #-------------------------------------------------------------------------------
         # $startLog = microtime(true);
-        if (array_key_exists(Configuration::LOG_PROJECT_API_TOKEN_PROPERTY, $configuration)) {
-            $this->logProjectApiToken = $configuration[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
+        if (array_key_exists(Configuration::LOG_PROJECT_API_TOKEN_PROPERTY, $properties)) {
+            $this->logProjectApiToken = $properties[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
         } else {
             $this->logProjectApiToken = null;
         }
@@ -310,49 +281,30 @@ class Configuration
 
         // Record whether or not the actual ETL should be run. This is
         // used by the DET handler program, but not the batch program
-        $this->triggerEtl = $configuration[Configuration::TRIGGER_ETL_PROPERTY];
+        if (array_key_exists(Configuration::TRIGGER_ETL_PROPERTY, $properties)) {
+            $this->triggerEtl = $properties[Configuration::TRIGGER_ETL_PROPERTY];
+        }
 
         // Determine the batch size to use (how many records to process at once)
         // Batch size is expected to be a positive integer. The Configuration
         // project should enforce that.
-        $this->batchSize = $configuration[Configuration::BATCH_SIZE_PROPERTY];
+        $this->batchSize = $properties[Configuration::BATCH_SIZE_PROPERTY];
 
-        #-----------------------------------------------
-        # Get the Transformation Rules
-        #-----------------------------------------------
-        $transformRulesSource = $configuration[Configuration::TRANSFORM_RULES_SOURCE_PROPERTY];
-        if ($transformRulesSource === 2) {
-            $results = $this->configProject->exportFile(
-                $configuration['record_id'],
-                Configuration::TRANSFORM_RULES_FILE_PROPERTY
-            );
-            $this->transformationRules = $results;
-            if ($this->transformationRules == '') {
-                $error = 'No transformation rules file was found.';
-                $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
-            }
-        } else {
-            $this->transformationRules = $configuration[Configuration::TRANSFORM_RULES_TEXT_PROPERTY];
-            if ($this->transformationRules == '') {
-                $error = 'No transformation rules were entered.';
-                $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
-            }
-        }
-
+        $this->processTransformationRules($properties);
 
         #----------------------------------------------------------------
         # Get the table prefix (if any)
         #----------------------------------------------------------------
-        if (array_key_exists(Configuration::TABLE_PREFIX_PROPERTY, $configuration)) {
-            $this->tablePrefix = $configuration[Configuration::TABLE_PREFIX_PROPERTY];
+        if (array_key_exists(Configuration::TABLE_PREFIX_PROPERTY, $properties)) {
+            $this->tablePrefix = $properties[Configuration::TABLE_PREFIX_PROPERTY];
         }
 
 
         #----------------------------------------------------------------
         # Get the label view suffix (if any)
         #----------------------------------------------------------------
-        if (array_key_exists(Configuration::LABEL_VIEW_SUFFIX_PROPERTY, $configuration)) {
-            $this->labelViewSuffix = $configuration[Configuration::LABEL_VIEW_SUFFIX_PROPERTY];
+        if (array_key_exists(Configuration::LABEL_VIEW_SUFFIX_PROPERTY, $properties)) {
+            $this->labelViewSuffix = $properties[Configuration::LABEL_VIEW_SUFFIX_PROPERTY];
         }
 
 
@@ -360,8 +312,8 @@ class Configuration
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
         #---------------------------------------------------
-        if (array_key_exists(Configuration::DB_CONNECTION_PROPERTY, $configuration)) {
-            $this->dbConnection = $configuration[Configuration::DB_CONNECTION_PROPERTY];
+        if (array_key_exists(Configuration::DB_CONNECTION_PROPERTY, $properties)) {
+            $this->dbConnection = $properties[Configuration::DB_CONNECTION_PROPERTY];
         } else {
             $message = 'No database connection was specified in the '
                 . 'configuration project.';
@@ -370,6 +322,131 @@ class Configuration
     
         return true;
     }
+
+    private function processConfigurationProject($configProjectApiToken, $properties)
+    {
+        #---------------------------------------------------------------------
+        # Create RedCap object to use for getting the configuration projects
+        #---------------------------------------------------------------------
+        $superToken = null; // There is no need to create projects, so this is not needed
+
+        try {
+            $redCap = new RedCap(
+                $this->redcapApiUrl,
+                $superToken,
+                $this->sslVerify,
+                $this->caCertFile
+            );
+        } catch (PhpCapException $exception) {
+            $message = 'Unable to set up RedCap object.';
+            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
+        }
+
+        #-----------------------------------------------------------------------
+        # Get the Configuration Project
+        #-----------------------------------------------------------------------
+        try {
+            $this->configProject = $redCap->getProject($configProjectApiToken);
+            $results = $this->configProject->exportRecords();
+        } catch (PhpCapException $exception) {
+            $error = "Could not get Configuration data";
+            $this->errorHandler->throwException($error, EtlException::PHPCAP_ERROR, $exception);
+        }
+        $this->configuration = $results[0];
+
+        #----------------------------------------------------------------------
+        # Merge the properties from the configuration project with those from
+        # from the configuration file, with non-blank values from the
+        # configuration project replacing those from the configuration file.
+        #----------------------------------------------------------------------
+        foreach ($this->configuration as $key => $value) {
+            if (array_key_exists($key, $properties)) {
+                if (trim($value) !== '') {
+                    $properties[$key] = $value;
+                }
+            }
+            else {
+                $properties[$key] = $value;
+            }
+        }
+        $this->properties = $properties;
+
+        #--------------------------------------------------------------
+        # Now that the configuration project has been read,
+        # if it specified an admin e-mail, replace the notifier
+        # sender with this e-mail address.
+        #--------------------------------------------------------------
+        if (!empty($this->fromEmailAddress)) {
+            if (array_key_exists(Configuration::ADMIN_EMAIL_LIST_PROPERTY, $properties)) {
+                $this->adminEmailList = trim($properties[Configuration::ADMIN_EMAIL_LIST_PROPERTY]);
+                if (!empty($this->adminEmailList)) {
+                    $this->logger->setLogEmailTo($this->adminEmailList);
+                }
+            }
+        }
+
+        #------------------------------------------------------
+        # Get project id
+        #------------------------------------------------------
+        try {
+            $this->projectId = $this->configProject->exportProjectInfo()['project_id'];
+        } catch (PhpCapException $exception) {
+            $message = "Unable to retrieve project_id.";
+            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
+        }
+
+        return $properties;
+    }
+
+
+    /**
+     * Gets the transformation rules.
+     */
+    private function processTransformationRules($properties)
+    {
+        $this->transformRulesSource = $properties[Configuration::TRANSFORM_RULES_SOURCE_PROPERTY];
+
+        if ($this->transformRulesSource === self::TRANSFORM_RULES_TEXT) {
+            $this->transformationRules = $properties[Configuration::TRANSFORM_RULES_TEXT_PROPERTY];
+            if ($this->transformationRules == '') {
+                $error = 'No transformation rules were entered.';
+                $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
+            }
+        } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_FILE) {
+
+            if ($this->isFromFile(Configuration::TRANSFORM_RULES_FILE_PROPERTY)) {
+                $file = $properties[Configuration::TRANSFORM_RULES_FILE_PROPERTY];
+                if ($this->isAbsolutePath($file)) {
+                    $file = realpath($file);
+                } else {
+                    if (empty($this->propertiesFile)) {
+                        # if no properties file was specified, and a relative
+                        # path was used, make it relative to this file
+                        $file = realpath(__DIR__.'/'.$file);
+                    } else {
+                        # take path relative to properties file
+                        $propertiesFileDir = dirname(realpath($this->propertiesFile));
+                        $file = realpath($propertiesFileDir . '/' . $file);
+                    }
+                }
+                $this->transformationRules = file_get_contents($file);
+            } else {
+                $results = $this->configProject->exportFile(
+                    $properties['record_id'],
+                    Configuration::TRANSFORM_RULES_FILE_PROPERTY
+                );
+                $this->transformationRules = $results;
+                if ($this->transformationRules == '') {
+                    $error = 'No transformation rules file was found.';
+                    $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
+                }
+            }
+        } else {
+            $message = 'Unrecognized transformation rules source: '.$this->transformRulesSource;
+            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+        }
+    }
+
 
     public function isValidEmail($email)
     {
@@ -400,11 +477,53 @@ class Configuration
 
 
     /**
-     * Gets the specified (configuration file) property
+     * Indicates is the specified path is an absolute path.
+     */
+    private function isAbsolutePath($path)
+    {
+        $isAbsolute = false;
+        $path = trim($path);
+        if (DIRECTORY_SEPARATOR === '/') {
+            if (preg_match('/^\/.*/', $path) === 1) {
+                $isAbsolute = true;
+            }
+        } else {  // Windows
+            if (preg_match('/^(\/|\\\|[a-zA-Z]:(\/|\\\)).*/', $path) === 1) {
+                $isAbsolute = true;
+            }
+        }
+        return $isAbsolute;
+    }
+
+
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    /**
+     * Gets the specified (configuration file) property.
      */
     public function getProperty($name)
     {
         return $this->properties[$name];
+    }
+
+    /**
+     * Indicates if the current value for the specified property is from
+     * the configuration file (as opposed to the configuration project).
+     */
+    public function isFromFile($property)
+    {
+        $isFromFile = true;
+        if (isset($this->configuration) && is_array($this->configuration)) {
+            if (array_key_exists($property, $this->configuration)) {
+                if ($this->properties[$property] === $this->configuration[$property]) {
+                    $isFromFile = false;
+                }
+            }
+        }
+        return $isFromFile;
     }
 
 
@@ -496,6 +615,11 @@ class Configuration
     public function getTransformationRules()
     {
         return $this->transformationRules;
+    }
+
+    public function getTransformRulesSource()
+    {
+        return $this->transformRulesSource;
     }
 
     public function getTriggerEtl()

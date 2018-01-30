@@ -132,7 +132,7 @@ class RedCapEtl
         $this->app = $logger->getApp();
 
         $this->configuration = new Configuration($logger, $properties, $propertiesFile);
-        $this->configProject = $this->configuration->configProject;
+        $this->configProject = $this->configuration->getConfigProject();
 
 
         $this->date = date('g:i:s a d-M-Y T');
