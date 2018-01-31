@@ -6,6 +6,9 @@
 .project
 .settings/
 
+# Geany project files
+*.geany
+
 # ignore swap files
 *.swp
 
