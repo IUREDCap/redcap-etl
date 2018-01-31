@@ -175,7 +175,7 @@ class RedCapEtl
         #---------------------------------------------------------
         $timeLimit = $this->configuration->getTimeLimit();
         if (isset($timeLimit) && trim($timeLimit) !== '') {
-            set_time_limit($this->timeLimit);
+            set_time_limit($timeLimit);
         } else {
             set_time_limit(0);   # no time limit
         }
@@ -269,7 +269,8 @@ class RedCapEtl
     {
         $transformationRules = $this->configuration->getTransformationRules();
         $rules = new TransformationRules($transformationRules);
-        list($schema, $lookupTable, $parseResult) = $rules->parse($this->dataProject, $this->tablePrefix, $this->logger);
+        list($schema, $lookupTable, $parseResult)
+            = $rules->parse($this->dataProject, $this->tablePrefix, $this->logger);
         #print_r($lookupTable);
         #print_r($parseResult);
         ###print "\n".($schema->toString())."\n";
