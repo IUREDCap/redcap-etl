@@ -111,7 +111,7 @@ Note: if the table is a root table, it has no parent table, and the field after 
 
     FIELD, < field_name>, < field_type>
 
-* field_type is one of: int, float, string, date, checkbox
+* field_type is one of: int, float, string, date, datetime, checkbox
 
 NOTE: TABLE, FIELD, < rows_type>, and < field_type> are all case sensitive. TABLE, FIELD, ROOT, and EVENTS must be uppercase. Int, float, string, date, and checkbox must be lowercase.
 

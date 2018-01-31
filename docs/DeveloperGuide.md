@@ -32,7 +32,7 @@ This is a list of the steps for setting up a REDCap ETL development environment.
 
         CREATE DATABASE `etl_test`;
         CREATE USER 'etl_user'@'localhost' IDENTIFIED BY 'etlPassword';
-        GRANT ALL ON `etl_user`.* TO 'etl_test'@'localhost';
+        GRANT ALL ON `etl_test`.* TO 'etl_user'@'localhost';
 
 6. Install Apache (used to test the handler script)
 
@@ -45,11 +45,9 @@ This is a list of the steps for setting up a REDCap ETL development environment.
         git config --global user.email "jsmith@someuniversity.edu"
         git config --global user.name "J Smith"
 
-8. Get the code (currently the new-phpcap-test branch is being used for REDCap ETL)
+8. Get the code.
 
-        git clone https://github.iu.edu/ABITC/opt2etl
-        cd opt2etl
-        git checkout --track origin/new-phpcap-test
+        git clone https://github.iu.edu/ABITC/redcap-etl
 
 9. Install Composer dependencies. In the top-level directory where the code was downloaded, run:
 
@@ -111,3 +109,16 @@ To have the system tests run using the handler script, use the following steps:
     REDCAP_ETL_DATA_TEST_SCRIPT=handler ./vendor/bin/phpunit
 
 
+Coding Standards Compliance
+------------------------------------
+
+REDCap ETL follows these PHP coding standards:
+
+* [PSR-1: Basic Coding Standard](http://www.php-fig.org/psr/psr-1/)
+* [PSR-2: Coding Style Guide](http://www.php-fig.org/psr/psr-2/)
+* [PSR-4: Autoloader](http://www.php-fig.org/psr/psr-4/)
+
+From the top-level directory of your REDCap ETL installation, the following command can be used
+to check for coding standards compliance:
+
+    ./vendor/bin/phpcs --standard=PSR1,PSR2 src tests/unit tests/integration tests/system bin
