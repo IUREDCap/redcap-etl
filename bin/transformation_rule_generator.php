@@ -10,6 +10,7 @@ require(__DIR__ . '/../dependencies/autoload.php');
 
 use IU\PHPCap\RedCapProject;
 use IU\REDCapETL\Configuration;
+use IU\REDCapETL\Logger2;
 use IU\REDCapETL\TransformationRules;
 
 if (count($argv) != 2) {
@@ -20,22 +21,13 @@ if (count($argv) != 2) {
 }
 
 try {
-    $properties = parse_ini_file($configurationFile);
-    if ($properties === false) {
-        $message = 'Unable to read properties file ';
-        throw new Exception($message);
-    }
+    $logger = new Logger2($argv[0]);
+    $config = new Configuration($logger, null, $configurationFile);
 
-    $apiUrl   = $properties[Configuration::REDCAP_API_URL_PROPERTY];
-    $apiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
+    $apiUrl   = $config->getRedCapApiUrl();
+    $apiToken = $config->getDataSourceApiToken();
 
-    $configProject = new RedCapProject($apiUrl, $apiToken, true);
-    $configInfo = $configProject->exportProjectInfo();
-
-    $records = $configProject->exportRecords();
-
-    $dataToken = $records[0][Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
-    $dataProject = new RedCapProject($apiUrl, $dataToken, true);
+    $dataProject = new RedCapProject($apiUrl, $apiToken, true);
 
     $transformationRules = new TransformationRules('');
     $rules = $transformationRules->generateDefaultRules($dataProject);
