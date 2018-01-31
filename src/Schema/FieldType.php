@@ -11,6 +11,7 @@ class FieldType
     const FLOAT    = 'float';
     const STRING   = 'string';
     const DATE     = 'date';
+    const DATETIME = 'datetime';
     const CHECKBOX = 'checkbox';
 
     public static function isValid($fieldType)
@@ -22,6 +23,7 @@ class FieldType
             case FieldType::FLOAT:
             case FieldType::STRING:
             case FieldType::DATE:
+            case FieldType::DATETIME:
             case FieldType::CHECKBOX:
                 $valid = true;
                 break;

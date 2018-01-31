@@ -97,6 +97,10 @@ class DBConnectMySQL extends DBConnect
                 case FieldType::DATE:
                     $field_def .= 'DATE';
                     break;
+                    
+                case FieldType::DATETIME:
+                    $field_def .= 'DATETIME';
+                    break;
 
                 case FieldType::INT:
                     $field_def .= 'INT';
@@ -373,6 +377,7 @@ class DBConnectMySQL extends DBConnect
                 switch ($field->type) {
                     case FieldType::STRING:
                     case FieldType::DATE:
+                    case FieldType::DATETIME:
                         $bind_types .= 's';
                         break;
 
@@ -420,6 +425,7 @@ class DBConnectMySQL extends DBConnect
         switch ($field->type) {
             case FieldType::STRING:
             case FieldType::DATE:
+            case FieldType::DATETIME:
                 $bindType = 's';
                 break;
 

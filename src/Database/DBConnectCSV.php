@@ -231,7 +231,8 @@ class DBConnectCSV extends DBConnect
                     }
                         $this->fileWrite($fh, $lfh, $value, $label);
                     break;
-                case FieldType::DATE:   // ???
+                case FieldType::DATE:
+                case FieldType::DATETIME:
                         $this->fileWrite($fh, $lfh, $value);
                     break;
                 case FieldType::FLOAT:

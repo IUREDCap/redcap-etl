@@ -70,7 +70,8 @@ class TransformationRules
      *
      * @param string $rules the transformation rules
      */
-    public function __construct($rules) {
+    public function __construct($rules)
+    {
         $this->rules = $rules;
     }
 
@@ -633,20 +634,27 @@ class TransformationRules
 
             foreach ($metadata as $field) {
                 if ($field['form_name'] == $formName) {
-                    $type = 'string';
+                    $type = FieldType::STRING;
                 
                     $validationType = $field['text_validation_type_or_show_slider_number'];
                     $fieldType      = $field['field_type'];
-                
-                    if ($fieldType === 'checkbox') {
-                        $type = 'checkbox';
-                    } elseif ($validationType === 'integer') { # value may be too large for db int
-                        $type = 'string';
+
+                    #print "{$validationType}\n";
+
+                    if ($fieldType === FieldType::CHECKBOX) {
+                        $type = FieldType::CHECKBOX;
+                    } elseif ($validationType === FieldType::INT) { # value may be too large for db int
+                        $type = FieldType::STRING;
                     } elseif ($fieldType === 'dropdown' || $fieldType === 'radio') {
-                        $type = 'int';
-                    } elseif ($validationType === 'date_mdy') {
-                        $type = 'date';
+                        $type = FieldType::INT;
+                    } elseif (substr($validationType, 0, 5) === 'date_') {
+                        # starts with 'date_'
+                        $type = FieldType::DATE;
+                    } elseif (substr($validationType, 0, 9) === 'datetime_') {
+                        # starts with 'datetime_'
+                        $type = FieldType::DATETIME;
                     }
+
                 
                     if ($fieldType === 'descriptive' || $fieldType === 'file') {
                         ; // Don't do anything
@@ -661,4 +669,3 @@ class TransformationRules
         return $rules;
     }
 }
-
