@@ -40,7 +40,7 @@ $logger = new Logger2($app);
 $propertiesFile = null;
 
 #------------------------------------------------------------
-# Try to create a REDCap ETL Object
+# Run parsing or ETL, depending on configuration
 #------------------------------------------------------------
 try {
     $redCapEtl = new RedCapEtl($logger, null, $propertiesFile);
