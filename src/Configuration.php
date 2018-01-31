@@ -42,6 +42,9 @@ class Configuration
     const TRANSFORM_RULES_FILE    = '2';
     const TRANSFORM_RULES_DEFAULT = '3';
 
+    # Default time limit
+    const DEFAULT_TIME_LIMIT = 0;    # zero => no time limit
+    
     private $logger;
     private $errorHandler;
 
@@ -264,11 +267,13 @@ class Configuration
             $this->logProjectApiToken = null;
         }
 
-        #-----------------------------------------------
-        # Get the time limit, if any
-        #-----------------------------------------------
+        #----------------------------------------------------------
+        # Set the time limit; if none is provided, use the default
+        #----------------------------------------------------------
         if (array_key_exists(Configuration::TIME_LIMIT_PROPERTY, $properties)) {
             $this->timeLimit = $properties[Configuration::TIME_LIMIT_PROPERTY];
+        } else {
+            $this->timeLimit = self::DEFAULT_TIME_LIMIT;
         }
 
         #-----------------------------------------------
@@ -364,8 +369,7 @@ class Configuration
                 if (trim($value) !== '') {
                     $properties[$key] = $value;
                 }
-            }
-            else {
+            } else {
                 $properties[$key] = $value;
             }
         }
@@ -413,7 +417,6 @@ class Configuration
                 $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
             }
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_FILE) {
-
             if ($this->isFromFile(Configuration::TRANSFORM_RULES_FILE_PROPERTY)) {
                 $file = $properties[Configuration::TRANSFORM_RULES_FILE_PROPERTY];
                 if ($this->isAbsolutePath($file)) {
