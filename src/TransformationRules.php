@@ -11,19 +11,9 @@ use IU\REDCapETL\Schema\Table;
 use IU\REDCapETL\Database\DBConnectFactory;
 
 /**
- * Class for REDCap ETL (Extract, Transform, Load).
- *
- * This class has several data dependencies:
- *
- * * configuration file - that contains the initial e-mail address to use for notifications
- *   the URL for the REDCap instance being used, the API token of the REDCap configuration
- *   project to use
- * * REDCap configuration project - provides information on the data and logging projects
- *   and the data store
- * * REDCap data project - the source for data extraction
- * * REDCap logging project - the place where messages are logged
- * * Database - the data store where the extracted data is loaded
- *
+ * Transformation rules used for transforming data from
+ * the extracted format to the load format used in the
+ * target database.
  */
 class TransformationRules
 {
