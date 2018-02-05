@@ -33,8 +33,9 @@ class Configuration
     const TRANSFORM_RULES_FILE_PROPERTY   = 'transform_rules_file';
     const TRANSFORM_RULES_SOURCE_PROPERTY = 'transform_rules_source';
     const TRANSFORM_RULES_TEXT_PROPERTY   = 'transform_rules_text';
+    
     const TRIGGER_ETL_PROPERTY            = 'trigger_etl';
-
+    const WEB_SCRIPT_LOG_PROPERTY         = 'web_script_log';
     const WEB_SCRIPT_PROPERTY             = 'web_script';
 
     # Transform rules source values
@@ -42,7 +43,7 @@ class Configuration
     const TRANSFORM_RULES_FILE    = '2';
     const TRANSFORM_RULES_DEFAULT = '3';
 
-    # Default time limit
+    # Default values
     const DEFAULT_TIME_LIMIT = 0;    # zero => no time limit
     
     private $logger;

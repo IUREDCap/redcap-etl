@@ -34,9 +34,11 @@ class RedCapDetHandler
         }
     }
 
+    /**
+     * Gets the DET (Data Entry Trigger) parameters from an HTTP/HHTPS request.
+     */
     public function getDetParams()
     {
-
         // If either project_id or record_id are empty, this program assumes
         // that it is being tested by using a URL from a web browser rather
         // than being called by a REDCap Data Entry Trigger.  To perform such
@@ -57,7 +59,7 @@ class RedCapDetHandler
             $record_id = htmlspecialchars($_POST['record']); // NOT 'record_id'
         }
 
-            return(array($project_id,$record_id));
+        return(array($project_id,$record_id));
     }
 
 
