@@ -116,7 +116,7 @@ Note: if the table is a root table, it has no parent table, and the field after 
 NOTE: TABLE, FIELD, < rows_type>, and < field_type> are all case sensitive. TABLE, FIELD, ROOT, and EVENTS must be uppercase. Int, float, string, date, and checkbox must be lowercase.
 
 
-### Schema Map Example
+### Transformation Rules Example
 
 #### REDCap Data
 
@@ -274,10 +274,16 @@ provide support for it by default</td>
 <td>File to use for logging</td>
 </tr>
 
+<td>log_project_api_token</td>
+<td> X </td> <td> X </td>
+<td>REDCap API token of logging project</td>
+</tr>
+
 <tr>
 <td>redcap_api_url</td>
 <td> X </td> <td> &nbsp; </td>
-<td>The URL for your REDCap API</td> 
+<td>The URL for your REDCap API.
+Not ending the URL with a slash (/) may cause an error.</td> 
 </tr>
 
 <tr>
@@ -286,6 +292,26 @@ provide support for it by default</td>
 <td>Indicates is SSL verification is used for the connection to REDCap.
 This defaults to true. Setting it to false is insecure.</td> 
 </tr>
+
+<tr>
+<td>time_limit</td>
+<td> X </td> <td> &nbsp; </td>
+<td>
+Maximum number of seconds the ETL process is allowed to run.
+A value of zero (the default value) means there is no limit.
+</td> 
+</tr>
+
+<tr>
+<td>time_zone</td>
+<td> X </td> <td> &nbsp; </td>
+<td>
+Timezone to use; see the URL below for valid values:
+https://secure.php.net/manual/en/timezones.php
+By default, the default PHP timezone on the system is used.
+</td> 
+</tr>
+
 
 <tr>
 <td>web_script</td>
