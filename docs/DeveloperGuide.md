@@ -63,29 +63,91 @@ This is a list of the steps for setting up a REDCap ETL development environment.
         4. Configure the MySQL database connection
 
 
-Installing REDCap ETL
------------------------------------------
-You need to run the ./extras/install.pl command to install REDCap ETL. Here is an example install command:
-
-    sudo ./extras/install.pl -install_dir /opt/redcap-etl -web_dir /var/www/html
-
-The above command will install the handler script where it can be accessed using the following URL:
-
-    http://localhost/opt2etl_handler.php
-
-Before the install command is run for the first time, you need to create the install directory, and in that directory place a properties file for each instance of REDCap ETL you want on your system. For more information, see the following example file that should be in the top-level directory of your workspace directory (i.e., the directory where you cloned the REDCap ETL code from GitHub):
-
-    redcap_etl.properties.example
-
-All .properties files in the top-level install directory will be scanned by the install script, and a web script will be generated for each one that has a web script name specified.
-
-
 
 Automated Tests
 ------------------------------
-To set up the automated tests, you need copies of the regression test config, data and log projects. And you need copies of the basic demography config, data and log projects. 
 
-You need to copy the file **config-example.ini** to **config.ini** in the **tests/** directory. Then edit the **config.ini** file and enter appropriate values for all of the properties.
+There are 3 types of automated tests:
+
+1. Unit
+2. Integration
+3. System
+
+The test tyoes above are listed in order of lest to most setup effort.
+
+<table>
+  <thead>
+    <tr> <th> &nbsp; </th> <th> Unit </th> <th> Integration </th> <th> System </th> </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th style="text-align: left"> Test Focus </th>
+      <td> Single class </td>
+      <td> Multiple classes </td>
+      <td> Multiple classes + scripts </td>
+    </tr>
+    <tr>
+      <th style="text-align: left"> REDCap instance required? </th>
+      <td> &nbsp </td>
+      <td style="text-align: center"> Yes </td>
+      <td style="text-align: center"> Yes </td>
+    </tr>
+    <tr>
+      <th style="text-align: left"> REDCap project and configuration file setup required? </th>
+      <td> &nbsp </td>
+      <td style="text-align: center"> Yes </td>
+      <td style="text-align: center"> Yes </td>
+    </tr>    
+    <tr>
+      <th style="text-align: left"> Web server, web server script and
+          REDCap DET (Data Entry Trigger) setup required? </th>
+      <td> &nbsp </td>
+      <td> &nbsp; </td>
+      <td style="text-align: center"> Yes </td>
+    </tr>    
+  </tbody>
+</table>
+
+### Unit Tests
+You should be able to run the unit tests at this point if you have
+completed the previous steps.
+To run the unit tests, enter the following in a command shell
+at the top-level directory of the REDCap ETL installation:
+
+    ./vendor/bin/phpunit --testsuite unit
+    
+If this command runs successfully, you should see an "OK" message that
+indicates the number of tests and assertions that were successful.
+
+### Integration and System Tests
+Setting up the integration and system tests requires having access
+to a REDCap instance, and the ability to get API tokens for projects
+on that instance. Setting these tests up is not required, but
+the tests have much better code coverage when they are.
+
+#### Integration tests
+To set up the integration tests, you need to first set up
+the Basic Demopraphy REDCap project that has the data for the
+tests:
+
+1. download the Basic Demography REDCap project from the
+   tests/projects directory: BasicDemography.REDCap.xml
+2. create a REDCap project using the the
+   "Upload a REDCap project XML file" option, and specify the file
+   downloaded in the previous step
+3. request an API token for the project you just created (or
+   create a token if you are an admin)
+
+The next thing you need to do is to create the configuration file
+for the Basic Demography project:
+
+#### System tests
+To set up the system steps:
+1. download the Visits REDCap project from the tests/projects
+   directory: Tests.REDCap.xml
+
+
+### Running the Tests
 
 To run all of the automated test, in the top-level directory run:
 
@@ -95,6 +157,8 @@ The system tests use the installed versions of the scripts, so you need to run a
 
 By default, the system tests will use the REDCap ETL batch script to load records into the database. However, it is also possible to run the tests using the handler script that would normally be activated by a REDCap DET (Data Entry Trigger).
 
+#### Generating test coverage
+
 To see test coverage information, you need to have XDebug installed, and then run the following command from the root directory of the project:
 
     ./vendor/bin/phpunit --coverage-html tests/coverage
@@ -102,11 +166,7 @@ To see test coverage information, you need to have XDebug installed, and then ru
 Then open the file tests/coverage/index.html with a browser. The directory tests/coverage has been set up to be ignored by Git.
 
 
-To have the system tests run using the handler script, use the following steps:
-1. In the REDCap configuration project, set the option to run ETL when the record is saved. This needs to be done each time the tests are run, because REDCap ETL will automatically reset this value to not run ETL each time the test is run.
-2. Set the REDCAP_ETL_DATA_TEST_SCRIPT environment variable to 'handler' when running phpunit, for example:
 
-    REDCAP_ETL_DATA_TEST_SCRIPT=handler ./vendor/bin/phpunit
 
 
 Coding Standards Compliance
