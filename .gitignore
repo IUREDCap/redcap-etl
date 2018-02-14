@@ -32,3 +32,7 @@ composer.phar
 *.ini
 !/config/config-example.ini
 
+# test log files (except README)
+/tests/logs/*
+!/tests/logs/README.md
+
