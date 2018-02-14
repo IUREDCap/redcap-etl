@@ -69,44 +69,22 @@ Automated Tests
 
 There are 3 types of automated tests:
 
-1. Unit
-2. Integration
-3. System
+1. __Unit__ - each test focuses on a single class
+2. __Integration__ - tests focus on the integration of multiple classes
+3. __System__ - tests focus on testing the system as a whole (multiple classes + scripts)
 
-The test tyoes above are listed in order of lest to most setup effort.
+The test types above are listed in order of least to most setup effort.
 
-<table>
-  <thead>
-    <tr> <th> &nbsp; </th> <th> Unit </th> <th> Integration </th> <th> System </th> </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th style="text-align: left"> Test Focus </th>
-      <td> Single class </td>
-      <td> Multiple classes </td>
-      <td> Multiple classes + scripts </td>
-    </tr>
-    <tr>
-      <th style="text-align: left"> REDCap instance required? </th>
-      <td> &nbsp </td>
-      <td style="text-align: center"> Yes </td>
-      <td style="text-align: center"> Yes </td>
-    </tr>
-    <tr>
-      <th style="text-align: left"> REDCap project and configuration file setup required? </th>
-      <td> &nbsp </td>
-      <td style="text-align: center"> Yes </td>
-      <td style="text-align: center"> Yes </td>
-    </tr>    
-    <tr>
-      <th style="text-align: left"> Web server, web server script and
-          REDCap DET (Data Entry Trigger) setup required? </th>
-      <td> &nbsp </td>
-      <td> &nbsp; </td>
-      <td style="text-align: center"> Yes </td>
-    </tr>    
-  </tbody>
-</table>
+|                                        | Unit |Integration | System    |
+|----------------------------------------|------|:----------:|:---------:|
+| __Configuration file setup required?__ |      | &#10003;   | &#10003;  |
+| __REDCap project setup required?__     |      | &#10003;   | &#10003;  |
+| __MySQL database setup required?__     |      |            | &#10003;  |
+| __Web server setup required?__         |      |            | &#10003;  |
+| __Webs script setup required?__        |      |            | &#10003;  |
+| __REDCap DET setup required?__         |      |            | &#10003;  |
+
+
 
 ### Unit Tests
 You should be able to run the unit tests at this point if you have
