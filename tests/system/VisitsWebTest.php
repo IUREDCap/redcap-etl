@@ -21,7 +21,8 @@ class VisitsWebTest extends TestCase
         #------------------------------------------------------------
         $logger = new Logger2('visits_test');
 
-        $redCapEtl = new RedCapEtl($logger, self::CONFIG_FILE);
+        $useWebScriptLogFile = true;
+        $redCapEtl = new RedCapEtl($logger, self::CONFIG_FILE, $useWebScriptLogFile);
         $redCapEtl->setTriggerEtl();
         $configuration = $redCapEtl->getConfiguration();
 

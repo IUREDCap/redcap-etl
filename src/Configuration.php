@@ -29,6 +29,7 @@ class Configuration
     const TABLE_PREFIX_PROPERTY           = 'table_prefix';
     const TIME_LIMIT_PROPERTY             = 'time_limit';
     const TIMEZONE_PROPERTY               = 'timezone';
+
     const TRANSFORM_RULES_CHECK_PROPERTY  = 'transform_rules_check';
     const TRANSFORM_RULES_FILE_PROPERTY   = 'transform_rules_file';
     const TRANSFORM_RULES_SOURCE_PROPERTY = 'transform_rules_source';
@@ -88,7 +89,7 @@ class Configuration
      * @param string $propertiesFile the name of the properties file to use
      *     (used as an alternative to the properties array).
      */
-    public function __construct($logger, $properties = null, $propertiesFile = null)
+    public function __construct($logger, $properties = null, $propertiesFile = null, $useWebScriptLogFile = false)
     {
         $this->logger = $logger;
         $this->errorHandler = new EtlErrorHandler();
@@ -124,22 +125,40 @@ class Configuration
         # will start to log to the file
         #-----------------------------------------------------------------------------
         $this->logFile = null;
-        if (array_key_exists(Configuration::LOG_FILE_PROPERTY, $properties)) {
-            $this->logFile = $properties[Configuration::LOG_FILE_PROPERTY];
-            if (!empty($this->logFile)) {
-                $extension = pathinfo($this->logFile, PATHINFO_EXTENSION);
-                if ($extension === '') {
-                    $this->logFile = preg_replace("/$extension$/", '.'.$this->app, $this->logFile);
-                } else {
-                    $this->logFile = preg_replace(
-                        "/$extension$/",
-                        $this->app.'.'.$extension,
-                        $this->logFile
-                    );
-                }
-
-                $this->logger->setLogFile($this->logFile);
+        $fromFile = false;
+        if ($useWebScriptLogFile 
+                && array_key_exists(Configuration::WEB_SCRIPT_LOG_FILE_PROPERTY, $properties)) {
+            $this->logFile = $properties[Configuration::WEB_SCRIPT_LOG_FILE_PROPERTY];
+            if ($this->isFromFile(Configuration::WEB_SCRIPT_LOG_FILE_PROPERTY)) {
+                $fromFile = true;
             }
+        } elseif (array_key_exists(Configuration::LOG_FILE_PROPERTY, $properties)) {
+            $this->logFile = $properties[Configuration::LOG_FILE_PROPERTY];
+            if ($this->isFromFile(Configuration::LOG_FILE_PROPERTY)) {
+                $fromFile = true;
+            }
+        }
+        
+        if (!empty($this->logFile)) {
+            #--------------------------------------------------------
+            # If the logging file property used was set in a file,
+            # allow a relative path
+            #---------------------------------------------------------
+            if ($fromFile && !$this->isAbsolutePath($this->logFile)) {
+                if (empty($this->propertiesFile)) {
+                    # if no properties file was specified, and a relative
+                    # path was used, make it relative to this file
+                    $this->logFile = realpath(__DIR__.'/'.$this->logFile);
+                } else {
+                    # take path relative to properties file
+                    $propertiesFileDir = dirname(realpath($this->propertiesFile));
+                    $this->logFile = realpath($propertiesFileDir . '/' . $this->logFile);
+                }
+            } else {
+                $this->logFile = realpath($this->logFile);
+            }          
+
+            $this->logger->setLogFile($this->logFile);
         }
 
 
