@@ -125,43 +125,35 @@ class Configuration
         # will start to log to the file
         #-----------------------------------------------------------------------------
         $this->logFile = null;
-        $fromFile = false;
-        if ($useWebScriptLogFile 
+        if ($useWebScriptLogFile
                 && array_key_exists(Configuration::WEB_SCRIPT_LOG_FILE_PROPERTY, $properties)) {
             $this->logFile = $properties[Configuration::WEB_SCRIPT_LOG_FILE_PROPERTY];
-            if ($this->isFromFile(Configuration::WEB_SCRIPT_LOG_FILE_PROPERTY)) {
-                $fromFile = true;
-            }
         } elseif (array_key_exists(Configuration::LOG_FILE_PROPERTY, $properties)) {
             $this->logFile = $properties[Configuration::LOG_FILE_PROPERTY];
-            if ($this->isFromFile(Configuration::LOG_FILE_PROPERTY)) {
-                $fromFile = true;
-            }
         }
+        
         
         if (!empty($this->logFile)) {
             #--------------------------------------------------------
             # If the logging file property used was set in a file,
             # allow a relative path
             #---------------------------------------------------------
-            if ($fromFile && !$this->isAbsolutePath($this->logFile)) {
+            if (!($this->isAbsolutePath($this->logFile))) {
                 if (empty($this->propertiesFile)) {
                     # if no properties file was specified, and a relative
                     # path was used, make it relative to this file
-                    $this->logFile = realpath(__DIR__.'/'.$this->logFile);
+                    $this->logFile = __DIR__.'/'.$this->logFile;
                 } else {
                     # take path relative to properties file
                     $propertiesFileDir = dirname(realpath($this->propertiesFile));
-                    $this->logFile = realpath($propertiesFileDir . '/' . $this->logFile);
+                    $logFile = $propertiesFileDir.'/'.$this->logFile;
+                    $this->logFile = $logFile;
                 }
-            } else {
-                $this->logFile = realpath($this->logFile);
-            }          
-
+            }
             $this->logger->setLogFile($this->logFile);
         }
 
-
+       
         #-----------------------------------------------------------
         # Error e-mail notification information
         #-----------------------------------------------------------
