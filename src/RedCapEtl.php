@@ -117,13 +117,11 @@ class RedCapEtl
      * Constructor.
      *
      * @param Logger2 $logger logger for information and errors
-     * @param array $properties associative array or property names and values.
      * @param string $propertiesFile the name of the properties file to use
      *     (used as an alternative to the properties array).
      */
     public function __construct(
         $logger,
-        $properties = null,
         $propertiesFile = null
     ) {
         $this->logger = $logger;
@@ -131,6 +129,7 @@ class RedCapEtl
 
         $this->app = $logger->getApp();
 
+        $properties = null;
         $this->configuration = new Configuration($logger, $properties, $propertiesFile);
         $this->configProject = $this->configuration->getConfigProject();
 

@@ -43,7 +43,7 @@ $propertiesFile = null;
 # Run parsing or ETL, depending on configuration
 #------------------------------------------------------------
 try {
-    $redCapEtl = new RedCapEtl($logger, null, $propertiesFile);
+    $redCapEtl = new RedCapEtl($logger, $propertiesFile);
     $redCapEtl->runForDet();
 } catch (EtlException $exception) {
     $logger->logException($exception);

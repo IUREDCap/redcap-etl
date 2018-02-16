@@ -39,7 +39,7 @@ if (array_key_exists('p', $options)) {
 }
 
 try {
-    $redCapEtl = new RedCapEtl($logger, null, $propertiesFile);
+    $redCapEtl = new RedCapEtl($logger, $propertiesFile);
     $redCapEtl->run();
 } catch (EtlException $exception) {
     $logger->logException($exception);

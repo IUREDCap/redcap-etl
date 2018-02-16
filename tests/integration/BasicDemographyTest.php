@@ -23,7 +23,7 @@ class DemographyTest extends TestCase
             $app = basename(__FILE__, '.php');
             self::$logger = new Logger2($app);
 
-            $redCapEtl = new RedCapEtl(self::$logger, null, self::CONFIG_FILE);
+            $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
             $config = $redCapEtl->getConfiguration();

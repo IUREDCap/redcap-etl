@@ -21,7 +21,7 @@ class VisitsWebTest extends TestCase
         #------------------------------------------------------------
         $logger = new Logger2('visits_test');
 
-        $redCapEtl = new RedCapEtl($logger, null, self::CONFIG_FILE);
+        $redCapEtl = new RedCapEtl($logger, self::CONFIG_FILE);
         $redCapEtl->setTriggerEtl();
         $configuration = $redCapEtl->getConfiguration();
 
@@ -34,7 +34,7 @@ class VisitsWebTest extends TestCase
         } catch (Exception $exception) {
             print "ERROR: ".($exception->getMessage())."\n";
         }
-        # Drop the exiting tables and views (if any) before the ETL process runs
+        # Drop the existing tables and views (if any) before the ETL process runs
         VisitsTestUtility::dropTablesAndViews(self::$dbh);
     }
 

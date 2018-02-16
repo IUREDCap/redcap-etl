@@ -36,7 +36,7 @@ class VisitsCodeTest extends TestCase
     public static function runEtl()
     {
         try {
-            $redCapEtl = new RedCapEtl(self::$logger, null, self::CONFIG_FILE);
+            $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
             $redCapEtl->run();
         } catch (EtlException $exception) {
             $logger->logException($exception);
