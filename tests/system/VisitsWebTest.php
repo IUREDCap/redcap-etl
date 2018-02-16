@@ -43,7 +43,7 @@ class VisitsWebTest extends TestCase
     {
         $configRecord = 1;
 
-        $url = self::$configuration->getProperty('web_script.url');
+        $url = self::$configuration->getProperty(Configuration::WEB_SCRIPT_URL_PROPERTY);
 
         $curlHandle = curl_init($url);
         $data = [

@@ -35,8 +35,10 @@ class Configuration
     const TRANSFORM_RULES_TEXT_PROPERTY   = 'transform_rules_text';
     
     const TRIGGER_ETL_PROPERTY            = 'trigger_etl';
-    const WEB_SCRIPT_LOG_PROPERTY         = 'web_script_log';
     const WEB_SCRIPT_PROPERTY             = 'web_script';
+    const WEB_SCRIPT_LOG_FILE_PROPERTY    = 'web_script_log_file';
+    const WEB_SCRIPT_URL_PROPERTY         = 'web_script_url';
+    
 
     # Transform rules source values
     const TRANSFORM_RULES_TEXT    = '1';
