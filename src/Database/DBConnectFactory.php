@@ -11,47 +11,64 @@ use IU\REDCapETL\RedCapEtl;
 class DBConnectFactory
 {
     // Database types
-    const DBTYPE_MYSQL  = 'MySQL';
-    const DBTYPE_SQLSRV = 'SQLServer';
     const DBTYPE_CSV    = 'CSV';
+    const DBTYPE_MYSQL  = 'MySQL';
+    
+    #const DBTYPE_SQLSRV = 'SQLServer';
+
 
 
     public function __construct()
     {
-        return(1);
     }
 
-    public function createDbcon($connect_str, $tablePrefix, $labelViewSuffix)
+    public function createDbcon($connectionString, $tablePrefix, $labelViewSuffix)
     {
-        list($db_type, $db_str) = $this->parseConnectStr($connect_str);
+        list($dbType, $dbString) = $this->parseConnectionString($connectionString);
 
-        switch ($db_type) {
+        switch ($dbType) {
             case DBConnectFactory::DBTYPE_MYSQL:
-                $dbcon = new DBConnectMySQL($db_str, $tablePrefix, $labelViewSuffix);
+                $dbcon = new DBConnectMySQL($dbString, $tablePrefix, $labelViewSuffix);
                 break;
 
-            case DBConnectFactory::DBTYPE_SQLSRV:
-                $dbcon = new DBConnectSQLSRV($db_str, $tablePrefix, $labelViewSuffix);
-                break;
+            #case DBConnectFactory::DBTYPE_SQLSRV:
+            #    $dbcon = new DBConnectSQLSRV($dbString, $tablePrefix, $labelViewSuffix);
+            #    break;
 
             case DBConnectFactory::DBTYPE_CSV:
-                $dbcon = new DBConnectCSV($db_str, $tablePrefix, $labelViewSuffix);
+                $dbcon = new DBConnectCSV($dbString, $tablePrefix, $labelViewSuffix);
                 break;
 
             default:
-                $dbcon = 'Did not understand DBTYPE ('.$db_type.')';
+                $dbcon = 'Did not understand DBTYPE ('.$dbType.')';
         }
 
         return($dbcon);
     }
 
     /**
-     * A $connect_str is of the form $db_type:$db_str
+     * Parses a connection string
+     *
+     * @param string $connectionString a connection string
+     *     that has the format: <databaseType>:<databaseString>
+     *
+     * @return array an array with 2 string elements. The first
+     *     is the database type, and the second is the database
+     *     string (with database-specific connection information).
      */
-    public function parseConnectStr($connect_str)
+    public function parseConnectionString($connectionString)
     {
-        list($db_type, $db_str) = explode(':', $connect_str, 2);
+        list($dbType, $dbString) = explode(':', $connectionString, 2);
 
-        return array($db_type, $db_str);
+        return array($dbType, $dbString);
+    }
+    
+    /**
+     * Creates  connection string from the specified database
+     *     type and string.
+     */
+    public function createConnectionString($dbType, $dbString)
+    {
+        return $dbType . ':' . $dbString;
     }
 }
