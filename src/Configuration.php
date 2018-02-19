@@ -14,15 +14,17 @@ class Configuration
     #----------------------------------------------------------------
     # Configuration properties
     #----------------------------------------------------------------
-    const ADMIN_EMAIL_LIST_PROPERTY       = 'admin_list_email';
     const ALLOWED_SERVERS_PROPERTY        = 'allowed_servers';
     const BATCH_SIZE_PROPERTY             = 'batch_size';
     const CA_CERT_FILE_PROPERTY           = 'ca_cert_file';
     const CONFIG_API_TOKEN_PROPERTY       = 'config_api_token';
     const DATA_SOURCE_API_TOKEN_PROPERTY  = 'data_source_api_token';
     const DB_CONNECTION_PROPERTY          = 'db_connection';
+
+    const EMAIL_FROM_ADDRESS_PROPERTY     = 'email_from_address';
     const EMAIL_SUBJECT_PROPERTY          = 'email_subject';
-    const FROM_EMAIL_ADDRESS_PROPERTY     = 'from_email_address';
+    const EMAIL_TO_LIST_PROPERTY          = 'email_to_list';
+    
     const LABEL_VIEW_SUFFIX_PROPERTY      = 'label_view_suffix';
     const LOG_FILE_PROPERTY               = 'log_file';
     const LOG_PROJECT_API_TOKEN_PROPERTY  = 'log_project_api_token';
@@ -55,7 +57,6 @@ class Configuration
     private $errorHandler;
 
     private $app;
-    private $adminEmailList;
     private $allowedServers;
     private $batchSize;
     private $caCertFile;
@@ -77,8 +78,11 @@ class Configuration
     private $propertiesFile;
     private $configuration;
     private $configProject;
+
+    private $emailFromAddres;
     private $emailSubject;
-    private $fromEmailAddres;
+    private $emailToList;
+
 
     /**
      * Creates a Configuration object from either an array or properties
@@ -158,10 +162,10 @@ class Configuration
         #-----------------------------------------------------------
         # Error e-mail notification information
         #-----------------------------------------------------------
-        $this->fromEmailAddress  = null;
-        $this->adminEmailList   = null;
-        if (array_key_exists(Configuration::FROM_EMAIL_ADDRESS_PROPERTY, $properties)) {
-            $this->fromEmailAddress = $properties[Configuration::FROM_EMAIL_ADDRESS_PROPERTY];
+        $this->emailFromAddress  = null;
+        $this->emailToList   = null;
+        if (array_key_exists(Configuration::EMAIL_FROM_ADDRESS_PROPERTY, $properties)) {
+            $this->emailFromAddress = $properties[Configuration::EMAIL_FROM_ADDRESS_PROPERTY];
         }
 
         $this->emailSubject = Configuration::DEFAULT_EMAIL_SUBJECT;
@@ -169,17 +173,17 @@ class Configuration
             $this->emailSubject = $properties[Configuration::EMAIL_SUBJECT_PROPERTY];
         }
 
-        if (array_key_exists(Configuration::ADMIN_EMAIL_LIST_PROPERTY, $properties)) {
-            $this->adminEmailList = $properties[Configuration::ADMIN_EMAIL_LIST];
+        if (array_key_exists(Configuration::EMAIL_TO_LIST_PROPERTY, $properties)) {
+            $this->emailToList = $properties[Configuration::EMAIL_TO_LIST];
         }
 
         #------------------------------------------------------
         # Set email logging information
         #------------------------------------------------------
-        if (!empty($this->fromEmailAddress) && !empty($this->adminEmailList)) {
+        if (!empty($this->emailFromAddress) && !empty($this->emailToList)) {
             $this->logger->setLogEmail(
-                $this->fromEmailAddress,
-                $this->adminEmailList,
+                $this->emailFromAddress,
+                $this->emailToList,
                 $this->emailSubject
             );
         }
@@ -431,11 +435,11 @@ class Configuration
         # if it specified an admin e-mail, replace the notifier
         # sender with this e-mail address.
         #--------------------------------------------------------------
-        if (!empty($this->fromEmailAddress)) {
-            if (array_key_exists(Configuration::ADMIN_EMAIL_LIST_PROPERTY, $properties)) {
-                $this->adminEmailList = trim($properties[Configuration::ADMIN_EMAIL_LIST_PROPERTY]);
-                if (!empty($this->adminEmailList)) {
-                    $this->logger->setLogEmailTo($this->adminEmailList);
+        if (!empty($this->emailFromAddress)) {
+            if (array_key_exists(Configuration::EMAIL_TO_LIST_PROPERTY, $properties)) {
+                $this->emailToList = trim($properties[Configuration::EMAIL_TO_LIST_PROPERTY]);
+                if (!empty($this->emailToList)) {
+                    $this->logger->setLogEmailTo($this->emailToList);
                 }
             }
         }
@@ -616,14 +620,19 @@ class Configuration
         return $this->dbConnection;
     }
 
+    public function getEmailFromAddress()
+    {
+        return $this->emailFromAddress;
+    }
+
     public function getEmailSubject()
     {
         return $this->emailSubject;
     }
 
-    public function getFromEmailAddress()
+    public function getToEmailList()
     {
-        return $this->fromEmailAddress;
+        return $this->toEmailList;
     }
 
     public function getLabelViewSuffix()
