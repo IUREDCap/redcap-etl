@@ -17,14 +17,14 @@ class DBConnectCSV extends DBConnect
     private $directory;
     private $lookup;
 
-    public function __construct($db_str, $tablePrefix, $labelViewSuffix)
+    public function __construct($dbString, $tablePrefix, $labelViewSuffix)
     {
-        parent::__construct($db_str, $tablePrefix, $labelViewSuffix);
+        parent::__construct($dbString, $tablePrefix, $labelViewSuffix);
 
-        $this->directory = $db_str;
+        $this->directory = $dbString;
 
         # If the directory doesn't end with a separator, add one
-        if (substr($db_str, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
+        if (substr($dbString, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
             $this->directory .= DIRECTORY_SEPARATOR;
         }
     }
