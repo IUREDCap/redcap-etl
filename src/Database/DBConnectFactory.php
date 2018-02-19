@@ -56,18 +56,19 @@ class DBConnectFactory
      *     is the database type, and the second is the database
      *     string (with database-specific connection information).
      */
-    public function parseConnectionString($connectionString)
+    public static function parseConnectionString($connectionString)
     {
         list($dbType, $dbString) = explode(':', $connectionString, 2);
 
         return array($dbType, $dbString);
     }
+
     
     /**
      * Creates  connection string from the specified database
      *     type and string.
      */
-    public function createConnectionString($dbType, $dbString)
+    public static function createConnectionString($dbType, $dbString)
     {
         return $dbType . ':' . $dbString;
     }

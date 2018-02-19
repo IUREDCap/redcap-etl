@@ -5,6 +5,8 @@ namespace IU\REDCapETL;
 use IU\PHPCap\RedCap;
 use IU\PHPCap\PhpCapException;
 
+use IU\REDCapETL\Database\DBConnectFactory;
+
 class Configuration
 {
     const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
@@ -146,8 +148,7 @@ class Configuration
                 } else {
                     # take path relative to properties file
                     $propertiesFileDir = dirname(realpath($this->propertiesFile));
-                    $logFile = $propertiesFileDir.'/'.$this->logFile;
-                    $this->logFile = $logFile;
+                    $this->logFile = $propertiesFileDir.'/'.$this->logFile;
                 }
             }
             $this->logger->setLogFile($this->logFile);
@@ -333,6 +334,28 @@ class Configuration
         #---------------------------------------------------
         if (array_key_exists(Configuration::DB_CONNECTION_PROPERTY, $properties)) {
             $this->dbConnection = $properties[Configuration::DB_CONNECTION_PROPERTY];
+            
+            # If this property was defined in a file and uses the CSV database
+            # type and a relative path was used, replace the relative path with
+            # an absolute path
+            if ($this->isFromFile(Configuration::DB_CONNECTION_PROPERTY)) {
+                list($dbType, $dbString) = DBConnectFactory::parseConnectionString($this->dbConnection);
+                if ($dbType === DBConnectFactory::DBTYPE_CSV) {
+                    if (!$this->isAbsolutePath($dbString)) {
+                        //$this->dbConnection = ???;
+                        if (empty($this->propertiesFile)) {
+                            # if no properties file was specified, and a relative
+                            # path was used, make it relative to this file
+                            $dbString = __DIR__.'/'.$dbString;
+                        } else {
+                            # take path relative to properties file
+                            $propertiesFileDir = dirname(realpath($this->propertiesFile));
+                            $dbString = $propertiesFileDir.'/'.$dbString;
+                        }
+                        $this->dbConnection = DBConnectFactory::createConnectionString($dbType, $dbString);
+                    }
+                }
+            }
         } else {
             $message = 'No database connection was specified in the '
                 . 'configuration project.';
@@ -342,6 +365,20 @@ class Configuration
         return true;
     }
 
+
+    /**
+     * Processes a configuration project. Sets the configuration array to the
+     * values in the configuration project.
+     * 
+     * @param string $configProjectApiToken the REDCap API token for the configiration
+     *     project.
+     * 
+     * @param array $properties the current properties array, a map from property name to
+     *     property value.
+     * 
+     * @return array returns an updated properties array, where non-blank values defined
+     *     in the configuration project replace the ones from the configuration file.
+     */
     private function processConfigurationProject($configProjectApiToken, $properties)
     {
         #---------------------------------------------------------------------
