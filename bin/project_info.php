@@ -31,18 +31,29 @@ try {
     }
 
     $apiUrl   = $properties[Configuration::REDCAP_API_URL_PROPERTY];
-    $apiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
 
-    $configProject = new RedCapProject($apiUrl, $apiToken);
-    $configInfo = $configProject->exportProjectInfo();
-    $configId = $configInfo['project_id'];
-    $configTitle = $configInfo['project_title'];
+    $configApiToken = '';
 
-    $records = $configProject->exportRecords();
+    if (!array_key_exists(Configuration::CONFIG_API_TOKEN_PROPERTY, $properties)
+            || trim($properties[Configuration::CONFIG_API_TOKEN_PROPERTY]) === '') {
+        $dataToken = $properties[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
+        $logToken  = $properties[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
+    } else {
+        $configApiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
 
-    $config = $records[0];
+        $configProject = new RedCapProject($apiUrl, $configApiToken);
+        $configInfo = $configProject->exportProjectInfo();
+        $configId = $configInfo['project_id'];
+        $configTitle = $configInfo['project_title'];
 
-    $logToken = $config[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
+        $records = $configProject->exportRecords();
+
+        $config = $records[0];
+
+        $dataToken = $config[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
+        $logToken = $config[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
+    }
+
     if ($logToken !== '') {
         $logProject = new RedCapProject($apiUrl, $logToken);
         $logInfo  = $logProject->exportProjectInfo();
@@ -50,14 +61,19 @@ try {
         $logTitle = $logInfo['project_title'];
     }
 
-    $dataToken = $config[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
     $dataProject = new RedCapProject($apiUrl, $dataToken);
     $dataInfo  = $dataProject->exportProjectInfo();
     $dataId    = $dataInfo['project_id'];
     $dataTitle = $dataInfo['project_title'];
 
-    print "Config Project: [ID = ".$configId."] ".$configTitle."\n";
+    if ($configApiToken === '') {
+        print "Config Project: not set\n";
+    } else {
+        print "Config Project: [ID = ".$configId."] ".$configTitle."\n";
+    }
+
     print "Data Project:   [ID = ".$dataId."] ".$dataTitle."\n";
+
     if ($logToken === '') {
         print "Log Project:    not set\n";
     } else {
