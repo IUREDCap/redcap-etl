@@ -29,7 +29,7 @@ composer.phar
 
 # config files (except example)
 *.properties
-/config/*.ini
+/config/*
 !/config/config-example.ini
 
 # test config files (except README)
