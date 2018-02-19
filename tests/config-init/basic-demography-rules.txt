@@ -1,0 +1,17 @@
+TABLE,Demography,primary_key,ROOT
+FIELD,record_id,int
+FIELD,first_name,string
+FIELD,last_name,string
+FIELD,address,string
+FIELD,telephone,string
+FIELD,email,string
+FIELD,dob,string
+FIELD,age,int
+FIELD,ethnicity,int
+FIELD,race,checkbox
+FIELD,sex,int
+FIELD,height,float
+FIELD,weight,float
+FIELD,bmi,float
+FIELD,comments,string
+
