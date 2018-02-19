@@ -36,3 +36,7 @@ composer.phar
 /tests/logs/*
 !/tests/logs/README.md
 
+# test output files (except README)
+/tests/output/*
+!/tests/output/README.md
+
