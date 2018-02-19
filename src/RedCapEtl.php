@@ -66,7 +66,7 @@ class RedCapEtl
     const LOOKUP_FIELD_LABEL       = 'label';
 
     protected $det;          // For calls related to Data Entry Triggers
-    public $notifier;        // For notifying of errors when there is no GUI
+    //public $notifier;        // For notifying of errors when there is no GUI
 
     protected $date;
     protected $log_id_base;
@@ -117,12 +117,16 @@ class RedCapEtl
      * Constructor.
      *
      * @param Logger2 $logger logger for information and errors
-     * @param string $propertiesFile the name of the properties file to use
-     *     (used as an alternative to the properties array).
+     * @param string $propertiesFile the name of the properties file to use.
+     * @param boolean $useWebScriptLogFile indicates if the web script
+     *     log file should be used instead of the regular log file. This
+     *     allows logging to a different file when running REDCap ETL
+     *     using a web script instead of the command line script.
      */
     public function __construct(
         $logger,
-        $propertiesFile = null
+        $propertiesFile,
+        $useWebScriptLogFile = false
     ) {
         $this->logger = $logger;
         $this->errorHandler = new EtlErrorHandler();
