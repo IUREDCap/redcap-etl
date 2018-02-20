@@ -30,16 +30,16 @@ try {
         throw new Exception($message);
     }
 
-    $apiUrl   = $properties[Configuration::REDCAP_API_URL_PROPERTY];
+    $apiUrl   = $properties[ConfigProperties::REDCAP_API_URL];
 
     $configApiToken = '';
 
-    if (!array_key_exists(Configuration::CONFIG_API_TOKEN_PROPERTY, $properties)
-            || trim($properties[Configuration::CONFIG_API_TOKEN_PROPERTY]) === '') {
-        $dataToken = $properties[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
-        $logToken  = $properties[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
+    if (!array_key_exists(ConfigProperties::CONFIG_API_TOKEN, $properties)
+            || trim($properties[ConfigProperties::CONFIG_API_TOKEN]) === '') {
+        $dataToken = $properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
+        $logToken  = $properties[ConfigProperties::LOG_PROJECT_API_TOKEN];
     } else {
-        $configApiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
+        $configApiToken = $properties[ConfigProperties::CONFIG_API_TOKEN];
 
         $configProject = new RedCapProject($apiUrl, $configApiToken);
         $configInfo = $configProject->exportProjectInfo();
@@ -50,8 +50,8 @@ try {
 
         $config = $records[0];
 
-        $dataToken = $config[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
-        $logToken = $config[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
+        $dataToken = $config[ConfigProperties::DATA_SOURCE_API_TOKEN];
+        $logToken = $config[ConfigProperties::LOG_PROJECT_API_TOKEN];
     }
 
     if ($logToken !== '') {

@@ -552,8 +552,8 @@ class RedCapEtl
         $records = array();
         $records[0] = array(
             'record_id' => $record_id,
-            Configuration::TRIGGER_ETL_PROPERTY => RedCapEtl::TRIGGER_ETL_NO,
-            Configuration::TRANSFORM_RULES_CHECK_PROPERTY => $result
+            ConfigProperties::TRIGGER_ETL => RedCapEtl::TRIGGER_ETL_NO,
+            ConfigProperties::TRANSFORM_RULES_CHECK => $result
         );
 
         try {
@@ -570,7 +570,7 @@ class RedCapEtl
     {
         $records = $this->configProject->exportRecordsAp();
         $records = array($records[0]);
-        $records[0][Configuration::TRIGGER_ETL_PROPERTY] = RedCapEtl::TRIGGER_ETL_YES;
+        $records[0][ConfigProperties::TRIGGER_ETL] = RedCapEtl::TRIGGER_ETL_YES;
         $this->configProject->importRecords($records);
     }
 
@@ -683,7 +683,7 @@ class RedCapEtl
     public function getTriggerEtl()
     {
         $records = $this->configProject->exportRecords();
-        $triggerEtl = $records[0][Configuration::TRIGGER_ETL_PROPERTY];
+        $triggerEtl = $records[0][ConfigProperties::TRIGGER_ETL];
         return $triggerEtl;
     }
 

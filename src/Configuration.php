@@ -9,49 +9,14 @@ use IU\REDCapETL\Database\DBConnectFactory;
 
 class Configuration
 {
-    const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
-
-    #----------------------------------------------------------------
-    # Configuration properties
-    #----------------------------------------------------------------
-    const ALLOWED_SERVERS_PROPERTY        = 'allowed_servers';
-    const BATCH_SIZE_PROPERTY             = 'batch_size';
-    const CA_CERT_FILE_PROPERTY           = 'ca_cert_file';
-    const CONFIG_API_TOKEN_PROPERTY       = 'config_api_token';
-    const DATA_SOURCE_API_TOKEN_PROPERTY  = 'data_source_api_token';
-    const DB_CONNECTION_PROPERTY          = 'db_connection';
-
-    const EMAIL_FROM_ADDRESS_PROPERTY     = 'email_from_address';
-    const EMAIL_SUBJECT_PROPERTY          = 'email_subject';
-    const EMAIL_TO_LIST_PROPERTY          = 'email_to_list';
-    
-    const LABEL_VIEW_SUFFIX_PROPERTY      = 'label_view_suffix';
-    const LOG_FILE_PROPERTY               = 'log_file';
-    const LOG_PROJECT_API_TOKEN_PROPERTY  = 'log_project_api_token';
-    const REDCAP_API_URL_PROPERTY         = 'redcap_api_url';
-    const SSL_VERIFY_PROPERTY             = 'ssl_verify';
-    const TABLE_PREFIX_PROPERTY           = 'table_prefix';
-    const TIME_LIMIT_PROPERTY             = 'time_limit';
-    const TIMEZONE_PROPERTY               = 'timezone';
-
-    const TRANSFORM_RULES_CHECK_PROPERTY  = 'transform_rules_check';
-    const TRANSFORM_RULES_FILE_PROPERTY   = 'transform_rules_file';
-    const TRANSFORM_RULES_SOURCE_PROPERTY = 'transform_rules_source';
-    const TRANSFORM_RULES_TEXT_PROPERTY   = 'transform_rules_text';
-    
-    const TRIGGER_ETL_PROPERTY            = 'trigger_etl';
-    const WEB_SCRIPT_PROPERTY             = 'web_script';
-    const WEB_SCRIPT_LOG_FILE_PROPERTY    = 'web_script_log_file';
-    const WEB_SCRIPT_URL_PROPERTY         = 'web_script_url';
-    
-
     # Transform rules source values
     const TRANSFORM_RULES_TEXT    = '1';
     const TRANSFORM_RULES_FILE    = '2';
     const TRANSFORM_RULES_DEFAULT = '3';
 
     # Default values
-    const DEFAULT_TIME_LIMIT = 0;    # zero => no time limit
+    const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
+    const DEFAULT_TIME_LIMIT    = 0;    # zero => no time limit
     
     private $logger;
     private $errorHandler;
@@ -132,10 +97,10 @@ class Configuration
         #-----------------------------------------------------------------------------
         $this->logFile = null;
         if ($useWebScriptLogFile
-                && array_key_exists(Configuration::WEB_SCRIPT_LOG_FILE_PROPERTY, $properties)) {
-            $this->logFile = $properties[Configuration::WEB_SCRIPT_LOG_FILE_PROPERTY];
-        } elseif (array_key_exists(Configuration::LOG_FILE_PROPERTY, $properties)) {
-            $this->logFile = $properties[Configuration::LOG_FILE_PROPERTY];
+                && array_key_exists(ConfigProperties::WEB_SCRIPT_LOG_FILE, $properties)) {
+            $this->logFile = $properties[ConfigProperties::WEB_SCRIPT_LOG_FILE];
+        } elseif (array_key_exists(ConfigProperties::LOG_FILE, $properties)) {
+            $this->logFile = $properties[ConfigProperties::LOG_FILE];
         }
         
         
@@ -164,17 +129,17 @@ class Configuration
         #-----------------------------------------------------------
         $this->emailFromAddress  = null;
         $this->emailToList   = null;
-        if (array_key_exists(Configuration::EMAIL_FROM_ADDRESS_PROPERTY, $properties)) {
-            $this->emailFromAddress = $properties[Configuration::EMAIL_FROM_ADDRESS_PROPERTY];
+        if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $properties)) {
+            $this->emailFromAddress = $properties[ConfigProperties::EMAIL_FROM_ADDRESS];
         }
 
         $this->emailSubject = Configuration::DEFAULT_EMAIL_SUBJECT;
-        if (array_key_exists(Configuration::EMAIL_SUBJECT_PROPERTY, $properties)) {
-            $this->emailSubject = $properties[Configuration::EMAIL_SUBJECT_PROPERTY];
+        if (array_key_exists(ConfigProperties::EMAIL_SUBJECT, $properties)) {
+            $this->emailSubject = $properties[ConfigProperties::EMAIL_SUBJECT];
         }
 
-        if (array_key_exists(Configuration::EMAIL_TO_LIST_PROPERTY, $properties)) {
-            $this->emailToList = $properties[Configuration::EMAIL_TO_LIST];
+        if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $properties)) {
+            $this->emailToList = $properties[ConfigProperties::EMAIL_TO_LIST];
         }
 
         #------------------------------------------------------
@@ -191,8 +156,8 @@ class Configuration
         #------------------------------------------------
         # Get the REDCap API URL
         #------------------------------------------------
-        if (array_key_exists(Configuration::REDCAP_API_URL_PROPERTY, $properties)) {
-            $this->redcapApiUrl = $properties[Configuration::REDCAP_API_URL_PROPERTY];
+        if (array_key_exists(ConfigProperties::REDCAP_API_URL, $properties)) {
+            $this->redcapApiUrl = $properties[ConfigProperties::REDCAP_API_URL];
         } else {
             $message = 'No REDCap API URL property was defined.';
             $this->logger->logInfo($message);
@@ -204,15 +169,15 @@ class Configuration
         # Indicates if verification should be done for the SSL
         # connection to REDCap. Setting this to false is not secure.
         #---------------------------------------------------------------
-        if (array_key_exists(Configuration::SSL_VERIFY_PROPERTY, $properties)) {
-            $sslVerify = $properties[Configuration::SSL_VERIFY_PROPERTY];
+        if (array_key_exists(ConfigProperties::SSL_VERIFY, $properties)) {
+            $sslVerify = $properties[ConfigProperties::SSL_VERIFY];
             if (!isset($sslVerify) || $sslVerify === '' || $sslVerify === '0') {
                 $this->sslVerify = false;
             } elseif ($sslVerify === '1') {
                 $this->sslVerify = true;
             } else {
                 $message = 'Unrecognized value \"'.$sslVerify.'\" for '
-                    .Configuration::SSL_VERIFY_PROPERTY
+                    .ConfigProperties::SSL_VERIFY
                     .' property; a true a false value should be specified.';
                 $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
             }
@@ -228,9 +193,9 @@ class Configuration
         # for verifying that the REDCap site that is connected
         # to is the one specified).
         #---------------------------------------------------------
-        if (array_key_exists(Configuration::CA_CERT_FILE_PROPERTY, $properties)) {
+        if (array_key_exists(ConfigProperties::CA_CERT_FILE, $properties)) {
             $this->caCertFile = null;
-            $caCertFile = $properties[Configuration::CA_CERT_FILE_PROPERTY];
+            $caCertFile = $properties[ConfigProperties::CA_CERT_FILE];
             if (isset($caCertFile)) {
                 $caCertFile = trim($caCertFile);
                 if ($caCertFile !== '') {
@@ -244,8 +209,8 @@ class Configuration
         # Get the API token for the configuration project
         #--------------------------------------------------
         $configProjectApiToken = null;
-        if (array_key_exists(Configuration::CONFIG_API_TOKEN_PROPERTY, $properties)) {
-            $configProjectApiToken = $properties[Configuration::CONFIG_API_TOKEN_PROPERTY];
+        if (array_key_exists(ConfigProperties::CONFIG_API_TOKEN, $properties)) {
+            $configProjectApiToken = $properties[ConfigProperties::CONFIG_API_TOKEN];
         } else {
             $message = 'No configuration project API token property was defined.';
             $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
@@ -260,8 +225,8 @@ class Configuration
         }
 
 
-        if (array_key_exists(Configuration::ALLOWED_SERVERS_PROPERTY, $properties)) {
-            $this->allowedServers = $properties[Configuration::ALLOWED_SERVERS_PROPERTY];
+        if (array_key_exists(ConfigProperties::ALLOWED_SERVERS, $properties)) {
+            $this->allowedServers = $properties[ConfigProperties::ALLOWED_SERVERS];
         }
 
 
@@ -269,8 +234,8 @@ class Configuration
         # Get the data source project API token
         #----------------------------------------------------------------
         $this->dataSourceApiToken = '';
-        if (array_key_exists(Configuration::DATA_SOURCE_API_TOKEN_PROPERTY, $properties)) {
-            $this->dataSourceApiToken = $properties[Configuration::DATA_SOURCE_API_TOKEN_PROPERTY];
+        if (array_key_exists(ConfigProperties::DATA_SOURCE_API_TOKEN, $properties)) {
+            $this->dataSourceApiToken = $properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
         } else {
             $message = 'No data source API token was found in the configuration project.';
             $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
@@ -280,8 +245,8 @@ class Configuration
         # Get the logging project (where log records are written to) API token (if any)
         #-------------------------------------------------------------------------------
         # $startLog = microtime(true);
-        if (array_key_exists(Configuration::LOG_PROJECT_API_TOKEN_PROPERTY, $properties)) {
-            $this->logProjectApiToken = $properties[Configuration::LOG_PROJECT_API_TOKEN_PROPERTY];
+        if (array_key_exists(ConfigProperties::LOG_PROJECT_API_TOKEN, $properties)) {
+            $this->logProjectApiToken = $properties[ConfigProperties::LOG_PROJECT_API_TOKEN];
         } else {
             $this->logProjectApiToken = null;
         }
@@ -289,8 +254,8 @@ class Configuration
         #----------------------------------------------------------
         # Set the time limit; if none is provided, use the default
         #----------------------------------------------------------
-        if (array_key_exists(Configuration::TIME_LIMIT_PROPERTY, $properties)) {
-            $this->timeLimit = $properties[Configuration::TIME_LIMIT_PROPERTY];
+        if (array_key_exists(ConfigProperties::TIME_LIMIT, $properties)) {
+            $this->timeLimit = $properties[ConfigProperties::TIME_LIMIT];
         } else {
             $this->timeLimit = self::DEFAULT_TIME_LIMIT;
         }
@@ -298,37 +263,37 @@ class Configuration
         #-----------------------------------------------
         # Get the timezone, if any
         #-----------------------------------------------
-        if (array_key_exists(Configuration::TIMEZONE_PROPERTY, $properties)) {
-            $this->timeZone = $properties[Configuration::TIMEZONE_PROPERTY];
+        if (array_key_exists(ConfigProperties::TIMEZONE, $properties)) {
+            $this->timeZone = $properties[ConfigProperties::TIMEZONE];
         }
 
 
         // Record whether or not the actual ETL should be run. This is
         // used by the DET handler program, but not the batch program
-        if (array_key_exists(Configuration::TRIGGER_ETL_PROPERTY, $properties)) {
-            $this->triggerEtl = $properties[Configuration::TRIGGER_ETL_PROPERTY];
+        if (array_key_exists(ConfigProperties::TRIGGER_ETL, $properties)) {
+            $this->triggerEtl = $properties[ConfigProperties::TRIGGER_ETL];
         }
 
         // Determine the batch size to use (how many records to process at once)
         // Batch size is expected to be a positive integer. The Configuration
         // project should enforce that.
-        $this->batchSize = $properties[Configuration::BATCH_SIZE_PROPERTY];
+        $this->batchSize = $properties[ConfigProperties::BATCH_SIZE];
 
         $this->processTransformationRules($properties);
 
         #----------------------------------------------------------------
         # Get the table prefix (if any)
         #----------------------------------------------------------------
-        if (array_key_exists(Configuration::TABLE_PREFIX_PROPERTY, $properties)) {
-            $this->tablePrefix = $properties[Configuration::TABLE_PREFIX_PROPERTY];
+        if (array_key_exists(ConfigProperties::TABLE_PREFIX, $properties)) {
+            $this->tablePrefix = $properties[ConfigProperties::TABLE_PREFIX];
         }
 
 
         #----------------------------------------------------------------
         # Get the label view suffix (if any)
         #----------------------------------------------------------------
-        if (array_key_exists(Configuration::LABEL_VIEW_SUFFIX_PROPERTY, $properties)) {
-            $this->labelViewSuffix = $properties[Configuration::LABEL_VIEW_SUFFIX_PROPERTY];
+        if (array_key_exists(ConfigProperties::LABEL_VIEW_SUFFIX, $properties)) {
+            $this->labelViewSuffix = $properties[ConfigProperties::LABEL_VIEW_SUFFIX];
         }
 
 
@@ -336,13 +301,13 @@ class Configuration
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
         #---------------------------------------------------
-        if (array_key_exists(Configuration::DB_CONNECTION_PROPERTY, $properties)) {
-            $this->dbConnection = $properties[Configuration::DB_CONNECTION_PROPERTY];
+        if (array_key_exists(ConfigProperties::DB_CONNECTION, $properties)) {
+            $this->dbConnection = $properties[ConfigProperties::DB_CONNECTION];
             
             # If this property was defined in a file and uses the CSV database
             # type and a relative path was used, replace the relative path with
             # an absolute path
-            if ($this->isFromFile(Configuration::DB_CONNECTION_PROPERTY)) {
+            if ($this->isFromFile(ConfigProperties::DB_CONNECTION)) {
                 list($dbType, $dbString) = DBConnectFactory::parseConnectionString($this->dbConnection);
                 if ($dbType === DBConnectFactory::DBTYPE_CSV) {
                     if (!$this->isAbsolutePath($dbString)) {
@@ -436,8 +401,8 @@ class Configuration
         # sender with this e-mail address.
         #--------------------------------------------------------------
         if (!empty($this->emailFromAddress)) {
-            if (array_key_exists(Configuration::EMAIL_TO_LIST_PROPERTY, $properties)) {
-                $this->emailToList = trim($properties[Configuration::EMAIL_TO_LIST_PROPERTY]);
+            if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $properties)) {
+                $this->emailToList = trim($properties[ConfigProperties::EMAIL_TO_LIST]);
                 if (!empty($this->emailToList)) {
                     $this->logger->setLogEmailTo($this->emailToList);
                 }
@@ -463,17 +428,17 @@ class Configuration
      */
     private function processTransformationRules($properties)
     {
-        $this->transformRulesSource = $properties[Configuration::TRANSFORM_RULES_SOURCE_PROPERTY];
+        $this->transformRulesSource = $properties[ConfigProperties::TRANSFORM_RULES_SOURCE];
 
         if ($this->transformRulesSource === self::TRANSFORM_RULES_TEXT) {
-            $this->transformationRules = $properties[Configuration::TRANSFORM_RULES_TEXT_PROPERTY];
+            $this->transformationRules = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
             if ($this->transformationRules == '') {
                 $error = 'No transformation rules were entered.';
                 $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
             }
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_FILE) {
-            if ($this->isFromFile(Configuration::TRANSFORM_RULES_FILE_PROPERTY)) {
-                $file = $properties[Configuration::TRANSFORM_RULES_FILE_PROPERTY];
+            if ($this->isFromFile(ConfigProperties::TRANSFORM_RULES_FILE)) {
+                $file = $properties[ConfigProperties::TRANSFORM_RULES_FILE];
                 if ($this->isAbsolutePath($file)) {
                     $file = realpath($file);
                 } else {
@@ -491,7 +456,7 @@ class Configuration
             } else {
                 $results = $this->configProject->exportFile(
                     $properties['record_id'],
-                    Configuration::TRANSFORM_RULES_FILE_PROPERTY
+                    ConfigProperties::TRANSFORM_RULES_FILE
                 );
                 $this->transformationRules = $results;
                 if ($this->transformationRules == '') {
