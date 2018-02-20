@@ -373,13 +373,13 @@ class Configuration
     /**
      * Processes a configuration project. Sets the configuration array to the
      * values in the configuration project.
-     * 
+     *
      * @param string $configProjectApiToken the REDCap API token for the configiration
      *     project.
-     * 
+     *
      * @param array $properties the current properties array, a map from property name to
      *     property value.
-     * 
+     *
      * @return array returns an updated properties array, where non-blank values defined
      *     in the configuration project replace the ones from the configuration file.
      */
