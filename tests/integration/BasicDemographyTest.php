@@ -35,19 +35,6 @@ class DemographyTest extends TestCase
             }
 
             $redCapEtl->run();
-            /***
-            self::$logger->logInfo("Starting processing.");
-
-            list($parse_status,$result) = $redCapEtl->parseMap();
-
-            if (RedCapEtl::PARSE_ERROR === $parse_status) {
-                $redCapEtl->log("Schema map not parsed. Processing stopped.");
-            } else {
-                $redCapEtl->loadTables();
-                $redCapEtl->extractTransformLoad();
-                self::$logger->logInfo("Processing complete.");
-            }
-            ****/
         } catch (EtlException $exception) {
             self::$logger->logException($exception);
             self::$logger->logError('Processing failed.');
@@ -64,6 +51,6 @@ class DemographyTest extends TestCase
         $this->assertEquals($header[1], 'record_id', 'Record id header test.');
         $this->assertEquals(101, count($csv), 'Demography row count check.');
 
-        // $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
 }
