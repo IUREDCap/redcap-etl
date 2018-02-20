@@ -133,7 +133,7 @@ class Configuration
             $this->emailFromAddress = $properties[ConfigProperties::EMAIL_FROM_ADDRESS];
         }
 
-        $this->emailSubject = Configuration::DEFAULT_EMAIL_SUBJECT;
+        $this->emailSubject = self::DEFAULT_EMAIL_SUBJECT;
         if (array_key_exists(ConfigProperties::EMAIL_SUBJECT, $properties)) {
             $this->emailSubject = $properties[ConfigProperties::EMAIL_SUBJECT];
         }
