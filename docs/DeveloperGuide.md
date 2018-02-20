@@ -107,7 +107,7 @@ tests:
 
 2. Request an API token for the project you just created (or
    create a token if you are an admin). The token needs to have export
-   and permission.
+   permission.
 
 The next thing you need to do is to create the configuration file
 for the Basic Demography project:
@@ -139,22 +139,67 @@ in the top-level directory of your REDCap ETL installation:
 #### System tests
 To set up the system steps:
 
-1. In REDCap, create a project for the systems tests data using the
-   "Upload a REDCap project XML file" option, and specify the
-   following file from REDCap ETL:
+1. In REDCap, create a project using the
+   "Upload a REDCap project XML file" option for each of the following
+   REDCap project files:
 
         tests/projects/Vists.REDCap.xml
-
-2. In REDCap, create a configuration project for the systems tests
-   "Upload a REDCap project XML file" option, and specify the
-   following file from REDCap ETL:
-
         tests/projects/VistsConfig.REDCap.xml
+        tests/projects/VistsLog.REDCap.xml
 
-2. Request an API token for the project you just created (or
-   create a token if you are an admin). The token needs to have export
-   and permission.
+2. Request an API token for each of the projects you just created (or
+   create a token if you are an admin). The tokens need to have export
+   permission.
 
+In the configuration project (created from the VisitsConfig.REDCap.xml
+file):
+
+1. Set the log project api token in the Admin form of the existing
+   record to the token that you got for the log project
+   (created using file VisitsLog.REDCap.xml).
+
+2. Set the data source API token in the ETL Process
+   form to the value of the API token you got for the
+   data project (created from file Visits.REDCap.xml).
+
+3, If you used a different username, password, or database name
+   than those used in the example above for the MySQL database,
+   change the values appropriately in the database connection string
+   field. The syntax to use is:
+
+        MySQL:<db-host>:<db-username>:<db-password>:<db-name>
+
+
+The next thing you need to do is to create the configuration file
+for the Visits project:
+
+1. Copy the visits configuration file from the 
+   tests/config-init directory to the tests/config
+   directory, for example, from the top-level directory:
+   
+        cp tests/config-init/visits.ini tests/config
+
+2. Edit the file tests/config/visits.ini and set the 
+   following properties to appropriate values:
+   
+    1. __redcap_api_url__ - set this to the URL for your REDCap's API. Be
+       sure to set this to the URL for the _API_, which typically ends
+       with "/api/".
+
+    2. __config_api_token__ - set this to the REDCap API token for
+       your REDCap Vists Config project created above.
+       
+You now need to run the web script installation script to install a
+web script that will handle DETs (Data Entry Triggers) from REDCap.
+The DET will be simulated, so you won't actually need to set this
+up in your REDCap configuration project as you normally would in
+a production installation.
+
+After the above steps have been completed successfully, you should be
+able to run the system tests by executing the following command
+in the top-level directory of your REDCap ETL installation:
+
+    ./vendor/bin/phpunit --testsuite system
 
 
 ### Running the Tests
