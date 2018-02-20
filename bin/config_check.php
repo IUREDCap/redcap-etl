@@ -9,6 +9,7 @@ require(__DIR__.'/../dependencies/autoload.php');
 # Arguments: <properties-file>
 #-----------------------------------------------------------
 
+use IU\REDCapETL\ConfigProperties;
 use IU\REDCapETL\Configuration;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\Logger2;
@@ -25,7 +26,23 @@ try {
     $logger = new Logger2($app);
 
     $configuration = new Configuration($logger, null, $configFile);
-    print "Configuration file {$configFile} is OK.\n";
+    $properties = $configuration->getProperties();
+    
+    $warningsCount = 0;
+    foreach ($properties as $property => $value) {
+        if (!ConfigProperties::isValid($property)) {
+            print "WARNING: property {$property} is not a valid"
+                ." REDCap ETL configuration property.\n";
+            $warningsCount++;
+        }
+    }
+
+    if ($warningsCount > 0) {
+        print "Configuration file {$configFile} has {$warningsCount} warnings.\n";
+    } else {
+        print "Configuration file {$configFile} is OK.\n";
+    }
+    
 } catch (EtlException $exception) {
     $cause = null;
     $previous = $exception->getPrevious();
@@ -34,8 +51,8 @@ try {
     }
 
     if (isset($cause)) {
-        print "Error found: ".($exception->getMessage())."; cause: ".$cause."\n";
+        print "ERROR: ".($exception->getMessage())."; cause: ".$cause."\n";
     } else {
-        print "Error found: ".$exception->getMessage()."\n";
+        print "ERROR: ".$exception->getMessage()."\n";
     }
 }
