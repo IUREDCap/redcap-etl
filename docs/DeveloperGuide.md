@@ -8,10 +8,9 @@ This is a list of the steps for setting up a REDCap ETL development environment.
 
 1. Install PHP
 
-        sudo apt install php php-curl php-mysql
+        sudo apt install php php-curl php-mbstring php-mysql php-xml
         sudo phpenmod mysqli   # enable mysqli extension
         sudo phpenmod pdo_mysql # enable PDO extension for PHP 
-        sudo apt install php-mbstring # needed for phpunit
         sudo apt install php-xdebug  # Install XDebug to be able to see phpunit test code coverage
 
 2. Install Composer (needed to get PHPCap and development dependencies)
@@ -45,7 +44,8 @@ This is a list of the steps for setting up a REDCap ETL development environment.
         git config --global user.email "jsmith@someuniversity.edu"
         git config --global user.name "J Smith"
 
-8. Get the code.
+8. Get the code. Execute the following command in the directory where
+   you want to put REDCap ETL:
 
         git clone https://github.iu.edu/ABITC/redcap-etl
 
