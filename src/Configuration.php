@@ -431,10 +431,15 @@ class Configuration
         $this->transformRulesSource = $properties[ConfigProperties::TRANSFORM_RULES_SOURCE];
 
         if ($this->transformRulesSource === self::TRANSFORM_RULES_TEXT) {
-            $this->transformationRules = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
-            if ($this->transformationRules == '') {
-                $error = 'No transformation rules were entered.';
-                $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
+            if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $properties)) {
+                $this->transformationRules = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
+                if ($this->transformationRules == '') {
+                    $error = 'No transformation rules were entered.';
+                    $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
+                }
+            } else {
+                $error = 'No transformation rules text was defined.';
+                $this->errorHandler->throwException($error, EtlException::INPUT_ERROR);
             }
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_FILE) {
             if ($this->isFromFile(ConfigProperties::TRANSFORM_RULES_FILE)) {
