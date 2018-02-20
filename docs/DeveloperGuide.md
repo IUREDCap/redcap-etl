@@ -99,15 +99,15 @@ To set up the integration tests, you need to first set up
 the Basic Demopraphy REDCap project that has the data for the
 tests:
 
-1. download the Basic Demography REDCap project: 
+1. In REDCap, create a project using the
+   "Upload a REDCap project XML file" option, and specify the
+   following file from REDCap ETL:
 
         tests/projects/BasicDemography.REDCap.xml
 
-2. create a REDCap project using the
-   "Upload a REDCap project XML file" option, and specify the file
-   downloaded in the previous step
-3. request an API token for the project you just created (or
-   create a token if you are an admin)
+2. Request an API token for the project you just created (or
+   create a token if you are an admin). The token needs to have export
+   and permission.
 
 The next thing you need to do is to create the configuration file
 for the Basic Demography project:
@@ -121,16 +121,40 @@ for the Basic Demography project:
 
 2. Edit the file tests/config/basic-demography.ini and set the 
    following properties to appropriate values:
-    1. redcap_api_url - set this to the URL for your REDCap's API
-    2. data_source_api_token - set this to the REDCap API token for
+   
+    1. __redcap_api_url__ - set this to the URL for your REDCap's API. Be
+       sure to set this to the URL for the _API_, which typically ends
+       with "/api/".
+
+    2. __data_source_api_token__ - set this to the REDCap API token for
        your REDCap Basic Demography project created above.
-    3. db_connection =
     
+After the above steps have been completed successfully, you should be
+able to run the integration tests by executing the following command
+in the top-level directory of your REDCap ETL installation:
+
+    ./vendor/bin/phpunit --testsuite integration
+
 
 #### System tests
 To set up the system steps:
-1. download the Visits REDCap project from the tests/projects
-   directory: Visits.REDCap.xml
+
+1. In REDCap, create a project for the systems tests data using the
+   "Upload a REDCap project XML file" option, and specify the
+   following file from REDCap ETL:
+
+        tests/projects/Vists.REDCap.xml
+
+2. In REDCap, create a configuration project for the systems tests
+   "Upload a REDCap project XML file" option, and specify the
+   following file from REDCap ETL:
+
+        tests/projects/VistsConfig.REDCap.xml
+
+2. Request an API token for the project you just created (or
+   create a token if you are an admin). The token needs to have export
+   and permission.
+
 
 
 ### Running the Tests
