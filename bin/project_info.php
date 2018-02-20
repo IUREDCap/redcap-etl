@@ -12,6 +12,7 @@ require(__DIR__.'/../dependencies/autoload.php');
 # Arguments: <properties-file>
 #-----------------------------------------------------------
 
+use IU\REDCapETL\ConfigProperties;
 use IU\REDCapETL\Configuration;
 use IU\PHPCap\RedCapProject;
 use IU\PHPCap\PhpCapException;
