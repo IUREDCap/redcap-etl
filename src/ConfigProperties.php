@@ -55,9 +55,10 @@ class ConfigProperties
 
         if ($property != null) {
             $property = trim($property);
-            $reflection = new \ReflectionClass(self::class);
+            
+            $properties = self::getProperties();
 
-            foreach ($reflection->getConstants() as $name => $value) {
+            foreach ($properties as $name => $value) {
                 if ($property === $value) {
                     $isValid = true;
                     break;
@@ -65,5 +66,18 @@ class ConfigProperties
             }
         }
         return $isValid;
+    }
+    
+    /**
+     * Gets the property names and values.
+     *
+     * @return array a map from property name to property value for
+     *     all the configuration properties.
+     */
+    public static function getProperties()
+    {
+        $reflection = new \ReflectionClass(self::class);
+        $properties = $reflection->getConstants();
+        return $properties;
     }
 }

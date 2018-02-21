@@ -538,8 +538,9 @@ class Configuration
     }
 
     /**
-     * Indicates if the current value for the specified property is from
-     * the configuration file (as opposed to the configuration project).
+     * Indicates if the current value for the specified property
+     * is from the configuration file or array argument
+     * (as opposed to the configuration project).
      */
     public function isFromFile($property)
     {
