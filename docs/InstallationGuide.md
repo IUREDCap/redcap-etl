@@ -85,9 +85,27 @@ system:
     sudo chown -R etl:etl /opt/redcap-etl
 
 
-### Step 4 - Set up a Configuration Project
+### Step 4 (Optional) - Set up a Configuration Project
 
-In REDCap, create a new project using the "Upload a REDCap project XML file " option using the file **projects/redcap-etl-config.xml** from REDCap ETL downloaded in the previous step.
+Setting up a REDCap configuration project is optional. Configuration
+can be specified using only the configuration file (see below) instead.
+
+Using a configuration project adds complexity to the setup, and will
+require an API token for REDCap ETL to access the configuration
+project. The possible advatages of using a configuration project are:
+
+* It allows users who do not have access to the REDCap ETL server
+  to modify configuration information
+* It allows users who do not have access to the server to run the
+  REDCap ETL process using REDCap's DET (Data Entry Trigger) feature
+  
+
+
+
+In REDCap, create a new project using the
+"Upload a REDCap project XML file " option using the file
+**projects/redcap-etl-config.xml** from REDCap ETL downloaded
+in the previous step.
 
 Set at least all of the required fields for this project, and get a REDCap API token for the project. This token will need to be placed in your configuration
 file that you will also need to set up.

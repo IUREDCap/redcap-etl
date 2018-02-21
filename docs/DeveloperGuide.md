@@ -195,6 +195,30 @@ The DET will be simulated, so you won't actually need to set this
 up in your REDCap configuration project as you normally would in
 a production installation.
 
+To install the web script, from the top-level directory of your
+REDCap ETL installation, run the install_web_scripts.php
+script, for example:
+
+        ./bin/install_web_scripts.php -c tests/config -w /var/www/html
+
+Notes:
+
+* You may need to run the command as: 
+  `php ./bin/install_web_script.php ...`
+* /var/www/html represents the directory from which your web server
+  serves pages. Change this if your actual directory is different.
+* Make sure that the `web_script_url` property in the 
+  tests/config/visits.ini configuration file is set to a value
+  that corresponds to the directory where the web script is installed 
+* If you don't have permission to write to the web directory, you
+  may need to run the command as
+  `sudo ./bin/install_web_scripts.php ...`
+
+  
+ actual directory is
+different. And, if it is different, you need to change the
+web_script_url property in your configuration file to match.
+
 After the above steps have been completed successfully, you should be
 able to run the system tests by executing the following command
 in the top-level directory of your REDCap ETL installation:
