@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="REDCap ETL Basic Demography" AsOfDateTime="2017-08-30T10:25:20" CreationDateTime="2017-08-30T10:25:20" SourceSystem="REDCap" SourceSystemVersion="7.0.19">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="REDCap ETL Basic Demography" AsOfDateTime="2018-02-22T10:14:20" CreationDateTime="2018-02-22T10:14:20" SourceSystem="REDCap" SourceSystemVersion="7.4.23">
 <Study OID="Project.REDCapETLBasicDemography">
 <GlobalVariables>
 	<StudyName>REDCap ETL Basic Demography</StudyName>
@@ -13,7 +13,7 @@
 	<redcap:PurposeOther>REDCap ETL testing</redcap:PurposeOther>
 	<redcap:ProjectNotes></redcap:ProjectNotes>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.REDCapETLBasicDemography_2017-08-30_1025" Name="REDCap ETL Basic Demography" redcap:RecordIdField="record_id">
+<MetaDataVersion OID="Metadata.REDCapETLBasicDemography_2018-02-22_1014" Name="REDCap ETL Basic Demography" redcap:RecordIdField="record_id">
 	<FormDef OID="Form.demographics" Name="Basic Demography Form" Repeating="No" redcap:FormName="demographics">
 		<ItemGroupRef ItemGroupOID="demographics.record_id" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="demographics.first_name" Mandatory="No"/>
@@ -33,38 +33,7 @@
 		<ItemRef ItemOID="telephone" Mandatory="No" redcap:Variable="telephone"/>
 		<ItemRef ItemOID="email" Mandatory="No" redcap:Variable="email"/>
 		<ItemRef ItemOID="dob" Mandatory="No" redcap:Variable="dob"/>
-		<ItemRef ItemOID="age" Mandatory="No" redcap:Variable="age"/>
 		<ItemRef ItemOID="ethnicity" Mandatory="No" redcap:Variable="ethnicity"/>
-		<ItemRef ItemOID="race___0" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___3" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___4" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___5" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___0" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___3" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___4" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___5" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___0" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___3" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___4" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___5" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___0" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___3" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___4" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___5" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___0" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___3" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___4" Mandatory="No" redcap:Variable="race"/>
-		<ItemRef ItemOID="race___5" Mandatory="No" redcap:Variable="race"/>
 		<ItemRef ItemOID="race___0" Mandatory="No" redcap:Variable="race"/>
 		<ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
 		<ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
@@ -103,132 +72,9 @@
 	<ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:Identifier="y">
 		<Question><TranslatedText>Date of birth</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="age" Name="age" DataType="float" Length="999" redcap:Variable="age" redcap:FieldType="calc" redcap:Calculation="rounddown(datediff([dob],&#039;today&#039;,&#039;y&#039;))">
-		<Question><TranslatedText>Age (years)</TranslatedText></Question>
-	</ItemDef>
 	<ItemDef OID="ethnicity" Name="ethnicity" DataType="text" Length="1" redcap:Variable="ethnicity" redcap:FieldType="radio" redcap:CustomAlignment="LH">
 		<Question><TranslatedText>Ethnicity</TranslatedText></Question>
 		<CodeListRef CodeListOID="ethnicity.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___0" Name="race___0" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___0.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___1" Name="race___1" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___1.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___2" Name="race___2" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___2.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___3" Name="race___3" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___3.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___4" Name="race___4" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___4.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___5" Name="race___5" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___5.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___0" Name="race___0" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___0.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___1" Name="race___1" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___1.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___2" Name="race___2" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___2.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___3" Name="race___3" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___3.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___4" Name="race___4" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___4.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___5" Name="race___5" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___5.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___0" Name="race___0" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___0.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___1" Name="race___1" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___1.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___2" Name="race___2" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___2.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___3" Name="race___3" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___3.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___4" Name="race___4" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___4.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___5" Name="race___5" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___5.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___0" Name="race___0" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___0.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___1" Name="race___1" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___1.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___2" Name="race___2" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___2.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___3" Name="race___3" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___3.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___4" Name="race___4" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___4.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___5" Name="race___5" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___5.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___0" Name="race___0" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___0.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___1" Name="race___1" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___1.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___2" Name="race___2" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___2.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___3" Name="race___3" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___3.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___4" Name="race___4" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___4.choices"/>
-	</ItemDef>
-	<ItemDef OID="race___5" Name="race___5" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
-		<Question><TranslatedText>Race</TranslatedText></Question>
-		<CodeListRef CodeListOID="race___5.choices"/>
 	</ItemDef>
 	<ItemDef OID="race___0" Name="race___0" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
 		<Question><TranslatedText>Race</TranslatedText></Question>
@@ -319,126 +165,6 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="race___0.choices" Name="race___0" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___1.choices" Name="race___1" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___2.choices" Name="race___2" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___3.choices" Name="race___3" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___4.choices" Name="race___4" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___5.choices" Name="race___5" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___0.choices" Name="race___0" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___1.choices" Name="race___1" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___2.choices" Name="race___2" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___3.choices" Name="race___3" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___4.choices" Name="race___4" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___5.choices" Name="race___5" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___0.choices" Name="race___0" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___1.choices" Name="race___1" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___2.choices" Name="race___2" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___3.choices" Name="race___3" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___4.choices" Name="race___4" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___5.choices" Name="race___5" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___0.choices" Name="race___0" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___1.choices" Name="race___1" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___2.choices" Name="race___2" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___3.choices" Name="race___3" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___4.choices" Name="race___4" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___5.choices" Name="race___5" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___0.choices" Name="race___0" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___1.choices" Name="race___1" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___2.choices" Name="race___2" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___3.choices" Name="race___3" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___4.choices" Name="race___4" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="race___5.choices" Name="race___5" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, Other">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
-	</CodeList>
 	<CodeList OID="sex.choices" Name="sex" DataType="text" redcap:Variable="sex">
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
@@ -450,7 +176,7 @@
 	</CodeList>
 </MetaDataVersion>
 </Study>
-<ClinicalData StudyOID="Project.REDCapETLBasicDemography" MetaDataVersionOID="Metadata.REDCapETLBasicDemography_2017-08-30_1025">
+<ClinicalData StudyOID="Project.REDCapETLBasicDemography" MetaDataVersionOID="Metadata.REDCapETLBasicDemography_2018-02-22_1014">
 	<SubjectData SubjectKey="1001" redcap:RecordIdField="record_id">
 			<FormData FormOID="Form.demographics" FormRepeatKey="1">
 				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
@@ -466,7 +192,6 @@ Port Marietta, NV 35323-5627"/>
 					<ItemData ItemOID="telephone" Value="(759) 257-3524"/>
 					<ItemData ItemOID="email" Value="katherine.huels@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1955-05-07"/>
-					<ItemData ItemOID="age" Value="62"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -499,7 +224,6 @@ Lake Talia, TN 40738-9264"/>
 					<ItemData ItemOID="telephone" Value="(452) 258-2718"/>
 					<ItemData ItemOID="email" Value="sienna.howe@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1939-06-28"/>
-					<ItemData ItemOID="age" Value="78"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -532,7 +256,6 @@ Tremblayville, MN 75997"/>
 					<ItemData ItemOID="telephone" Value="(439) 802-2184"/>
 					<ItemData ItemOID="email" Value="shanna.fritsch@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1940-01-01"/>
-					<ItemData ItemOID="age" Value="77"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -565,7 +288,6 @@ Rossborough, NE 07878-5634"/>
 					<ItemData ItemOID="telephone" Value="(358) 728-2618"/>
 					<ItemData ItemOID="email" Value="brett.schuppe@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1929-12-09"/>
-					<ItemData ItemOID="age" Value="87"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -598,7 +320,6 @@ North Virgil, RI 03577"/>
 					<ItemData ItemOID="telephone" Value="(574) 598-7131"/>
 					<ItemData ItemOID="email" Value="cecelia.stoltenberg@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1957-12-18"/>
-					<ItemData ItemOID="age" Value="59"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -631,7 +352,6 @@ Hamillfort, AK 49381-5456"/>
 					<ItemData ItemOID="telephone" Value="(815) 362-8213"/>
 					<ItemData ItemOID="email" Value="maybell.gleason@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1933-10-25"/>
-					<ItemData ItemOID="age" Value="83"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -664,7 +384,6 @@ North Rogers, RI 52237-1258"/>
 					<ItemData ItemOID="telephone" Value="(869) 456-4824"/>
 					<ItemData ItemOID="email" Value="bill.zieme@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1922-06-16"/>
-					<ItemData ItemOID="age" Value="95"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -697,7 +416,6 @@ Port Madelyn, WA 80620"/>
 					<ItemData ItemOID="telephone" Value="(314) 503-5770"/>
 					<ItemData ItemOID="email" Value="vada.reynolds@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -730,7 +448,6 @@ Blickfurt, CA 73527"/>
 					<ItemData ItemOID="telephone" Value="(877) 772-5570"/>
 					<ItemData ItemOID="email" Value="marilie.keeling@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1968-04-08"/>
-					<ItemData ItemOID="age" Value="49"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -763,7 +480,6 @@ Ortizchester, MI 77595"/>
 					<ItemData ItemOID="telephone" Value="(382) 914-3596"/>
 					<ItemData ItemOID="email" Value="keeley.o.hara@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1920-05-23"/>
-					<ItemData ItemOID="age" Value="97"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -796,7 +512,6 @@ Candiceview, SC 76126"/>
 					<ItemData ItemOID="telephone" Value="(432) 302-7799"/>
 					<ItemData ItemOID="email" Value="monty.lockman@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1977-12-28"/>
-					<ItemData ItemOID="age" Value="39"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -829,7 +544,6 @@ Lake Pascale, MS 93989-8526"/>
 					<ItemData ItemOID="telephone" Value="(743) 517-1430"/>
 					<ItemData ItemOID="email" Value="shanelle.mann@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1931-10-01"/>
-					<ItemData ItemOID="age" Value="85"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -862,7 +576,6 @@ East Danielaland, AZ 16017"/>
 					<ItemData ItemOID="telephone" Value="(282) 639-0775"/>
 					<ItemData ItemOID="email" Value="keely.harber@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1953-11-17"/>
-					<ItemData ItemOID="age" Value="63"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -895,7 +608,6 @@ North Danielle, HI 98338"/>
 					<ItemData ItemOID="telephone" Value="(768) 946-8840"/>
 					<ItemData ItemOID="email" Value="destin.will@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1970-12-14"/>
-					<ItemData ItemOID="age" Value="46"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -928,7 +640,6 @@ Aureliobury, LA 79681"/>
 					<ItemData ItemOID="telephone" Value="(929) 914-0672"/>
 					<ItemData ItemOID="email" Value="alva.langworth@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1977-09-09"/>
-					<ItemData ItemOID="age" Value="39"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -961,7 +672,6 @@ East Mauricio, UT 30127-1092"/>
 					<ItemData ItemOID="telephone" Value="(216) 792-8020"/>
 					<ItemData ItemOID="email" Value="virginia.hilpert@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1932-09-18"/>
-					<ItemData ItemOID="age" Value="84"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -994,7 +704,6 @@ Eunaville, OR 75864"/>
 					<ItemData ItemOID="telephone" Value="(485) 984-3693"/>
 					<ItemData ItemOID="email" Value="mckenzie.runolfsdottir@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1971-01-24"/>
-					<ItemData ItemOID="age" Value="46"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1027,7 +736,6 @@ Maximefurt, NJ 07526-5882"/>
 					<ItemData ItemOID="telephone" Value="(669) 966-7839"/>
 					<ItemData ItemOID="email" Value="millie.hackett@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1941-09-28"/>
-					<ItemData ItemOID="age" Value="75"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1060,7 +768,6 @@ Lake Giovanna, NH 87871-0372"/>
 					<ItemData ItemOID="telephone" Value="(952) 984-3199"/>
 					<ItemData ItemOID="email" Value="rylee.hoppe@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1940-06-23"/>
-					<ItemData ItemOID="age" Value="77"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1093,7 +800,6 @@ Collinsfort, LA 01269"/>
 					<ItemData ItemOID="telephone" Value="(753) 343-4312"/>
 					<ItemData ItemOID="email" Value="jacques.abshire@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1942-03-31"/>
-					<ItemData ItemOID="age" Value="75"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1126,7 +832,6 @@ New Christy, TX 81679-9545"/>
 					<ItemData ItemOID="telephone" Value="(783) 469-3484"/>
 					<ItemData ItemOID="email" Value="herta.beahan@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1948-12-14"/>
-					<ItemData ItemOID="age" Value="68"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1159,7 +864,6 @@ Bauchfurt, ME 96157"/>
 					<ItemData ItemOID="telephone" Value="(867) 958-3356"/>
 					<ItemData ItemOID="email" Value="iva.kshlerin@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1929-05-15"/>
-					<ItemData ItemOID="age" Value="88"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1192,7 +896,6 @@ South Bartonchester, DC 87683-8250"/>
 					<ItemData ItemOID="telephone" Value="(888) 602-1191"/>
 					<ItemData ItemOID="email" Value="melyssa.spencer@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1978-12-04"/>
-					<ItemData ItemOID="age" Value="38"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1225,7 +928,6 @@ Zionland, MA 76701-3024"/>
 					<ItemData ItemOID="telephone" Value="(977) 804-8128"/>
 					<ItemData ItemOID="email" Value="chris.tillman@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1983-02-10"/>
-					<ItemData ItemOID="age" Value="34"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1258,7 +960,6 @@ Lake Ricky, ME 87357-2082"/>
 					<ItemData ItemOID="telephone" Value="(754) 647-0759"/>
 					<ItemData ItemOID="email" Value="elisabeth.rempel@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1291,7 +992,6 @@ Creminmouth, AZ 98562"/>
 					<ItemData ItemOID="telephone" Value="(685) 904-0124"/>
 					<ItemData ItemOID="email" Value="olga.beatty@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1976-07-10"/>
-					<ItemData ItemOID="age" Value="41"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1324,7 +1024,6 @@ New Ally, TN 19433"/>
 					<ItemData ItemOID="telephone" Value="(448) 677-1525"/>
 					<ItemData ItemOID="email" Value="jace.dickinson@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1983-11-12"/>
-					<ItemData ItemOID="age" Value="33"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1357,7 +1056,6 @@ Haliehaven, SD 70000-1538"/>
 					<ItemData ItemOID="telephone" Value="(653) 696-3087"/>
 					<ItemData ItemOID="email" Value="rosalind.thompson@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1970-12-26"/>
-					<ItemData ItemOID="age" Value="46"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1390,7 +1088,6 @@ North Brennaland, RI 69769-6638"/>
 					<ItemData ItemOID="telephone" Value="(534) 495-4544"/>
 					<ItemData ItemOID="email" Value="caroline.welch@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1423,7 +1120,6 @@ Port Veronabury, GA 65679-3297"/>
 					<ItemData ItemOID="telephone" Value="(278) 419-0819"/>
 					<ItemData ItemOID="email" Value="elisa.okuneva@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1980-12-16"/>
-					<ItemData ItemOID="age" Value="36"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1456,7 +1152,6 @@ Rosemarieshire, DE 28548"/>
 					<ItemData ItemOID="telephone" Value="(489) 883-7956"/>
 					<ItemData ItemOID="email" Value="salvatore.hilpert@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1965-02-26"/>
-					<ItemData ItemOID="age" Value="52"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1489,7 +1184,6 @@ Port Odellview, WA 07118-9655"/>
 					<ItemData ItemOID="telephone" Value="(476) 806-4901"/>
 					<ItemData ItemOID="email" Value="favian.simonis@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1980-11-06"/>
-					<ItemData ItemOID="age" Value="36"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="1"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1522,7 +1216,6 @@ Medhursttown, VA 54498"/>
 					<ItemData ItemOID="telephone" Value="(644) 756-2318"/>
 					<ItemData ItemOID="email" Value="kristy.keebler@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1984-04-22"/>
-					<ItemData ItemOID="age" Value="33"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1555,7 +1248,6 @@ Leoneltown, KY 18963"/>
 					<ItemData ItemOID="telephone" Value="(933) 508-7898"/>
 					<ItemData ItemOID="email" Value="laverna.hilll@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1944-12-02"/>
-					<ItemData ItemOID="age" Value="72"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1588,7 +1280,6 @@ Josiehaven, CA 93164-6287"/>
 					<ItemData ItemOID="telephone" Value="(229) 259-5373"/>
 					<ItemData ItemOID="email" Value="carlee.spencer@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1951-07-27"/>
-					<ItemData ItemOID="age" Value="66"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1621,7 +1312,6 @@ New Sammieburgh, WV 13763"/>
 					<ItemData ItemOID="telephone" Value="(417) 419-2915"/>
 					<ItemData ItemOID="email" Value="kaitlyn.leannon@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1926-02-24"/>
-					<ItemData ItemOID="age" Value="91"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1654,7 +1344,6 @@ New Morgan, IN 70282"/>
 					<ItemData ItemOID="telephone" Value="(323) 246-2865"/>
 					<ItemData ItemOID="email" Value="arnoldo.kertzmann@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1949-10-28"/>
-					<ItemData ItemOID="age" Value="67"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1687,7 +1376,6 @@ Micaelamouth, NV 27977"/>
 					<ItemData ItemOID="telephone" Value="(887) 392-2497"/>
 					<ItemData ItemOID="email" Value="mable.beahan@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1975-06-06"/>
-					<ItemData ItemOID="age" Value="42"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1720,7 +1408,6 @@ South Aurore, ID 02985"/>
 					<ItemData ItemOID="telephone" Value="(272) 428-9298"/>
 					<ItemData ItemOID="email" Value="carmela.hoppe@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1975-10-31"/>
-					<ItemData ItemOID="age" Value="41"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1753,7 +1440,6 @@ Isomstad, NJ 52165-9986"/>
 					<ItemData ItemOID="telephone" Value="(918) 543-9579"/>
 					<ItemData ItemOID="email" Value="monte.bradtke@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1921-04-24"/>
-					<ItemData ItemOID="age" Value="96"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1786,7 +1472,6 @@ West Yvetteville, NE 18918"/>
 					<ItemData ItemOID="telephone" Value="(572) 349-9197"/>
 					<ItemData ItemOID="email" Value="jadyn.wiegand@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1924-12-03"/>
-					<ItemData ItemOID="age" Value="92"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1819,7 +1504,6 @@ Port Charley, UT 01812"/>
 					<ItemData ItemOID="telephone" Value="(844) 787-5296"/>
 					<ItemData ItemOID="email" Value="leone.barrows@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1936-09-10"/>
-					<ItemData ItemOID="age" Value="80"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1852,7 +1536,6 @@ New Kayleyberg, NV 39440-4255"/>
 					<ItemData ItemOID="telephone" Value="(883) 354-8803"/>
 					<ItemData ItemOID="email" Value="kayli.marvin@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1928-11-07"/>
-					<ItemData ItemOID="age" Value="88"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1885,7 +1568,6 @@ New Barrett, VA 87936-7949"/>
 					<ItemData ItemOID="telephone" Value="(277) 216-7599"/>
 					<ItemData ItemOID="email" Value="fermin.kreiger@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1974-05-14"/>
-					<ItemData ItemOID="age" Value="43"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1918,7 +1600,6 @@ Yasmeenfort, AZ 21140-0671"/>
 					<ItemData ItemOID="telephone" Value="(966) 639-6971"/>
 					<ItemData ItemOID="email" Value="henry.feest@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1957-06-12"/>
-					<ItemData ItemOID="age" Value="60"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1951,7 +1632,6 @@ Lakinside, IL 18908-8879"/>
 					<ItemData ItemOID="telephone" Value="(277) 644-8422"/>
 					<ItemData ItemOID="email" Value="shaniya.roob@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1966-09-13"/>
-					<ItemData ItemOID="age" Value="50"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -1984,7 +1664,6 @@ South Orinside, TX 86555"/>
 					<ItemData ItemOID="telephone" Value="(918) 729-7907"/>
 					<ItemData ItemOID="email" Value="jefferey.goodwin@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1978-08-23"/>
-					<ItemData ItemOID="age" Value="39"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2017,7 +1696,6 @@ North Weldontown, GA 45200-3637"/>
 					<ItemData ItemOID="telephone" Value="(958) 772-5006"/>
 					<ItemData ItemOID="email" Value="winifred.hayes@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1950-04-26"/>
-					<ItemData ItemOID="age" Value="67"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2050,7 +1728,6 @@ Terrellfurt, MD 95375-8521"/>
 					<ItemData ItemOID="telephone" Value="(474) 587-9514"/>
 					<ItemData ItemOID="email" Value="arnulfo.mann@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1970-04-16"/>
-					<ItemData ItemOID="age" Value="47"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2083,7 +1760,6 @@ South Kraigview, DE 85867"/>
 					<ItemData ItemOID="telephone" Value="(465) 286-6900"/>
 					<ItemData ItemOID="email" Value="stacey.zulauf@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1955-11-29"/>
-					<ItemData ItemOID="age" Value="61"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2116,7 +1792,6 @@ West Forest, IA 11268-9696"/>
 					<ItemData ItemOID="telephone" Value="(784) 919-1544"/>
 					<ItemData ItemOID="email" Value="betsy.cremin@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1982-09-14"/>
-					<ItemData ItemOID="age" Value="34"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2149,7 +1824,6 @@ Kautzerborough, NH 80834-5862"/>
 					<ItemData ItemOID="telephone" Value="(287) 799-3892"/>
 					<ItemData ItemOID="email" Value="carley.dubuque@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1982-11-04"/>
-					<ItemData ItemOID="age" Value="34"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2182,7 +1856,6 @@ Dejachester, AZ 47108"/>
 					<ItemData ItemOID="telephone" Value="(276) 799-6815"/>
 					<ItemData ItemOID="email" Value="virgil.baumbach@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1931-10-26"/>
-					<ItemData ItemOID="age" Value="85"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2215,7 +1888,6 @@ Turnerville, MD 04643-7726"/>
 					<ItemData ItemOID="telephone" Value="(913) 594-0985"/>
 					<ItemData ItemOID="email" Value="melissa.graham@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2248,7 +1920,6 @@ O&#039;Konbury, OK 61652"/>
 					<ItemData ItemOID="telephone" Value="(727) 373-5964"/>
 					<ItemData ItemOID="email" Value="rebeca.ullrich@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1941-06-26"/>
-					<ItemData ItemOID="age" Value="76"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2281,7 +1952,6 @@ Oberbrunnershire, NM 95108-6423"/>
 					<ItemData ItemOID="telephone" Value="(389) 334-8746"/>
 					<ItemData ItemOID="email" Value="juvenal.hayes@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1952-02-08"/>
-					<ItemData ItemOID="age" Value="65"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2314,7 +1984,6 @@ Lake Fritz, ME 00528"/>
 					<ItemData ItemOID="telephone" Value="(533) 857-0876"/>
 					<ItemData ItemOID="email" Value="carolyne.anderson@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1974-05-28"/>
-					<ItemData ItemOID="age" Value="43"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2347,7 +2016,6 @@ Mannside, MO 31180"/>
 					<ItemData ItemOID="telephone" Value="(484) 934-0434"/>
 					<ItemData ItemOID="email" Value="eladio.jenkins@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1945-06-02"/>
-					<ItemData ItemOID="age" Value="72"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2380,7 +2048,6 @@ South Aiyanachester, MO 71738-1484"/>
 					<ItemData ItemOID="telephone" Value="(646) 496-4344"/>
 					<ItemData ItemOID="email" Value="jaeden.emmerich@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1936-04-19"/>
-					<ItemData ItemOID="age" Value="81"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2413,7 +2080,6 @@ Clevelandchester, AL 65347"/>
 					<ItemData ItemOID="telephone" Value="(427) 599-4436"/>
 					<ItemData ItemOID="email" Value="shawn.effertz@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1948-10-20"/>
-					<ItemData ItemOID="age" Value="68"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2446,7 +2112,6 @@ Kathleenport, ID 06247-9241"/>
 					<ItemData ItemOID="telephone" Value="(917) 795-7617"/>
 					<ItemData ItemOID="email" Value="kameron.gleason@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2479,7 +2144,6 @@ Lueilwitzview, MS 75129"/>
 					<ItemData ItemOID="telephone" Value="(744) 306-0627"/>
 					<ItemData ItemOID="email" Value="hilda.dooley@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2512,7 +2176,6 @@ Wymanfort, MA 59584-9880"/>
 					<ItemData ItemOID="telephone" Value="(573) 785-2293"/>
 					<ItemData ItemOID="email" Value="eliza.goldner@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1939-03-10"/>
-					<ItemData ItemOID="age" Value="78"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2545,7 +2208,6 @@ North Liam, NY 25064-3544"/>
 					<ItemData ItemOID="telephone" Value="(419) 323-0813"/>
 					<ItemData ItemOID="email" Value="sydney.lubowitz@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2578,7 +2240,6 @@ Zboncakton, DC 46039"/>
 					<ItemData ItemOID="telephone" Value="(522) 438-2655"/>
 					<ItemData ItemOID="email" Value="audie.dickens@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1953-10-14"/>
-					<ItemData ItemOID="age" Value="63"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2611,7 +2272,6 @@ Port Marion, GA 88183-5888"/>
 					<ItemData ItemOID="telephone" Value="(213) 207-0694"/>
 					<ItemData ItemOID="email" Value="elody.gusikowski@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1953-08-07"/>
-					<ItemData ItemOID="age" Value="64"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2644,7 +2304,6 @@ McCulloughport, CT 64670-8066"/>
 					<ItemData ItemOID="telephone" Value="(329) 718-3057"/>
 					<ItemData ItemOID="email" Value="emmitt.dubuque@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1929-04-12"/>
-					<ItemData ItemOID="age" Value="88"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2677,7 +2336,6 @@ Zemlakmouth, NC 15241"/>
 					<ItemData ItemOID="telephone" Value="(832) 799-3887"/>
 					<ItemData ItemOID="email" Value="electa.berge@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2710,7 +2368,6 @@ Volkmanstad, OH 47444"/>
 					<ItemData ItemOID="telephone" Value="(546) 632-8851"/>
 					<ItemData ItemOID="email" Value="devan.orn@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1922-06-16"/>
-					<ItemData ItemOID="age" Value="95"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2743,7 +2400,6 @@ South Uriahshire, VT 46441"/>
 					<ItemData ItemOID="telephone" Value="(986) 363-1967"/>
 					<ItemData ItemOID="email" Value="cleveland.shanahan@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1936-09-02"/>
-					<ItemData ItemOID="age" Value="80"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2776,7 +2432,6 @@ East Carlos, NV 32480"/>
 					<ItemData ItemOID="telephone" Value="(716) 693-5271"/>
 					<ItemData ItemOID="email" Value="jodie.watsica@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1969-03-30"/>
-					<ItemData ItemOID="age" Value="48"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2809,7 +2464,6 @@ Noreneview, MA 34142"/>
 					<ItemData ItemOID="telephone" Value="(546) 443-8295"/>
 					<ItemData ItemOID="email" Value="ford.huel@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1979-08-01"/>
-					<ItemData ItemOID="age" Value="38"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2842,7 +2496,6 @@ Sawaynport, IA 56939"/>
 					<ItemData ItemOID="telephone" Value="(523) 773-7033"/>
 					<ItemData ItemOID="email" Value="brooke.harvey@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2875,7 +2528,6 @@ Schambergerside, LA 10485"/>
 					<ItemData ItemOID="telephone" Value="(227) 775-6350"/>
 					<ItemData ItemOID="email" Value="kaela.bartell@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1985-06-29"/>
-					<ItemData ItemOID="age" Value="32"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2908,7 +2560,6 @@ Bergnaumport, MI 44324-0065"/>
 					<ItemData ItemOID="telephone" Value="(975) 516-9982"/>
 					<ItemData ItemOID="email" Value="cathy.goldner@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1927-11-20"/>
-					<ItemData ItemOID="age" Value="89"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2941,7 +2592,6 @@ Augustusmouth, NM 96439-0893"/>
 					<ItemData ItemOID="telephone" Value="(534) 928-0369"/>
 					<ItemData ItemOID="email" Value="demarco.kuhlman@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1972-06-22"/>
-					<ItemData ItemOID="age" Value="45"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -2974,7 +2624,6 @@ Kerlukeburgh, IL 61094-1233"/>
 					<ItemData ItemOID="telephone" Value="(548) 937-3745"/>
 					<ItemData ItemOID="email" Value="silas.waters@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3007,7 +2656,6 @@ West Meda, WY 55502-1764"/>
 					<ItemData ItemOID="telephone" Value="(935) 459-5766"/>
 					<ItemData ItemOID="email" Value="kamille.o.reilly@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1928-10-23"/>
-					<ItemData ItemOID="age" Value="88"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3040,7 +2688,6 @@ Port Alimouth, NY 76474"/>
 					<ItemData ItemOID="telephone" Value="(245) 905-0240"/>
 					<ItemData ItemOID="email" Value="kaley.yundt@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1936-04-06"/>
-					<ItemData ItemOID="age" Value="81"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3073,7 +2720,6 @@ Bartonton, PA 90361"/>
 					<ItemData ItemOID="telephone" Value="(439) 515-4756"/>
 					<ItemData ItemOID="email" Value="corbin.ernser@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3106,7 +2752,6 @@ East Van, VA 93747"/>
 					<ItemData ItemOID="telephone" Value="(739) 673-9180"/>
 					<ItemData ItemOID="email" Value="thad.hane@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1987-12-05"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3139,7 +2784,6 @@ Othafort, CA 21216-2551"/>
 					<ItemData ItemOID="telephone" Value="(774) 524-2948"/>
 					<ItemData ItemOID="email" Value="jimmy.rolfson@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1979-08-14"/>
-					<ItemData ItemOID="age" Value="38"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3172,7 +2816,6 @@ Burnicestad, MS 12246-1547"/>
 					<ItemData ItemOID="telephone" Value="(377) 624-4231"/>
 					<ItemData ItemOID="email" Value="veda.buckridge@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1979-12-21"/>
-					<ItemData ItemOID="age" Value="37"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3205,7 +2848,6 @@ Filomenafurt, DC 03327-6894"/>
 					<ItemData ItemOID="telephone" Value="(815) 654-3685"/>
 					<ItemData ItemOID="email" Value="elody.jacobs@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1937-08-10"/>
-					<ItemData ItemOID="age" Value="80"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3238,7 +2880,6 @@ Durganhaven, SC 19593"/>
 					<ItemData ItemOID="telephone" Value="(423) 725-8666"/>
 					<ItemData ItemOID="email" Value="anabel.koch@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1961-07-17"/>
-					<ItemData ItemOID="age" Value="56"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3271,7 +2912,6 @@ Wardstad, GA 56656"/>
 					<ItemData ItemOID="telephone" Value="(412) 765-7177"/>
 					<ItemData ItemOID="email" Value="evelyn.connelly@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1964-09-15"/>
-					<ItemData ItemOID="age" Value="52"/>
 					<ItemData ItemOID="ethnicity" Value="0"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3304,7 +2944,6 @@ East Tyreekport, CO 21524-8767"/>
 					<ItemData ItemOID="telephone" Value="(377) 975-6869"/>
 					<ItemData ItemOID="email" Value="jabari.rutherford@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1980-11-20"/>
-					<ItemData ItemOID="age" Value="36"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3337,7 +2976,6 @@ New Johnpaulchester, KY 87838-4423"/>
 					<ItemData ItemOID="telephone" Value="(219) 955-0380"/>
 					<ItemData ItemOID="email" Value="eli.orn@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1928-07-23"/>
-					<ItemData ItemOID="age" Value="89"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3370,7 +3008,6 @@ Watersshire, OK 52440-0350"/>
 					<ItemData ItemOID="telephone" Value="(386) 818-1143"/>
 					<ItemData ItemOID="email" Value="willow.graham@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1955-06-13"/>
-					<ItemData ItemOID="age" Value="62"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3403,7 +3040,6 @@ Bradtkefort, MN 83226-7714"/>
 					<ItemData ItemOID="telephone" Value="(267) 585-4712"/>
 					<ItemData ItemOID="email" Value="spencer.cummings@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1920-04-11"/>
-					<ItemData ItemOID="age" Value="97"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3436,7 +3072,6 @@ Jalenland, MA 04346"/>
 					<ItemData ItemOID="telephone" Value="(664) 818-6776"/>
 					<ItemData ItemOID="email" Value="baby.johns@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1965-12-28"/>
-					<ItemData ItemOID="age" Value="51"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3469,7 +3104,6 @@ Lake Borisstad, TN 22274-6560"/>
 					<ItemData ItemOID="telephone" Value="(527) 802-7267"/>
 					<ItemData ItemOID="email" Value="karianne.white@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3502,7 +3136,6 @@ Ezraland, IA 04987"/>
 					<ItemData ItemOID="telephone" Value="(224) 373-8169"/>
 					<ItemData ItemOID="email" Value="helga.o.connell@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1959-02-16"/>
-					<ItemData ItemOID="age" Value="58"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3535,7 +3168,6 @@ Deontaeport, ID 33135-0411"/>
 					<ItemData ItemOID="telephone" Value="(826) 467-8457"/>
 					<ItemData ItemOID="email" Value="deshawn.ernser@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3568,7 +3200,6 @@ Port Louietown, WI 54061"/>
 					<ItemData ItemOID="telephone" Value="(337) 269-4401"/>
 					<ItemData ItemOID="email" Value="alicia.abernathy@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1949-08-13"/>
-					<ItemData ItemOID="age" Value="68"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3601,7 +3232,6 @@ West Carlo, LA 77594-5232"/>
 					<ItemData ItemOID="telephone" Value="(457) 545-4360"/>
 					<ItemData ItemOID="email" Value="esperanza.auer@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1960-11-12"/>
-					<ItemData ItemOID="age" Value="56"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3634,7 +3264,6 @@ Aubreeview, SC 26389-5399"/>
 					<ItemData ItemOID="telephone" Value="(566) 479-5978"/>
 					<ItemData ItemOID="email" Value="myron.grady@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1931-01-04"/>
-					<ItemData ItemOID="age" Value="86"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3667,7 +3296,6 @@ Kulasfurt, WI 00524"/>
 					<ItemData ItemOID="telephone" Value="(744) 975-6215"/>
 					<ItemData ItemOID="email" Value="noel.vonrueden@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1933-12-01"/>
-					<ItemData ItemOID="age" Value="83"/>
 					<ItemData ItemOID="ethnicity" Value="2"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3700,7 +3328,6 @@ Glovermouth, MI 96241-8101"/>
 					<ItemData ItemOID="telephone" Value="(947) 773-8102"/>
 					<ItemData ItemOID="email" Value="lillian.wisoky@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1944-11-23"/>
-					<ItemData ItemOID="age" Value="72"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
@@ -3733,7 +3360,6 @@ Stoltenbergville, MN 57828-4095"/>
 					<ItemData ItemOID="telephone" Value="(714) 207-0230"/>
 					<ItemData ItemOID="email" Value="ella.kunze@mailinator.com"/>
 					<ItemData ItemOID="dob" Value="1988-01-19"/>
-					<ItemData ItemOID="age" Value="29"/>
 					<ItemData ItemOID="ethnicity" Value="1"/>
 					<ItemData ItemOID="race___0" Value="0"/>
 					<ItemData ItemOID="race___1" Value="0"/>
