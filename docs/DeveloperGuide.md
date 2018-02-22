@@ -148,8 +148,10 @@ To set up the system steps:
         tests/projects/VistsLog.REDCap.xml
 
 2. Request an API token for each of the projects you just created (or
-   create a token if you are an admin). The tokens need to have export
-   permission.
+   create a token if you are an admin). The configuration and logging
+   project tokens need to have export and "API Import/Update"
+   permissions. The data project API token needs to have 
+   "API Export" permission.
 
 In the configuration project (created from the VisitsConfig.REDCap.xml
 file):
@@ -188,7 +190,21 @@ for the Visits project:
 
     2. __config_api_token__ - set this to the REDCap API token for
        your REDCap Vists Config project created above.
-       
+
+You can check the setup so far by running the following command in the
+top-level directory of you REDCap ETL installation:
+
+        ./bin/project_info.php tests/config/visits.ini 
+    
+If things have been set up correctly, you should see the correct
+project names displayed for the configuration, data and logging
+projects.
+
+You can also check the configuration for errors with the following
+command:
+
+        ./bin/project_info.php tests/config/visits.ini 
+
 You now need to run the web script installation script to install a
 web script that will handle DETs (Data Entry Triggers) from REDCap.
 The DET will be simulated, so you won't actually need to set this
@@ -205,7 +221,7 @@ Notes:
 
 * You may need to run the command as: 
   `php ./bin/install_web_script.php ...`
-* /var/www/html represents the directory from which your web server
+* `/var/www/html` represents the directory from which your web server
   serves pages. Change this if your actual directory is different.
 * Make sure that the `web_script_url` property in the 
   tests/config/visits.ini configuration file is set to a value
