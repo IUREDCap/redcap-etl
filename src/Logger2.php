@@ -84,6 +84,17 @@ class Logger2
             $this->notifier = null;
         }
     }
+    
+    public function setLogEmailTo($to)
+    {
+        try {
+            $this->notifier->setRecipients($to);
+        } catch (Exception $exception) {
+            $message = 'Unable to set log e-mail to list: '.$exception.getMessage();
+            error_log($message, 0);
+            $this->notifier = null;
+        }
+    }
 
 
     /**

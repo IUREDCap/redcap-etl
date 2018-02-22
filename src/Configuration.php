@@ -65,7 +65,7 @@ class Configuration
         $this->logger = $logger;
         $this->errorHandler = new EtlErrorHandler();
 
-        $this->app = $logger->getApp();
+        $this->app = $this->logger->getApp();
 
         $this->propertiesFile = $propertiesFile;
 
@@ -386,7 +386,7 @@ class Configuration
         # from the configuration file.
         #----------------------------------------------------------------------
         foreach ($this->configuration as $key => $value) {
-            # If the property does not end with '_complete'
+            # If the property name does not end with '_complete'
             # (i.e., if it's not an automatically generated
             # REDCap form completion field)
             if (preg_match('/_complete$/', $key) === 0) {
@@ -561,6 +561,10 @@ class Configuration
         return $isFromFile;
     }
 
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 
     public function getAllowedServers()
     {

@@ -43,7 +43,9 @@ $propertiesFile = null;
 # Run parsing or ETL, depending on configuration
 #------------------------------------------------------------
 try {
-    $redCapEtl = new RedCapEtl($logger, $propertiesFile);
+    $useWebScriptLogFile = true;
+    $redCapEtl = new RedCapEtl($logger, $propertiesFile, $useWebScriptLogFile);
+    $logger = $redCapEtl->getLogger();
     $redCapEtl->runForDet();
 } catch (EtlException $exception) {
     $logger->logException($exception);

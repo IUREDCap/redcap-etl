@@ -128,15 +128,21 @@ class RedCapEtl
         $propertiesFile,
         $useWebScriptLogFile = false
     ) {
-        $this->logger = $logger;
         $this->errorHandler = new EtlErrorHandler();
 
         $this->app = $logger->getApp();
 
         $properties = null;
-        $this->configuration = new Configuration($logger, $properties, $propertiesFile);
+        $this->configuration = new Configuration(
+            $logger,
+            $properties,
+            $propertiesFile,
+            $useWebScriptLogFile
+        );
+        
+        $this->logger = $this->configuration->getLogger();
+        
         $this->configProject = $this->configuration->getConfigProject();
-
 
         $this->date = date('g:i:s a d-M-Y T');
 
@@ -258,6 +264,8 @@ class RedCapEtl
             $this->tablePrefix,
             $this->labelViewSuffix
         );
+        
+        $this->logger->logInfo('Database connection created');  // Jim
     }
 
 
@@ -566,14 +574,6 @@ class RedCapEtl
         return true;
     }
 
-    public function setTriggerEtl()
-    {
-        $records = $this->configProject->exportRecordsAp();
-        $records = array($records[0]);
-        $records[0][ConfigProperties::TRIGGER_ETL] = RedCapEtl::TRIGGER_ETL_YES;
-        $this->configProject->importRecords($records);
-    }
-
 
     /**
      * Runs the entire ETL process
@@ -621,7 +621,7 @@ class RedCapEtl
     {
         $this->logger->logInfo('Executing web script '.$this->logger->getApp());
 
-        $detHandler = $redCapEtl->getDetHandler();
+        $detHandler = $this->getDetHandler();
         list($project_id,$record_id) = $detHandler->getDetParams();
 
         #-----------------------------------------------------------------------
@@ -633,32 +633,32 @@ class RedCapEtl
         #-----------------------------------------------------------------------
         # Parse Map
         #-----------------------------------------------------------------------
-        list($parse_status, $result) = $redCapEtl->parseMap();
+        list($parse_status, $result) = $this->parseMap();
 
         # If the parsing of the schema map failed.
         if ($parse_status === TransformationRules::PARSE_ERROR) {
             $msg = "Schema map not fully parsed. Processing stopped.";
-            $redCapEtl->log($msg);
+            $this->log($msg);
             $result .= $msg."\n";
         } else {
             $result .= "Schema map is valid.\n";
 
-            if ($redCapEtl->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
+            if ($this->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
                 // ETL not requested
                 $msg = "Web-invoked process stopped after parsing, per default.";
-                $redCapEtl->log($msg);
+                $this->log($msg);
                 $result .= $msg."\n";
             } else {
                 $result .= "ETL proceeding. Please see log for results\n";
 
-                $redCapEtl->createLoadTables();
+                $this->createLoadTables();
                 //--------------------------------------------------------------------
                 // Extract, Transform, and Load
                 //
                 // These three steps are joined together at this level so that
                 // the data from REDCap can be worked on in batches
                 //--------------------------------------------------------------------
-                $redCapEtl->extractTransformLoad();
+                $this->extractTransformLoad();
             } // ETL requested
         } // parseMap valid
 
@@ -668,7 +668,7 @@ class RedCapEtl
         #-----------------------------------------------------------
         # Upload the results, and set ETL trigger back to default
         #-----------------------------------------------------------
-        $redCapEtl->uploadResultAndReset($result, $record_id);
+        $this->uploadResultAndReset($result, $record_id);
     }
 
 
@@ -687,6 +687,19 @@ class RedCapEtl
         return $triggerEtl;
     }
 
+    public function setTriggerEtl()
+    {
+        $records = $this->configProject->exportRecordsAp();
+        $records = array($records[0]);
+        $records[0][ConfigProperties::TRIGGER_ETL] = RedCapEtl::TRIGGER_ETL_YES;
+        $this->configProject->importRecords($records);
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+    
     public function log($message)
     {
         $this->logger->logInfo($message);

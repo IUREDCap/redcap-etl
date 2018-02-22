@@ -10,15 +10,14 @@ namespace IU\REDCapETL;
 class Notifier
 {
     protected $sender = '';     // Email address to be used as From: address
-    protected $recipient = '';  // Email address of recipient
-                                //   For now, only one address
+    protected $recipients = '';  // Email address list of recipients
     protected $subject = '';    // Subject of sent emails
     protected $file = null;     // Optional file used for logging
 
     public function __construct($from, $to, $subject, $file = null)
     {
         $this->sender    = $from;
-        $this->recipient = $to;
+        $this->recipients = $to;
         $this->subject   = $subject;
         if (isset($file) && is_string($file) && trim($file) != '') {
             $this->file = trim($file);
@@ -49,7 +48,7 @@ class Notifier
         }
 
         $failedSendTos = $this->sendmail(
-            $this->recipient,
+            $this->recipients,
             array(),
             $message,
             $this->subject,
@@ -150,5 +149,10 @@ class Notifier
     public function setSender($sender)
     {
         $this->sender = $sender;
+    }
+    
+    public function setRecipients($recipients)
+    {
+        $this->recipients = $recipients;
     }
 }
