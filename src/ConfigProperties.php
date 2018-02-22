@@ -24,6 +24,8 @@ class ConfigProperties
     const LABEL_VIEW_SUFFIX      = 'label_view_suffix';
     const LOG_FILE               = 'log_file';
     const LOG_PROJECT_API_TOKEN  = 'log_project_api_token';
+    const RECORD_ID              = 'record_id';
+    
     const REDCAP_API_URL         = 'redcap_api_url';
     const SSL_VERIFY             = 'ssl_verify';
     const TABLE_PREFIX           = 'table_prefix';

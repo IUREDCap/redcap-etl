@@ -380,17 +380,23 @@ class Configuration
         $this->configuration = $results[0];
 
         #----------------------------------------------------------------------
-        # Merge the properties from the configuration project with those from
-        # from the configuration file, with non-blank values from the
-        # configuration project replacing those from the configuration file.
+        # Merge the properties from the configuration project that do not end
+        # with "_complete" with those from the configuration file, with
+        # non-blank values from the configuration project replacing those
+        # from the configuration file.
         #----------------------------------------------------------------------
         foreach ($this->configuration as $key => $value) {
-            if (array_key_exists($key, $properties)) {
-                if (trim($value) !== '') {
+            # If the property does not end with '_complete'
+            # (i.e., if it's not an automatically generated
+            # REDCap form completion field)
+            if (preg_match('/_complete$/', $key) === 0) {
+                if (array_key_exists($key, $properties)) {
+                    if (trim($value) !== '') {
+                        $properties[$key] = $value;
+                    }
+                } else {
                     $properties[$key] = $value;
                 }
-            } else {
-                $properties[$key] = $value;
             }
         }
         $this->properties = $properties;
@@ -621,6 +627,15 @@ class Configuration
         return $this->projectId;
     }
 
+    public function getRecordId()
+    {
+        $recordId = null;
+        if (array_key_exists(ConfigProperties::RECORD_ID)) {
+            $recordId = $this->properties[ConfigProperties::RECORD_ID];
+        }
+        return $recordId;
+    }
+    
     public function getRedCapApiUrl()
     {
         return $this->redcapApiUrl;
