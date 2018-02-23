@@ -66,10 +66,6 @@ class RedCapEtl
     const LOOKUP_FIELD_LABEL       = 'label';
 
     protected $det;          // For calls related to Data Entry Triggers
-    //public $notifier;        // For notifying of errors when there is no GUI
-
-    protected $date;
-    protected $log_id_base;
 
     protected $configProject;
     protected $dataProject;
@@ -77,15 +73,11 @@ class RedCapEtl
 
     protected $logger;
 
-    protected $batch_size = 1;   // In effect batch size of 1 is no batching
+    protected $batchSize = 1;   // In effect batch size of 1 is no batching
 
     protected $schema;
-    ####protected $lookup;
-    protected $lookup_table;  // Table object that has label information for
+    protected $lookupTable;  // Table object that has label information for
                               // multiple choice REDCap fields.
-
-    protected $lookup_table_in;  // Array of which table/fields have
-                                       // already been entered into Lookup
 
     protected $rowsLoadedForTable = array();
   
@@ -143,17 +135,6 @@ class RedCapEtl
         $this->logger = $this->configuration->getLogger();
         
         $this->configProject = $this->configuration->getConfigProject();
-
-        $this->date = date('g:i:s a d-M-Y T');
-
-        // REDCap must have a record_id when importing a new record. It does
-        // not auto generate a new record_id on API Imports (or regular imports?),
-        // even when the project is set to auto generate new record_ids.
-        // Because multiple people may be using this application simultaneously,
-        // it's not sufficient to simply use a timestamp. There is a risk that
-        // even with the timestamp and a random number, logs might overwrite each
-        // other, but I haven't found a better solution.
-        $this->log_id_base = time().'-'.rand().'-';
 
         #-------------------------------------------------------------
         # Callback function for use in the RedCap class so
@@ -287,7 +268,7 @@ class RedCapEtl
         ###print "\n".($schema->toString())."\n";
 
         $this->schema       = $schema;
-        $this->lookup_table = $lookupTable;
+        $this->lookupTable = $lookupTable;
 
         return $parseResult;
     }
@@ -312,7 +293,7 @@ class RedCapEtl
         # Extract the record ID batches
         #--------------------------------------------------
         $startExtractTime = microtime(true);
-        $recordIdBatches = $this->dataProject->getRecordIdBatches((int) $this->batch_size);
+        $recordIdBatches = $this->dataProject->getRecordIdBatches((int) $this->batchSize);
         $endExtractTime = microtime(true);
         $extractTime += $endExtractTime - $startExtractTime;
 
@@ -325,7 +306,7 @@ class RedCapEtl
 
         // Foreach record_id, get all REDCap records for that record_id.
         // There will be one record for each event for each record_id
-        $record_events_cnt = 0;
+        $recordEventsCount = 0;
 
         #-------------------------------------------------------
         # For each batch of data, extract, transform, and load
@@ -340,16 +321,16 @@ class RedCapEtl
             $extractTime += $endExtractTime - $startExtractTime;
 
             foreach ($recordBatch as $recordId => $records) {
-                $record_events_cnt += count($records);
+                $recordEventsCount += count($records);
 
                 #-----------------------------------
                 # Transform the data
                 #-----------------------------------
                 $startTransformTime = microtime(true);
                 // For each root table
-                foreach ($this->schema->getRootTables() as $root_table) {
+                foreach ($this->schema->getRootTables() as $rootTable) {
                     // Transform the records for this record_id into rows
-                    $this->transform($root_table, $records, '', '');
+                    $this->transform($rootTable, $records, '', '');
                 }
                 $endTransformTime = microtime(true);
                 $transformTime += $endTransformTime - $startTransformTime;
@@ -376,7 +357,7 @@ class RedCapEtl
 
         $this->reportRows();
 
-        $this->log("Number of record events transformed: ". $record_events_cnt);
+        $this->log("Number of record events transformed: ". $recordEventsCount);
     
         return true;
     }
@@ -395,25 +376,25 @@ class RedCapEtl
      *     is more than one record, they represent multiple
      *     events or repeating instruments (forms).
      *
-     * @param string $foreign_key if set, represents the value to use as the
+     * @param string $foreignKey if set, represents the value to use as the
      *     foreign key for any records created.
      *
      * @param string $suffix If set, represents the suffix used for the parent table.
      */
-    protected function transform($table, $records, $foreign_key, $suffix)
+    protected function transform($table, $records, $foreignKey, $suffix)
     {
         // Look at row_event for this table
         switch ($table->rows_type) {
             // If root
             case RedCapEtl::ROOT:
-                $this->createRowAndRecurse($table, $records, $foreign_key, $suffix);
+                $this->createRowAndRecurse($table, $records, $foreignKey, $suffix);
                 break;
 
             // If events
             case RedCapEtl::BY_EVENTS:
                 // Foreach Record (i.e., foreach event)
                 foreach ($records as $record) {
-                    $this->createRowAndRecurse($table, array($record), $foreign_key, $suffix);
+                    $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
                 }
                 break;
 
@@ -421,7 +402,7 @@ class RedCapEtl
             case RedCapEtl::BY_REPEATING_INSTRUMENTS:
                 // Foreach Record (i.e., foreach repeatable form)
                 foreach ($records as $record) {
-                    $this->createRowAndRecurse($table, array($record), $foreign_key, $suffix);
+                    $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
                 }
                 break;
 
@@ -429,7 +410,7 @@ class RedCapEtl
             case RedCapEtl::BY_SUFFIXES:
                 // Foreach Suffix
                 foreach ($table->rows_suffixes as $new_suffix) {
-                    $this->createRowAndRecurse($table, $records, $foreign_key, $suffix.$new_suffix);
+                    $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$new_suffix);
                 }
                 break;
 
@@ -439,7 +420,7 @@ class RedCapEtl
                 foreach ($records as $record) {
                     // Foreach Suffix
                     foreach ($table->rows_suffixes as $new_suffix) {
-                        $this->createRowAndRecurse($table, array($record), $foreign_key, $suffix.$new_suffix);
+                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix.$new_suffix);
                     }
                 }
                 break;
@@ -452,16 +433,16 @@ class RedCapEtl
     /**
      * See 'transform' function for explanation of variables.
      */
-    protected function createRowAndRecurse($table, $records, $foreign_key, $suffix)
+    protected function createRowAndRecurse($table, $records, $foreignKey, $suffix)
     {
         // Create Row using 1st Record
-        $primary_key = $table->createRow($records[0], $foreign_key, $suffix);
+        $primaryKey = $table->createRow($records[0], $foreignKey, $suffix);
 
         // If primary key generated, recurse for child tables
-        if ($primary_key) {
+        if ($primaryKey) {
             // Foreach child table
             foreach ($table->getChildren() as $child_table) {
-                $this->transform($child_table, $records, $primary_key, $suffix);
+                $this->transform($child_table, $records, $primaryKey, $suffix);
             }
         }
         return true;
@@ -476,11 +457,11 @@ class RedCapEtl
     public function createLoadTables()
     {
         // Used to speed up processing
-        $lookup = new Lookup($this->lookup_table);
+        $lookup = new Lookup($this->lookupTable);
 
         // foreach table, replace it
         // NOTE: This works on each table plus the lookup table
-        $tables = array_merge(array($this->lookup_table), $this->schema->getTables());
+        $tables = array_merge(array($this->lookupTable), $this->schema->getTables());
         foreach ($tables as $table) {
             $this->dbcon->replaceTable($table);
 
@@ -507,7 +488,7 @@ class RedCapEtl
         // foreach table object, store it's rows in the database and
         // then remove them from the table object
         // NOTE: This works on each table AND on each lookup table
-        foreach (array_merge(array($this->lookup_table), $this->schema->getTables()) as $table) {
+        foreach (array_merge(array($this->lookupTable), $this->schema->getTables()) as $table) {
             #$rc = $this->dbcon->storeRows($table);
             #if (false === $rc) {
             #    $this->log("Error storing row in '".$table->name."': ".$this->dbcon->err_str);
