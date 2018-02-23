@@ -12,25 +12,24 @@ class RedCapDetHandler
     protected $debug = '';
 
     protected $pid = '';
-    protected $allowed_servers;
+    protected $allowedServers;
     protected $notifier = '';  // Object for reporting errors
 
-    public function __construct($pid, $allowed_servers, $notifier)
+    public function __construct($pid, $allowedServers, $notifier)
     {
-    
         $this->debug = 'no';
 
         $this->pid = $pid;
         $this->notifier = $notifier;
 
         // Create array of allowed servers (by hostname)
-        if (preg_match("/,/", $allowed_servers)) {
+        if (preg_match("/,/", $allowedServers)) {
             if ('yes' == $this->debug) {
                 print "Found multiple allowed servers<br/>";
             }
-            $this->allowed_servers = preg_split("/,/", $allowed_servers);
+            $this->allowedServers = preg_split("/,/", $allowedServers);
         } else {
-            $this->allowed_servers = array($allowed_servers);
+            $this->allowedServers = array($allowedServers);
         }
     }
 
@@ -51,15 +50,15 @@ class RedCapDetHandler
         // $DEBUG is forced to 'yes';
         //
         if (!isset($_POST['project_id']) || !isset($_POST['record'])) {
-            $project_id = htmlspecialchars($_GET['project_id']);
-            $record_id = htmlspecialchars($_GET['record']); // NOT 'record_id'
+            $projectId = htmlspecialchars($_GET['project_id']);
+            $recodId = htmlspecialchars($_GET['record']); // NOT 'record_id'
             $this->debug = 'yes';
         } else {
-            $project_id = htmlspecialchars($_POST['project_id']);
-            $record_id = htmlspecialchars($_POST['record']); // NOT 'record_id'
+            $projectId = htmlspecialchars($_POST['project_id']);
+            $recodId  = htmlspecialchars($_POST['record']);     // NOT 'record_id'
         }
 
-        return(array($project_id,$record_id));
+        return(array($projectId, $recodId));
     }
 
 
@@ -71,28 +70,28 @@ class RedCapDetHandler
     {
 
         // Determine the hostname of the server making this request
-        $server_remote_addr = $_SERVER['REMOTE_ADDR'];
+        $serverRemoteAddress = $_SERVER['REMOTE_ADDR'];
 
         // allow IPv6 local host (::1)
-        if ('::1' === $server_remote_addr) {
+        if ('::1' === $serverRemoteAddress) {
             return true;
         }
 
         // filter_var() is only avaialbe for PHP >= 5.2, so ip2long is used here
         // and will need to be changed if IPV6 addresses are to be processed.
-        // #if(filter_var($server_remote_addr,FILTER_VALIDATE_IP,FILTER_FLAG_IPV4))
+        // #if(filter_var($serverRemoteAddress,FILTER_VALIDATE_IP,FILTER_FLAG_IPV4))
 
         // If not a valid IP address
-        if (!ip2long($server_remote_addr)) {
+        if (!ip2long($serverRemoteAddress)) {
             $error = "Invalid server remote address: ".$_SERVER['REMOTE_ADDR']."\n";
             $this->notifier->notify($error);
             exit(1);
         }
 
         // Check to see if the requesting server is allowed
-        $hostname = gethostbyaddr($server_remote_addr);
+        $hostname = gethostbyaddr($serverRemoteAddress);
         if (($hostname === null) || ($hostname === "") ||
-        ! in_array($hostname, $this->allowed_servers)) {
+        ! in_array($hostname, $this->allowedServers)) {
             $error = "Server remote address not allowed: ".$_SERVER['REMOTE_ADDR'];
             if (isset($hostname)) {
                 $error .= " (hostname = ".$hostname.")\n";

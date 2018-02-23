@@ -314,10 +314,10 @@ class DBConnectMySQL extends DBConnect
 
         // Get parameterized query
         //     If the query doesn't already exist, it will be created
-        list($stmt,$bind_types) = $this->getInsertRowStmt($row->table);
+        list($stmt,$bindTypes) = $this->getInsertRowStmt($row->table);
 
         // Start bind parameters list with bind_types and escaped table name
-        $params = array($bind_types);
+        $params = array($bindTypes);
 
         // Add field values, in order, to bind parameters
         foreach ($row->table->getAllFields() as $field) {
@@ -369,7 +369,7 @@ class DBConnectMySQL extends DBConnect
             // Create field_names, positions array, and params arrays
             $field_names = array();
             $bind_positions = array();
-            $bind_types = '';
+            $bindTypes = '';
             foreach ($table->getAllFields() as $field) {
                 array_push($field_names, $field->name);
                 array_push($bind_positions, '?');
@@ -378,16 +378,16 @@ class DBConnectMySQL extends DBConnect
                     case FieldType::STRING:
                     case FieldType::DATE:
                     case FieldType::DATETIME:
-                        $bind_types .= 's';
+                        $bindTypes .= 's';
                         break;
 
                     case FieldType::FLOAT:
-                          $bind_types .= 'd';
+                          $bindTypes .= 'd';
                         break;
 
                     case FieldType::INT:
                     default:
-                          $bind_types .= 'i';
+                          $bindTypes .= 'i';
                         break;
                 }
             }
@@ -413,9 +413,9 @@ class DBConnectMySQL extends DBConnect
             }
 
             $this->insert_row_stmts[$table->name] = $stmt;
-            $this->insert_row_bind_types[$table->name] = $bind_types;
+            $this->insert_row_bind_types[$table->name] = $bindTypes;
     
-            return(array($stmt,$bind_types));
+            return(array($stmt,$bindTypes));
         } // else
     }
 
@@ -472,7 +472,7 @@ class DBConnectMySQL extends DBConnect
         $query = $queryStart;
         $bindTypesArray = array();
         $isFirst = true;
-        $params = array($bind_types);
+        $params = array($bindTypes);
 
         foreach ($rows as $row) {
             #------------------------------------------------------------------
@@ -526,14 +526,14 @@ class DBConnectMySQL extends DBConnect
             # Get parameterized query
             #     If the query doesn't already exist, it will be created
             #--------------------------------------------------------------
-            list($statement, $bind_types) = $this->getInsertRowStmt($table, count($rows));
+            list($statement, $bindTypes) = $this->getInsertRowStmt($table, count($rows));
 
             #$param_refs = array();
-            #$params = array($bind_types);
+            #$params = array($bindTypes);
             #--------------------------------------------------------
             # Bind the row values to the parameterized query
             #--------------------------------------------------------
-            $params = array($bind_types);
+            $params = array($bindTypes);
             $param_refs = array();
             $key = 0;
 

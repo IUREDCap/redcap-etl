@@ -3,9 +3,7 @@
 namespace IU\REDCapETL;
 
 /**
- * Notifier is used to send notifications to someone
- *
- * So far, only email is supported as a means to send the notification.
+ * Class for sending notifications to a list of e-mail addresses.
  */
 class Notifier
 {
@@ -64,30 +62,30 @@ class Notifier
      * For info about how to send attachemnts in emails sent from PHP:
      * http://webcheatsheet.com/php/send_email_text_html_attachment.php#attachment
      *
-     * $mailto_address,       // string or array thereof
+     * $mailToAddress,       // string or array thereof
      * $attachments,          // array of $attachment
      * $message,              // string
-     * $subject_string,       // string
-     * $from_address          // string or array thereof
+     * $subjectString,       // string
+     * $fromAddress          // string or array thereof
      *
      * @return array list of send to e-mails for which the send failed (if any).
      */
     protected function sendmail(
-        $mailto_address,
+        $mailToAddress,
         $attachments,
         $message,
-        $subject_string,
-        $from_address
+        $subjectString,
+        $fromAddress
     ) {
         // If the address is not an array, and there's a comma in the
         // address, it must really be a string holding a list of addresses,
         // so convert split it into an array.
-        if (is_array($mailto_address)) {
-            $mailto_addresses = $mailto_address;
-        } elseif (preg_match("/,/", $mailto_address)) {
-            $mailto_addresses = preg_split("/,/", $mailto_address);
+        if (is_array($mailToAddress)) {
+            $mailToAddresses = $mailToAddress;
+        } elseif (preg_match("/,/", $mailToAddress)) {
+            $mailToAddresses = preg_split("/,/", $mailToAddress);
         } else {
-            $mailto_addresses = array($mailto_address);
+            $mailToAddresses = array($mailToAddress);
         }
 
         // It MIGHT be useful to validate the email address syntax here,
@@ -100,44 +98,44 @@ class Notifier
   
         // Foreach mailto address
         $headers =
-            "From: ".$from_address."\r\n" .
+            "From: ".$fromAddress."\r\n" .
             "X-Mailer: php";
-        $sendmail_opts = '-f '.$from_address;
+        $sendmailOpts = '-f '.$fromAddress;
 
         // Check if any attachments are being sent
         if (0 < count($attachments)) {
             // Create a boundary string. It must be unique so we use the MD5
             // algorithm to generate a random hash.
-            $random_hash = md5(date('r', time()));
+            $randomHash = md5(date('r', time()));
 
             // Add boundary string and mime type specification to headers
             $headers .= "\r\nContent-Type: multipart/mixed; ".
-                "boundary=\"PHP-mixed-".$random_hash."\"";
+                "boundary=\"PHP-mixed-".$randomHash."\"";
 
             // Start the body of the message.
-            $text_header = "--PHP-mixed-".$random_hash."\n".
+            $textHeader = "--PHP-mixed-".$randomHash."\n".
                 "Content-Type: text/plain; charset=\"iso-8859-1\"\n".
                 "Content-Transfer-Encoding: 7bit\n\n";
-            $text_footer = "--PHP-mixed-".$random_hash."\n\n";
+            $textFooter = "--PHP-mixed-".$randomHash."\n\n";
 
-            $message = $text_header.$message."\n".$text_footer;
+            $message = $textHeader.$message."\n".$textFooter;
 
             // Attach each file
             foreach ($attachments as $attachment) {
-                $attach_header = "--PHP-mixed-".$random_hash."\n".
+                $attachHeader = "--PHP-mixed-".$randomHash."\n".
                     "Content-Type: ".$attachment['content_type']."\n".
                     "Content-Transfer-Encoding: base64\n".
                     "Content-Disposition: attachment\n\n";
       
-                $message .= $attach_header.$attachment['data'];
+                $message .= $attachHeader.$attachment['data'];
             }
 
-            $message .= "--PHP-mixed-".$random_hash."--\n\n";
+            $message .= "--PHP-mixed-".$randomHash."--\n\n";
         }
 
         $faliedSendTos = array();
-        foreach ($mailto_addresses as $mailto) {
-            $sent = mail($mailto, $subject_string, $message, $headers, $sendmail_opts);
+        foreach ($mailToAddresses as $mailto) {
+            $sent = mail($mailto, $subjectString, $message, $headers, $sendmailOpts);
             if ($sent === false) {
                 array_push($failedSentTos, $mailTo);
             }

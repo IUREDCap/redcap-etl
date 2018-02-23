@@ -409,8 +409,8 @@ class RedCapEtl
             // If suffix
             case RedCapEtl::BY_SUFFIXES:
                 // Foreach Suffix
-                foreach ($table->rows_suffixes as $new_suffix) {
-                    $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$new_suffix);
+                foreach ($table->rows_suffixes as $newSuffix) {
+                    $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$newSuffix);
                 }
                 break;
 
@@ -419,8 +419,8 @@ class RedCapEtl
                 // Foreach Record (i.e., foreach event)
                 foreach ($records as $record) {
                     // Foreach Suffix
-                    foreach ($table->rows_suffixes as $new_suffix) {
-                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix.$new_suffix);
+                    foreach ($table->rows_suffixes as $newSuffix) {
+                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix.$newSuffix);
                     }
                 }
                 break;
@@ -441,8 +441,8 @@ class RedCapEtl
         // If primary key generated, recurse for child tables
         if ($primaryKey) {
             // Foreach child table
-            foreach ($table->getChildren() as $child_table) {
-                $this->transform($child_table, $records, $primaryKey, $suffix);
+            foreach ($table->getChildren() as $childTable) {
+                $this->transform($childTable, $records, $primaryKey, $suffix);
             }
         }
         return true;

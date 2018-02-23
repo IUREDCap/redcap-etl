@@ -104,6 +104,13 @@ class Logger2
     {
         $this->logProject = $project;
 
+        // REDCap must have a record_id when importing a new record. It does
+        // not auto generate a new record_id on API Imports (or regular imports?),
+        // even when the project is set to auto generate new record_ids.
+        // Because multiple people may be using this application simultaneously,
+        // it's not sufficient to simply use a timestamp. There is a risk that
+        // even with the timestamp and a random number, logs might overwrite each
+        // other, but I haven't found a better solution.
         $this->projectIdBase = time().'-'.rand(1, 9999).'-';
         $this->projectIndex  = 0;
         $this->projectDate   = date('g:i:s a d-M-Y T');
