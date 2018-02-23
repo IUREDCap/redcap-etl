@@ -6,7 +6,6 @@ FIELD,address,string
 FIELD,telephone,string
 FIELD,email,string
 FIELD,dob,string
-FIELD,age,int
 FIELD,ethnicity,int
 FIELD,race,checkbox
 FIELD,sex,int
