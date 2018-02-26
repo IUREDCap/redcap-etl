@@ -536,7 +536,7 @@ class Configuration
     }
 
     /**
-     * Gets the specified (configuration file) property.
+     * Gets the specified property.
      */
     public function getProperty($name)
     {
@@ -559,6 +559,32 @@ class Configuration
             }
         }
         return $isFromFile;
+    }
+    
+    public function getPropertyInfo($property)
+    {
+        $info = '';
+        if (ConfigProperties::isValid($property)) {
+            if (array_key_exists($property, $this->properties)) {
+                $info = $properties[$property];
+                
+                if ($this->isFromFile($property)) {
+                    if (emtpy($this->propertiesFile)) {
+                        $info .= ' - defined in array argument';
+                    } else {
+                        $info .= ' - defined in file: '.$this->propertiesFile;
+                    }
+                } else {
+                    $info .= ' - defined in configuration project';
+                }
+            } else {
+                $info = 'undefined';
+            }
+        } else {
+            $info = 'invalid property';
+        }
+        
+        return $info;
     }
 
     public function getLogger()

@@ -35,11 +35,15 @@ class Table
     private $recordIdFieldName;
 
     /**
+     * Creates a Table object.
+     *
      * @param string $name the name of the table.
+     *
      * @param mixed $parent a schmema object or a string, if the table
      *    is a root table, it will be a string that represents the
      *    name to use as the synthetic primary key. Otherwise it
      *    should be the table's parent Table object.
+     *
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
      */
@@ -337,5 +341,15 @@ class Table
         $string .= "{$in}uses lookup: ".$this->uses_lookup."\n";
 
         return $string;
+    }
+    
+    /**
+     * Gets the table's name.
+     *
+     * @return string the name of the table.
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

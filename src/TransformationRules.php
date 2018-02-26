@@ -330,19 +330,19 @@ class TransformationRules
                                 // In case this is a checkbox field
                                 if ($field_type === FieldType::CHECKBOX) {
                                     // Separate root from category
-                                    list($root_name, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
+                                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
 
                                     // Form the exported field name
-                                    $export_fname = $root_name.$sx.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
+                                    $export_fname = $rootName.$sx.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
 
                                     // Form the metadata field name
                                     // Checkbox fields have a single metadata field name, but
                                     // (usually) multiple exported field names
-                                    $meta_fname = $root_name.$sx;
+                                    $metaFname = $rootName.$sx;
                                 } else {
                                     // Otherwise, just append suffix
                                     $export_fname = $fname.$sx;
-                                    $meta_fname = $fname.$sx;
+                                    $metaFname = $fname.$sx;
                                 }
 
 
@@ -376,16 +376,16 @@ class TransformationRules
                             // In case this is a checkbox field
                             if ($field_type === FieldType::CHECKBOX) {
                                 // Separate root from category
-                                list($root_name, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
+                                list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
 
                                 // Form the metadata field name
                                 // Checkbox fields have a single metadata field name, but
                                 // (usually) multiple exported field names
-                                $meta_fname = $root_name;
+                                $metaFname = $rootName;
                             } else {
-                                // $meta_fname is redundant here, but used later when
+                                // $metaFname is redundant here, but used later when
                                 // deciding whether or not to create rows in Lookup
-                                $meta_fname = $fname;
+                                $metaFname = $fname;
                             }
 
                             //---------------------------------------------------------------
@@ -404,9 +404,9 @@ class TransformationRules
                             $table->addField($field);
 
                             // If this field has category/label choices
-                            if (array_key_exists($meta_fname, $this->lookupChoices)) {
-                                $this->makeLookupTable($table->name, $meta_fname);
-                                $field->uses_lookup = $meta_fname;
+                            if (array_key_exists($metaFname, $this->lookupChoices)) {
+                                $this->makeLookupTable($table->name, $metaFname);
+                                $field->uses_lookup = $metaFname;
                                 $table->uses_lookup = true;
                             }
                         }

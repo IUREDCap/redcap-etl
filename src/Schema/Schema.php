@@ -16,62 +16,86 @@ class Schema
 {
 
     private $tables = array();
-    private $root_tables = array();
+    private $rootTables = array();
 
     public function __construct()
     {
         return true;
     }
 
+    /**
+     * Adds the specified table to the schema.
+     *
+     * @param Table $table the table to add to the schema.
+     */
     public function addTable($table)
     {
-
         // Add table to list of all tables
         array_push($this->tables, $table);
 
         // If it is a root table, add to list of root tables
         if (RedCapEtl::ROOT == $table->rows_type) {
-            array_push($this->root_tables, $table);
+            array_push($this->rootTables, $table);
         }
     }
 
     /**
-     * Get all the tables in the schema.
+     * Gets all the tables in the schema.
      *
      * @return array an array of Table objects for all the
-     *    tables in the schema
+     *    tables in the schema.
      */
     public function getTables()
     {
         return($this->tables);
     }
 
+    /**
+     * Gets all the root (i.e., non-child) tables in the schema.
+     *
+     * @return array an array of Table objects for all the
+     *     root tables in the schema.
+     */
     public function getRootTables()
     {
-        return($this->root_tables);
+        return($this->rootTables);
     }
 
-    public function getTable($table_name)
+    /**
+     * Gets the table with the specified table name.
+     *
+     * @param string $tableName the name of the table to return.
+     * @return mixed if the table is found, the Table object for it is
+     *     returned, otherwise the table name that was specified is
+     *     returned.
+     */
+    public function getTable($tableName)
     {
         foreach ($this->tables as $table) {
-            if (0 == strcmp($table->name, $table_name)) {
+            if (0 == strcmp($table->name, $tableName)) {
                 return($table);
             }
         }
 
-        // If the table is not found, return the table_name
-        return($table_name);
+        // If the table is not found, return the tableName
+        return($tableName);
     }
 
 
+    /**
+     * Returns a string representation of the schema.
+     *
+     * @return string a human-readable string representation of the
+     *     schema.
+     */
     public function toString($indent = 0)
     {
         $in = str_repeat(' ', $indent);
         $string = '';
         $string .= "${in}Number of tables: ".count($this->tables)."\n";
-        $string .= "${in}Number of root tables: ".count($this->root_tables)."\n";
+        $string .= "${in}Number of root tables: ".count($this->rootTables)."\n";
         $string .= "\n${in}Root tables\n";
-        foreach ($this->root_tables as $table) {
+        foreach ($this->rootTables as $table) {
             $string .= $table->toString($indent + 4)."\n";
         }
         $string .= "\nTables\n";

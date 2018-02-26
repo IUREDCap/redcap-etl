@@ -245,8 +245,6 @@ class RedCapEtl
             $this->tablePrefix,
             $this->labelViewSuffix
         );
-        
-        $this->logger->logInfo('Database connection created');  // Jim
     }
 
 
