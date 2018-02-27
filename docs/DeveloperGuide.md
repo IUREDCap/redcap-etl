@@ -55,7 +55,7 @@ This is a list of the steps for setting up a REDCap ETL development environment.
 
 ### REDCap ETL Directory Structure
 
-<img style="float: right; border: 1px solid blue; padding-left: 20px; padding-right: 20px; " src="directories.png">After the steps above have been successfully completed,
+<img style="float: right;" src="directories.png">After the steps above have been successfully completed,
 the REDCap ETL software directory should have a structure similar to
 what is on the right. The main directories are as follows:
 
