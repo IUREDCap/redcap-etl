@@ -170,7 +170,7 @@ class DBConnectCSV extends DBConnect
     protected function insertRow($row)
     {
         $table = $row->table;
-        $usesLookup = $table->uses_lookup;
+        $usesLookup = $table->usesLookup;
 
         $file  = $this->getTableFile($table);
 
@@ -226,7 +226,7 @@ class DBConnectCSV extends DBConnect
             switch ($fieldType) {
                 case FieldType::CHECKBOX:
                     $label = null;
-                    if ($field->uses_lookup) {
+                    if ($field->usesLookup) {
                         $label = $this->getLookupLabel($field->name, $value);
                     }
                         $this->fileWrite($fh, $lfh, $value, $label);
@@ -240,7 +240,7 @@ class DBConnectCSV extends DBConnect
                     break;
                 case FieldType::INT:
                     $label = null;
-                    if ($field->uses_lookup) {
+                    if ($field->usesLookup) {
                         $label = $this->getLookupLabel($field->name, $value);
                     }
                         $this->fileWrite($fh, $lfh, $value, $label);

@@ -386,7 +386,7 @@ class RedCapEtl
     protected function transform($table, $records, $foreignKey, $suffix)
     {
         // Look at row_event for this table
-        switch ($table->rows_type) {
+        switch ($table->rowsType) {
             // If root
             case RedCapEtl::ROOT:
                 $this->createRowAndRecurse($table, $records, $foreignKey, $suffix);
@@ -411,7 +411,7 @@ class RedCapEtl
             // If suffix
             case RedCapEtl::BY_SUFFIXES:
                 // Foreach Suffix
-                foreach ($table->rows_suffixes as $newSuffix) {
+                foreach ($table->rowsSuffixes as $newSuffix) {
                     $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$newSuffix);
                 }
                 break;
@@ -421,7 +421,7 @@ class RedCapEtl
                 // Foreach Record (i.e., foreach event)
                 foreach ($records as $record) {
                     // Foreach Suffix
-                    foreach ($table->rows_suffixes as $newSuffix) {
+                    foreach ($table->rowsSuffixes as $newSuffix) {
                         $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix.$newSuffix);
                     }
                 }
@@ -470,7 +470,7 @@ class RedCapEtl
             $msg = "Created table '".$table->name."'";
 
             // If this table uses the Lookup table, create a view
-            if (true === $table->uses_lookup) {
+            if (true === $table->usesLookup) {
                 $this->dbcon->replaceLookupView($table, $lookup);
                 $msg .= '; Lookup table created';
             }
@@ -493,7 +493,7 @@ class RedCapEtl
         foreach (array_merge(array($this->lookupTable), $this->schema->getTables()) as $table) {
             #$rc = $this->dbcon->storeRows($table);
             #if (false === $rc) {
-            #    $this->log("Error storing row in '".$table->name."': ".$this->dbcon->err_str);
+            #    $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
             #}
 
             # Single row storage (stores one row at a time):
@@ -501,7 +501,7 @@ class RedCapEtl
             foreach ($table->getRows() as $row) {
                 $rc = $this->dbcon->storeRow($row);
                 if (false === $rc) {
-                    $this->log("Error storing row in '".$table->name."': ".$this->dbcon->err_str);
+                    $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
                 }
             }
 

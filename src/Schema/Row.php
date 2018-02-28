@@ -22,9 +22,9 @@ class Row
         $this->table = $table;
     }
 
-    public function addValue($field_name, $value)
+    public function addValue($fieldName, $value)
     {
-        $this->data[$field_name] = $value;
+        $this->data[$fieldName] = $value;
     }
 
     public function getData()

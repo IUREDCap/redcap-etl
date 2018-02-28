@@ -17,23 +17,23 @@ class DBConnectMySQL extends DBConnect
 {
     private $mysqli;
 
-    private $insert_row_stmts;
-    private $insert_row_bind_types;
+    private $insertRowStatements;
+    private $insertRowBindTypes;
 
     private $errorHandler;
 
-    public function __construct($db_str, $tablePrefix, $labelViewSuffix)
+    public function __construct($dbString, $tablePrefix, $labelViewSuffix)
     {
-        parent::__construct($db_str, $tablePrefix, $labelViewSuffix);
+        parent::__construct($dbString, $tablePrefix, $labelViewSuffix);
 
         $this->errorHandler = new EtlErrorHandler();
 
         // Initialize error string
-        $this->err_str = '';
+        $this->errorString = '';
 
-        // Get parameters from db_str
-        list($host,$username,$password,$database) = explode(':', $db_str);
-        ###list($host,$database,$username,$password) = explode(':',$db_str,4);
+        // Get parameters from dbString
+        list($host,$username,$password,$database) = explode(':', $dbString);
+        ###list($host,$database,$username,$password) = explode(':',$dbString,4);
 
         // Get MySQL connection
         // NOTE: Could add error checking
@@ -47,8 +47,8 @@ class DBConnectMySQL extends DBConnect
             $this->errorHandler->throwException($message, $code);
         }
 
-        $this->insert_row_stmts = array();
-        $this->insert_row_bind_types = array();
+        $this->insertRowStatements = array();
+        $this->insertRowBindTypes = array();
     }
 
     protected function existsTable($table)
@@ -161,11 +161,11 @@ class DBConnectMySQL extends DBConnect
         // foreach field
         foreach ($table->getAllFields() as $field) {
             // If the field does not use lookup table
-            if (false === $field->uses_lookup) {
+            if (false === $field->usesLookup) {
                 array_push($selects, 't.'.$field->name);
             } else {
-                // $field->uses_lookup holds name of lookup field, if not false
-                $fname = $field->uses_lookup;
+                // $field->usesLookup holds name of lookup field, if not false
+                $fname = $field->usesLookup;
 
                 // If the field uses the lookup table and is a checkbox field
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
@@ -197,9 +197,9 @@ class DBConnectMySQL extends DBConnect
         $select = 'SELECT '. implode(', ', $selects);
         $from = 'FROM '.$this->tablePrefix.RedCapEtl::LOOKUP_TABLE_NAME.' l, '.$table->name.' t';
         $where = "WHERE l.table_name like '".$table->name."'";
-        $group_by = 'GROUP BY t.'.$table->primary->name;
+        $groupBy = 'GROUP BY t.'.$table->primary->name;
 
-        $query .= $select.' '.$from.' '.$where.' '.$group_by;
+        $query .= $select.' '.$from.' '.$where.' '.$groupBy;
 
         // Execute query
         $result = $this->mysqli->query($query);
@@ -225,12 +225,12 @@ class DBConnectMySQL extends DBConnect
         // foreach field
         foreach ($table->getAllFields() as $field) {
             // If the field does not use lookup table
-            if ($field->uses_lookup === false) {
+            if ($field->usesLookup === false) {
                 array_push($selects, $field->name);
             } else {
-                // $field->uses_lookup holds name of lookup field, if not false
+                // $field->usesLookup holds name of lookup field, if not false
                 // name of lookup field is root of field name for checkbox
-                $fname = $field->uses_lookup;
+                $fname = $field->usesLookup;
 
                 // If the field uses the lookup table and is a checkbox field
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
@@ -345,7 +345,7 @@ class DBConnectMySQL extends DBConnect
 
         // If there's an error executing the statement
         if ($rc === false) {
-            $this->err_str = $stmt->error;
+            $this->errorString = $stmt->error;
             $message = 'MySQL error in query "'.$query.'"'
                 .' ['.$stmt->errno.']: '.$stmt->error;
             $code = EtlException::DATABASE_ERROR;
@@ -361,18 +361,18 @@ class DBConnectMySQL extends DBConnect
     {
 
         // If we've already created this query, return it
-        if (isset($this->insert_row_stmts[$table->name])) {
-            return(array($this->insert_row_stmts[$table->name],
-               $this->insert_row_bind_types[$table->name]));
+        if (isset($this->insertRowStatements[$table->name])) {
+            return(array($this->insertRowStatements[$table->name],
+               $this->insertRowBindTypes[$table->name]));
         } // Otherwise, create and save the query and its associated bind types
         else {
             // Create field_names, positions array, and params arrays
-            $field_names = array();
-            $bind_positions = array();
+            $fieldNames = array();
+            $bindPositions = array();
             $bindTypes = '';
             foreach ($table->getAllFields() as $field) {
-                array_push($field_names, $field->name);
-                array_push($bind_positions, '?');
+                array_push($fieldNames, $field->name);
+                array_push($bindPositions, '?');
 
                 switch ($field->type) {
                     case FieldType::STRING:
@@ -396,12 +396,12 @@ class DBConnectMySQL extends DBConnect
             $query = 'INSERT INTO '.$table->name;
 
             // Add field names to $sql
-            $query .= ' ('. implode(",", $field_names) .') ';
+            $query .= ' ('. implode(",", $fieldNames) .') ';
 
             // Add values positions to $sql
             $query .= 'VALUES';
 
-            $query .= ' ('.implode(",", $bind_positions) .')';
+            $query .= ' ('.implode(",", $bindPositions) .')';
 
             // Prepare query
             $stmt = $this->mysqli->prepare($query);  //NOTE add error checking?
@@ -412,8 +412,8 @@ class DBConnectMySQL extends DBConnect
                  error_log("Statement failed: ". $this->mysqli->error . "\n", 0);
             }
 
-            $this->insert_row_stmts[$table->name] = $stmt;
-            $this->insert_row_bind_types[$table->name] = $bindTypes;
+            $this->insertRowStatements[$table->name] = $stmt;
+            $this->insertRowBindTypes[$table->name] = $bindTypes;
     
             return(array($stmt,$bindTypes));
         } // else
@@ -574,9 +574,9 @@ class DBConnectMySQL extends DBConnect
             # If there's an error executing the statement
             #---------------------------------------------------
             if ($rc === false) {
-                $this->err_str = $statement->error;
+                $this->errorString = $statement->error;
                 $result = false;
-                $this->err_str = $statement->error;
+                $this->errorString = $statement->error;
                 $message = 'MySQL error: '
                     .' ['.$statement->errno.']: '.$statement->error;
                 $code = EtlException::DATABASE_ERROR;

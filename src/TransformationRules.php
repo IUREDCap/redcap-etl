@@ -269,8 +269,8 @@ class TransformationRules
                     $fields = array();
                     if ($fieldType === FieldType::CHECKBOX) {
                         // For a checkbox in a Suffix table
-                        if ((RedCapEtl::BY_SUFFIXES === $table->rows_type)
-                                || (RedCapEtl::BY_EVENTS_SUFFIXES === $table->rows_type)) {
+                        if ((RedCapEtl::BY_SUFFIXES === $table->rowsType)
+                                || (RedCapEtl::BY_EVENTS_SUFFIXES === $table->rowsType)) {
                             // Lookup the choices using any one of the valid suffixes
                             $suffixes = $table->getPossibleSuffixes();
                             $lookupFieldName = $fieldName.$suffixes[0];
@@ -300,8 +300,8 @@ class TransformationRules
                         //-------------------------------------------------------------
                         // !SUFFIXES: Prep for and warn that map field is not in REDCap
                         //-------------------------------------------------------------
-                        if ((RedCapEtl::BY_SUFFIXES !== $table->rows_type) &&
-                                (RedCapEtl::BY_EVENTS_SUFFIXES !== $table->rows_type) &&
+                        if ((RedCapEtl::BY_SUFFIXES !== $table->rowsType) &&
+                                (RedCapEtl::BY_EVENTS_SUFFIXES !== $table->rowsType) &&
                                 $fname !== 'redcap_data_access_group' &&
                                 (empty($fieldNames[$fname]))) {
                             $msg = "Field not found in REDCap: '".$fname."'";
@@ -319,8 +319,8 @@ class TransformationRules
                         // For fields in a SUFFIXES table, use the possible suffixes,
                         // including looking up the tree of parent tables, to look
                         // for at least one matching field in the exportfieldnames
-                        if ((RedCapEtl::BY_SUFFIXES === $table->rows_type)
-                                || (RedCapEtl::BY_EVENTS_SUFFIXES === $table->rows_type)) {
+                        if ((RedCapEtl::BY_SUFFIXES === $table->rowsType)
+                                || (RedCapEtl::BY_EVENTS_SUFFIXES === $table->rowsType)) {
                             $possibles = $table->getPossibleSuffixes();
 
                             $fieldFound = false;
@@ -406,8 +406,8 @@ class TransformationRules
                             // If this field has category/label choices
                             if (array_key_exists($metaFname, $this->lookupChoices)) {
                                 $this->makeLookupTable($table->name, $metaFname);
-                                $field->uses_lookup = $metaFname;
-                                $table->uses_lookup = true;
+                                $field->usesLookup = $metaFname;
+                                $table->usesLookup = true;
                             }
                         }
                     } // End foreach field to be created

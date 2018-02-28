@@ -10,7 +10,7 @@ class Field
     public $name = '';
     public $type = '';
 
-    public $uses_lookup = false;
+    public $usesLookup = false;
 
     public function __construct($name, $type)
     {

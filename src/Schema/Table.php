@@ -18,19 +18,19 @@ class Table
 
     protected $children = array();   // Child tables
 
-    public $rows_type = '';
-    public $rows_suffixes = array();        // Suffixes allowed for this table
-    protected $possible_suffixes = array(); // Suffixes allowed for this table
-                                            //   combined with any suffixe
-                                            //   allowed for its parent table
+    public $rowsType = '';
+    public $rowsSuffixes = array();        // Suffixes allowed for this table
+    private $possibleSuffixes = array(); // Suffixes allowed for this table
+                                          //   combined with any suffixe
+                                          //   allowed for its parent table
 
     protected $fields = array();
     protected $rows = array();
 
-    protected $primary_key = 1;
+    private $primaryKey = 1;
 
-    public $uses_lookup = false;   // Are fields in this table represented
-                                   // in the Lookup table?
+    public $usesLookup = false;   // Are fields in this table represented
+                                  // in the Lookup table?
 
     private $recordIdFieldName;
 
@@ -47,21 +47,21 @@ class Table
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
      */
-    public function __construct($name, $parent, $rows_type, $suffixes = array(), $recordIdFieldName = null)
+    public function __construct($name, $parent, $rowsType, $suffixes = array(), $recordIdFieldName = null)
     {
         $this->recordIdFieldName = $recordIdFieldName;
 
         $this->name = str_replace(' ', '_', $name);
         $this->parent = $parent;
 
-        $this->rows_type = $rows_type;
-        $this->rows_suffixes = $suffixes;
+        $this->rowsType = $rowsType;
+        $this->rowsSuffixes = $suffixes;
 
         // If Root, set the primary key based on what is given
         // ASSUMES: The field for the primary key will be given in
         //          the place of where a parent table would have been and
         //          will be of type string.
-        if (RedCapEtl::ROOT === $this->rows_type) {
+        if (RedCapEtl::ROOT === $this->rowsType) {
             $field = new Field($parent, FieldType::STRING);
             $this->primary = $field;
         } else {
@@ -78,17 +78,17 @@ class Table
      */
     public function createPrimary()
     {
-        $primary_id = strtolower($this->name).'_id';
+        $primaryId = strtolower($this->name).'_id';
     
-        $field = new Field($primary_id, FieldType::STRING);
+        $field = new Field($primaryId, FieldType::STRING);
 
         $this->primary = $field;
     }
 
 
-    public function setForeign($parent_table)
+    public function setForeign($parentTable)
     {
-        $this->foreign = $parent_table->primary;
+        $this->foreign = $parentTable->primary;
         return(1);
     }
 
@@ -161,8 +161,8 @@ class Table
 
     public function nextPrimaryKey()
     {
-        $this->primary_key += 1;
-        return($this->primary_key - 1);
+        $this->primaryKey += 1;
+        return($this->primaryKey - 1);
     }
 
 
@@ -180,7 +180,7 @@ class Table
         # include the data if it doesn't contain a repeating instrument
         # field.
         #---------------------------------------------------------------
-        if ($this->rows_type === RedCapEtl::BY_REPEATING_INSTRUMENTS) {
+        if ($this->rowsType === RedCapEtl::BY_REPEATING_INSTRUMENTS) {
             if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 return false;
             }
@@ -243,13 +243,13 @@ class Table
 
         if ($dataFound) {
             // Get and set primary key
-            $primary_key = $this->nextPrimaryKey();
-            $row->data[$this->primary->name] = $primary_key;
+            $primaryKey = $this->nextPrimaryKey();
+            $row->data[$this->primary->name] = $primaryKey;
 
             // Add Row
             $this->addRow($row);
 
-            return($primary_key);
+            return($primaryKey);
         }
 
         return(false);
@@ -260,25 +260,25 @@ class Table
     {
         // If this table is BY_SUFFIXES and doesn't yet have its possible
         // suffixes set
-        if (((RedCapEtl::BY_SUFFIXES === $this->rows_type) ||
-            (RedCapEtl::BY_EVENTS_SUFFIXES === $this->rows_type)) &&
-            (empty($this->possible_suffixes))) {
+        if (((RedCapEtl::BY_SUFFIXES === $this->rowsType) ||
+            (RedCapEtl::BY_EVENTS_SUFFIXES === $this->rowsType)) &&
+            (empty($this->possibleSuffixes))) {
             // If there are no parent suffixes, use an empty string
-            $parent_suffixes = $this->parent->getPossibleSuffixes();
-            if (empty($parent_suffixes)) {
-                $parent_suffixes = array('');
+            $parentSuffixes = $this->parent->getPossibleSuffixes();
+            if (empty($parentSuffixes)) {
+                $parentSuffixes = array('');
             }
 
-            // Loop through all the possible_suffixes of the parent table
-            foreach ($parent_suffixes as $par) {
-                // Loop through all the possible_suffixes of the current table
-                foreach ($this->rows_suffixes as $cur) {
-                    array_push($this->possible_suffixes, $par.$cur);
+            // Loop through all the possibleSuffixes of the parent table
+            foreach ($parentSuffixes as $par) {
+                // Loop through all the possibleSuffixes of the current table
+                foreach ($this->rowsSuffixes as $cur) {
+                    array_push($this->possibleSuffixes, $par.$cur);
                 }
             }
         }
         
-        return($this->possible_suffixes);
+        return($this->possibleSuffixes);
     }
 
     /**
@@ -307,16 +307,16 @@ class Table
             $string .= $this->foreign."\n";
         }
 
-        $string .= "{$in}rows type: {$this->rows_type}\n";
+        $string .= "{$in}rows type: {$this->rowsType}\n";
 
         $string .= "{$in}Rows Suffixes:";
-        foreach ($this->rows_suffixes as $suffix) {
+        foreach ($this->rowsSuffixes as $suffix) {
             $string .= " ".$suffix;
         }
         $string .= "\n";
 
         $string .= "{$in}Possible Suffixes:";
-        foreach ($this->possible_suffixes as $suffix) {
+        foreach ($this->possibleSuffixes as $suffix) {
             $string .= " ".$suffix;
         }
         $string .= "\n";
@@ -336,9 +336,9 @@ class Table
             $string .= "{$in}    ".$child->name."\n";
         }
 
-        $string .= "{$in}primary key value: ".$this->primary_key."\n";
+        $string .= "{$in}primary key value: ".$this->primaryKey."\n";
 
-        $string .= "{$in}uses lookup: ".$this->uses_lookup."\n";
+        $string .= "{$in}uses lookup: ".$this->usesLookup."\n";
 
         return $string;
     }

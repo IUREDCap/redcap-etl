@@ -16,31 +16,30 @@ namespace IU\REDCapETL\Database;
 //=========================================================================
 
 
-//-------------------------------------------------------------------------
-//
-// DBConnectSQLSRV extends DBConnect and knows how to read/write to a
-// SQL Server database.
-//
-//-------------------------------------------------------------------------
-//
-
+/**
+ *
+ * DBConnectSQLSRV extends DBConnect and knows how to read/write to a
+ * SQL Server database.
+ *
+ * WORK IN PROGRESS
+ */
 class DBConnectSQLSRV extends DBConnect
 {
 
     private $pdo;
 
-    private $insert_row_stmts;
-    private $insert_row_bind_types;
+    private $insertRowStatements;
+    private $insertRowBindTypes;
 
-    public function __construct($db_str, $tablePrefix, $labelViewSuffix)
+    public function __construct($dbString, $tablePrefix, $labelViewSuffix)
     {
-        parent::__construct($db_str, $tablePrefix, $labelViewSuffix);
+        parent::__construct($dbString, $tablePrefix, $labelViewSuffix);
 
         // Initialize error string
-        $this->err_str = '';
+        $this->errorString = '';
 
-        // Get parameters from db_str
-        list($host,$database,$username,$password) = explode(':', $db_str, 4);
+        // Get parameters from dbString
+        list($host,$database,$username,$password) = explode(':', $dbString, 4);
         $dsn = "odbc:Driver={ODBC Driver 13 for SQL Server};".
         "Server=$host;Database=$database";
 
@@ -92,37 +91,37 @@ class DBConnectSQLSRV extends DBConnect
         $query = 'CREATE TABLE '.$table->name.' (';
 
         // foreach field
-        $field_defs = array();
+        $fieldDefs = array();
         foreach ($table->getAllFields() as $field) {
-            // Begin field_def
-            $field_def = $field->name.' ';
+            // Begin fieldDef
+            $fieldDef = $field->name.' ';
 
             // Add field type to field definition
             switch ($field->type) {
                 case FieldType::DATE:
-                    $field_def .= 'DATE';
+                    $fieldDef .= 'DATE';
                     break;
 
                 case FieldType::INT:
-                    $field_def .= 'INT';
+                    $fieldDef .= 'INT';
                     break;
 
                 case FieldType::FLOAT:
-                    $field_def .= 'FLOAT';
+                    $fieldDef .= 'FLOAT';
                     break;
     
                 case FieldType::STRING:
                 default:
-                      $field_def .= 'TEXT';
+                      $fieldDef .= 'TEXT';
                     break;
             } // switch
 
-            // Add field_def to array of field_defs
-            array_push($field_defs, $field_def);
+            // Add fieldDef to array of fieldDefs
+            array_push($fieldDefs, $fieldDef);
         }
 
         // Add field definitions to query
-        $query .= join(', ', $field_defs);
+        $query .= join(', ', $fieldDefs);
 
         // End query
         $query .= ')';
@@ -144,11 +143,11 @@ class DBConnectSQLSRV extends DBConnect
         // foreach field
         foreach ($table->getAllFields() as $field) {
             // If the field does not use lookup table
-            if (false === $field->uses_lookup) {
+            if (false === $field->usesLookup) {
                 array_push($selects, 't.'.$field->name);
             } else {
-                // $field->uses_lookup holds name of lookup field, if not false
-                $fname = $field->uses_lookup;
+                // $field->usesLookup holds name of lookup field, if not false
+                $fname = $field->usesLookup;
 
                 // If the field uses the lookup table and is a checkbox field
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
@@ -180,9 +179,9 @@ class DBConnectSQLSRV extends DBConnect
         $select = 'SELECT '. implode(', ', $selects);
         $from = 'FROM '.$this->tablePrefix.RedCalEtl::LOOKUP_TABLE_NAME.' l, '.$table->name.' t';
         $where = "WHERE l.table_name like '".$table->name."'";
-        $group_by = 'GROUP BY t.'.$table->primary->name;
+        $groupBy = 'GROUP BY t.'.$table->primary->name;
 
-        $query .= $select.' '.$from.' '.$where.' '.$group_by;
+        $query .= $select.' '.$from.' '.$where.' '.$groupBy;
 
         // Execute query
         if (! $this->mysqli->query($query)) {
@@ -226,7 +225,7 @@ class DBConnectSQLSRV extends DBConnect
 
         // Get parameterized query
         //     If the query doesn't already exist, it will be created
-        list($stmt,$bind_types) = $this->getInsertRowStmt($row->table);
+        list($stmt,$bindTypes) = $this->getInsertRowStmt($row->table);
 
         // Bind each parameter
         $fields = $row->table->getAllFields();
@@ -239,7 +238,7 @@ class DBConnectSQLSRV extends DBConnect
 
             // Bind param
             if (false ===
-            $stmt->bindValue(':'.strtolower($field->name), $to_bind, $bind_types[$field->name])
+            $stmt->bindValue(':'.strtolower($field->name), $to_bind, $bindTypes[$field->name])
             ) {
               // ADA DEBUG
                 print implode($this->pdo->errorInfo()."\n", 0);
@@ -254,7 +253,7 @@ class DBConnectSQLSRV extends DBConnect
         if (false === $rc) {
             // ADA DEBUG
             // NOT SURE WHAT TO USE FOR AN ERROR STRING HERE
-            $this->err_str = implode($this->pdo->errorInfo() . "\n", 0);
+            $this->errorString = implode($this->pdo->errorInfo() . "\n", 0);
             return(false);
         }
 
@@ -270,30 +269,30 @@ class DBConnectSQLSRV extends DBConnect
         // How to prepare/bind/execute PDO https://phpdelusions.net/pdo#methods
 
         // If we've already created this query, return it
-        if (isset($this->insert_row_stmts[$table->name])) {
-            return(array($this->insert_row_stmts[$table->name],
-               $this->insert_row_bind_types[$table->name]));
+        if (isset($this->insertRowStatements[$table->name])) {
+            return(array($this->insertRowStatements[$table->name],
+               $this->insertRowBindTypes[$table->name]));
         } // Otherwise, create and save the query and its associated bind types
         else {
             // Create field_names, positions array, and params arrays
-            $field_names = array();
-            $bind_positions = array();
-            $bind_types = array();
+            $fieldNames = array();
+            $bindPositions = array();
+            $bindTypes = array();
             foreach ($table->getAllFields() as $field) {
-                array_push($field_names, $field->name);
+                array_push($fieldNames, $field->name);
 
-                array_push($bind_positions, ':'.strtolower($field->name));
+                array_push($bindPositions, ':'.strtolower($field->name));
 
                 switch ($field->type) {
                     case FieldType::INT:
-                        $bind_types[$field->name] = PDO::PARAM_INT;
+                        $bindTypes[$field->name] = PDO::PARAM_INT;
                         break;
 
                     case FieldType::STRING:
                     case FieldType::DATE:
                     case FieldType::FLOAT:
                     default:
-                          $bind_types[$field->name] = PDO::PARAM_STR;
+                          $bindTypes[$field->name] = PDO::PARAM_STR;
                         break;
                 }
             }
@@ -302,10 +301,10 @@ class DBConnectSQLSRV extends DBConnect
             $query = 'INSERT INTO '.$table->name;
 
             // Add field names to $sql
-            $query .= ' ('. implode(",", $field_names) .') ';
+            $query .= ' ('. implode(",", $fieldNames) .') ';
 
             // Add values positions to $sql
-            $query .= 'VALUES (' . implode(",", $bind_positions) .')';
+            $query .= 'VALUES (' . implode(",", $bindPositions) .')';
       
             // Prepare query
             $stmt = $this->pdo->prepare($query);  //NOTE add error checking?
@@ -317,10 +316,10 @@ class DBConnectSQLSRV extends DBConnect
                  implode("\n", $this->pdo->errorInfo() . "\n", 0));
             }
 
-            $this->insert_row_stmts[$table->name] = $stmt;
-            $this->insert_row_bind_types[$table->name] = $bind_types;
+            $this->insertRowStatements[$table->name] = $stmt;
+            $this->insertRowBindTypes[$table->name] = $bindTypes;
     
-            return(array($stmt,$bind_types));
+            return(array($stmt,$bindTypes));
         } // else
     } // get_insert_row_stmt
 }

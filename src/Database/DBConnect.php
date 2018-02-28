@@ -12,11 +12,11 @@ namespace IU\REDCapETL\Database;
  */
 abstract class DBConnect
 {
-    public $err_str;
+    public $errorString;
     protected $tablePrefix;
     protected $labelViewSuffix;
 
-    public function __construct($db_str, $tablePrefix, $labelViewSuffix)
+    public function __construct($dbString, $tablePrefix, $labelViewSuffix)
     {
         $this->tablePrefix = $tablePrefix;
         $this->labelViewSuffix = $labelViewSuffix;
