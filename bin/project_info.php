@@ -18,16 +18,16 @@ use IU\PHPCap\RedCapProject;
 use IU\PHPCap\PhpCapException;
 
 if (count($argv) != 2) {
-    print "Usage: php $argv[0] <properties-file>\n";
+    print "Usage: php $argv[0] <configuration-file>\n";
     exit(1);
 } else {
-    $propertiesFile = $argv[1];
+    $configFile = $argv[1];
 }
 
 try {
-    $properties = parse_ini_file($propertiesFile);
+    $properties = parse_ini_file($configFile);
     if ($properties === false) {
-        $message = 'Unable to read properties file ';
+        $message = 'Unable to read configuration file "'.$configFile.'"';
         throw new Exception($message);
     }
 
