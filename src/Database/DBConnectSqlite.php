@@ -128,7 +128,7 @@ class DBConnectSqlite extends DBConnect
                 // the category embedded in the name of the checkbox field
 
                 // Separate root from category
-                    list($root_name, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
+                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
 
                     $agg = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
                          "and l.category=".$cat.", label, NULL)) ";

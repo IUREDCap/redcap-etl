@@ -132,11 +132,11 @@ class RedCapDetHandler
      * Checks that the project_id supplied by a call from a Data Entry Trigger
      * supplies the expected project id.
      */
-    public function checkDetId($det_id)
+    public function checkDetId($detId)
     {
 
-        if ((int) $det_id !== (int) $this->projectId) {
-            $error = "Project id supplied by data entry trigger ('".$det_id."') ".
+        if ((int) $detId !== (int) $this->projectId) {
+            $error = "Project id supplied by data entry trigger ('".$detId."') ".
                 "does not match expected id for survey ('".$this->projectId."').";
             $this->errorHandler->throwException($error, EtlException::DET_ERROR);
             //$this->notifier->notify($error);

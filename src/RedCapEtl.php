@@ -526,8 +526,8 @@ class RedCapEtl
     protected function reportRows()
     {
         // foreach table
-        foreach ($this->rowsLoadedForTable as $table_name => $rows) {
-            $msg = "Rows loaded for table '".$table_name."': ".$rows;
+        foreach ($this->rowsLoadedForTable as $tableName => $rows) {
+            $msg = "Rows loaded for table '".$tableName."': ".$rows;
             $this->log($msg);
         }
 

@@ -87,41 +87,41 @@ class DBConnectMySQL extends DBConnect
         $query = 'CREATE TABLE '.$table->name.' (';
 
         // foreach field
-        $field_defs = array();
+        $fieldDefs = array();
         foreach ($table->getAllFields() as $field) {
             // Begin field_def
-            $field_def = $field->name.' ';
+            $fieldDef = $field->name.' ';
 
             // Add field type to field definition
             switch ($field->type) {
                 case FieldType::DATE:
-                    $field_def .= 'DATE';
+                    $fieldDef .= 'DATE';
                     break;
                     
                 case FieldType::DATETIME:
-                    $field_def .= 'DATETIME';
+                    $fieldDef .= 'DATETIME';
                     break;
 
                 case FieldType::INT:
-                    $field_def .= 'INT';
+                    $fieldDef .= 'INT';
                     break;
 
                 case FieldType::FLOAT:
-                    $field_def .= 'FLOAT';
+                    $fieldDef .= 'FLOAT';
                     break;
     
                 case FieldType::STRING:
                 default:
-                      $field_def .= 'TEXT';
+                      $fieldDef .= 'TEXT';
                     break;
             } // switch
 
             // Add field_def to array of field_defs
-            array_push($field_defs, $field_def);
+            array_push($fieldDefs, $fieldDef);
         }
 
         // Add field definitions to query
-        $query .= join(', ', $field_defs);
+        $query .= join(', ', $fieldDefs);
 
         // End query
         $query .= ')';
@@ -173,7 +173,7 @@ class DBConnectMySQL extends DBConnect
                 // the category embedded in the name of the checkbox field
 
                 // Separate root from category
-                    list($root_name, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
+                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
 
                     $agg = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
                          "and l.category=".$cat.", label, NULL)) ";
@@ -238,7 +238,7 @@ class DBConnectMySQL extends DBConnect
                 // the category embedded in the name of the checkbox field
 
                 // Separate root from category
-                    list($root_name, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
+                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
 
                     $label = $this->mysqli->real_escape_string(
                         $lookup->getLabel($table->name, $fname, $cat)
@@ -322,23 +322,23 @@ class DBConnectMySQL extends DBConnect
         // Add field values, in order, to bind parameters
         foreach ($row->table->getAllFields() as $field) {
             // Replace empty string with null
-            $to_bind = $row->data[$field->name];
-            if ($to_bind === '') {
-                $to_bind = null;
+            $toBind = $row->data[$field->name];
+            if ($toBind === '') {
+                $toBind = null;
             }
 
-            array_push($params, $to_bind);
+            array_push($params, $toBind);
         }
 
         // Get references to each parameter -- necessary because
         // call_user_func_array wants references
-        $param_refs = array();
+        $paramRefs = array();
         foreach ($params as $key => $value) {
-            $param_refs[$key] = &$params[$key];
+            $paramRefs[$key] = &$params[$key];
         }
 
         // Bind references to prepared query
-        call_user_func_array(array($stmt, 'bind_param'), $param_refs);
+        call_user_func_array(array($stmt, 'bind_param'), $paramRefs);
 
         // Execute query
         $rc = $stmt->execute();   //NOTE add error checking?
@@ -528,13 +528,13 @@ class DBConnectMySQL extends DBConnect
             #--------------------------------------------------------------
             list($statement, $bindTypes) = $this->getInsertRowStmt($table, count($rows));
 
-            #$param_refs = array();
+            #$paramRefs = array();
             #$params = array($bindTypes);
             #--------------------------------------------------------
             # Bind the row values to the parameterized query
             #--------------------------------------------------------
             $params = array($bindTypes);
-            $param_refs = array();
+            $paramRefs = array();
             $key = 0;
 
             $fields = $table->getAllFields();
@@ -544,26 +544,26 @@ class DBConnectMySQL extends DBConnect
             #---------------------------------
             foreach ($rows as $row) {
                 foreach ($fields as $field) {
-                    $to_bind = $row->data[$field->name];
-                    if ($to_bind === '') {
-                        $to_bind = null;
+                    $toBind = $row->data[$field->name];
+                    if ($toBind === '') {
+                        $toBind = null;
                     }
-                    array_push($params, $to_bind);
+                    array_push($params, $toBind);
                 }
             }
 
             foreach ($params as $param) {
-                $param_refs[$key] = &$params[$key];
+                $paramRefs[$key] = &$params[$key];
                 $key++;
             }
 
-            ###print_r($param_refs);
-            call_user_func_array(array($statement, 'bind_param'), $param_refs);
+            ###print_r($paramRefs);
+            call_user_func_array(array($statement, 'bind_param'), $paramRefs);
 
             #foreach ($params as $key => $value) {
-            #    $param_refs[$key] = &$params[$key];
+            #    $paramRefs[$key] = &$params[$key];
             #}
-            #call_user_func_array(array($statement, 'bind_param'), $param_refs);
+            #call_user_func_array(array($statement, 'bind_param'), $paramRefs);
 
             #-----------------------------
             # Execute query

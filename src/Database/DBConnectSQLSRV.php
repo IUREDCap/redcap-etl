@@ -155,7 +155,7 @@ class DBConnectSQLSRV extends DBConnect
                 // the category embedded in the name of the checkbox field
 
                 // Separate root from category
-                    list($root_name,$cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
+                    list($rootName,$cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
 
                     $agg = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
                          "and l.category=".$cat.", label, NULL)) ";
@@ -234,11 +234,11 @@ class DBConnectSQLSRV extends DBConnect
 
             // Replace empty string with null
             $value = $row->data[$field->name];
-            $to_bind = ('' !== $value) ? $value : null;
+            $toBind = ('' !== $value) ? $value : null;
 
             // Bind param
             if (false ===
-            $stmt->bindValue(':'.strtolower($field->name), $to_bind, $bindTypes[$field->name])
+            $stmt->bindValue(':'.strtolower($field->name), $toBind, $bindTypes[$field->name])
             ) {
               // ADA DEBUG
                 print implode($this->pdo->errorInfo()."\n", 0);

@@ -49,7 +49,7 @@ class EtlProject extends \IU\PHPCap\RedCapProject
      * @return array a map of field names to a map of categories to labels
      *     for that field name.
      *
-     * $results = array($field_name1 => array($category1 => $label1, ...), ...)
+     * $results = array($fieldName1 => array($category1 => $label1, ...), ...)
      */
     public function getLookupChoices()
     {

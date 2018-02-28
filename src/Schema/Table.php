@@ -220,8 +220,8 @@ class Table
                 
                 // If this is a checkbox field
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
-                    list($root_name,$cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
-                    $variableName = $root_name.$suffix.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
+                    list($rootName,$cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
+                    $variableName = $rootName.$suffix.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
                 } else {
                     // Otherwise, just append suffix
                     $variableName = $field->name.$suffix;
