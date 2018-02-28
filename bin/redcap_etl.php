@@ -26,20 +26,20 @@ $logger = new Logger2($app);
 #---------------------------
 # Set default values
 #---------------------------
-$propertiesFile = null;
+$configFile = null;
 
 #----------------------------------------------
 # Process the command line options
 #----------------------------------------------
-$options = getopt('p:');
+$options = getopt('c:');
 
 # properties file
-if (array_key_exists('p', $options)) {
-    $propertiesFile = $options['p'];
+if (array_key_exists('c', $options)) {
+    $configFile = $options['c'];
 }
 
 try {
-    $redCapEtl = new RedCapEtl($logger, $propertiesFile);
+    $redCapEtl = new RedCapEtl($logger, $configFile);
     $logger = $redCapEtl->getLogger();
     $redCapEtl->run();
 } catch (EtlException $exception) {
