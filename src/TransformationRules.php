@@ -82,9 +82,9 @@ class TransformationRules
 
         $redCapFields      = $dataProject->getFieldNames();
         // Remove each instrument's completion field from the field list
-        foreach ($redCapFields as $field_name => $val) {
-            if (preg_match('/'.self::FORM_COMPLETE_SUFFIX.'$/', $field_name)) {
-                unset($redCapFields[$field_name]);
+        foreach ($redCapFields as $fieldName => $val) {
+            if (preg_match('/'.self::FORM_COMPLETE_SUFFIX.'$/', $fieldName)) {
+                unset($redCapFields[$fieldName]);
             }
         }
 
@@ -128,42 +128,42 @@ class TransformationRules
                 // Start with Table?
                 case self::ELEMENT_TABLE:
                     // Retrieve Table parameters
-                    $parent_table_name = $tablePrefix
+                    $parentTableName = $tablePrefix
                         . $this->cleanTableName($elements[self::TABLE_PARENT_POS]);
 
-                    $table_name = $tablePrefix
+                    $tableName = $tablePrefix
                         . $this->cleanTableName($elements[self::TABLE_NAME_POS]);
 
-                    $rows_def = $this->cleanRowsDef($elements[self::TABLE_ROWSTYPE_POS]);
+                    $rowsDef = $this->cleanRowsDef($elements[self::TABLE_ROWSTYPE_POS]);
 
                     // Validate all Table parameters found
-                    if (($this->isEmptyString($parent_table_name)) ||
-                            ($this->isEmptyString($table_name)) ||
-                            ($this->isEmptyString($rows_def))) {
+                    if (($this->isEmptyString($parentTableName)) ||
+                            ($this->isEmptyString($tableName)) ||
+                            ($this->isEmptyString($rowsDef))) {
                         $msg = "Missing one or more parameters in line: '".$line."'";
                         $logger->logInfo($msg);
                         $errors .= $msg."\n";
                         continue 2;
                     }
 
-                    list($rows_type, $suffixes) = $this->parseRowsDef($rows_def);
+                    list($rowsType, $suffixes) = $this->parseRowsDef($rowsDef);
 
                     // Validate the given rows type
-                    if (false === $rows_type) {
-                        $msg = "Invalid rows_type in line: '".$line."'";
+                    if (false === $rowsType) {
+                        $msg = "Invalid rows type in line: '".$line."'";
                         $logger->logInfo($msg);
                         $errors .= $msg."\n";
                         continue 2;
                     }
 
                     // Find parent Table
-                    $parent_table = $schema->getTable($parent_table_name);
+                    $parentTable = $schema->getTable($parentTableName);
 
                     // Create a new Table
                     $table = new Table(
-                        $table_name,
-                        $parent_table,
-                        $rows_type,
+                        $tableName,
+                        $parentTable,
+                        $rowsType,
                         $suffixes,
                         $recordIdFieldName
                     );
@@ -188,7 +188,7 @@ class TransformationRules
                     // Depending on type of table, add output fields to represent
                     // which iteration of a field's value is stored in a row of
                     // the table
-                    switch ($rows_type) {
+                    switch ($rowsType) {
                         case RedCapEtl::BY_EVENTS:
                             $field = new Field(RedCapEtl::COLUMN_EVENT, RedCapEtl::COLUMN_EVENT_TYPE);
                             $table->addField($field);
@@ -227,13 +227,13 @@ class TransformationRules
                     $schema->addTable($table);
 
                     // If parent_table exists
-                    #OLD: if (is_a($parent_table, 'Table')) {
-                    if (is_a($parent_table, Table::class)) {
+                    #OLD: if (is_a($parentTable, 'Table')) {
+                    if (is_a($parentTable, Table::class)) {
                         // Add a foreign key
-                        $table->setForeign($parent_table);
+                        $table->setForeign($parentTable);
 
                         // Add as a child of parent table
-                        $parent_table->addChild($table);
+                        $parentTable->addChild($table);
                     }
                     break;
 
@@ -241,12 +241,12 @@ class TransformationRules
                 case self::ELEMENT_FIELD:
                     //------------------------------------------------------------
                     // Retrieve Field parameters
-                    $field_name = $this->cleanFieldName($elements[self::FIELD_NAME_POS]);
-                    $field_type = $this->cleanFieldType($elements[self::FIELD_TYPE_POS]);
+                    $fieldName = $this->cleanFieldName($elements[self::FIELD_NAME_POS]);
+                    $fieldType = $this->cleanFieldType($elements[self::FIELD_TYPE_POS]);
 
                     //------------------------------------------------------------
                     // Validate all Field parameters found
-                    if (($this->isEmptyString($field_name)) || ($this->isEmptyString($field_type))) {
+                    if (($this->isEmptyString($fieldName)) || ($this->isEmptyString($fieldType))) {
                         $msg = "Missing one or more parameters in line: '".$line."'";
                         $this->log($msg);
                         $errors .= $msg."\n";
@@ -254,7 +254,7 @@ class TransformationRules
                     }
 
                     // Validate the given field type
-                    if (! FieldType::isValid($field_type)) {
+                    if (! FieldType::isValid($fieldType)) {
                         $msg = "Invalid field_type in line: '".$line."'";
                         $this->log($msg);
                         $errors .= $msg."\n";
@@ -267,26 +267,26 @@ class TransformationRules
 
                     // If this is a checkbox field
                     $fields = array();
-                    if ($field_type === FieldType::CHECKBOX) {
+                    if ($fieldType === FieldType::CHECKBOX) {
                         // For a checkbox in a Suffix table
                         if ((RedCapEtl::BY_SUFFIXES === $table->rows_type)
                                 || (RedCapEtl::BY_EVENTS_SUFFIXES === $table->rows_type)) {
                             // Lookup the choices using any one of the valid suffixes
                             $suffixes = $table->getPossibleSuffixes();
-                            $lookup_field_name = $field_name.$suffixes[0];
+                            $lookupFieldName = $fieldName.$suffixes[0];
                         } else {
-                            $lookup_field_name = $field_name;
+                            $lookupFieldName = $fieldName;
                         }
 
                         // Foreach category of the checkbox field
-                        foreach ($this->lookupChoices[$lookup_field_name] as $cat => $label) {
+                        foreach ($this->lookupChoices[$lookupFieldName] as $cat => $label) {
                             // Form the variable name for this category
-                            $fields[$field_name.RedCapEtl::CHECKBOX_SEPARATOR.$cat]
+                            $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$cat]
                                 = FieldType::INT;
                         }
                     } else {
                         // Process a single field
-                        $fields[$field_name] = $field_type;
+                        $fields[$fieldName] = $fieldType;
                     }
 
                     //------------------------------------------------------------
@@ -323,17 +323,17 @@ class TransformationRules
                                 || (RedCapEtl::BY_EVENTS_SUFFIXES === $table->rows_type)) {
                             $possibles = $table->getPossibleSuffixes();
 
-                            $field_found = false;
+                            $fieldFound = false;
 
                             // Foreach possible suffix, is the field found?
                             foreach ($possibles as $sx) {
                                 // In case this is a checkbox field
-                                if ($field_type === FieldType::CHECKBOX) {
+                                if ($fieldType === FieldType::CHECKBOX) {
                                     // Separate root from category
                                     list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
 
                                     // Form the exported field name
-                                    $export_fname = $rootName.$sx.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
+                                    $exportFname = $rootName.$sx.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
 
                                     // Form the metadata field name
                                     // Checkbox fields have a single metadata field name, but
@@ -341,7 +341,7 @@ class TransformationRules
                                     $metaFname = $rootName.$sx;
                                 } else {
                                     // Otherwise, just append suffix
-                                    $export_fname = $fname.$sx;
+                                    $exportFname = $fname.$sx;
                                     $metaFname = $fname.$sx;
                                 }
 
@@ -349,18 +349,18 @@ class TransformationRules
                                 //--------------------------------------------------------------
                                 // SUFFIXES: Remove from warning that REDCap field is not in Map
                                 //--------------------------------------------------------------
-                                if (!empty($fieldNames[$export_fname])) {
-                                    $field_found = true;
+                                if (!empty($fieldNames[$exportFname])) {
+                                    $fieldFound = true;
 
                                     // Remove this field from the list of fields to be mapped
-                                    unset($redCapFields[$export_fname]);
+                                    unset($redCapFields[$exportFname]);
                                 }
                             } // Foreach possible suffix
 
                             //------------------------------------------------------------
                             // SUFFIXES: Warn that map field is not in REDCap
                             //------------------------------------------------------------
-                            if (false === $field_found) {
+                            if (false === $fieldFound) {
                                 $msg = "Suffix field not found in REDCap: '".$fname."'";
                                 $this->log($msg);
                                 $warnings .= $msg."\n";
@@ -374,7 +374,7 @@ class TransformationRules
                             // Not BY_SUFFIXES, and field was found
 
                             // In case this is a checkbox field
-                            if ($field_type === FieldType::CHECKBOX) {
+                            if ($fieldType === FieldType::CHECKBOX) {
                                 // Separate root from category
                                 list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
 
@@ -460,27 +460,27 @@ class TransformationRules
 
 
 
-    protected function cleanTableName($table_name)
+    protected function cleanTableName($tableName)
     {
-        return $this->generalSqlClean($table_name);
+        return $this->generalSqlClean($tableName);
     }
 
 
-    protected function cleanRowsDef($rows_def)
+    protected function cleanRowsDef($rowsDef)
     {
-        return $this->generalSqlClean($rows_def);
+        return $this->generalSqlClean($rowsDef);
     }
 
 
-    protected function cleanFieldName($field_name)
+    protected function cleanFieldName($fieldName)
     {
-        return $this->generalSqlClean($field_name);
+        return $this->generalSqlClean($fieldName);
     }
 
 
-    protected function cleanFieldType($field_type)
+    protected function cleanFieldType($fieldType)
     {
-        return $this->generalSqlClean($field_type);
+        return $this->generalSqlClean($fieldType);
     }
 
 
@@ -497,46 +497,46 @@ class TransformationRules
     }
 
 
-    protected function parseRowsDef($rows_def)
+    protected function parseRowsDef($rowsDef)
     {
-        $rows_def = trim($rows_def);
+        $rowsDef = trim($rowsDef);
 
         $regex = '/'.self::SUFFIXES_SEPARATOR.'/';
 
-        $rows_type = '';
+        $rowsType = '';
         $suffixes = array();
 
-        list($rows_encode, $suffixes_def) = array_pad(explode(self::ROWS_DEF_SEPARATOR, $rows_def), 2, null);
+        list($rowsEncode, $suffixesDef) = array_pad(explode(self::ROWS_DEF_SEPARATOR, $rowsDef), 2, null);
 
-        switch ($rows_encode) {
+        switch ($rowsEncode) {
             case self::ROOT:
-                $rows_type = RedCapEtl::ROOT;
+                $rowsType = RedCapEtl::ROOT;
                 break;
 
             case self::EVENTS:
-                $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixes_def);
-                $rows_type = (empty($suffixes[0])) ? RedCapEtl::BY_EVENTS : RedCapEtl::BY_EVENTS_SUFFIXES;
+                $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixesDef);
+                $rowsType = (empty($suffixes[0])) ? RedCapEtl::BY_EVENTS : RedCapEtl::BY_EVENTS_SUFFIXES;
                 break;
 
             case self::REPEATING_INSTRUMENTS:
-                $rows_type = RedCapEtl::BY_REPEATING_INSTRUMENTS;
+                $rowsType = RedCapEtl::BY_REPEATING_INSTRUMENTS;
                 break;
 
             case self::SUFFIXES:
-                $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixes_def);
-                $rows_type = (empty($suffixes[0])) ? false : RedCapEtl::BY_SUFFIXES;
+                $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixesDef);
+                $rowsType = (empty($suffixes[0])) ? false : RedCapEtl::BY_SUFFIXES;
                 break;
 
-            case (preg_match($regex, $rows_encode) ? true : false):
-                $suffixes = explode(self::SUFFIXES_SEPARATOR, $rows_encode);
-                $rows_type = (empty($suffixes[0])) ? false : RedCapEtl::BY_SUFFIXES;
+            case (preg_match($regex, $rowsEncode) ? true : false):
+                $suffixes = explode(self::SUFFIXES_SEPARATOR, $rowsEncode);
+                $rowsType = (empty($suffixes[0])) ? false : RedCapEtl::BY_SUFFIXES;
                 break;
 
             default:
-                $rows_type = false;
+                $rowsType = false;
         }
 
-        return (array($rows_type,$suffixes));
+        return (array($rowsType,$suffixes));
     }
 
 
@@ -552,16 +552,17 @@ class TransformationRules
         #-----------------------------------------------
         # Create and add fields for the lookup table
         #-----------------------------------------------
-        $field_primary = new Field(RedCapEtl::LOOKUP_TABLE_PRIMARY_ID, FieldType::INT);
-        $field_field_name = new Field(RedCapEtl::LOOKUP_FIELD_TABLE_NAME, FieldType::STRING);
-        $field_table_name = new Field(RedCapEtl::LOOKUP_FIELD_FIELD_NAME, FieldType::STRING);
-        $field_category = new Field(RedCapEtl::LOOKUP_FIELD_CATEGORY, FieldType::STRING);
-        $field_value = new Field(RedCapEtl::LOOKUP_FIELD_LABEL, FieldType::STRING);
-        $this->lookupTable->addField($field_primary);
-        $this->lookupTable->addField($field_table_name);
-        $this->lookupTable->addField($field_field_name);
-        $this->lookupTable->addField($field_category);
-        $this->lookupTable->addField($field_value);
+        $fieldPrimary   = new Field(RedCapEtl::LOOKUP_TABLE_PRIMARY_ID, FieldType::INT);
+        $fieldFieldName = new Field(RedCapEtl::LOOKUP_FIELD_TABLE_NAME, FieldType::STRING);
+        $fieldTableName = new Field(RedCapEtl::LOOKUP_FIELD_FIELD_NAME, FieldType::STRING);
+        $fieldCategory = new Field(RedCapEtl::LOOKUP_FIELD_CATEGORY, FieldType::STRING);
+        $fieldValue    = new Field(RedCapEtl::LOOKUP_FIELD_LABEL, FieldType::STRING);
+        
+        $this->lookupTable->addField($fieldPrimary);
+        $this->lookupTable->addField($fieldFieldName);
+        $this->lookupTable->addField($fieldTableName);
+        $this->lookupTable->addField($fieldCategory);
+        $this->lookupTable->addField($fieldValue);
     }
 
 
@@ -569,20 +570,20 @@ class TransformationRules
      * Create a table that holds the categories and labels for a field
      * with multiple choices.
      */
-    protected function makeLookupTable($table_name, $field_name)
+    protected function makeLookupTable($tableName, $fieldName)
     {
 
-        if (empty($this->lookupTableIn[$table_name.':'.$field_name])) {
-            $this->lookupTableIn[$table_name.':'.$field_name] = true;
+        if (empty($this->lookupTableIn[$tableName.':'.$fieldName])) {
+            $this->lookupTableIn[$tableName.':'.$fieldName] = true;
 
             // Foreach choice, add a row
-            $cur_id = 1;
-            foreach ($this->lookupChoices[$field_name] as $category => $label) {
+            $currentId = 1;
+            foreach ($this->lookupChoices[$fieldName] as $category => $label) {
                 // Set up the table/fieldcategory/label for this choice
                 $data = array(
-                    RedCapEtl::LOOKUP_TABLE_PRIMARY_ID => $cur_id++,
-                    RedCapEtl::LOOKUP_FIELD_TABLE_NAME => $table_name,
-                    RedCapEtl::LOOKUP_FIELD_FIELD_NAME => $field_name,
+                    RedCapEtl::LOOKUP_TABLE_PRIMARY_ID => $currentId++,
+                    RedCapEtl::LOOKUP_FIELD_TABLE_NAME => $tableName,
+                    RedCapEtl::LOOKUP_FIELD_FIELD_NAME => $fieldName,
                     RedCapEtl::LOOKUP_FIELD_CATEGORY => $category,
                     RedCapEtl::LOOKUP_FIELD_LABEL => $label
                 );

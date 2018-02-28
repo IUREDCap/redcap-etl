@@ -49,7 +49,8 @@ class VisitsWebTest extends TestCase
         $curlHandle = curl_init($url);
         $data = [
             'project_id' => self::$configuration->getProjectId(),
-            'record'     => $configRecord
+            'record'     => $configRecord,
+            'instrument' => RedCapEtl::DET_INSTRUMENT_NAME
         ];
 
         curl_setopt($curlHandle, CURLOPT_POST, 1);

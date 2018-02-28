@@ -14,6 +14,7 @@ class EtlException extends \Exception
     const PHPCAP_ERROR   = 2;
     const INPUT_ERROR    = 3;
     const DATABASE_ERROR = 4;
+    const DET_ERROR      = 5;    // REDCap Data Entry Trigger error
 
     /**
      * Constructor.

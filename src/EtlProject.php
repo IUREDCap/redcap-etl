@@ -44,6 +44,10 @@ class EtlProject extends \IU\PHPCap\RedCapProject
 
 
     /**
+     * Gets information on multiple choice options in a project.
+     *
+     * @return array a map of field names to a map of categories to labels
+     *     for that field name.
      *
      * $results = array($field_name1 => array($category1 => $label1, ...), ...)
      */
@@ -65,10 +69,10 @@ class EtlProject extends \IU\PHPCap\RedCapProject
                 case 'dropdown':
                 case 'checkbox':
                       // Get the choices
-                      $choices_str = $field['select_choices_or_calculations'];
-                      $choices = array_map('trim', explode("|", $choices_str));
+                      $choicesString = $field['select_choices_or_calculations'];
+                      $choices = array_map('trim', explode("|", $choicesString));
 
-                      $field_results = array();
+                      $fieldResults = array();
 
                       // Foreach choice
                     foreach ($choices as $choice) {
@@ -81,11 +85,11 @@ class EtlProject extends \IU\PHPCap\RedCapProject
                           array_map('trim', explode(",", $choice, 2));
 
                         // Add them to the results for this field
-                        $field_results[$category] = $label;
+                        $fieldResults[$category] = $label;
                     }
 
                       // Add this field to the overall results
-                      $results[$field['field_name']] = $field_results;
+                      $results[$field['field_name']] = $fieldResults;
 
                     break;
 

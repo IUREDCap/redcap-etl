@@ -8,19 +8,26 @@ namespace IU\REDCapETL;
  */
 class RedCapDetHandler
 {
-
     protected $debug = '';
+    
+    private $errorHandler;
+    
+    private $projectId = '';
+    private $allowedServers;
 
-    protected $pid = '';
-    protected $allowedServers;
-    protected $notifier = '';  // Object for reporting errors
-
-    public function __construct($pid, $allowedServers, $notifier)
+    private $logger;
+    
+    /**
+     * Creates a REDCap DET (Data Entry Trigger) handler.
+     *
+     */
+    public function __construct($projectId, $allowedServers, $logger)
     {
+        $this->errorHandler = new EtlErrorHandler();
+     
         $this->debug = 'no';
 
-        $this->pid = $pid;
-        $this->notifier = $notifier;
+        $this->projectId = $projectId;
 
         // Create array of allowed servers (by hostname)
         if (preg_match("/,/", $allowedServers)) {
@@ -38,7 +45,7 @@ class RedCapDetHandler
      */
     public function getDetParams()
     {
-        // If either project_id or record_id are empty, this program assumes
+        // If $_POST['project_id'] is empty, this program assumes
         // that it is being tested by using a URL from a web browser rather
         // than being called by a REDCap Data Entry Trigger.  To perform such
         // a test, use a URL like:
@@ -49,16 +56,30 @@ class RedCapDetHandler
         // In this case, project_id and record_id are read from GET parameters,
         // $DEBUG is forced to 'yes';
         //
-        if (!isset($_POST['project_id']) || !isset($_POST['record'])) {
-            $projectId = htmlspecialchars($_GET['project_id']);
-            $recodId = htmlspecialchars($_GET['record']); // NOT 'record_id'
-            $this->debug = 'yes';
+        $projectId  = '';
+        $recordId   = '';
+        $instrument = '';
+        
+        # If this is a POST
+        if (!empty($_POST['project_id'])) {
+            # Note: filter_var used instead of filter_input to make it easier to write unit tests;
+            #       filter_input does not pick up modifications to $_POST
+            $projectId  = filter_var($_POST['project_id'], FILTER_SANITIZE_NUMBER_INT);
+            
+            if (!empty($_POST['record'])) {
+                $recordId   = filter_var($_POST['record'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+            }
+            
+            if (!empty($_POST['instrument'])) {
+                $instrument = filter_var($_POST['instrument'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+            }
         } else {
-            $projectId = htmlspecialchars($_POST['project_id']);
-            $recodId  = htmlspecialchars($_POST['record']);     // NOT 'record_id'
+            $projectId = htmlspecialchars($_GET['project_id']);
+            $recordId = htmlspecialchars($_GET['record']); // NOT 'record_id'
+            $this->debug = 'yes';
         }
 
-        return(array($projectId, $recodId));
+        return(array($projectId, $recordId, $instrument));
     }
 
 
@@ -84,7 +105,8 @@ class RedCapDetHandler
         // If not a valid IP address
         if (!ip2long($serverRemoteAddress)) {
             $error = "Invalid server remote address: ".$_SERVER['REMOTE_ADDR']."\n";
-            $this->notifier->notify($error);
+            $this->errorHandler->throwException($error, EtlException::DET_ERROR);
+            // $this->notifier->notify($error);
             exit(1);
         }
 
@@ -96,7 +118,8 @@ class RedCapDetHandler
             if (isset($hostname)) {
                 $error .= " (hostname = ".$hostname.")\n";
             }
-            $this->notifier->notify($error);
+            $this->errorHandler->throwException($error, EtlException::DET_ERROR);
+            //$this->notifier->notify($error);
 
             exit(1);
         }
@@ -112,10 +135,11 @@ class RedCapDetHandler
     public function checkDetId($det_id)
     {
 
-        if ((int) $det_id !== (int) $this->pid) {
+        if ((int) $det_id !== (int) $this->projectId) {
             $error = "Project id supplied by data entry trigger ('".$det_id."') ".
-            "does not match expected id for survey ('".$this->pid."').";
-            $this->notifier->notify($error);
+                "does not match expected id for survey ('".$this->projectId."').";
+            $this->errorHandler->throwException($error, EtlException::DET_ERROR);
+            //$this->notifier->notify($error);
         }
 
         return true;

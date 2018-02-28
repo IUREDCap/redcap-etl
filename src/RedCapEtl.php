@@ -34,6 +34,10 @@ class RedCapEtl
 
     const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
 
+    # Instrument (form) name that indicates a DET (Data Entry Trigger)
+    # should be processed
+    const DET_INSTRUMENT_NAME = 'run';
+    
     # Rows Type
     const ROOT                 = 0;
     const BY_EVENTS            = 1;
@@ -205,7 +209,7 @@ class RedCapEtl
         $this->det = new RedCapDetHandler(
             $projectId,
             $this->configuration->getAllowedServers(),
-            $this->logger->getNotifier()
+            $this->logger
         );
 
         #----------------------------------------------------------------
@@ -534,11 +538,11 @@ class RedCapEtl
     /**
      * For DET-invocations, upload the result and reset the etl_trigger
      */
-    public function uploadResultAndReset($result, $record_id)
+    public function uploadResultAndReset($result, $recordId)
     {
         $records = array();
         $records[0] = array(
-            'record_id' => $record_id,
+            'record_id' => $recordId,
             ConfigProperties::TRIGGER_ETL => RedCapEtl::TRIGGER_ETL_NO,
             ConfigProperties::TRANSFORM_RULES_CHECK => $result
         );
@@ -601,53 +605,56 @@ class RedCapEtl
         $this->logger->logInfo('Executing web script '.$this->logger->getApp());
 
         $detHandler = $this->getDetHandler();
-        list($project_id,$record_id) = $detHandler->getDetParams();
+        list($projectId,$recordId, $instrument) = $detHandler->getDetParams();
 
         #-----------------------------------------------------------------------
         # Data Entry Trigger: Check for allowed project/servers
         #-----------------------------------------------------------------------
-        $detHandler->checkDetId($project_id);
+        $detHandler->checkDetId($projectId);
         $detHandler->checkAllowedServers();
 
-        #-----------------------------------------------------------------------
-        # Parse Map
-        #-----------------------------------------------------------------------
-        list($parse_status, $result) = $this->parseMap();
-
-        # If the parsing of the schema map failed.
-        if ($parse_status === TransformationRules::PARSE_ERROR) {
-            $msg = "Schema map not fully parsed. Processing stopped.";
-            $this->log($msg);
-            $result .= $msg."\n";
+        if ($instrument !== self::DET_INSTRUMENT_NAME) {
+            # An instrument/form other than the DET instrument/form was
+            # modified, so don't do anything
+            ;
         } else {
-            $result .= "Schema map is valid.\n";
-
-            if ($this->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
-                // ETL not requested
-                $msg = "Web-invoked process stopped after parsing, per default.";
+            list($parseStatus, $result) = $this->parseMap();
+                    
+            if ($parseStatus === TransformationRules::PARSE_ERROR) {
+                # If the parsing of the schema map failed.
+                $msg = "Schema map not fully parsed. Processing stopped.";
                 $this->log($msg);
                 $result .= $msg."\n";
             } else {
-                $result .= "ETL proceeding. Please see log for results\n";
+                $result .= "Schema map is valid.\n";
 
-                $this->createLoadTables();
-                //--------------------------------------------------------------------
-                // Extract, Transform, and Load
-                //
-                // These three steps are joined together at this level so that
-                // the data from REDCap can be worked on in batches
-                //--------------------------------------------------------------------
-                $this->extractTransformLoad();
-            } // ETL requested
-        } // parseMap valid
+                if ($this->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
+                    // ETL not requested
+                    $msg = "Web-invoked process stopped after parsing, per default.";
+                    $this->log($msg);
+                    $result .= $msg."\n";
+                } else {
+                    $result .= "ETL proceeding. Please see log for results\n";
 
-        // Provide a timestamp for the results
-        $result = date('g:i:s a d-M-Y T') . "\n" . $result;
+                    $this->createLoadTables();
+                    //--------------------------------------------------------------------
+                    // Extract, Transform, and Load
+                    //
+                    // These three steps are joined together at this level so that
+                    // the data from REDCap can be worked on in batches
+                    //--------------------------------------------------------------------
+                    $this->extractTransformLoad();
+                } // ETL requested
+            } // parseMap valid
 
-        #-----------------------------------------------------------
-        # Upload the results, and set ETL trigger back to default
-        #-----------------------------------------------------------
-        $this->uploadResultAndReset($result, $record_id);
+            // Provide a timestamp for the results
+            $result = date('g:i:s a d-M-Y T') . "\n" . $result;
+
+            #-----------------------------------------------------------
+            # Upload the results, and set ETL trigger back to default
+            #-----------------------------------------------------------
+            $this->uploadResultAndReset($result, $recordId);
+        }
     }
 
 

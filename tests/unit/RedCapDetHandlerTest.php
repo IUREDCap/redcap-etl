@@ -32,10 +32,12 @@ class RedCapDetHandlerTest extends TestCase
         
         $_POST['record']     = $recordId;
         $_POST['project_id'] = $projectId;
+        $_POST['instrument'] = RedCapEtl::DET_INSTRUMENT_NAME;
 
         $params = $detHandler->getDetParams();
         $this->assertEquals($projectId, $params[0], 'post project id check');
         $this->assertEquals($recordId, $params[1], 'post record check');
+        $this->assertEquals($_POST['instrument'], $params[2], 'post instrument check');
 
         $_GET['record']     = $recordId;
         $_GET['project_id'] = $projectId;
