@@ -174,18 +174,64 @@ You need to configure the DET in REDCap. To do this:
 4. Click on the **Save** button
 
 
-
-
-
-### Step 9 (Optional) - Set up Scheduled Runs of the ETL Process
+Running the ETL Process
+-------------------------------------
 
 There are 3 ways to run REDCap ETL:
-1. Execute the **bin/redcap-etl.php** command on the server
-2. Save the "Run" form of the configuration project, with the option to run ETL set
-3. Set up a cron job to run the ETL process at specific recurring times
 
-This section discuss how to set up the third option.
+1. __Manual.__ Execute the **bin/redcap_etl.php** command manually on the server
+2. __DET.__ Generate a DET (Data Entry Trigger) by svaing the "Run" form of
+   the configuration project, with the option to run ETL set
+3. __Scheduled.__ Set up a cron job to run the ETL process at specific recurring times
 
 
+### Manual ETL
+
+To run the ETL process manaully, you need to run the redcap_etl.php script
+and specify the configuration file to use, for example:
+
+        /opt/redcap-etl/bin/redcap_etl.php -c /opt/redcap-etl/config/visits.ini
+In the example above:
+
+* `/opt/redcap-etl` is the directory where REDCap ETL was installed on
+  the server
+* `/opt/redcap-etl/config/visits.ini` is a configuration file set up
+  by a user that specifies an ETL process
+  
+Depending on how your server is set up, you may need to use
+`php /opt/redcap-etl/bin/redcap_etl.php ...` to run
+the command.
+
+### DET Activation of ETL
+
+To use REDCap's DET (Data Entry Trigger) feature to run the ETL process,
+you need to first set this up as described above. Once the setup has
+been completed, in REDCap:
+
+1. Open the configuration project for the ETLprocess that you want to run
+2. Edit the "Run" form, and for the "Run on Save" field, select the
+   option that specifies that the ETL process should be run
+3. Save the "Run" form
+
+### Scheduled ETL
+
+On Linux systems, you should be able to set up a cron job to run
+ETL processes on a regularly scheduled basis. 
+
+Here is an example crontab entry for a cron job to run the ETL process:
+
+    0 2 * * * cd /opt/redcap-etl/bin; php ./redcap_etl.php \
+        -c /opt/redcap-etl/config/visits.ini
+
+For this example:
+
+* `0 2 * * *` indicates that the ETL process will be run at 2:00am
+  every day. See cron documentation for more details.
+* `/opt/redcap-etl` is the directory where REDCap ETL has been installed
+  in this case
+* `redcap_etl.php` is the standard REDCap ETL script for running the
+  ETL process
+* `/opt/redcap-etl/config/visits.ini` is the configuration file
+  for the ETL process that has been set up by the user
 
 
