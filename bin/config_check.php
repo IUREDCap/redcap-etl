@@ -42,7 +42,6 @@ try {
     } else {
         print "Configuration file {$configFile} is OK.\n";
     }
-    
 } catch (EtlException $exception) {
     $cause = null;
     $previous = $exception->getPrevious();
