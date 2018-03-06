@@ -185,7 +185,7 @@ There are 3 ways to run REDCap ETL:
 3. __Scheduled.__ Set up a cron job to run the ETL process at specific recurring times
 
 
-### Manual ETL
+### Running ETL Manualy
 
 To run the ETL process manaully, you need to run the redcap_etl.php script
 and specify the configuration file to use, for example:
@@ -202,7 +202,7 @@ Depending on how your server is set up, you may need to use
 `php /opt/redcap-etl/bin/redcap_etl.php ...` to run
 the command.
 
-### DET Activation of ETL
+### Running ETL Using REDCap's Data Entry Triggers
 
 To use REDCap's DET (Data Entry Trigger) feature to run the ETL process,
 you need to first set this up as described above. Once the setup has
@@ -213,7 +213,8 @@ been completed, in REDCap:
    option that specifies that the ETL process should be run
 3. Save the "Run" form
 
-### Scheduled ETL
+
+### Running ETL at Regulary Scheduled Times
 
 On Linux systems, you should be able to set up a cron job to run
 ETL processes on a regularly scheduled basis. 
