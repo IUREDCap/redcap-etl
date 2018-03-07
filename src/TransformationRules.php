@@ -621,7 +621,8 @@ class TransformationRules
         $recordId = $metadata[0]['field_name'];
 
         foreach ($instruments as $formName => $formLabel) {
-            $rules .= "TABLE,".$formName.",".$recordId.",".'ROOT'."\n";
+            $primaryKey = strtolower($formName) . '_id';
+            $rules .= "TABLE,".$formName.",$primaryKey,".'ROOT'."\n";
 
             foreach ($metadata as $field) {
                 if ($field['form_name'] == $formName) {

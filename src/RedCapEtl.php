@@ -263,8 +263,17 @@ class RedCapEtl
     {
         $transformationRules = $this->configuration->getTransformationRules();
         $rules = new TransformationRules($transformationRules);
+
+        #-----------------------------------------------------------------------------
+        # If default rules were specified, generate the default rules before parsing
+        #-----------------------------------------------------------------------------
+        if ($this->configuration->getTransformRulesSource() === Configuration::TRANSFORM_RULES_DEFAULT) {
+            $rules->generateDefaultRules($this->dataProject);
+        }
+
         list($schema, $lookupTable, $parseResult)
             = $rules->parse($this->dataProject, $this->tablePrefix, $this->logger);
+
         #print_r($lookupTable);
         #print_r($parseResult);
         ###print "\n".($schema->toString())."\n";

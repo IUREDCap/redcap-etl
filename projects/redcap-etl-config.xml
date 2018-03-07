@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="REDCap ETL Config" AsOfDateTime="2018-02-19T13:53:33" CreationDateTime="2018-02-19T13:53:33" SourceSystem="REDCap" SourceSystemVersion="7.4.23">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="REDCap ETL Config" AsOfDateTime="2018-03-07T15:07:19" CreationDateTime="2018-03-07T15:07:19" SourceSystem="REDCap" SourceSystemVersion="7.4.23">
 <Study OID="Project.REDCapETLConfig">
 <GlobalVariables>
 	<StudyName>REDCap ETL Config</StudyName>
@@ -13,7 +13,7 @@
 	<redcap:PurposeOther>REDCap ETL</redcap:PurposeOther>
 	<redcap:ProjectNotes></redcap:ProjectNotes>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.REDCapETLConfig_2018-02-19_1353" Name="REDCap ETL Config" redcap:RecordIdField="record_id">
+<MetaDataVersion OID="Metadata.REDCapETLConfig_2018-03-07_1507" Name="REDCap ETL Config Update" redcap:RecordIdField="record_id">
 	<FormDef OID="Form.admin" Name="Admin" Repeating="No" redcap:FormName="admin">
 		<ItemGroupRef ItemGroupOID="admin.record_id" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="admin.admin_complete" Mandatory="No"/>
@@ -53,6 +53,7 @@
 	<ItemGroupDef OID="etl_process.transform_rules_text" Name="ETL Process" Repeating="No">
 		<ItemRef ItemOID="transform_rules_text" Mandatory="No" redcap:Variable="transform_rules_text"/>
 		<ItemRef ItemOID="transform_rules_file" Mandatory="No" redcap:Variable="transform_rules_file"/>
+		<ItemRef ItemOID="default_transform_rules" Mandatory="No" redcap:Variable="default_transform_rules"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="etl_process.db_connection" Name="Load Data Target" Repeating="No">
 		<ItemRef ItemOID="db_connection" Mandatory="No" redcap:Variable="db_connection"/>
@@ -112,6 +113,9 @@ A comma-separated list of servers from which data entry trigger calls will be ac
 	<ItemDef OID="transform_rules_file" Name="transform_rules_file" DataType="text" Length="999" redcap:Variable="transform_rules_file" redcap:FieldType="file" redcap:BranchingLogic="[transform_rules_source] = &#039;2&#039;">
 		<Question><TranslatedText>Transformation rules file</TranslatedText></Question>
 	</ItemDef>
+	<ItemDef OID="default_transform_rules" Name="default_transform_rules" DataType="text" Length="999" redcap:Variable="default_transform_rules" redcap:FieldType="descriptive" redcap:BranchingLogic="[transform_rules_source] = &#039;3&#039;">
+		<Question><TranslatedText>Default transformation rules: 1 table generated for each form</TranslatedText></Question>
+	</ItemDef>
 	<ItemDef OID="db_connection" Name="db_connection" DataType="text" Length="999" redcap:Variable="db_connection" redcap:FieldType="text" redcap:SectionHeader="Load Data Target">
 		<Question><TranslatedText>Database connection string
 
@@ -168,6 +172,7 @@ When you save this configuration record, the Transformation Rules will be checke
 	<CodeList OID="transform_rules_source.choices" Name="transform_rules_source" DataType="text" redcap:Variable="transform_rules_source">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>text box</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>file</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>default</TranslatedText></Decode></CodeListItem>
 	</CodeList>
 	<CodeList OID="etl_process_complete.choices" Name="etl_process_complete" DataType="text" redcap:Variable="etl_process_complete">
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>

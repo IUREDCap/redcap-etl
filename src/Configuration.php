@@ -478,6 +478,10 @@ class Configuration
                     $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
                 }
             }
+        } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_DEFAULT) {
+            # The actual rules are not part of the configuration and will need
+            # to be generate later after the data project has been set up.
+            $this->transformationRules == '';
         } else {
             $message = 'Unrecognized transformation rules source: '.$this->transformRulesSource;
             $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);

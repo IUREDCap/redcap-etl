@@ -4,14 +4,15 @@ namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
 
-class BasicDemographyTest extends TestCase
+class BasicDemography2Test extends TestCase
 {
     private static $csvDir;
     private static $csvFile;
     private static $logger;
     private static $properties;
 
-    const CONFIG_FILE = __DIR__.'/../config/basic-demography.ini';
+    const CONFIG_FILE = __DIR__.'/../config/basic-demography-2.ini';
+    const OUTPUT_FILE_NAME = 'demographics.csv';
 
     public static function setUpBeforeClass()
     {
@@ -34,14 +35,13 @@ class BasicDemographyTest extends TestCase
             if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
                 self::$csvDir .= DIRECTORY_SEPARATOR;
             }
-            
-            self::$csvFile = self::$csvDir . 'Demography.csv';
+            self::$csvFile = self::$csvDir . self::OUTPUT_FILE_NAME;
 
             # Try to delete the output file in case it exists from a previous run
             if (file_exists(self::$csvFile)) {
                 unlink(self::$csvFile);
             }
-            
+
             $redCapEtl->run();
         } catch (EtlException $exception) {
             self::$logger->logException($exception);
@@ -51,7 +51,7 @@ class BasicDemographyTest extends TestCase
         $csv = $parser->parse();
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/BasicDemography.csv'
+            __DIR__.'/../data/BasicDemography2.csv'
         );
         $expectedCsv = $parser2->parse();
 
