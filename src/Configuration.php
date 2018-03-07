@@ -96,11 +96,14 @@ class Configuration
         # will start to log to the file
         #-----------------------------------------------------------------------------
         $this->logFile = null;
-        if ($useWebScriptLogFile
-                && array_key_exists(ConfigProperties::WEB_SCRIPT_LOG_FILE, $properties)) {
-            $this->logFile = $properties[ConfigProperties::WEB_SCRIPT_LOG_FILE];
-        } elseif (array_key_exists(ConfigProperties::LOG_FILE, $properties)) {
-            $this->logFile = $properties[ConfigProperties::LOG_FILE];
+        if ($useWebScriptLogFile) {
+            if (array_key_exists(ConfigProperties::WEB_SCRIPT_LOG_FILE, $properties)) {
+                $this->logFile = $properties[ConfigProperties::WEB_SCRIPT_LOG_FILE];
+            }
+        } else {
+            if (array_key_exists(ConfigProperties::LOG_FILE, $properties)) {
+                $this->logFile = $properties[ConfigProperties::LOG_FILE];
+            }
         }
         
         
