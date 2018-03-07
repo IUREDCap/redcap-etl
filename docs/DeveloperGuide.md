@@ -237,7 +237,7 @@ projects.
 You can also check the configuration for errors with the following
 command:
 
-        ./bin/project_info.php tests/config/visits.ini 
+        ./bin/config_check.php tests/config/visits.ini 
 
 You now need to run the web script installation script to install a
 web script that will handle DETs (Data Entry Triggers) from REDCap.
