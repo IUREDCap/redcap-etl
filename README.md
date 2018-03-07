@@ -7,7 +7,7 @@ REDCap ETL (Extract, Transform, and Load)
 * **Transform:** Uses the 'map' to transform REDCap records into database records.
 * **Load:** Drops/Creates tables and inserts Rows into the user's database.
 
-Documentations:
+Documentation:
 * [Installation Guide](docs/InstallationGuide.md)
 * [Configuration Guide](docs/ConfigurationGuide.md)
 * [Developer Guide](docs/DeveloperGuide.md)
