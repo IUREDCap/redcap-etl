@@ -262,12 +262,8 @@ Notes:
   that corresponds to the directory where the web script is installed 
 * If you don't have permission to write to the web directory, you
   may need to run the command as
-  `sudo ./bin/install_web_scripts.php ...`
-
   
- actual directory is
-different. And, if it is different, you need to change the
-web_script_url property in your configuration file to match.
+      `sudo ./bin/install_web_scripts.php ...`
 
 After the above steps have been completed successfully, you should be
 able to run the system tests by executing the following command
