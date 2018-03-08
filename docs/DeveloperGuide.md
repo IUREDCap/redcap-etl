@@ -61,7 +61,7 @@ what is listed below. The main directories and files are as follows:
 
 * __bin/__ - directory containing scripts
 * __config/__ - default configuration directory for REDCap ETL
-* __depedencies/__ - static depedencies used for production installation
+* __dependencies/__ - static dependencies used for production installation
 * __docs/__ - documentation
 * __projects/__ - REDCap ETL project templates for configuration and logging
 * __src/__ - the REDCap ETL source code directory
@@ -130,7 +130,7 @@ the tests have much better code coverage when they are.
 
 #### Integration tests
 To set up the integration tests, you need to first set up
-the Basic Demopraphy REDCap project that has the data for the
+the Basic Demography REDCap project that has the data for the
 tests:
 
 1. In REDCap, create a project using the
