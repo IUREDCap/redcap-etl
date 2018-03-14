@@ -461,6 +461,7 @@ class TransformationRules
     }
 
 
+
     public function parse($dataProject, $tablePrefix, $logger)
     {
         $this->tablePrefix = $tablePrefix;
@@ -497,13 +498,20 @@ class TransformationRules
         $table = null;
         
         $parsedRules = $this->parseRules($this->rules);
-    
+        
+        # Add errors from parsing to errors string
+        foreach ($parsedRules as $rule) {
+            foreach ($rule->getErrors() as $error) {
+                $errors .= $error."\n";
+            }
+        }
+            
         // Process each rule from first to last
         foreach ($parsedRules as $rule) {
             if ($rule->hasErrors()) {
                 ; // log here ????????
             } elseif ($rule instanceof TableRule) {
-                // CHANGE THIS CODE TO $table = createTable($rule, $tablePrefix, $recordIdFieldName); ???
+                // CHANGE THIS CODE TO $table = createTableFromRule($rule, $tablePrefix, $recordIdFieldName); ???
               
                 // Retrieve Table parameters
                 $parentTableName = $tablePrefix . $rule->parentTable;
@@ -578,17 +586,13 @@ class TransformationRules
                         break;
                 }
 
-                // Add Table to Schema
+                # Add Table to Schema
                 $schema->addTable($table);
 
-                // If parent_table exists
-                #OLD: if (is_a($parentTable, 'Table')) {
+                # If parent_table exists
                 if (is_a($parentTable, Table::class)) {
-                    // Add a foreign key
-                    $table->setForeign($parentTable);
-
-                    // Add as a child of parent table
-                    $parentTable->addChild($table);
+                    $table->setForeign($parentTable);  # Add a foreign key
+                    $parentTable->addChild($table);    # Add as a child of parent table
                 }
             } elseif ($rule instanceof FieldRule) {
                 if ($table == null) {
@@ -599,8 +603,8 @@ class TransformationRules
                 // Determine which fields need to be made
                 //------------------------------------------------------------
 
-                $fieldName = $rule->fieldName;
-                $fieldType = $rule->fieldType;
+                $fieldName = $rule->redCapFieldName;
+                $fieldType = $rule->dbFieldType;
                 
                 $fields = array();
                 
@@ -905,23 +909,23 @@ class TransformationRules
             $this->log($error);
             $fieldRule->addError($error);
         } else {
-            $fieldRule->fieldName = $this->cleanFieldName($values[self::FIELD_NAME_POS]);
-            $fieldRule->fieldType = $this->cleanFieldType($values[self::FIELD_TYPE_POS]);
+            $fieldRule->redCapFieldName = $this->cleanFieldName($values[self::FIELD_NAME_POS]);
+            $fieldRule->dbFieldType     = $this->cleanFieldType($values[self::FIELD_TYPE_POS]);
      
             // Validate all Field parameters found
-            if ($this->isEmptyString($fieldRule->fieldName)) {
+            if ($this->isEmptyString($fieldRule->redCapFieldName)) {
                 $msg = "Missing field name on line: '".$line."'";
                 $this->log($msg);
                 $fieldRule->addError($msg);
             }
             
             // Check that the field type exists and is valid
-            if ($this->isEmptyString($fieldRule->fieldType)) {
+            if ($this->isEmptyString($fieldRule->dbFieldType)) {
                 $msg = "Missing one or more parameters in line: '".$line."'";
                 $this->log($msg);
                 $fieldRule->addError($msg);
-            } elseif (!FieldType::isValid($fieldRule->fieldType)) {
-                $msg = 'Invalid field type "'.$fieldRule->fieldType.'" in line: "'.$line.'"';
+            } elseif (!FieldType::isValid($fieldRule->dbFieldType)) {
+                $msg = 'Invalid field type "'.$fieldRule->dbFieldType.'" in line: "'.$line.'"';
                 $this->log($msg);
                 $fieldRule->addError($msg);
             }

@@ -4,8 +4,11 @@ namespace IU\REDCapETL;
 
 class FieldRule extends Rule
 {
-    public $fieldName;
-    public $fieldType;
+    public $redCapFieldName;
+    public $dbFieldType;
+    public $dbFieldSize;
+    public $dbFieldName;  # database field name, specified
+                          # if different from REDCap field name
 
     public function __construct($line, $lineNumber)
     {
