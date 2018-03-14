@@ -95,6 +95,12 @@ Transformation rules consists of one or more TABLE statements, where each TABLE 
 
 Note: if the table is a root table, it has no parent table, and the field after the table name should be the name to used for the table's (synthetic) primary key.
 
+<code>
+_rules_ = <br/>
+    rules
+    test
+</code>
+
 * __rows_type__ is one of:
 
         ROOT
@@ -237,13 +243,6 @@ REDCap ETL Configuration Properties
 <tbody>
 
 <tr>
-<td>admin_email_list</td>
-<td> X </td> <td> X </td>
-
-<td>The to address list for e-mail notifications sent by REDCap ETL</td>
-</tr>
-
-<tr>
 <td>ca_cert_file</td>
 <td> X </td> <td> &nbsp; </td>
 <td>Certificate authority certificate file. This can be used to support
@@ -251,12 +250,19 @@ SSL verification of the connection to REDCap if your system does not
 provide support for it by default</td>
 </tr>
 
-
 <tr>
 <td>config_api_token</td>
 <td> X </td> <td> &nbsp; </td>
 <td>The REDCap API token for the configuration project</td>
 </tr>
+
+
+<tr>
+<td>email_from_address</td>
+<td> X </td> <td> X </td>
+<td>The from address for e-mail notifications sent by REDCap ETL</td>
+</tr>
+
 
 <tr>
 <td>email_subject</td>
@@ -265,17 +271,19 @@ provide support for it by default</td>
 </tr>
 
 <tr>
-<td>from_address</td>
+<td>email_to_list</td>
 <td> X </td> <td> X </td>
-<td>The from address for e-mail notifications sent by REDCap ETL</td>
-</tr>
-<tr>
 
+<td>The to address list for e-mail notifications sent by REDCap ETL</td>
+</tr>
+
+<tr>
 <td>log_file</td>
 <td> X </td> <td> &nbsp; </td>
 <td>File to use for logging</td>
 </tr>
 
+<tr>
 <td>log_project_api_token</td>
 <td> X </td> <td> X </td>
 <td>REDCap API token of logging project</td>
