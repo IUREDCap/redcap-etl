@@ -9,7 +9,7 @@
 # jobs to run ETL automatically at scheduled times.
 #
 # Options:
-#    -p <properties-file>
+#    -c <configuration-file>
 #
 #-------------------------------------------------------------
 
@@ -36,6 +36,9 @@ $options = getopt('c:');
 # properties file
 if (array_key_exists('c', $options)) {
     $configFile = $options['c'];
+} else {
+    print "Usage: redap_etl.php -c <configuration_file>\n";
+    exit(1);
 }
 
 try {
