@@ -82,10 +82,7 @@ class RulesParser
                 array_push($rules, $rule);
                 
                 // print_r($rule); // Jim
-               
-                foreach ($rule->getErrors() as $error) {
-                    $this->log($error);
-                }
+
             }
             
             $lineNumber++;
@@ -102,7 +99,6 @@ class RulesParser
         if (count($values) < 4) {
             $error = 'Not enough values (less than 4) on line '.$lineNumber.': "'
                     .$line.'"';
-            $this->log($error);
             $tableRule->addError($error);
         } else {
             $tableRule->tableName     = $this->cleanTableName($values[self::TABLE_NAME_POS]);
@@ -112,17 +108,14 @@ class RulesParser
             if (empty($tableRule->tableName)) {
                 $error = 'Missing table name on line '.$lineNumber.': "'
                     .$line.'"';
-                $this->log($error);
                 $tableRule->addError($error);
             } elseif (empty($tableRule->parentTable)) {
                 $error = 'Missing table parent/primary key on line '.$lineNumber.': "'
                     .$line.'"';
-                $this->log($error);
                 $tableRule->addError($error);
             } elseif (empty($tableRule->tableRowsType)) {
                 $error = 'Missing table rows type on line '.$lineNumber.': "'
                     .$line.'"';
-                $this->log($error);
                 $tableRule->addError($error);
             } else {
                 list($rowsType, $suffixes) = $this->parseRowsDef($tableRule->tableRowsType);

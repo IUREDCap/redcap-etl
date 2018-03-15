@@ -93,9 +93,12 @@ class TransformationRules
         // Process each rule from first to last
         foreach ($parsedRules as $rule) {
             if ($rule->hasErrors()) {
-                ; // log here ????????
+                // log the parse errors for this rule
+                foreach ($rule->getErrors() as $error) {
+                    $this->log($error);
+                }
             } elseif ($rule instanceof TableRule) {
-                // CHANGE THIS CODE TO $table = createTableFromRule($rule, $tablePrefix, $recordIdFieldName); ???
+                // CHANGE THIS CODE TO $table = generateTableFromRule($rule, $tablePrefix, $recordIdFieldName); ???
               
                 // Retrieve Table parameters
                 $parentTableName = $tablePrefix . $rule->parentTable;
