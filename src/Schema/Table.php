@@ -89,7 +89,6 @@ class Table
     public function setForeign($parentTable)
     {
         $this->foreign = $parentTable->primary;
-        return(1);
     }
 
     public function addField($field)
@@ -121,12 +120,16 @@ class Table
 
         $fieldNames = array_column($allFields, 'name');
 
+        # If the foreign (key) is an object (Field?) and
+        # the name of the foreign key is in the field names,
+        # add the foreign key field to the beginning of the fields
         if (is_object($this->foreign)) {
             if (!in_array($this->foreign->name, $fieldNames, true)) {
                 array_unshift($allFields, $this->foreign);
             }
         }
 
+        # Add primary key field to the beginning of the fields
         array_unshift($allFields, $this->primary);
 
         return($allFields);

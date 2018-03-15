@@ -28,7 +28,7 @@ class TransformationRules
     const ELEMENT_TABLE       = 'TABLE';
     const ELEMENT_FIELD       = 'FIELD';
     
-    const RULE_TYPE_POS         = 0;
+    const RULE_TYPE_POS       = 0;
     const TABLE_NAME_POS      = 1;
     const TABLE_PARENT_POS    = 2;
     const TABLE_ROWSTYPE_POS  = 3;
@@ -281,9 +281,9 @@ class TransformationRules
                         }
 
                         // Foreach category of the checkbox field
-                        foreach ($this->lookupChoices[$lookupFieldName] as $cat => $label) {
+                        foreach ($this->lookupChoices[$lookupFieldName] as $category => $label) {
                             // Form the variable name for this category
-                            $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$cat]
+                            $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$category]
                                 = FieldType::INT;
                         }
                     } else {
@@ -332,10 +332,10 @@ class TransformationRules
                                 // In case this is a checkbox field
                                 if ($fieldType === FieldType::CHECKBOX) {
                                     // Separate root from category
-                                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
+                                    list($rootName, $category) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
 
                                     // Form the exported field name
-                                    $exportFname = $rootName.$sx.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
+                                    $exportFname = $rootName.$sx.RedCapEtl::CHECKBOX_SEPARATOR.$category;
 
                                     // Form the metadata field name
                                     // Checkbox fields have a single metadata field name, but
@@ -378,7 +378,7 @@ class TransformationRules
                             // In case this is a checkbox field
                             if ($fieldType === FieldType::CHECKBOX) {
                                 // Separate root from category
-                                list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
+                                list($rootName, $category) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
 
                                 // Form the metadata field name
                                 // Checkbox fields have a single metadata field name, but
@@ -497,7 +497,8 @@ class TransformationRules
 
         $table = null;
         
-        $parsedRules = $this->parseRules($this->rules);
+        $rulesParser = new RulesParser();
+        $parsedRules = $rulesParser->parse($this->rules); // $this->parseRules($this->rules);
         
         # Add errors from parsing to errors string
         foreach ($parsedRules as $rule) {
@@ -621,9 +622,9 @@ class TransformationRules
                     }
 
                     // Foreach category of the checkbox field
-                    foreach ($this->lookupChoices[$lookupFieldName] as $cat => $label) {
+                    foreach ($this->lookupChoices[$lookupFieldName] as $category => $label) {
                         // Form the variable name for this category
-                        $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$cat] = FieldType::INT;
+                        $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$category] = FieldType::INT;
                     }
                 } else {
                     // Process a single field
@@ -671,10 +672,10 @@ class TransformationRules
                             // In case this is a checkbox field
                             if ($fieldType === FieldType::CHECKBOX) {
                                 // Separate root from category
-                                list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
+                                list($rootName, $category) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
 
                                 // Form the exported field name
-                                $exportFname = $rootName.$sx.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
+                                $exportFname = $rootName.$sx.RedCapEtl::CHECKBOX_SEPARATOR.$category;
 
                                 // Form the metadata field name
                                 // Checkbox fields have a single metadata field name, but
@@ -715,7 +716,7 @@ class TransformationRules
                         // In case this is a checkbox field
                         if ($fieldType === FieldType::CHECKBOX) {
                             // Separate root from category
-                            list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
+                            list($rootName, $category) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fname);
 
                             // Form the metadata field name
                             // Checkbox fields have a single metadata field name, but
@@ -898,36 +899,58 @@ class TransformationRules
     }
     
     
-        
+    /**
+     * Parses a Field Rule.
+     *
+     * @param array $values array of comma-separated string values from
+     *     the line that has the rule to be parsed.
+     * @param string $line the original line containing the rule; used
+     *     for error messages.
+     */
     private function parseFieldRule($values, $line, $lineNumber)
     {
         $fieldRule = new FieldRule($line, $lineNumber);
-                
-        if (count($values) < 3) {
-            $error = 'Not enough values (less than 3) on line '.$lineNumber.': "'
-                    .$line.'"';
-            $this->log($error);
-            $fieldRule->addError($error);
+           
+        #-----------------------------------------
+        # Parse REDCap field name
+        #-----------------------------------------
+        if (!array_key_exists(self::FIELD_NAME_POS, $values)) {
+            $error = "Missing field name on line {$lineNumber}: '".$line."'";
+            $fieldRule->addError($msg);
         } else {
             $fieldRule->redCapFieldName = $this->cleanFieldName($values[self::FIELD_NAME_POS]);
-            $fieldRule->dbFieldType     = $this->cleanFieldType($values[self::FIELD_TYPE_POS]);
-     
-            // Validate all Field parameters found
-            if ($this->isEmptyString($fieldRule->redCapFieldName)) {
-                $msg = "Missing field name on line: '".$line."'";
-                $this->log($msg);
+            if (empty($fieldRule->redCapFieldName)) {
+                $msg = "Missing field name on line {$lineNumber}: '".$line."'";
                 $fieldRule->addError($msg);
             }
+        }
+        
+        #------------------------------------------
+        # Parse database field type
+        #------------------------------------------
+        if (!array_key_exists(self::FIELD_TYPE_POS, $values)) {
+            $error = "Missing field name on line number {$lineNumber}: '".$line."'";
+            $fieldRule->addError($msg);
+        } else {
+            $fieldTypeSpecification = $this->cleanFieldType($values[self::FIELD_TYPE_POS]);
             
-            // Check that the field type exists and is valid
-            if ($this->isEmptyString($fieldRule->dbFieldType)) {
-                $msg = "Missing one or more parameters in line: '".$line."'";
-                $this->log($msg);
+            if (empty($fieldTypeSpecification)) {
+                $msg = "Missing field type on line {$lineNumber}: '".$line."'";
                 $fieldRule->addError($msg);
-            } elseif (!FieldType::isValid($fieldRule->dbFieldType)) {
-                $msg = 'Invalid field type "'.$fieldRule->dbFieldType.'" in line: "'.$line.'"';
-                $this->log($msg);
-                $fieldRule->addError($msg);
+            } else {
+                if (preg_match('/([a-zA-Z]+)\(([0-9]+)\)/', $fieldTypeSpecification, $matches) === 1) {
+                    $fieldRule->dbFieldType = $matches[1];
+                    $fieldRule->dbFieldSize = $matches[2];
+                } else {
+                    $fieldRule->dbFieldType = $fieldTypeSpecification;
+                    $fieldRule->dbFieldSize = null;
+                }
+                
+                if (!FieldType::isValid($fieldRule->dbFieldType)) {
+                    $msg = 'Invalid field type "'.$fieldRule->dbFieldType.'" on line '
+                        .$lineNumber.': "'.$line.'"';
+                    $fieldRule->addError($msg);
+                }
             }
         }
         
