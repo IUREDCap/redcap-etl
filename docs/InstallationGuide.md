@@ -4,29 +4,42 @@ REDCap ETL Installation Guide
 
 REDCap ETL System Components
 -------------------------------------------------------
-The main componets of an installed REDCap ETL system
+The main components of an installed REDCap ETL system
 are shown in the diagram below, and described in the text below.
 
 ![alt text](etl-process.png "ETL Process")
 
-* **Configuration File.** This file contains the REDCap API URL and REDCap API token for the configuration project, so that it can be accessed by REDCap ETL. In addition, this file contains some server properties, such as the location for writing REDCap ETL log files.
-When the ETL process runs, this is the first file that will be accessed.
+* **Configuration File.** This file contains configuration information for a REDCap ETL
+process. A single REDCap ETL instance can have multiple configuration files that describe
+different ETL processes.
+The configuration file either needs to define all needed configuration information, or
+have a REDCap API token for a configuration project that contains the remaining necessary
+configuration information. In both cases, this file must contain the URL for your
+REDCap API. When the ETL process runs, this is the first file that will be accessed.
 * **REDCap Projects**
-    * **Configuration Project.** This project contains configuration         information for the ETL process.
+    * **Configuration Project.** This optional project contains configuration
+information for the ETL process.  The advantage of using this project is that
+it allows users who have access to REDCap, but not the REDCap ETL server,
+to be able to change
+certain configuration properties, and to start the ETL process. This disadvantage of
+using this project are that it increases the complexity of the installation.
     * **Data Project.** This is the REDCap project that contains the data to be extracted.
-    * **Logging Project.** This optional project is used for logging. The advatage of using this project is that
-users who have access to REDCap, but not the REDCap ETL server, can access the log information. This disadvantages of
-using this project are that it increases the complexity of the installation and slows down performace.
+    * **Logging Project.** This optional project is used for logging. The advantage of using this project is that
+users who have access to REDCap, but not the REDCap ETL server, can access the log information.
+The disadvantages of
+using this project are that it increases the complexity of the installation and slows down performance.
 * **REDCap ETL.** The software that actually does the Extract Transform and Load.
 * **Database.** There needs to be some kind of database where the extracted and transformed data
 can be loaded, such as a MySQL database, although this could be as simple as a directory for CSV files.
-* **Apache Web Server.** The Apache web server is necessary if you want to use REDCap's date entry triggers to check the transformation rules and/or start
+* **Apache Web Server.** The Apache web server is necessary if you want to use REDCap's data entry triggers (DETs) to check the transformation rules and/or start
 the ETL (Extract Transform Load) process from REDCap.
-This will allow users to run the process by editing and saving the REDCap configuration project,
-so that they do not need access to the server. If you only want to run the ETL process overnight
-or by manually running a command on the server, then you do not need to have a web server.
-* **E-mail Server.** This is optional, and if set up, is used for e-mailing error notifications
-to designated users.
+This will allow users to run the process by editing and saving a form in the REDCap
+configuration project,
+so that they do not need access to the server. If you only want to run the ETL process
+on a regularly scheduled basis, or by manually running a command on the server,
+then you do not need to have a web server.
+* **E-mail Server.** This is optional, and if set up, is used for e-mailing error
+notifications to designated users.
 
 
 Installation Steps
@@ -54,6 +67,11 @@ Example commands for setting up an Ubuntu 16 system:
 
 ### Step 2 (Optional) - Set up a MySQL Database
 
+This needs to be set up if you want to load your extracted and transformed data into a
+MySQL database.
+
+Example commands for setting up MySQL on Ubuntu 16
+
     sudo apt install php-mysql
     sudo phpenmod mysqli    # enable mysqli extension
     sudo phpenmod pdo_mysql # enable PDO extension for PHP 
@@ -73,6 +91,7 @@ Create a database and database user that will be used as the place to store the 
 ### Step 3 - Get the REDCap ETL Software
 
 Get the code:
+
     git clone https://github.iu.edu/ABITC/redcap-etl
 
     git clone https://github.iu.edu/ABITC/redcap-etl /opt/redcap-etl
@@ -92,7 +111,7 @@ can be specified using only the configuration file (see below) instead.
 
 Using a configuration project adds complexity to the setup, and will
 require an API token for REDCap ETL to access the configuration
-project. The possible advatages of using a configuration project are:
+project. The possible advantages of using a configuration project are:
 
 * It allows users who do not have access to the REDCap ETL server
   to modify configuration information
@@ -116,30 +135,38 @@ See [Configuration Guide](ConfigurationGuide.md) for more information.
 
 ### Step 5 (Optional) - Set up a Logging Project
 
-In REDCap, create a new project using the "Upload a REDCap project XML file " option using the file **projects/redcap-etl-log.xml** from REDCap ETL downloaded previously. Then get an API token for this project, and then set the field for this in the configuration project.
+In REDCap, create a new project using the "Upload a REDCap project XML file" option using the file **projects/redcap-etl-log.xml** from REDCap ETL downloaded previously. Then get an API token for this project, and then set the field for this in the configuration project.
 
 
 
 ### Step 6 - Create a Configuration File
 
-A configuration file needs to be created in addition to the
-configuration project. At a minimum, this file needs to have your
-REDCap API's URL, and the REDCap API token of your configuration project,
-so that REDCap ETL knows how to access your configuration project.
+The configuration file can be used to specify your entire configuration, or it can
+be used in conjunction with a configuration project.
+
+If you are using a configuration project, your configuration file will
+still need to specify at least your REDCap API's URL, and the REDCap API token
+of your configuration project, so that REDCap ETL will be able to locate your
+configuration project.
 
 The standard place to store configuration files is in the **config/**
 directory of the REDCap ETL installation. This is the default directory
 that the web script installation script (see below) will search for configuration
-files.
+files. However, they could be stored in any directory where REDCap ETL
+has read access.
 
 To create a new configuration file, the file **config/config-example.ini**
 can be copied and then modified.
-See this file for more information about the properties that need to be set.
+See this file, and the [Configuration Guide](ConfigurationGuide.md)
+for more information about the configuration properties.
 
 
 ### Step 7 (Optional) - Set up an E-mail Server
 
-On Ubuntu 16, for example, this is all you need to do:
+You can optionally set up an e-mail server that will be used for sending
+error notifications to a specified list of users.
+
+On Ubuntu 16, for example, you can set up an e-mail server using the following command:
 
         sudo apt install sendmail
 
@@ -180,14 +207,14 @@ Running the ETL Process
 There are 3 ways to run REDCap ETL:
 
 1. __Manual.__ Execute the **bin/redcap_etl.php** command manually on the server
-2. __DET.__ Generate a DET (Data Entry Trigger) by svaing the "Run" form of
+2. __DET.__ Generate a DET (Data Entry Trigger) by saving the "Run" form of
    the configuration project, with the option to run ETL set
 3. __Scheduled.__ Set up a cron job to run the ETL process at specific recurring times
 
 
-### Running ETL Manualy
+### Running ETL Manually
 
-To run the ETL process manaully, you need to run the redcap_etl.php script
+To run the ETL process manually, you need to run the redcap_etl.php script
 and specify the configuration file to use, for example:
 
         /opt/redcap-etl/bin/redcap_etl.php -c /opt/redcap-etl/config/visits.ini
@@ -214,7 +241,7 @@ been completed, in REDCap:
 3. Save the "Run" form
 
 
-### Running ETL at Regulary Scheduled Times
+### Running ETL at Regularly Scheduled Times
 
 On Linux systems, you should be able to set up a cron job to run
 ETL processes on a regularly scheduled basis. 
