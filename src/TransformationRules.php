@@ -4,6 +4,7 @@ namespace IU\REDCapETL;
 
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\FieldTypeAndSize;
 use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
 
@@ -64,6 +65,8 @@ class TransformationRules
 
         $this->lookupChoices = $dataProject->getLookupChoices();
 
+        ###print_r($this->lookupChoices);
+        
         $this->createLookupTable();
 
         $parsedLineCount = 0;
@@ -192,6 +195,9 @@ class TransformationRules
 
                 $fieldName = $rule->redCapFieldName;
                 $fieldType = $rule->dbFieldType;
+                $fieldSize = $rule->dbFieldSize;
+
+                $fieldTypeAndSize = new FieldTypeAndSize($fieldType, $fieldSize);
                 
                 $fields = array();
                 
@@ -203,6 +209,9 @@ class TransformationRules
                         // Lookup the choices using any one of the valid suffixes
                         $suffixes = $table->getPossibleSuffixes();
                         $lookupFieldName = $fieldName.$suffixes[0];
+                        ###print "\n\n";
+                        ###print "lookupFieldName = {$lookupFieldName}\n";
+                        ###print_r($suffixes);
                     } else {
                         $lookupFieldName = $fieldName;
                     }
@@ -210,11 +219,12 @@ class TransformationRules
                     // Foreach category of the checkbox field
                     foreach ($this->lookupChoices[$lookupFieldName] as $category => $label) {
                         // Form the variable name for this category
-                        $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$category] = FieldType::INT;
+                        $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$category]
+                            = new FieldTypeAndSize(FieldType::INT, null);
                     }
                 } else {
                     // Process a single field
-                    $fields[$fieldName] = $fieldType;
+                    $fields[$fieldName] = $fieldTypeAndSize;
                 }
 
                 //------------------------------------------------------------
@@ -224,7 +234,10 @@ class TransformationRules
                 # $fieldNames = $this->dataProject->get_fieldnames();
                 # Set above now...
 
-                foreach ($fields as $fname => $ftype) {
+                foreach ($fields as $fname => $ftypeAndSize) {
+                    $ftype = $ftypeAndSize->type;
+                    $fsize = $ftypeAndSize->size;
+
                     //-------------------------------------------------------------
                     // !SUFFIXES: Prep for and warn that map field is not in REDCap
                     //-------------------------------------------------------------
@@ -322,9 +335,13 @@ class TransformationRules
                         unset($redCapFields[$fname]);
                     }
         
+                    #-----------------------------------------------------------------
+                    # If the field name is the record ID field name, don't process
+                    # it, because it should have already been automatically added
+                    #-----------------------------------------------------------------
                     if ($fname !== $recordIdFieldName) {
                         // Create a new Field
-                        $field = new Field($fname, $ftype);
+                        $field = new Field($fname, $ftype, $fsize);
 
                         // Add Field to current Table (error if no current table)
                         $table->addField($field);
@@ -424,11 +441,13 @@ class TransformationRules
             $this->lookupTableIn[$tableName.':'.$fieldName] = true;
 
             // Foreach choice, add a row
-            $currentId = 1;
+            ##$currentId = 1;
             foreach ($this->lookupChoices[$fieldName] as $category => $label) {
                 // Set up the table/fieldcategory/label for this choice
+                ######print "\n\n***** currentId : {$currentId} for {$tableName}.{$fieldName}\n";
+                
                 $data = array(
-                    RedCapEtl::LOOKUP_TABLE_PRIMARY_ID => $currentId++,
+                    ##RedCapEtl::LOOKUP_TABLE_PRIMARY_ID => $currentId++,
                     RedCapEtl::LOOKUP_FIELD_TABLE_NAME => $tableName,
                     RedCapEtl::LOOKUP_FIELD_FIELD_NAME => $fieldName,
                     RedCapEtl::LOOKUP_FIELD_CATEGORY => $category,

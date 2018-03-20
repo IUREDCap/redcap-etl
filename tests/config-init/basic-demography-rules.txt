@@ -1,10 +1,10 @@
 TABLE,Demography,primary_key,ROOT
 FIELD,record_id,int
-FIELD,first_name,string
-FIELD,last_name,string
+FIELD,first_name,varchar(40)
+FIELD,last_name,varchar(40)
 FIELD,address,string
-FIELD,telephone,string
-FIELD,email,string
+FIELD,telephone,char(24)
+FIELD,email,varchar(80)
 FIELD,dob,string
 FIELD,ethnicity,int
 FIELD,race,checkbox

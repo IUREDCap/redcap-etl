@@ -110,6 +110,14 @@ class DBConnectMySQL extends DBConnect
                     $fieldDef .= 'FLOAT';
                     break;
     
+                case FieldType::CHAR:
+                    $fieldDef .= 'CHAR('.($field->size).')';
+                    break;
+
+                case FieldType::VARCHAR:
+                    $fieldDef .= 'VARCHAR('.($field->size).')';
+                    break;
+
                 case FieldType::STRING:
                 default:
                       $fieldDef .= 'TEXT';
@@ -375,6 +383,8 @@ class DBConnectMySQL extends DBConnect
                 array_push($bindPositions, '?');
 
                 switch ($field->type) {
+                    case FieldType::CHAR:
+                    case FieldType::VARCHAR:
                     case FieldType::STRING:
                     case FieldType::DATE:
                     case FieldType::DATETIME:
@@ -423,6 +433,8 @@ class DBConnectMySQL extends DBConnect
     private function getBindType($field)
     {
         switch ($field->type) {
+            case FieldType::CHAR:
+            case FieldType::VARCHAR:
             case FieldType::STRING:
             case FieldType::DATE:
             case FieldType::DATETIME:

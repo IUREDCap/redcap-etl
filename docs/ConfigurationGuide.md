@@ -117,9 +117,17 @@ _rules_ = <br/>
 
 #### FIELD Statements
 
-    FIELD, < field_name>, < field_type>
+    FIELD, <field_name>, <field_type>
 
-* field_type is one of: int, float, string, date, datetime, checkbox
+* &lt;field_type&gt; can be one of the following:
+    * int
+    * float
+    * char(_size_)
+    * varchar(_size_)
+    * string
+    * date
+    * datetime
+    * checkbox
 
 NOTE: TABLE, FIELD, < rows_type>, and < field_type> are all case sensitive. TABLE, FIELD, ROOT, and EVENTS must be uppercase. Int, float, string, date, and checkbox must be lowercase.
 
@@ -256,6 +264,19 @@ provide support for it by default</td>
 <td>The REDCap API token for the configuration project</td>
 </tr>
 
+<tr>
+<td>data_source_api_token</td>
+<td> X </td> <td> X </td>
+<td>The API token for the REDCap project that has the data that
+is being extracted from REDCap.</td>
+</tr>
+
+<tr>
+<td>db_connection</td>
+<td> X </td> <td> X </td>
+<td>The database connection string for the database where the data
+is loaded.</td>
+</tr>
 
 <tr>
 <td>email_from_address</td>
@@ -331,6 +352,12 @@ REDCap DETs (Data Entry Triggers). The file name
 should normally end with .php. This is used to allow the ETL
 process to be started from REDCap. You can leave this blank if you
 are not using DETs.</td> 
+</tr>
+
+<tr>
+<td>web_script_log_file</td>
+<td> X </td> <td> &nbsp; </td>
+<td>The (optional) log file to use for the web script.</td> 
 </tr>
 
 </tbody>

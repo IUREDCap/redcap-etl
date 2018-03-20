@@ -245,6 +245,8 @@ class DBConnectCSV extends DBConnect
                     }
                         $this->fileWrite($fh, $lfh, $value, $label);
                     break;
+                case FieldType::CHAR:
+                case FieldType::VARCHAR:
                 case FieldType::STRING:
                         $this->fileWrite($fh, $lfh, '"'.$value.'"');
                     break;

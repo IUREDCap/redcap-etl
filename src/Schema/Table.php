@@ -19,9 +19,9 @@ class Table
     protected $children = array();   // Child tables
 
     public $rowsType = '';
-    public $rowsSuffixes = array();        // Suffixes allowed for this table
+    public $rowsSuffixes = array();        // Suffixes specified for this table
     private $possibleSuffixes = array(); // Suffixes allowed for this table
-                                          //   combined with any suffixe
+                                          //   combined with any suffixes
                                           //   allowed for its parent table
 
     protected $fields = array();

@@ -82,9 +82,8 @@ class RulesParser
                 array_push($rules, $rule);
                 
                 // print_r($rule); // Jim
-
             }
-            
+           
             $lineNumber++;
         }
         
@@ -254,7 +253,10 @@ class RulesParser
 
     protected function cleanFieldType($fieldType)
     {
-        return $this->generalSqlClean($fieldType);
+        # remove all characters except for letters, digits,
+        # underscores, and parentheses
+        $cleanedFieldType = preg_replace("/[^a-zA-Z0-9_()]+/i", "", $fieldType);
+        return $cleanedFieldType;
     }
 
 

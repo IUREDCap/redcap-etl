@@ -204,8 +204,8 @@ When you save this configuration record, the Transformation Rules will be checke
 					<ItemData ItemOID="transform_rules_text" Value="TABLE,Demography,record_id,ROOT
 FIELD,record_id,int,
 FIELD,fruit,int,
-FIELD,name,string,
-FIELD,phone,string,
+FIELD,name,varchar(100),
+FIELD,phone,char(24),
 FIELD,dob,date,
 FIELD,color,int,
 FIELD,rooms,checkbox,
