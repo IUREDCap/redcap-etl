@@ -1,7 +1,7 @@
 REDCap ETL Configuration
 ========================
 
-REDCap ETL requires a configuration file. In addition a REDCap
+REDCap ETL requires a configuration file. In addition, a REDCap
 configuration project can also be used. Using a configuration project
 allows users who do not have access to the REDCap ETL server to set
 some configuration properties and to start the ETL process.
@@ -21,7 +21,7 @@ are:
 to the target for the data load.
 3. The database - where the extracted and transformed data is loaded
 
-Most properties can be specified in both the configuration file
+Several properties can be specified in both the configuration file
 and configuration project. For these properties, a non-blank value in the 
 configuration project will replace the value in the configuration file
 (which is read first).
@@ -70,7 +70,8 @@ For example:
 
 Transformation Rules
 ---------------------------------------------------
-The transformation rules specify how the records in REDCap should be transformed into records in your database. You can enter the map in the transformation rules 
+The transformation rules specify how the records in REDCap should be transformed into records in your database.
+You can enter the map in the transformation rules 
 text box, or upload a file containing the rules.
 
 
@@ -94,13 +95,6 @@ Transformation rules consists of one or more TABLE statements, where each TABLE 
     TABLE, <table_name>, <parent_table|primary_key_name>, <rows_type>
 
 Note: if the table is a root table, it has no parent table, and the field after the table name should be the name to used for the table's (synthetic) primary key.
-
-<code>
-_rules_ = <br/>
-    rules
-    test
-</code>
-
 * __rows_type__ is one of:
 
         ROOT
@@ -119,17 +113,21 @@ _rules_ = <br/>
 
     FIELD, <field_name>, <field_type>
 
-* &lt;field_type&gt; can be one of the following:
-    * int
-    * float
-    * char(_size_)
-    * varchar(_size_)
-    * string
-    * date
-    * datetime
-    * checkbox
+&lt;field_type&gt; can be one of the REDCap ETL types in the table below that shows
+the database types used to store the different REDCap ETL types.
 
-NOTE: TABLE, FIELD, < rows_type>, and < field_type> are all case sensitive. TABLE, FIELD, ROOT, and EVENTS must be uppercase. Int, float, string, date, and checkbox must be lowercase.
+| REDCap ETL Type | MySQL Type      | CSV (Spreadsheet) Type | 
+| --------------- | --------------- | ---------------------- |
+| int             | int             | number                 |
+| float           | float           | number                 |
+| char(_size_)    | char(_size_)    | text                   |
+| varchar(_size_) | varchar(_size_) | text                   |
+| string          | text            | text                   |
+| date            | date            | datetime               |
+| datetime        | datetime        | datetime               |
+| checkbox        | int             | number                 |
+
+NOTE: TABLE, FIELD, &lt;rows_type&gt;, and &lt;field_type&gt; are all case sensitive. TABLE, FIELD, ROOT, and EVENTS must be uppercase. Int, float, string, date, and checkbox must be lowercase.
 
 
 ### Transformation Rules Example
@@ -242,13 +240,28 @@ Mapping
 
 REDCap ETL Configuration Properties
 --------------------------------------
-<table>
 
+### REDCap Connection Properties
+
+<table>
 <thead>
 <tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
 </thead>
-
 <tbody>
+
+<tr>
+<td>redcap_api_url</td>
+<td> X </td> <td> &nbsp; </td>
+<td>The URL for your REDCap API.
+Not ending the URL with a slash (/) may cause an error.</td> 
+</tr>
+
+<tr>
+<td>ssl_verify</td>
+<td> X </td> <td> &nbsp; </td>
+<td>Indicates is SSL verification is used for the connection to REDCap.
+This defaults to true. Setting it to false is insecure.</td> 
+</tr>
 
 <tr>
 <td>ca_cert_file</td>
@@ -258,18 +271,51 @@ SSL verification of the connection to REDCap if your system does not
 provide support for it by default</td>
 </tr>
 
+</tbody>
+</table>
+
+
+### REDCap Project Properties
+
+<table>
+<thead>
+<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
+</thead>
+<tbody>
+
 <tr>
 <td>config_api_token</td>
 <td> X </td> <td> &nbsp; </td>
-<td>The REDCap API token for the configuration project</td>
+<td>The REDCap API token for the (optional) configuration project</td>
 </tr>
 
 <tr>
 <td>data_source_api_token</td>
 <td> X </td> <td> X </td>
-<td>The API token for the REDCap project that has the data that
+<td>The API token for the REDCap project from which the data
 is being extracted from REDCap.</td>
 </tr>
+
+<tr>
+<td>log_project_api_token</td>
+<td> X </td> <td> X </td>
+<td>REDCap API token of (optional) logging project</td>
+</tr>
+</tbody>
+</table>
+
+<br />
+
+
+### Database Properties
+
+Properties for the database where the extracted data is loaded.
+
+<table>
+<thead>
+<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
+</thead>
+<tbody>
 
 <tr>
 <td>db_connection</td>
@@ -278,6 +324,16 @@ is being extracted from REDCap.</td>
 is loaded.</td>
 </tr>
 
+</tbody>
+</table>
+
+### Other Properties
+
+<table>
+<thead>
+<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
+</thead>
+<tbody>
 <tr>
 <td>email_from_address</td>
 <td> X </td> <td> X </td>
@@ -304,25 +360,7 @@ is loaded.</td>
 <td>File to use for logging</td>
 </tr>
 
-<tr>
-<td>log_project_api_token</td>
-<td> X </td> <td> X </td>
-<td>REDCap API token of logging project</td>
-</tr>
 
-<tr>
-<td>redcap_api_url</td>
-<td> X </td> <td> &nbsp; </td>
-<td>The URL for your REDCap API.
-Not ending the URL with a slash (/) may cause an error.</td> 
-</tr>
-
-<tr>
-<td>ssl_verify</td>
-<td> X </td> <td> &nbsp; </td>
-<td>Indicates is SSL verification is used for the connection to REDCap.
-This defaults to true. Setting it to false is insecure.</td> 
-</tr>
 
 <tr>
 <td>time_limit</td>
@@ -360,5 +398,15 @@ are not using DETs.</td>
 <td>The (optional) log file to use for the web script.</td> 
 </tr>
 
+<tr>
+<td>web_script_usrl</td>
+<td> X </td> <td> &nbsp; </td>
+<td>This property is only used for the automated tests, so
+is is not needed for normal ETL processing. It is used
+to indicate to the tests the URL of the web script, for exampler:
+http://localhost/visits.php</td> 
+</tr>
+
+</tbody>
 </tbody>
 </table>
