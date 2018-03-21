@@ -67,7 +67,7 @@ class TransformationRules
 
         ###print_r($this->lookupChoices);
         
-        $this->createLookupTable();
+        $this->lookupTable = new LookupTable($this->lookupChoices, $tablePrefix);
 
         $parsedLineCount = 0;
         $info = '';
@@ -133,7 +133,12 @@ class TransformationRules
                 # specified), so a value can be entered that the
                 # database will not be able to handle.
                 #---------------------------------------------------------
-                if ($table->primary !== $recordIdFieldName) {
+                if ($table->primary === $recordIdFieldName) {
+                    $error = 'Primary key field has same name as REDCap record id "'
+                        .$recordIdFieldName.'" on line '
+                        .$rule->getLineNumber().': "'.$rule->getLine().'"';
+                    break;
+                } else {
                     $field = new Field($recordIdFieldName, FieldType::STRING);
                     $table->addField($field);
                 }
@@ -348,7 +353,7 @@ class TransformationRules
 
                         // If this field has category/label choices
                         if (array_key_exists($metaFname, $this->lookupChoices)) {
-                            $this->makeLookupTable($table->name, $metaFname);
+                            $this->lookupTable->addLookupField($table->name, $metaFname);
                             $field->usesLookup = $metaFname;
                             $table->usesLookup = true;
                         }
@@ -403,64 +408,6 @@ class TransformationRules
         return !(isset($str) && (strlen(trim($str)) > 0));
     }
 
-
-    protected function createLookupTable()
-    {
-        $this->lookupTable = new Table(
-            $this->tablePrefix . RedCapEtl::LOOKUP_TABLE_NAME,
-            RedCapEtl::LOOKUP_TABLE_PRIMARY_ID,
-            RulesParser::ROOT,
-            array()
-        );
-
-        #-----------------------------------------------
-        # Create and add fields for the lookup table
-        #-----------------------------------------------
-        $fieldPrimary   = new Field(RedCapEtl::LOOKUP_TABLE_PRIMARY_ID, FieldType::INT);
-        $fieldFieldName = new Field(RedCapEtl::LOOKUP_FIELD_TABLE_NAME, FieldType::STRING);
-        $fieldTableName = new Field(RedCapEtl::LOOKUP_FIELD_FIELD_NAME, FieldType::STRING);
-        $fieldCategory = new Field(RedCapEtl::LOOKUP_FIELD_CATEGORY, FieldType::STRING);
-        $fieldValue    = new Field(RedCapEtl::LOOKUP_FIELD_LABEL, FieldType::STRING);
-        
-        $this->lookupTable->addField($fieldPrimary);
-        $this->lookupTable->addField($fieldFieldName);
-        $this->lookupTable->addField($fieldTableName);
-        $this->lookupTable->addField($fieldCategory);
-        $this->lookupTable->addField($fieldValue);
-    }
-
-
-    /**
-     * Create a table that holds the categories and labels for a field
-     * with multiple choices.
-     */
-    protected function makeLookupTable($tableName, $fieldName)
-    {
-
-        if (empty($this->lookupTableIn[$tableName.':'.$fieldName])) {
-            $this->lookupTableIn[$tableName.':'.$fieldName] = true;
-
-            // Foreach choice, add a row
-            ##$currentId = 1;
-            foreach ($this->lookupChoices[$fieldName] as $category => $label) {
-                // Set up the table/fieldcategory/label for this choice
-                ######print "\n\n***** currentId : {$currentId} for {$tableName}.{$fieldName}\n";
-                
-                $data = array(
-                    ##RedCapEtl::LOOKUP_TABLE_PRIMARY_ID => $currentId++,
-                    RedCapEtl::LOOKUP_FIELD_TABLE_NAME => $tableName,
-                    RedCapEtl::LOOKUP_FIELD_FIELD_NAME => $fieldName,
-                    RedCapEtl::LOOKUP_FIELD_CATEGORY => $category,
-                    RedCapEtl::LOOKUP_FIELD_LABEL => $label
-                );
-
-                // Add the row, using no foreign key or suffix
-                $this->lookupTable->createRow($data, '', '');
-            }
-        }
-
-        return true;
-    }
 
     protected function log($message)
     {

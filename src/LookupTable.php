@@ -3,6 +3,8 @@
 namespace IU\REDCapETL;
 
 use IU\REDCapETL\Schema\Table;
+use IU\REDCapETL\Schema\Field;
+use IU\REDCapETL\Schema\FieldType;
 
 /**
  * Table class for storing multiple choice field categories (numeric codes)
@@ -22,6 +24,8 @@ class LookupTable extends Table
     const FIELD_CATEGORY    = 'category';
     const FIELD_LABEL       = 'label';
     
+    private $map;  // map for efficient retrieval; used internally
+
     private $lookupChoices;
     private $lookupTableIn;  // For efficiently checking if field was already inserted
     
@@ -33,6 +37,8 @@ class LookupTable extends Table
             RulesParser::ROOT,
             array()
         );
+
+        $this->map = array();
 
         $this->lookupChoices = $lookupChoices;
         $this->lookupTableIn = array();
@@ -46,23 +52,23 @@ class LookupTable extends Table
         $fieldCategory  = new Field(self::FIELD_CATEGORY, FieldType::STRING);
         $fieldValue     = new Field(self::FIELD_LABEL, FieldType::STRING);
         
-        $this-addField($fieldPrimary);
-        $this-addField($fieldFieldName);
-        $this-addField($fieldTableName);
-        $this-addField($fieldCategory);
-        $this-addField($fieldValue);
+        $this->addField($fieldPrimary);
+        $this->addField($fieldFieldName);
+        $this->addField($fieldTableName);
+        $this->addField($fieldCategory);
+        $this->addField($fieldValue);
     }
     
     
     /**
-     * Inserts a multiple choice field's categories (i.e., numeric codes)
+     * Adds a multiple choice field's categories (i.e., numeric codes)
      * and labels (for the categories) into the Lookup table.
      *
      * @param string $tablename the name of the table that contains the
-     *     field to be inserted.
-     * @param string $fieldName the name of the field to be inserted.
+     *     field to be added.
+     * @param string $fieldName the name of the field to be added.
      */
-    protected function insertField($tableName, $fieldName)
+    public function addLookupField($tableName, $fieldName)
     {
         if (empty($this->lookupTableIn[$tableName.':'.$fieldName])) {
             $this->lookupTableIn[$tableName.':'.$fieldName] = true;
@@ -81,7 +87,46 @@ class LookupTable extends Table
 
                 // Add the row, using no foreign key or suffix
                 $this->createRow($data, '', '');
+
+                #---------------------------------------------------
+                # Update the map
+                #---------------------------------------------------
+                if (!array_key_exists($tableName, $this->map)) {
+                    $this->map[$tableName] = array();
+                }
+
+                if (!array_key_exists($fieldName, $this->map[$tableName])) {
+                    $this->map[$tableName][$fieldName] = array();
+                }
+                
+                $this->map[$tableName][$fieldName][$category] = $label;
             }
         }
+    }
+
+    /**
+     * Gets the label for the specified input values.
+     *
+     * @param string $tableName the name of the database table for which
+     *    the label is to be retrieved.
+     * @param string $fieldName the field name for of the label to get.
+     * @param string $category the category/value of the label to get.
+     */
+    public function getLabel($tableName, $fieldName, $category)
+    {
+        $label = $this->map[$tableName][$fieldName][$category];
+        return $label;
+    }
+
+    /**
+     * Gets a map from category/value to label for the specfied field.
+     * @param string $tableName the name of the database table for which
+     *    the map is to be retrieved.
+     * @param string $fieldName the map to get.
+     */
+    public function getCategoryLabelMap($tableName, $fieldName)
+    {
+        $categoryLabelMap = $this->map[$tableName][$fieldName];
+        return $categoryLabelMap;
     }
 }

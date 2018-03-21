@@ -61,14 +61,6 @@ class RedCapEtl
     const TRIGGER_ETL_NO  = '0';
     const TRIGGER_ETL_YES = '1';
 
-    // For Lookup tables
-    const LOOKUP_TABLE_NAME        = 'Lookup';
-    const LOOKUP_TABLE_PRIMARY_ID  = 'lookup_id';
-    const LOOKUP_FIELD_TABLE_NAME  = 'table_name';
-    const LOOKUP_FIELD_FIELD_NAME  = 'field_name';
-    const LOOKUP_FIELD_CATEGORY    = 'category';
-    const LOOKUP_FIELD_LABEL       = 'label';
-
     protected $det;          // For calls related to Data Entry Triggers
 
     protected $configProject;
@@ -468,7 +460,7 @@ class RedCapEtl
     public function createLoadTables()
     {
         // Used to speed up processing
-        $lookup = new Lookup($this->lookupTable);
+        ##$lookup = new Lookup($this->lookupTable);
 
         // foreach table, replace it
         // NOTE: This works on each table plus the lookup table
@@ -480,7 +472,7 @@ class RedCapEtl
 
             // If this table uses the Lookup table, create a view
             if (true === $table->usesLookup) {
-                $this->dbcon->replaceLookupView($table, $lookup);
+                $this->dbcon->replaceLookupView($table, $this->lookupTable);
                 $msg .= '; Lookup table created';
             }
 

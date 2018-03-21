@@ -3,6 +3,7 @@
 namespace IU\REDCapETL\Database;
 
 use IU\REDCapETL\RedCapEtl;
+use IU\REDCapETL\LookupTable;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\EtlErrorHandler;
 use IU\REDCapETL\Schema\FieldType;
@@ -203,7 +204,7 @@ class DBConnectMySQL extends DBConnect
         $query = 'CREATE OR REPLACE VIEW '.$table->name.$this->labelViewSuffix.' AS ';
 
         $select = 'SELECT '. implode(', ', $selects);
-        $from = 'FROM '.$this->tablePrefix.RedCapEtl::LOOKUP_TABLE_NAME.' l, '.$table->name.' t';
+        $from = 'FROM '.$this->tablePrefix.LookupTable::NAME.' l, '.$table->name.' t';
         $where = "WHERE l.table_name like '".$table->name."'";
         $groupBy = 'GROUP BY t.'.$table->primary->name;
 

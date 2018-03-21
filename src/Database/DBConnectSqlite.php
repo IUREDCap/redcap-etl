@@ -3,6 +3,7 @@
 namespace IU\REDCapETL\Database;
 
 use IU\REDCapETL\RedCapEtl;
+use IU\REDCapETL\LookupTable;
 
 /**
  * For Sqlite - UNFINISHED
@@ -150,7 +151,7 @@ class DBConnectSqlite extends DBConnect
         $query = 'CREATE OR REPLACE VIEW '.$table->name.$labelViewSiffux.' AS ';
 
         $select = 'SELECT '. implode(', ', $selects);
-        $from = 'FROM '.$this->tablePrefix.RedCapEtl::LOOKUP_TABLE_NAME.' l, '.$table->name.' t';
+        $from = 'FROM '.$this->tablePrefix.LookupTable::NAME.' l, '.$table->name.' t';
         $where = "WHERE l.table_name like '".$table->name."'";
         $groupBy = 'GROUP BY t.'.$table->primary->name;
 

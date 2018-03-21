@@ -3,6 +3,7 @@
 namespace IU\REDCapETL\Database;
 
 use IU\REDCapETL\RedCapEtl;
+use IU\REDCapETL\LookupTable;
 use IU\REDCapETL\Schema\FieldType;
 
 /**
@@ -43,7 +44,7 @@ class DBConnectCSV extends DBConnect
 
     private function getLookupFile()
     {
-        $file = $this->directory . $this->tablePrefix . RedCapEtl::LOOKUP_TABLE_NAME
+        $file = $this->directory . $this->tablePrefix . LookupTable::NAME
             . DBConnectCSV::FILE_EXTENSION;
         return $file;
     }
