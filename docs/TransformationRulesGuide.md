@@ -95,7 +95,8 @@ The transformation rules used are:
     FIELD,last_name,string
     FIELD,dob,date,birthdate
 
-The data that get loaded into the target database after REDCap ETL is run are:
+Running the REDCap ETL process for the above example will create a table
+named **registration** with the following data:
  
 | registration_id | record_id | first_name | last_name | birthdate  |
 | --------------- | --------- | ---------- | --------- | ---------- |
@@ -107,7 +108,7 @@ In this example:
 
 * The database field __registration_id__ (specified in the TABLE command)
   is created as an auto-incremented synthetic key
-* The database fields __record_id__, __first_name__ and __last_name_
+* The database fields __record_id__, __first_name__ and __last_name__
   match the REDCap fields
 * The REDCap field __dob__ was renamed to __birthdate__ in the database
 * The __birthdate__ database field has Y-M-D format, which is what REDCap
