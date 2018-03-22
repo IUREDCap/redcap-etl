@@ -253,15 +253,20 @@ class RedCapEtl
      */
     public function parseMap()
     {
-        $transformationRules = $this->configuration->getTransformationRules();
-        $rules = new TransformationRules($transformationRules);
+        $transformationRules = '';
 
         #-----------------------------------------------------------------------------
-        # If default rules were specified, generate the default rules before parsing
+        # If auto-generated rules were specified, generate the rules,
+        # otherwise, get the from the configuration
         #-----------------------------------------------------------------------------
         if ($this->configuration->getTransformRulesSource() === Configuration::TRANSFORM_RULES_DEFAULT) {
-            $rules->generateDefaultRules($this->dataProject);
+            $rulesGenerator = new RulesGenerator();
+            $transformationRules = $rulesGenerator->generate($this->dataProject);
+        } else {
+            $transformationRules = $this->configuration->getTransformationRules();
         }
+        
+        $rules = new TransformationRules($transformationRules);
 
         list($schema, $lookupTable, $parseResult)
             = $rules->parse($this->dataProject, $this->tablePrefix, $this->logger);
