@@ -44,7 +44,7 @@ Note: if the table is a root table, it has no parent table, and the field after 
 
 #### FIELD Statements
 
-Field statements specify the fields that are generated in the tables in your databse.
+Field statements specify the fields that are generated in the tables in your database.
 
     FIELD, <field_name>, <field_type>[, <database_field_name>]
 
@@ -73,7 +73,52 @@ the database types used to store the different REDCap ETL types.
 NOTE: TABLE, FIELD, &lt;rows_type&gt;, and &lt;field_type&gt; are all case sensitive. TABLE, FIELD, ROOT, and EVENTS must be uppercase. Int, float, string, date, and checkbox must be lowercase.
 
 
-### Transformation Rules Example
+Transformation Rules Examples
+----------------------------------------------
+
+## Root Table Example
+
+This is a simple example with a single ROOT table. For this example, the project is non-longitudinal and
+has one form called "Registration". The data entered are as follows:
+
+
+| record_id | first_name | last_name | dob        | registration_complete  |
+| --------- | ---------- | --------- | ---------- | ---------------------: |
+|      1001 | Anahi	     | Gislason	 | 08-27-1973 | 2                      |
+|      1002 | Marianne   | Crona     | 06-18-1958 | 2                      |
+|      1003 | Ryann	     | Tillman	 | 08-28-1967 | 2                      |
+
+The transformation rules used are:
+
+    TABLE,registration,registration_id,ROOT
+    FIELD,first_name,string
+    FIELD,last_name,string
+    FIELD,dob,date,birthdate
+
+The data that get loaded into the target database after REDCap ETL is run are:
+ 
+| registration_id | record_id | first_name | last_name | birthdate  |
+| --------------- | --------- | ---------- | --------- | ---------- |
+| 1               | 1001      | Anahi      | Gislason  | 1973-08-27 |
+| 2               | 1002      | Marianne   | Crona     | 1958-06-18 |
+| 3               | 1003      | Ryann      | Tillman   | 1967-08-28 |
+
+In this example:
+
+* The database field __registration_id__ (specified in the TABLE command)
+  is created as an auto-incremented synthetic key
+* The database fields __record_id__, __first_name__ and __last_name_
+  match the REDCap fields
+* The REDCap field __dob__ was renamed to __birthdate__ in the database
+* The __birthdate__ database field has Y-M-D format, which is what REDCap
+  returns (even though the field was defined as having M-D-Y format in REDCap)
+* No transformation rule was defined for the REDCap __registration_complete__ field,
+  so it does not show up in the database. You are not required to specify a
+  rule for every fields, so you can specify rules for only those fields that
+  you are interested in.
+
+
+## Complex Example
 
 #### REDCap Data
 
@@ -180,40 +225,4 @@ Mapping
     TABLE,  Fifth, Main, EVENTS:a;b
     FIELD,  var8, st
 
-
-REDCap ETL Configuration Properties
---------------------------------------
-
-### REDCap Connection Properties
-
-<table>
-<thead>
-<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
-</thead>
-<tbody>
-
-<tr>
-<td>redcap_api_url</td>
-<td> X </td> <td> &nbsp; </td>
-<td>The URL for your REDCap API.
-Not ending the URL with a slash (/) may cause an error.</td> 
-</tr>
-
-<tr>
-<td>ssl_verify</td>
-<td> X </td> <td> &nbsp; </td>
-<td>Indicates is SSL verification is used for the connection to REDCap.
-This defaults to true. Setting it to false is insecure.</td> 
-</tr>
-
-<tr>
-<td>ca_cert_file</td>
-<td> X </td> <td> &nbsp; </td>
-<td>Certificate authority certificate file. This can be used to support
-SSL verification of the connection to REDCap if your system does not
-provide support for it by default</td>
-</tr>
-
-</tbody>
-</table>
 
