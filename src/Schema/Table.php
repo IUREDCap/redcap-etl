@@ -95,7 +95,7 @@ class Table
     {
         // If the field being added has the same name as the primary key,
         // do not add it again
-        if ($this->primary->name != $field->name) {
+        if ($this->primary->name != $field->dbName) {
             array_push($this->fields, $field);
         }
     }
@@ -203,21 +203,21 @@ class Table
         // Foreach field
         foreach ($this->getFields() as $field) {
             if (isset($this->recordIdFieldName) && $field->name === $this->recordIdFieldName) {
-                $row->data[$field->name] = $data[$field->name];
+                $row->data[$field->dbName] = $data[$field->name];
             } elseif (RedCapEtl::COLUMN_EVENT === $field->name) {
                 // If this is the field to store the current event
-                $row->data[$field->name] = $data[RedCapEtl::REDCAP_EVENT_NAME];
+                $row->data[$field->dbName] = $data[RedCapEtl::REDCAP_EVENT_NAME];
             } elseif (RedCapEtl::COLUMN_SUFFIXES === $field->name) {
                 // if this is the field to store the current suffix
-                $row->data[$field->name] = $suffix;
+                $row->data[$field->dbName] = $suffix;
             } elseif ($field->name === RedCapEtl::COLUMN_REPEATING_INSTRUMENT) {
                 # Just copy the repeating instrument field and don't count it
                 # as a "data found" field
-                $row->data[$field->name] = $data[$field->name];
+                $row->data[$field->dbName] = $data[$field->name];
             } elseif ($field->name === RedCapEtl::COLUMN_REPEATING_INSTANCE) {
                 # Just copy the repeating instance field and don't count it
                 # as a "data found" field
-                $row->data[$field->name] = $data[$field->name];
+                $row->data[$field->dbName] = $data[$field->name];
             } else {
                 // Otherwise, get data
                 

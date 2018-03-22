@@ -206,7 +206,7 @@ FIELD,record_id,int,
 FIELD,fruit,int,
 FIELD,name,varchar(100),
 FIELD,phone,char(24),
-FIELD,dob,date,
+FIELD,dob,date,birthdate
 FIELD,color,int,
 FIELD,rooms,checkbox,
 
@@ -231,7 +231,7 @@ TABLE,Labs,VisitResults,1;2
 FIELD,lab,float,
 
 TABLE,Recipients,Demography,1;2
-FIELD,recip,string,
+FIELD,recip,string,recipient
 
 TABLE,Sent,Recipients,a;b
 FIELD,sent,date,

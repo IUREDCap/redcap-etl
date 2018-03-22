@@ -15,11 +15,14 @@ class RulesParser
     const ELEMENT_FIELD       = 'FIELD';
     
     const RULE_TYPE_POS       = 0;
+
     const TABLE_NAME_POS      = 1;
     const TABLE_PARENT_POS    = 2;
     const TABLE_ROWSTYPE_POS  = 3;
+
     const FIELD_NAME_POS      = 1;
     const FIELD_TYPE_POS      = 2;
+    const FIELD_DB_NAME_POS   = 3;
     
     # Table types (non-ROOT types represent 1:many relationships)
     const ROOT                  = 'ROOT';
@@ -186,6 +189,14 @@ class RulesParser
             }
         }
         
+        #---------------------------------------------------------
+        # Parse optional database field name, if it exists
+        #---------------------------------------------------------
+        if (array_key_exists(self::FIELD_DB_NAME_POS, $values)) {
+            # it's OK if this ends up being empty; it's optional
+            $fieldRule->dbFieldName = $this->cleanFieldName($values[self::FIELD_DB_NAME_POS]);
+        }
+
         return $fieldRule;
     }
 

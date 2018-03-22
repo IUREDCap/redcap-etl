@@ -1,4 +1,4 @@
-primary_key,record_id,first_name,last_name,address,telephone,email,dob,ethnicity,race___0,race___1,race___2,race___3,race___4,race___5,sex,height,weight,bmi,comments
+primary_key,record_id,first_name,last_name,address,phone,email,birthdate,ethnicity,race___0,race___1,race___2,race___3,race___4,race___5,sex,height,weight,bmi,comments
 1,1001,Katherine,Huels,"316 Goodwin Lights Suite 463
 Port Marietta, NV 35323-5627",(759) 257-3524,katherine.huels@mailinator.com,1955-05-07,0,0,0,0,0,1,0,0,174,57,18.8,
 2,1002,Sienna,Howe,"2345 Jaquelin Ways

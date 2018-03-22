@@ -91,7 +91,7 @@ class DBConnectMySQL extends DBConnect
         $fieldDefs = array();
         foreach ($table->getAllFields() as $field) {
             // Begin field_def
-            $fieldDef = $field->name.' ';
+            $fieldDef = $field->dbName.' ';
 
             // Add field type to field definition
             switch ($field->type) {
@@ -171,30 +171,30 @@ class DBConnectMySQL extends DBConnect
         foreach ($table->getAllFields() as $field) {
             // If the field does not use lookup table
             if (false === $field->usesLookup) {
-                array_push($selects, 't.'.$field->name);
+                array_push($selects, 't.'.$field->dbName);
             } else {
                 // $field->usesLookup holds name of lookup field, if not false
                 $fname = $field->usesLookup;
 
                 // If the field uses the lookup table and is a checkbox field
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
+                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
                 // For checkbox fields, the join needs to be done based on
                 // the category embedded in the name of the checkbox field
 
                 // Separate root from category
-                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
+                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
 
                     $agg = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
                          "and l.category=".$cat.", label, NULL)) ";
 
-                    $select = 'CASE WHEN t.'.$field->name.' = 1 THEN '.$agg.
+                    $select = 'CASE WHEN t.'.$field->dbName.' = 1 THEN '.$agg.
                         ' ELSE 0'.
-                    ' END as '.$field->name;
+                    ' END as '.$field->dbName;
                 } // The field uses the lookup table and is not a checkbox field
                 else {
                     $select = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
-                    "and l.category=t.".$field->name.", label, NULL)) ".
-                    "as ".$field->name;
+                    "and l.category=t.".$field->dbName.", label, NULL)) ".
+                    "as ".$field->dbName;
                 }
 
                 array_push($selects, $select);
@@ -235,36 +235,36 @@ class DBConnectMySQL extends DBConnect
         foreach ($table->getAllFields() as $field) {
             // If the field does not use lookup table
             if ($field->usesLookup === false) {
-                array_push($selects, $field->name);
+                array_push($selects, $field->dbName);
             } else {
                 // $field->usesLookup holds name of lookup field, if not false
                 // name of lookup field is root of field name for checkbox
                 $fname = $field->usesLookup;
 
                 // If the field uses the lookup table and is a checkbox field
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
+                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
                 // For checkbox fields, the join needs to be done based on
                 // the category embedded in the name of the checkbox field
 
                 // Separate root from category
-                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
+                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
 
                     $label = $this->mysqli->real_escape_string(
                         $lookup->getLabel($table->name, $fname, $cat)
                     );
-                    $select = 'CASE '.$field->name.' WHEN 1 THEN '
+                    $select = 'CASE '.$field->dbName.' WHEN 1 THEN '
                         . "'".$label."'"
                         . ' ELSE 0'
-                        . ' END as '.$field->name;
+                        . ' END as '.$field->dbName;
                 } // The field uses the lookup table and is not a checkbox field
                 else {
-                    $select = 'CASE '.$field->name;
+                    $select = 'CASE '.$field->dbName;
                     $map = $lookup->getCategoryLabelMap($table->name, $fname);
                     foreach ($map as $category => $label) {
                         $select .= ' WHEN '."'".($this->mysqli->real_escape_string($category))."'"
                             .' THEN '."'".($this->mysqli->real_escape_string($label))."'";
                     }
-                    $select .= ' END as '.$field->name;
+                    $select .= ' END as '.$field->dbName;
                 }
                 array_push($selects, $select);
             }
@@ -380,7 +380,7 @@ class DBConnectMySQL extends DBConnect
             $bindPositions = array();
             $bindTypes = '';
             foreach ($table->getAllFields() as $field) {
-                array_push($fieldNames, $field->name);
+                array_push($fieldNames, $field->dbName);
                 array_push($bindPositions, '?');
 
                 switch ($field->type) {
@@ -557,7 +557,7 @@ class DBConnectMySQL extends DBConnect
             #---------------------------------
             foreach ($rows as $row) {
                 foreach ($fields as $field) {
-                    $toBind = $row->data[$field->name];
+                    $toBind = $row->data[$field->dbName];
                     if ($toBind === '') {
                         $toBind = null;
                     }

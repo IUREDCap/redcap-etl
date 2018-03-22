@@ -7,17 +7,29 @@ namespace IU\REDCapETL\Schema;
  */
 class Field
 {
-    public $name = '';
+    public $name = '';   # REDCap field name, and default database field name
     public $type = '';
     public $size = null;
+    public $dbName = '';   # database field name
 
     public $usesLookup = false;
 
-    public function __construct($name, $type, $size = null)
+    public function __construct($name, $type, $size = null, $dbName = '')
     {
         $this->name = $name;
         $this->type = $type;
         $this->size = $size;
+
+        #-------------------------------------------------
+        # If a database field name was specified, use it;
+        # otherwise, use the REDCap field name as the
+        # database field name also
+        #-------------------------------------------------
+        if (!empty($dbName)) {
+            $this->dbName = $dbName;
+        } else {
+            $this->dbName = $name;
+        }
     }
 
     public function toString($indent)

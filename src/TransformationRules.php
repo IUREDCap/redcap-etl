@@ -201,8 +201,11 @@ class TransformationRules
                 $fieldName = $rule->redCapFieldName;
                 $fieldType = $rule->dbFieldType;
                 $fieldSize = $rule->dbFieldSize;
+                $dbFieldName = $rule->dbFieldName;
 
-                $fieldTypeAndSize = new FieldTypeAndSize($fieldType, $fieldSize);
+                $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName);
+
+                ###$fieldTypeAndSize = new FieldTypeAndSize($fieldType, $fieldSize);
                 
                 $fields = array();
                 
@@ -225,11 +228,18 @@ class TransformationRules
                     foreach ($this->lookupChoices[$lookupFieldName] as $category => $label) {
                         // Form the variable name for this category
                         $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$category]
-                            = new FieldTypeAndSize(FieldType::INT, null);
+                            ###= new FieldTypeAndSize(FieldType::INT, null);
+                            = new Field(
+                                $fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$category,
+                                FieldType::INT,
+                                null,
+                                null
+                            );
                     }
                 } else {
                     // Process a single field
-                    $fields[$fieldName] = $fieldTypeAndSize;
+                    ###$fields[$fieldName] = $fieldTypeAndSize;
+                    $fields[$fieldName] = $field;
                 }
 
                 //------------------------------------------------------------
@@ -239,9 +249,13 @@ class TransformationRules
                 # $fieldNames = $this->dataProject->get_fieldnames();
                 # Set above now...
 
-                foreach ($fields as $fname => $ftypeAndSize) {
-                    $ftype = $ftypeAndSize->type;
-                    $fsize = $ftypeAndSize->size;
+                ####foreach ($fields as $fname => $ftypeAndSize) {
+                foreach ($fields as $fname => $field) {
+                    ###$ftype = $ftypeAndSize->type;
+                    ###$fsize = $ftypeAndSize->size;
+                    $ftype = $field->type;
+                    $fsize = $field->size;
+                    $fdbname = $field->dbName;
 
                     //-------------------------------------------------------------
                     // !SUFFIXES: Prep for and warn that map field is not in REDCap
@@ -346,7 +360,7 @@ class TransformationRules
                     #-----------------------------------------------------------------
                     if ($fname !== $recordIdFieldName) {
                         // Create a new Field
-                        $field = new Field($fname, $ftype, $fsize);
+                        $field = new Field($fname, $ftype, $fsize, $fdbname);
 
                         // Add Field to current Table (error if no current table)
                         $table->addField($field);

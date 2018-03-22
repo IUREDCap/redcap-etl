@@ -130,7 +130,7 @@ class DBConnectCSV extends DBConnect
             } else {
                 fwrite($fh, ',');
             }
-            fwrite($fh, '"'.$field->name.'"');
+            fwrite($fh, '"'.$field->dbName.'"');
         }
         fwrite($fh, PHP_EOL);
     }
@@ -228,7 +228,7 @@ class DBConnectCSV extends DBConnect
                 case FieldType::CHECKBOX:
                     $label = null;
                     if ($field->usesLookup) {
-                        $label = $this->getLookupLabel($field->name, $value);
+                        $label = $this->getLookupLabel($field->dbName, $value);
                     }
                         $this->fileWrite($fh, $lfh, $value, $label);
                     break;
@@ -242,7 +242,7 @@ class DBConnectCSV extends DBConnect
                 case FieldType::INT:
                     $label = null;
                     if ($field->usesLookup) {
-                        $label = $this->getLookupLabel($field->name, $value);
+                        $label = $this->getLookupLabel($field->dbName, $value);
                     }
                         $this->fileWrite($fh, $lfh, $value, $label);
                     break;

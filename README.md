@@ -8,6 +8,8 @@ REDCap ETL (Extract, Transform, and Load)
 * **Load:** Drops/Creates tables and inserts Rows into the user's database.
 
 Documentation:
+
 * [Installation Guide](docs/InstallationGuide.md)
 * [Configuration Guide](docs/ConfigurationGuide.md)
+    * [Transformation Rules Guide](docs/TransformationRulesGuide.md)
 * [Developer Guide](docs/DeveloperGuide.md)

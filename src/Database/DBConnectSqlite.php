@@ -71,7 +71,7 @@ class DBConnectSqlite extends DBConnect
         $fieldDefs = array();
         foreach ($table->getAllFields() as $field) {
             // Begin fieldDef
-            $fieldDef = $field->name.' ';
+            $fieldDef = $field->dbName.' ';
 
             // Add field type to field definition
             switch ($field->type) {
@@ -118,30 +118,30 @@ class DBConnectSqlite extends DBConnect
         foreach ($table->getAllFields() as $field) {
             // If the field does not use lookup table
             if (false === $field->usesLookup) {
-                array_push($selects, 't.'.$field->name);
+                array_push($selects, 't.'.$field->dbName);
             } else {
                 // $field->usesLookup holds name of lookup field, if not false
                 $fname = $field->usesLookup;
 
                 // If the field uses the lookup table and is a checkbox field
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
+                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
                 // For checkbox fields, the join needs to be done based on
                 // the category embedded in the name of the checkbox field
 
                 // Separate root from category
-                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
+                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
 
                     $agg = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
                          "and l.category=".$cat.", label, NULL)) ";
 
-                    $select = 'CASE WHEN t.'.$field->name.' = 1 THEN '.$agg.
+                    $select = 'CASE WHEN t.'.$field->dbName.' = 1 THEN '.$agg.
                         ' ELSE 0'.
-                    ' END as '.$field->name;
+                    ' END as '.$field->dbName;
                 } // The field uses the lookup table and is not a checkbox field
                 else {
                     $select = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
-                    "and l.category=t.".$field->name.", label, NULL)) ".
-                    "as ".$field->name;
+                    "and l.category=t.".$field->dbName.", label, NULL)) ".
+                    "as ".$field->dbName;
                 }
 
                 array_push($selects, $select);
@@ -205,7 +205,7 @@ class DBConnectSqlite extends DBConnect
         // Add escaped field values, in order, to bind parameters
         foreach ($row->table->getAllFields() as $field) {
             // Replace empty string with null
-            $escaped = $this->mysqli->real_escape_string($row->data[$field->name]);
+            $escaped = $this->mysqli->real_escape_string($row->data[$field->dbName]);
             $toBind = ('' !== $escaped) ? $escaped : null;
 
             array_push($params, $toBind);
@@ -247,7 +247,7 @@ class DBConnectSqlite extends DBConnect
             $bindPositions = array();
             $bindTypes = '';
             foreach ($table->getAllFields() as $field) {
-                array_push($fieldNames, $field->name);
+                array_push($fieldNames, $field->dbName);
                 array_push($bindPositions, '?');
 
                 switch ($field->type) {

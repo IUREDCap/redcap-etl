@@ -49,7 +49,7 @@ class VisitsTestUtility
                 'fruit' => '2',
                 'name' => 'John Doe',
                 'phone' => '123-456-7890',
-                'dob' => '1980-10-05',
+                'birthdate' => '1980-10-05',
                 'color' => '3',
                 'rooms___1' => 0,
                 'rooms___22' => 1,
@@ -57,7 +57,7 @@ class VisitsTestUtility
             )
         );
 
-        $sql = 'SELECT record_id, fruit, name, phone, dob, color,'
+        $sql = 'SELECT record_id, fruit, name, phone, birthdate, color,'
             .' rooms___1, rooms___22, rooms___303 '
             .' FROM Demography ORDER BY record_id';
 
@@ -207,16 +207,16 @@ class VisitsTestUtility
             array(
                 'recipients_id' => 1,
                 'record_id' => 1,
-                'recip' => 'Spouse'
+                'recipient' => 'Spouse'
             ),
             array(
                 'recipients_id' => 2,
                 'record_id' => 1,
-                'recip' => 'Parent'
+                'recipient' => 'Parent'
             )
         );
 
-        $sql = 'SELECT recipients_id, record_id, recip'
+        $sql = 'SELECT recipients_id, record_id, recipient'
             .' FROM Recipients ORDER BY recipients_id';
 
         $statement  = $dbh->query($sql);
@@ -300,7 +300,7 @@ class VisitsTestUtility
                 'fruit' => 'pear',
                 'name' => 'John Doe',
                 'phone' => '123-456-7890',
-                'dob' => '1980-10-05',
+                'birthdate' => '1980-10-05',
                 'color' => 'blue',
                 'rooms___1' => 0,
                 'rooms___22' => 'Den',
@@ -308,7 +308,7 @@ class VisitsTestUtility
             )
         );
 
-        $sql = 'SELECT record_id, fruit, name, phone, dob, color, '
+        $sql = 'SELECT record_id, fruit, name, phone, birthdate, color, '
             .' rooms___1, rooms___22, rooms___303 '
             .' FROM Demography_vLookup ORDER BY record_id';
 
