@@ -2,6 +2,10 @@
 
 namespace IU\REDCapETL;
 
+use IU\REDCapETL\Rules\FieldRule;
+use IU\REDCapETL\Rules\Rule;
+use IU\REDCapETL\Rules\TableRule;
+
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
 use IU\REDCapETL\Schema\FieldTypeAndSize;

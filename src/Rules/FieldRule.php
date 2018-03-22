@@ -1,6 +1,6 @@
 <?php
 
-namespace IU\REDCapETL;
+namespace IU\REDCapETL\Rules;
 
 class FieldRule extends Rule
 {

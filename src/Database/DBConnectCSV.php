@@ -208,6 +208,11 @@ class DBConnectCSV extends DBConnect
         }
     }
 
+    /**
+     * @param resource $fh table file handle
+     * @param resource $lfh lookup "view" of table file handle
+     * @param Row $row the row of data to insert
+     */
     private function insertRowIntoFile($fh, $lfh, $row)
     {
         $table = $row->table;
