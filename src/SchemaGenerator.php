@@ -19,7 +19,7 @@ use IU\REDCapETL\Database\DBConnectFactory;
  * the extracted format to the load format used in the
  * target database.
  */
-class TransformationRules
+class SchemaGenerator
 {
     # Suffix for the REDCap field indicated the form has been completed
     const FORM_COMPLETE_SUFFIX = '_complete';
@@ -36,29 +36,31 @@ class TransformationRules
     private $lookupTable;
     private $lookupTableIn;
 
+    private $dataProject;
     private $logger;
     private $tablePrefix;
 
     /**
      * Constructor.
      *
-     * @param string $rules the transformation rules
+     * @param string $rulesText the transformation rules text
      */
-    public function __construct($rules)
+    public function __construct($dataProject, $tablePrefix, $logger)
     {
-        $this->rules = $rules;
+        $this->dataProject = $dataProject;
+        $this->tablePrefix = $tablePrefix;
+        $this->logger      = $logger;
     }
 
 
-    public function parse($dataProject, $tablePrefix, $logger)
+    public function generateSchema($rulesText)
     {
-        $this->tablePrefix = $tablePrefix;
-        $this->logger      = $logger;
-        $recordIdFieldName = $dataProject->getRecordIdFieldName();
+        $recordIdFieldName = $this->dataProject->getRecordIdFieldName();
 
-        $fieldNames        = $dataProject->getFieldNames();
+        $fieldNames        = $this->dataProject->getFieldNames();
 
-        $redCapFields      = $dataProject->getFieldNames();
+        $redCapFields      = $this->dataProject->getFieldNames();
+
         // Remove each instrument's completion field from the field list
         foreach ($redCapFields as $fieldName => $val) {
             if (preg_match('/'.self::FORM_COMPLETE_SUFFIX.'$/', $fieldName)) {
@@ -67,11 +69,11 @@ class TransformationRules
         }
 
 
-        $this->lookupChoices = $dataProject->getLookupChoices();
+        $this->lookupChoices = $this->dataProject->getLookupChoices();
 
         ###print_r($this->lookupChoices);
         
-        $this->lookupTable = new LookupTable($this->lookupChoices, $tablePrefix);
+        $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix);
 
         $parsedLineCount = 0;
         $info = '';
@@ -82,34 +84,34 @@ class TransformationRules
 
         // Log how many fields in REDCap could be parsed
         $msg = "Found ".count($redCapFields)." fields in REDCap.";
-        $logger->logInfo($msg);
+        $this->logger->logInfo($msg);
         $info .= $msg."\n";
 
         $table = null;
         
         $rulesParser = new RulesParser();
-        $parsedRules = $rulesParser->parse($this->rules); // $this->parseRules($this->rules);
+        $parsedRules = $rulesParser->parse($rulesText);
         
         # Add errors from parsing to errors string
-        foreach ($parsedRules as $rule) {
+        foreach ($parsedRules->getRules() as $rule) {
             foreach ($rule->getErrors() as $error) {
                 $errors .= $error."\n";
             }
         }
             
         // Process each rule from first to last
-        foreach ($parsedRules as $rule) {
+        foreach ($parsedRules->getRules() as $rule) {
             if ($rule->hasErrors()) {
                 // log the parse errors for this rule
                 foreach ($rule->getErrors() as $error) {
                     $this->log($error);
                 }
             } elseif ($rule instanceof TableRule) {
-                // CHANGE THIS CODE TO $table = generateTableFromRule($rule, $tablePrefix, $recordIdFieldName); ???
+                // CHANGE THIS CODE TO $table = generateTableFromRule($rule, $this->tablePrefix, $recordIdFieldName); ???
               
                 // Retrieve Table parameters
-                $parentTableName = $tablePrefix . $rule->parentTable;
-                $tableName       = $tablePrefix . $rule->tableName;
+                $parentTableName = $this->tablePrefix . $rule->parentTable;
+                $tableName       = $this->tablePrefix . $rule->tableName;
                 $rowsType        = $rule->rowsType;
                 $suffixes        = $rule->suffixes;
 
@@ -269,7 +271,7 @@ class TransformationRules
                             $fname !== 'redcap_data_access_group' &&
                             (empty($fieldNames[$fname]))) {
                         $msg = "Field not found in REDCap: '".$fname."'";
-                        $logger->logInfo($msg);
+                        $this->logger->logInfo($msg);
                         $warnings .= $msg."\n";
                         continue 2; //continue 3;
                     }
@@ -394,7 +396,7 @@ class TransformationRules
 
         // Log how many fields in REDCap could be parsed
         $msg = "Found ".count($redCapFields)." unmapped fields in REDCap.";
-        $logger->logInfo($msg);
+        $this->logger->logInfo($msg);
 
         // Set warning if count of remaining redcap fields is above zero
         if (0 < count($redCapFields)) {
@@ -403,7 +405,7 @@ class TransformationRules
             // List fields, if count is five or less
             if (10 > count($redCapFields)) {
                 $msg = "Unmapped fields: ".  implode(', ', array_keys($redCapFields));
-                $logger->logInfo($msg);
+                $this->logger->logInfo($msg);
                 $warnings .= $msg;
             }
         }
@@ -419,13 +421,6 @@ class TransformationRules
 
         return array($schema, $this->lookupTable, $messages);
     }
-
-
-    protected function isEmptyString($str)
-    {
-        return !(isset($str) && (strlen(trim($str)) > 0));
-    }
-
 
     protected function log($message)
     {

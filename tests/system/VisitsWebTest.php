@@ -30,8 +30,10 @@ class VisitsWebTest extends TestCase
 
         list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
         $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
+
         try {
             self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
+            self::$dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (Exception $exception) {
             print "ERROR: ".($exception->getMessage())."\n";
         }

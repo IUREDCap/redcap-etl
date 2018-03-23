@@ -253,7 +253,7 @@ class RedCapEtl
      */
     public function parseMap()
     {
-        $transformationRules = '';
+        $rulesText = '';
 
         #-----------------------------------------------------------------------------
         # If auto-generated rules were specified, generate the rules,
@@ -261,21 +261,20 @@ class RedCapEtl
         #-----------------------------------------------------------------------------
         if ($this->configuration->getTransformRulesSource() === Configuration::TRANSFORM_RULES_DEFAULT) {
             $rulesGenerator = new RulesGenerator();
-            $transformationRules = $rulesGenerator->generate($this->dataProject);
+            $rulesText = $rulesGenerator->generate($this->dataProject);
         } else {
-            $transformationRules = $this->configuration->getTransformationRules();
+            $rulesText = $this->configuration->getTransformationRules();
         }
         
-        $rules = new TransformationRules($transformationRules);
+        $schemaGenerator = new SchemaGenerator($this->dataProject, $this->tablePrefix, $this->logger);
 
-        list($schema, $lookupTable, $parseResult)
-            = $rules->parse($this->dataProject, $this->tablePrefix, $this->logger);
+        list($schema, $lookupTable, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
         #print_r($lookupTable);
         #print_r($parseResult);
         ###print "\n".($schema->toString())."\n";
 
-        $this->schema       = $schema;
+        $this->schema      = $schema;
         $this->lookupTable = $lookupTable;
 
         return $parseResult;
@@ -581,7 +580,7 @@ class RedCapEtl
 
             list($parseStatus, $result) = $this->parseMap();
 
-            if ($parseStatus === TransformationRules::PARSE_ERROR) {
+            if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
                 $message = "Transformation rules not parsed. Processing stopped.";
                 $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
             } else {
@@ -626,7 +625,7 @@ class RedCapEtl
         } else {
             list($parseStatus, $result) = $this->parseMap();
                     
-            if ($parseStatus === TransformationRules::PARSE_ERROR) {
+            if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
                 # If the parsing of the schema map failed.
                 $msg = "Schema map not fully parsed. Processing stopped.";
                 $this->log($msg);

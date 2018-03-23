@@ -4,6 +4,7 @@ namespace IU\REDCapETL;
 
 use IU\REDCapETL\Rules\FieldRule;
 use IU\REDCapETL\Rules\Rule;
+use IU\REDCapETL\Rules\Rules;
 use IU\REDCapETL\Rules\TableRule;
 
 use IU\REDCapETL\Schema\FieldType;
@@ -44,7 +45,7 @@ class RulesParser
      */
     public function parse($rulesString)
     {
-        $rules = array();
+        $rules = new Rules();
         
         //------------------------------------------------------
         // The rules language is a line-based language, so
@@ -86,7 +87,7 @@ class RulesParser
                         break;
                 }
                
-                array_push($rules, $rule);
+                $rules->addRule($rule);
                 
                 // print_r($rule); // Jim
             }

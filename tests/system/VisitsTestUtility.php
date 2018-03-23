@@ -8,20 +8,24 @@ class VisitsTestUtility
 {
     public static function dropTablesAndViews($dbh)
     {
-        $dbh->exec("DROP TABLE IF EXISTS BMI");
-        $dbh->exec("DROP TABLE IF EXISTS Contact");
-        $dbh->exec("DROP VIEW  IF EXISTS Contact_vLookup");
-        $dbh->exec("DROP TABLE IF EXISTS Demography");
-        $dbh->exec("DROP VIEW  IF EXISTS Demography_vLookup");
-        $dbh->exec("DROP TABLE IF EXISTS Followup");
-        $dbh->exec("DROP VIEW  IF EXISTS Followup_vLookup");
-        $dbh->exec("DROP TABLE IF EXISTS Labs");
-        $dbh->exec("DROP TABLE IF EXISTS Lookup");
-        $dbh->exec("DROP TABLE IF EXISTS Recipients");
-        $dbh->exec("DROP TABLE IF EXISTS Sent");
-        $dbh->exec("DROP TABLE IF EXISTS VisitInfo");
-        $dbh->exec("DROP VIEW  IF EXISTS VisitInfo_vLookup");
-        $dbh->exec("DROP TABLE IF EXISTS VisitResults");
+        try {
+            $dbh->exec("DROP TABLE IF EXISTS BMI");
+            $dbh->exec("DROP TABLE IF EXISTS Contact");
+            $dbh->exec("DROP VIEW  IF EXISTS Contact_vLookup");
+            $dbh->exec("DROP TABLE IF EXISTS Demography");
+            $dbh->exec("DROP VIEW  IF EXISTS Demography_vLookup");
+            $dbh->exec("DROP TABLE IF EXISTS Followup");
+            $dbh->exec("DROP VIEW  IF EXISTS Followup_vLookup");
+            $dbh->exec("DROP TABLE IF EXISTS Labs");
+            $dbh->exec("DROP TABLE IF EXISTS Lookup");
+            $dbh->exec("DROP TABLE IF EXISTS Recipients");
+            $dbh->exec("DROP TABLE IF EXISTS Sent");
+            $dbh->exec("DROP TABLE IF EXISTS VisitInfo");
+            $dbh->exec("DROP VIEW  IF EXISTS VisitInfo_vLookup");
+            $dbh->exec("DROP TABLE IF EXISTS VisitResults");
+        } catch (Exception $exception) {
+            print "ERROR - table deletion: ".$exception->getMessage()."\n";
+        }
     }
 
     public static function testAll($testCase, $dbh)
