@@ -8,7 +8,7 @@ use IU\REDCapETL\Rules\TableRule;
 
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
-use IU\REDCapETL\Schema\FieldTypeAndSize;
+use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
 
@@ -68,14 +68,9 @@ class SchemaGenerator
             }
         }
 
-
         $this->lookupChoices = $this->dataProject->getLookupChoices();
-
-        ###print_r($this->lookupChoices);
-        
         $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix);
 
-        $parsedLineCount = 0;
         $info = '';
         $warnings = '';
         $errors = '';
@@ -107,90 +102,22 @@ class SchemaGenerator
                     $this->log($error);
                 }
             } elseif ($rule instanceof TableRule) {
-                // CHANGE THIS CODE TO $table = generateTableFromRule($rule, $this->tablePrefix, $recordIdFieldName); ???
-              
-                // Retrieve Table parameters
+                #------------------------------------------------------------
+                # Get the parent table - this will be:
+                #   a Table object for non-root tables
+                #   a string that is the primary key for root tables
+                #------------------------------------------------------------
                 $parentTableName = $this->tablePrefix . $rule->parentTable;
-                $tableName       = $this->tablePrefix . $rule->tableName;
-                $rowsType        = $rule->rowsType;
-                $suffixes        = $rule->suffixes;
-
-                // Find parent Table
                 $parentTable = $schema->getTable($parentTableName);
 
-                // Create a new Table
-                $table = new Table(
-                    $tableName,
-                    $parentTable,
-                    $rowsType,
-                    $suffixes,
-                    $recordIdFieldName
-                );
+                $table = $this->generateTable($rule, $parentTable, $this->tablePrefix, $recordIdFieldName);
 
-                #---------------------------------------------------------
-                # Add the record ID field as a field for all tables
-                # (unless the primary key or foreign key has the same
-                # name).
-                #
-                # Note that it looks like this really needs to be added
-                # as a string type, because even if it is specified as
-                # an Integer in REDCap, there will be no length
-                # restriction (unless a min and max are explicitly
-                # specified), so a value can be entered that the
-                # database will not be able to handle.
-                #---------------------------------------------------------
-                if ($table->primary === $recordIdFieldName) {
-                    $error = 'Primary key field has same name as REDCap record id "'
-                        .$recordIdFieldName.'" on line '
-                        .$rule->getLineNumber().': "'.$rule->getLine().'"';
-                    break;
-                } else {
-                    $field = new Field($recordIdFieldName, FieldType::STRING);
-                    $table->addField($field);
-                }
-
-                // Depending on type of table, add output fields to represent
-                // which iteration of a field's value is stored in a row of
-                // the table
-                switch ($rowsType) {
-                    case RedCapEtl::BY_EVENTS:
-                        $field = new Field(RedCapEtl::COLUMN_EVENT, RedCapEtl::COLUMN_EVENT_TYPE);
-                        $table->addField($field);
-                        break;
-
-                    case RedCapEtl::BY_REPEATING_INSTRUMENTS:
-                        $field = new Field(
-                            RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
-                            RedCapEtl::COLUMN_REPEATING_INSTRUMENT_TYPE
-                        );
-                        $table->addField($field);
-                        $field = new Field(
-                            RedCapEtl::COLUMN_REPEATING_INSTANCE,
-                            RedCapEtl::COLUMN_REPEATING_INSTANCE_TYPE
-                        );
-                        $table->addField($field);
-                        break;
-
-                    case RedCapEtl::BY_SUFFIXES:
-                        $field = new Field(RedCapEtl::COLUMN_SUFFIXES, RedCapEtl::COLUMN_SUFFIXES_TYPE);
-                        $table->addField($field);
-                        break;
-
-                    case RedCapEtl::BY_EVENTS_SUFFIXES:
-                        $field = new Field(RedCapEtl::COLUMN_EVENT, RedCapEtl::COLUMN_EVENT_TYPE);
-                        $table->addField($field);
-                        $field = new Field(RedCapEtl::COLUMN_SUFFIXES, RedCapEtl::COLUMN_SUFFIXES_TYPE);
-                        $table->addField($field);
-                        break;
-
-                    default:
-                        break;
-                }
-
-                # Add Table to Schema
                 $schema->addTable($table);
 
-                # If parent_table exists
+                #----------------------------------------------------------------------------
+                # If the "parent table" is actually a table (i.e., this is a child
+                # table and not a root table)
+                #----------------------------------------------------------------------------
                 if (is_a($parentTable, Table::class)) {
                     $table->setForeign($parentTable);  # Add a foreign key
                     $parentTable->addChild($table);    # Add as a child of parent table
@@ -198,67 +125,59 @@ class SchemaGenerator
             } elseif ($rule instanceof FieldRule) {
                 if ($table == null) {
                     break; // table not set, probably error with table rule
+                    // Actually this should be flagged as an error
                 }
                 
-                //------------------------------------------------------------
-                // Determine which fields need to be made
-                //------------------------------------------------------------
-
+                #------------------------------------------------------------
+                # Create the needed fields
+                #------------------------------------------------------------
                 $fieldName = $rule->redCapFieldName;
                 $fieldType = $rule->dbFieldType;
                 $fieldSize = $rule->dbFieldSize;
                 $dbFieldName = $rule->dbFieldName;
 
-                $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName);
-
-                ###$fieldTypeAndSize = new FieldTypeAndSize($fieldType, $fieldSize);
-                
                 $fields = array();
                 
                 // If this is a checkbox field
                 if ($fieldType === FieldType::CHECKBOX) {
-                    // For a checkbox in a Suffix table
-                    if ((RedCapEtl::BY_SUFFIXES === $table->rowsType)
-                            || (RedCapEtl::BY_EVENTS_SUFFIXES === $table->rowsType)) {
-                        // Lookup the choices using any one of the valid suffixes
+                    # For a checkbox in a Suffix table, append a valid suffix to
+                    # the field name
+                    if (($table->rowsType === RowsType::BY_SUFFIXES)
+                            || ($table->rowsType === RowsType::BY_EVENTS_SUFFIXES)) {
+                        # Lookup the choices using any one of the valid suffixes,
+                        # since, for the same base field,  they all should be the same
                         $suffixes = $table->getPossibleSuffixes();
                         $lookupFieldName = $fieldName.$suffixes[0];
-                        ###print "\n\n";
-                        ###print "lookupFieldName = {$lookupFieldName}\n";
-                        ###print_r($suffixes);
                     } else {
                         $lookupFieldName = $fieldName;
                     }
 
-                    // Foreach category of the checkbox field
-                    foreach ($this->lookupChoices[$lookupFieldName] as $category => $label) {
-                        // Form the variable name for this category
-                        $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$category]
-                            ###= new FieldTypeAndSize(FieldType::INT, null);
-                            = new Field(
-                                $fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$category,
-                                FieldType::INT,
-                                null,
-                                null
-                            );
+                    # Process each value of the checkbox
+                    foreach ($this->lookupChoices[$lookupFieldName] as $value => $label) {
+                        // Form the field names for this value
+                        $checkBoxFieldName = $fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value;
+                        $checkBoxDbFieldName = '';
+                        if (!empty($dbFieldName)) {
+                            $checkBoxDbFieldName = $dbFieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value;
+                        }
+
+                        $field = new Field($checkBoxFieldName, FieldType::INT, null, $checkBoxDbFieldName);
+                        $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value] = $field;
                     }
                 } else {
                     // Process a single field
-                    ###$fields[$fieldName] = $fieldTypeAndSize;
+                    $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName);
                     $fields[$fieldName] = $field;
                 }
 
-                //------------------------------------------------------------
-                // Process each field
-                //------------------------------------------------------------
-                # OLD:
-                # $fieldNames = $this->dataProject->get_fieldnames();
-                # Set above now...
-
-                ####foreach ($fields as $fname => $ftypeAndSize) {
+                #-----------------------------------------------------------
+                # Process each field
+                #
+                # Note: there can be more than one field, because a single
+                # checkbox REDCap field may be stored as multiple database
+                # fields (one for each option)
+                #------------------------------------------------------------
                 foreach ($fields as $fname => $field) {
-                    ###$ftype = $ftypeAndSize->type;
-                    ###$fsize = $ftypeAndSize->size;
                     $ftype = $field->type;
                     $fsize = $field->size;
                     $fdbname = $field->dbName;
@@ -266,8 +185,8 @@ class SchemaGenerator
                     //-------------------------------------------------------------
                     // !SUFFIXES: Prep for and warn that map field is not in REDCap
                     //-------------------------------------------------------------
-                    if ((RedCapEtl::BY_SUFFIXES !== $table->rowsType) &&
-                            (RedCapEtl::BY_EVENTS_SUFFIXES !== $table->rowsType) &&
+                    if ((RowsType::BY_SUFFIXES !== $table->rowsType) &&
+                            (RowsType::BY_EVENTS_SUFFIXES !== $table->rowsType) &&
                             $fname !== 'redcap_data_access_group' &&
                             (empty($fieldNames[$fname]))) {
                         $msg = "Field not found in REDCap: '".$fname."'";
@@ -285,8 +204,8 @@ class SchemaGenerator
                     // For fields in a SUFFIXES table, use the possible suffixes,
                     // including looking up the tree of parent tables, to look
                     // for at least one matching field in the exportfieldnames
-                    if ((RedCapEtl::BY_SUFFIXES === $table->rowsType)
-                             || (RedCapEtl::BY_EVENTS_SUFFIXES === $table->rowsType)) {
+                    if ((RowsType::BY_SUFFIXES === $table->rowsType)
+                             || (RowsType::BY_EVENTS_SUFFIXES === $table->rowsType)) {
                         $possibles = $table->getPossibleSuffixes();
 
                         $fieldFound = false;
@@ -380,15 +299,10 @@ class SchemaGenerator
                     }
                 } // End foreach field to be created
             } // End if for rule types
-
-
-            if (!$rule->hasErrors()) {
-                $parsedLineCount++;
-            }
         } // End foreach
         
         
-        if (1 > $parsedLineCount) {
+        if ($parsedRules->getParsedLineCount() < 1) {
             $msg = "Found no lines in Schema Map";
             $this->log($msg);
             $errors .= $msg."\n";
@@ -420,6 +334,84 @@ class SchemaGenerator
         }
 
         return array($schema, $this->lookupTable, $messages);
+    }
+
+
+    public function generateTable($rule, $parentTable, $tablePrefix, $recordIdFieldName)
+    {
+        $tableName = $this->tablePrefix . $rule->tableName;
+        $rowsType  = $rule->rowsType;
+
+        # Create the table
+        $table = new Table(
+            $tableName,
+            $parentTable,
+            $rowsType,
+            $rule->suffixes,
+            $recordIdFieldName
+        );
+
+        #---------------------------------------------------------
+        # Add the record ID field as a field for all tables
+        # (unless the primary key or foreign key has the same
+        # name).
+        #
+        # Note that it looks like this really needs to be added
+        # as a string type, because even if it is specified as
+        # an Integer in REDCap, there will be no length
+        # restriction (unless a min and max are explicitly
+        # specified), so a value can be entered that the
+        # database will not be able to handle.
+        #---------------------------------------------------------
+        if ($table->primary === $recordIdFieldName) {
+            $error = 'Primary key field has same name as REDCap record id "'
+                .$recordIdFieldName.'" on line '
+                .$rule->getLineNumber().': "'.$rule->getLine().'"';
+            return table;   // try to fix
+        } else {
+            $field = new Field($recordIdFieldName, FieldType::STRING);
+            $table->addField($field);
+        }
+
+        // Depending on type of table, add output fields to represent
+        // which iteration of a field's value is stored in a row of
+        // the table
+        switch ($rowsType) {
+            case RowsType::BY_EVENTS:
+                $field = new Field(RedCapEtl::COLUMN_EVENT, RedCapEtl::COLUMN_EVENT_TYPE);
+                $table->addField($field);
+                break;
+
+            case RowsType::BY_REPEATING_INSTRUMENTS:
+                $field = new Field(
+                    RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
+                    RedCapEtl::COLUMN_REPEATING_INSTRUMENT_TYPE
+                );
+                $table->addField($field);
+                $field = new Field(
+                    RedCapEtl::COLUMN_REPEATING_INSTANCE,
+                    RedCapEtl::COLUMN_REPEATING_INSTANCE_TYPE
+                );
+                $table->addField($field);
+                break;
+
+            case RowsType::BY_SUFFIXES:
+                $field = new Field(RedCapEtl::COLUMN_SUFFIXES, RedCapEtl::COLUMN_SUFFIXES_TYPE);
+                $table->addField($field);
+                break;
+
+            case RowsType::BY_EVENTS_SUFFIXES:
+                $field = new Field(RedCapEtl::COLUMN_EVENT, RedCapEtl::COLUMN_EVENT_TYPE);
+                $table->addField($field);
+                $field = new Field(RedCapEtl::COLUMN_SUFFIXES, RedCapEtl::COLUMN_SUFFIXES_TYPE);
+                $table->addField($field);
+                break;
+
+            default:
+                break;
+        }
+
+        return $table;
     }
 
     protected function log($message)

@@ -8,6 +8,7 @@ use IU\REDCapETL\Rules\Rules;
 use IU\REDCapETL\Rules\TableRule;
 
 use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\RowsType;
 
 class RulesParser
 {
@@ -219,26 +220,26 @@ class RulesParser
 
         switch ($rowsEncode) {
             case self::ROOT:
-                $rowsType = RedCapEtl::ROOT;
+                $rowsType = RowsType::ROOT;
                 break;
 
             case self::EVENTS:
                 $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixesDef);
-                $rowsType = (empty($suffixes[0])) ? RedCapEtl::BY_EVENTS : RedCapEtl::BY_EVENTS_SUFFIXES;
+                $rowsType = (empty($suffixes[0])) ? RowsType::BY_EVENTS : RowsType::BY_EVENTS_SUFFIXES;
                 break;
 
             case self::REPEATING_INSTRUMENTS:
-                $rowsType = RedCapEtl::BY_REPEATING_INSTRUMENTS;
+                $rowsType = RowsType::BY_REPEATING_INSTRUMENTS;
                 break;
 
             case self::SUFFIXES:
                 $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixesDef);
-                $rowsType = (empty($suffixes[0])) ? false : RedCapEtl::BY_SUFFIXES;
+                $rowsType = (empty($suffixes[0])) ? false : RowsType::BY_SUFFIXES;
                 break;
 
             case (preg_match($regex, $rowsEncode) ? true : false):
                 $suffixes = explode(self::SUFFIXES_SEPARATOR, $rowsEncode);
-                $rowsType = (empty($suffixes[0])) ? false : RedCapEtl::BY_SUFFIXES;
+                $rowsType = (empty($suffixes[0])) ? false : RowsType::BY_SUFFIXES;
                 break;
 
             default:

@@ -61,7 +61,7 @@ class Table
         // ASSUMES: The field for the primary key will be given in
         //          the place of where a parent table would have been and
         //          will be of type string.
-        if (RedCapEtl::ROOT === $this->rowsType) {
+        if (RowsType::ROOT === $this->rowsType) {
             $field = new Field($parent, FieldType::STRING);
             $this->primary = $field;
         } else {
@@ -183,8 +183,8 @@ class Table
         # include the data if it doesn't contain a repeating instrument
         # field.
         #---------------------------------------------------------------
-        if ($this->rowsType === RedCapEtl::BY_REPEATING_INSTRUMENTS) {
-            if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
+        if ($this->rowsType === RowsType::BY_REPEATING_INSTRUMENTS) {
+            if (!array_key_exists(RowsType::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 return false;
             }
         }
@@ -263,8 +263,8 @@ class Table
     {
         // If this table is BY_SUFFIXES and doesn't yet have its possible
         // suffixes set
-        if (((RedCapEtl::BY_SUFFIXES === $this->rowsType) ||
-            (RedCapEtl::BY_EVENTS_SUFFIXES === $this->rowsType)) &&
+        if (((RowsType::BY_SUFFIXES === $this->rowsType) ||
+            (RowsType::BY_EVENTS_SUFFIXES === $this->rowsType)) &&
             (empty($this->possibleSuffixes))) {
             // If there are no parent suffixes, use an empty string
             $parentSuffixes = $this->parent->getPossibleSuffixes();

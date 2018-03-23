@@ -34,7 +34,7 @@ class Schema
         array_push($this->tables, $table);
 
         // If it is a root table, add to list of root tables
-        if (RedCapEtl::ROOT == $table->rowsType) {
+        if (RowsType::ROOT == $table->rowsType) {
             array_push($this->rootTables, $table);
         }
     }

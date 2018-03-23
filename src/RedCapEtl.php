@@ -8,6 +8,7 @@ use IU\PHPCap\PhpCapException;
 
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
 
@@ -38,13 +39,6 @@ class RedCapEtl
     # should be processed
     const DET_INSTRUMENT_NAME = 'run';
     
-    # Rows Type
-    const ROOT                 = 0;
-    const BY_EVENTS            = 1;
-    const BY_SUFFIXES          = 2;
-    const BY_EVENTS_SUFFIXES   = 3;
-    const BY_REPEATING_INSTRUMENTS   = 4;
-
     // For creating output fields to represent events and suffixes
     const COLUMN_EVENT             = 'redcap_event';
     const COLUMN_SUFFIXES          = 'redcap_suffix';
@@ -393,12 +387,12 @@ class RedCapEtl
         // Look at row_event for this table
         switch ($table->rowsType) {
             // If root
-            case RedCapEtl::ROOT:
+            case RowsType::ROOT:
                 $this->createRowAndRecurse($table, $records, $foreignKey, $suffix);
                 break;
 
             // If events
-            case RedCapEtl::BY_EVENTS:
+            case RowsType::BY_EVENTS:
                 // Foreach Record (i.e., foreach event)
                 foreach ($records as $record) {
                     $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
@@ -406,7 +400,7 @@ class RedCapEtl
                 break;
 
             // If repeatable forms
-            case RedCapEtl::BY_REPEATING_INSTRUMENTS:
+            case RowsType::BY_REPEATING_INSTRUMENTS:
                 // Foreach Record (i.e., foreach repeatable form)
                 foreach ($records as $record) {
                     $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
@@ -414,7 +408,7 @@ class RedCapEtl
                 break;
 
             // If suffix
-            case RedCapEtl::BY_SUFFIXES:
+            case RowsType::BY_SUFFIXES:
                 // Foreach Suffix
                 foreach ($table->rowsSuffixes as $newSuffix) {
                     $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$newSuffix);
@@ -422,7 +416,7 @@ class RedCapEtl
                 break;
 
             // If events and suffix
-            case RedCapEtl::BY_EVENTS_SUFFIXES:
+            case RowsType::BY_EVENTS_SUFFIXES:
                 // Foreach Record (i.e., foreach event)
                 foreach ($records as $record) {
                     // Foreach Suffix

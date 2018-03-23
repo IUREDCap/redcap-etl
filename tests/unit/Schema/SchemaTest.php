@@ -26,8 +26,8 @@ class SchemaTest extends TestCase
         $schemaString = $schema->toString();
         $this->assertEquals($expectedSchemaString, $schemaString, 'schema to string check');
 
-        $rootTable = new Table('root', 'root_id', RedCapEtl::ROOT, array(), 'record_id');
-        $table     = new Table('events', $rootTable, RedCapEtl::BY_EVENTS, array(), 'record_id');
+        $rootTable = new Table('root', 'root_id', RowsType::ROOT, array(), 'record_id');
+        $table     = new Table('events', $rootTable, RowsType::BY_EVENTS, array(), 'record_id');
         $schema->addTable($rootTable);
         $schema->addTable($table);
 

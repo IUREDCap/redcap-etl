@@ -14,14 +14,14 @@ class TableTest extends TestCase
     {
         $name = 'test';
         $parent = 'test_id';
-        $rowsType = RedCapEtl::ROOT;
+        $rowsType = RowsType::ROOT;
         $suffixes = '';
         $recordIdFieldName = 'recordId';
 
         $table = new Table($name, $parent, $rowsType, $suffixes, $recordIdFieldName);
         $this->assertNotNull($table, 'table not null');
 
-        $childTable = new Table('child', $table, RedCapEtl::BY_EVENTS, '', $recordIdFieldName);
+        $childTable = new Table('child', $table, RowsType::BY_EVENTS, '', $recordIdFieldName);
         $this->assertNotNull($childTable, 'child table not null');
 
         #$expectedRowData = array('id' => 100, 'name' => 'Bob');
