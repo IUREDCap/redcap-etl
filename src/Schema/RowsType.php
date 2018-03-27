@@ -39,7 +39,7 @@ class RowsType
      *
      * @return boolean true if the type includes suffixes, false otherwise.
      */
-    public static function hasSuffixes()
+    public static function hasSuffixes($rowsType)
     {
         $valid = false;
 

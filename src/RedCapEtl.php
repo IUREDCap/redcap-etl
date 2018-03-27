@@ -243,7 +243,7 @@ class RedCapEtl
      * the schema of the database where the extracted data will be loaded.
      *
      * @return string if successful, return PARSE_VALID, if not successful,
-     *    return a string with feedback about problems in parsing the transformationRules
+     *    feedback about problems in parsing the transformationRules
      */
     public function parseMap()
     {
@@ -262,14 +262,14 @@ class RedCapEtl
         
         $schemaGenerator = new SchemaGenerator($this->dataProject, $this->tablePrefix, $this->logger);
 
-        list($schema, $lookupTable, $parseResult) = $schemaGenerator->generateSchema($rulesText);
+        list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
         #print_r($lookupTable);
         #print_r($parseResult);
         ###print "\n".($schema->toString())."\n";
 
         $this->schema      = $schema;
-        $this->lookupTable = $lookupTable;
+        $this->lookupTable = $schema->getLookupTable();
 
         return $parseResult;
     }

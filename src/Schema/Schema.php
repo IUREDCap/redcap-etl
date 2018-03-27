@@ -17,6 +17,7 @@ class Schema
 
     private $tables = array();
     private $rootTables = array();
+    private $lookupTable = null;  # table for mapping multiple choice codes to values
 
     public function __construct()
     {
@@ -79,6 +80,27 @@ class Schema
 
         // If the table is not found, return the tableName
         return($tableName);
+    }
+
+
+    /**
+     * Gets the lookup table.
+     *
+     * @return LookupTable table that maps multiple choice coded values to labels.
+     */
+    public function getLookupTable()
+    {
+        return $this->lookupTable;
+    }
+
+    /**
+     * Sets the lookup table for the database.
+     *
+     * @param Table $lookupTable the lookup table for the database.
+     */
+    public function setLookupTable($lookupTable)
+    {
+        $this->lookupTable = $lookupTable;
     }
 
 
