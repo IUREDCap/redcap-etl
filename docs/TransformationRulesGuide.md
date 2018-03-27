@@ -3,11 +3,10 @@ Transformation Rules
 The transformation rules specify how the records in REDCap should be transformed
 into records in your database.
 
-
 Transformation Rules Syntax
 -----------------------------------------
 
-Transformation rules consists of one or more TABLE statements, where each TABLE statement is followed by one or more FIELD statements.
+Transformation rules consists of one or more TABLE statements, where each TABLE statement is followed by one or more FIELD statements. Each statement needs to be on its own line.
 
     TABLE, <table_name>, <parent_table|primary_key_name>, <rows_type>
     FIELD, <field_name>, <field_type>[, <database_field_name>]
@@ -18,11 +17,16 @@ Transformation rules consists of one or more TABLE statements, where each TABLE 
     TABLE, <table_name>, <parent_table|primary_key_name>, <rows_type>
     FIELD, <field_name>, <field_type>[, <database_field_name>]
     ...
+
+The transformation rules language is line-oriented, and each line has a 
+comma-separated value (CSV) syntax. This allows the transformation rules to be
+edited as a spreadsheet, as long as it is saved in CSV format. Editing this way
+eliminates the need to enter field separators (commas), and automatically aligns field mappings horizontally, which makes them easier to read.
 
 
 #### TABLE Statements
 
-Table statements specify the tables that should be generated in your databse.
+Table statements specify the tables that should be generated in your database.
 
     TABLE, <table_name>, <parent_table|primary_key_name>, <rows_type>
 
@@ -107,15 +111,18 @@ named **registration** with the following data:
 In this example:
 
 * The database field __registration_id__ (specified in the TABLE command)
-  is created as an auto-incremented synthetic key
+  is created automatically as an auto-incremented synthetic key
+  The database field __record_id__ is represents the REDCap record ID, and is
+  created automatically in the database for all tables by REDCap ETL
 * The database fields __record_id__, __first_name__ and __last_name__
-  match the REDCap fields
+  match the REDCap fields. The REDCap record ID field, in this case called
+  __record_id__, is created automatically for all tables.
 * The REDCap field __dob__ was renamed to __birthdate__ in the database
 * The __birthdate__ database field has Y-M-D format, which is what REDCap
   returns (even though the field was defined as having M-D-Y format in REDCap)
 * No transformation rule was defined for the REDCap __registration_complete__ field,
   so it does not show up in the database. You are not required to specify a
-  rule for every fields, so you can specify rules for only those fields that
+  rule for every field, so you can specify rules for only those fields that
   you are interested in.
 
 
