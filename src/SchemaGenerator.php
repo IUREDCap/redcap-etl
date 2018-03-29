@@ -252,7 +252,7 @@ class SchemaGenerator
                     # If the field name is the record ID field name, don't process
                     # it, because it should have already been automatically added
                     #-----------------------------------------------------------------
-                    if ($fname !== $recordIdFieldName) {
+                    if ($field->dbName !== $recordIdFieldName) {
                         // Add Field to current Table (error if no current table)
                         $table->addField($field);
 

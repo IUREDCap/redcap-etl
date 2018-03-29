@@ -305,10 +305,18 @@ class RedCapEtl
         }
         $this->log("Number of record_ids found: ". $recordIdCount);
 
-        // Foreach record_id, get all REDCap records for that record_id.
-        // There will be one record for each event for each record_id
+        #--------------------------------------------------------------
+        # Foreach record_id, get all REDCap records for that record_id.
+        # There will be one record for each event for each record_id
+        #--------------------------------------------------------------
         $recordEventsCount = 0;
 
+        #---------------------------------------------------
+        # Set up the Lookup table, used to convert REDCap
+        # multiple choice numeric codes to labels
+        #---------------------------------------------------
+        $this->loadTableRows($this->lookupTable);
+                   
         #-------------------------------------------------------
         # For each batch of data, extract, transform, and load
         #-------------------------------------------------------
@@ -328,7 +336,8 @@ class RedCapEtl
                 # Transform the data
                 #-----------------------------------
                 $startTransformTime = microtime(true);
-                // For each root table
+                # For each root table, because processing will be done
+                # recursively to the child tables
                 foreach ($this->schema->getRootTables() as $rootTable) {
                     // Transform the records for this record_id into rows
                     $this->transform($rootTable, $records, '', '');
@@ -337,15 +346,20 @@ class RedCapEtl
                 $transformTime += $endTransformTime - $startTransformTime;
             }
 
-            #print("\n\n==============================================================================================\n");
+            #print("\n\n===============================================================\n");
             #print("\n\nSCHEMA MAP\n{$this->schema->toString()}\n\n");
-            #print("\n\n==============================================================================================\n");
-
+            #print("\n\n===============================================================\n");
+            
             #-------------------------------------
             # Load the data into the database
             #-------------------------------------
             $startLoadTime = microtime(true);
-            $this->loadRows();
+            foreach ($this->schema->getTables() as $table) {
+                # Single row storage (stores one row at a time):
+                # foreach row, load it
+                $this->loadTableRows($table);
+            }
+            #####$this->loadRows();
             $endLoadTime = microtime(true);
             $loadTime += $endLoadTime - $startLoadTime;
         }
@@ -457,9 +471,6 @@ class RedCapEtl
      */
     public function createLoadTables()
     {
-        // Used to speed up processing
-        ##$lookup = new Lookup($this->lookupTable);
-
         // foreach table, replace it
         // NOTE: This works on each table plus the lookup table
         $tables = array_merge(array($this->lookupTable), $this->schema->getTables());
@@ -469,7 +480,7 @@ class RedCapEtl
             $msg = "Created table '".$table->name."'";
 
             // If this table uses the Lookup table, create a view
-            if (true === $table->usesLookup) {
+            if ($table->usesLookup === true) {
                 $this->dbcon->replaceLookupView($table, $this->lookupTable);
                 $msg .= '; Lookup table created';
             }
@@ -485,7 +496,6 @@ class RedCapEtl
      */
     protected function loadRows()
     {
-
         // foreach table object, store it's rows in the database and
         // then remove them from the table object
         // NOTE: This works on each table AND on each lookup table
@@ -497,6 +507,8 @@ class RedCapEtl
 
             # Single row storage (stores one row at a time):
             # foreach row, load it
+            $this->loadTableRows($table);
+            /***
             foreach ($table->getRows() as $row) {
                 $rc = $this->dbcon->storeRow($row);
                 if (false === $rc) {
@@ -513,10 +525,42 @@ class RedCapEtl
 
             // Empty the rows for this table
             $table->emptyRows();
+            *****/
         }
 
         return true;
     }
+
+    /**
+     * Load an in-memory table's rows into the database.
+     *
+     * @param Table $table the Table object containing the (in-memory) rows
+     *    to be loaded into the database.
+     * @param boolean $deleteRowsAfterLoad indicates if the rows in the in-memory
+     *     table should be deleted after they are loaded into the database.
+     */
+    protected function loadTableRows($table, $deleteRowsAfterLoad = true)
+    {
+        foreach ($table->getRows() as $row) {
+            $rc = $this->dbcon->storeRow($row);
+            if (false === $rc) {
+                $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
+            }
+        }
+
+        // Add to summary how many rows created for this table
+        if (array_key_exists($table->name, $this->rowsLoadedForTable)) {
+            $this->rowsLoadedForTable[$table->name] += $table->getNumRows();
+        } else {
+            $this->rowsLoadedForTable[$table->name] = $table->getNumRows();
+        }
+
+        if ($deleteRowsAfterLoad) {
+            // Empty the rows for this table
+            $table->emptyRows();
+        }
+    }
+
 
 
     /**
@@ -698,6 +742,11 @@ class RedCapEtl
     public function getTablePrefix()
     {
         return $this->tablePrefix;
+    }
+    
+    public function getLabelViewSuffix()
+    {
+        return $this->labelViewSuffix;
     }
 
     public function getConfiguration()

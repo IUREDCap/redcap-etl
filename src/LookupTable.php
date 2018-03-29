@@ -110,11 +110,11 @@ class LookupTable extends Table
      * @param string $tableName the name of the database table for which
      *    the label is to be retrieved.
      * @param string $fieldName the field name for of the label to get.
-     * @param string $category the category/value of the label to get.
+     * @param string $value the (coded) value of the label to get.
      */
-    public function getLabel($tableName, $fieldName, $category)
+    public function getLabel($tableName, $fieldName, $value)
     {
-        $label = $this->map[$tableName][$fieldName][$category];
+        $label = $this->map[$tableName][$fieldName][$value];
         return $label;
     }
 

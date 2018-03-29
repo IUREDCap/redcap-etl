@@ -260,8 +260,8 @@ class DBConnectMySQL extends DBConnect
                 else {
                     $select = 'CASE '.$field->dbName;
                     $map = $lookup->getCategoryLabelMap($table->name, $fname);
-                    foreach ($map as $category => $label) {
-                        $select .= ' WHEN '."'".($this->mysqli->real_escape_string($category))."'"
+                    foreach ($map as $value => $label) {
+                        $select .= ' WHEN '."'".($this->mysqli->real_escape_string($value))."'"
                             .' THEN '."'".($this->mysqli->real_escape_string($label))."'";
                     }
                     $select .= ' END as '.$field->dbName;

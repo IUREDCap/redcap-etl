@@ -8,6 +8,7 @@ class BasicDemographyTest extends TestCase
 {
     private static $csvDir;
     private static $csvFile;
+    private static $csvLabelFile;
     private static $logger;
     private static $properties;
 
@@ -35,7 +36,8 @@ class BasicDemographyTest extends TestCase
                 self::$csvDir .= DIRECTORY_SEPARATOR;
             }
             
-            self::$csvFile = self::$csvDir . 'Demography.csv';
+            self::$csvFile      = self::$csvDir . 'Demography.csv';
+            self::$csvLabelFile = self::$csvDir . 'Demography'.$redCapEtl->getlabelViewSuffix().'.csv';
 
             # Try to delete the output file in case it exists from a previous run
             if (file_exists(self::$csvFile)) {
@@ -47,6 +49,10 @@ class BasicDemographyTest extends TestCase
             self::$logger->logException($exception);
             self::$logger->logError('Processing failed.');
         }
+
+        #---------------------------------------------------------------------
+        # Check standard table with (coded) values for multipl-choice answers
+        #---------------------------------------------------------------------
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvFile);
         $csv = $parser->parse();
 
@@ -60,5 +66,17 @@ class BasicDemographyTest extends TestCase
         $this->assertEquals(101, count($csv), 'Demography row count check.');
 
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+
+        #-------------------------------------
+        # Check Label View
+        #-------------------------------------
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvLabelFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
+            __DIR__.'/../data/BasicDemographyLabelView.csv'
+        );
+        $expectedCsv = $parser2->parse();
+        $this->assertEquals($expectedCsv, $csv, 'CSV label file check.');
     }
 }

@@ -89,8 +89,6 @@ class RulesParser
                 }
                
                 $rules->addRule($rule);
-                
-                // print_r($rule); // Jim
             }
            
             $lineNumber++;

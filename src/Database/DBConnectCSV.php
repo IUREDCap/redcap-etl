@@ -17,6 +17,7 @@ class DBConnectCSV extends DBConnect
 
     private $directory;
     private $lookup;
+    private $lookupTable;
 
     public function __construct($dbString, $tablePrefix, $labelViewSuffix)
     {
@@ -72,7 +73,7 @@ class DBConnectCSV extends DBConnect
     {
         $label = null;
         $lookup = $this->getLookup();
-
+        
         $rootName = null;
         $category = null;
         if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $fieldName)) {
@@ -145,9 +146,15 @@ class DBConnectCSV extends DBConnect
      *
      * @param Table table the table for which the
      *     "view" with labels is being created.
+     * @param $lookupTable the lookup table for the schema
+     *     for which tables are being created.
      */
-    public function replaceLookupView($table, $lookup)
+    public function replaceLookupView($table, $lookupTable)
     {
+        if (!isset($this->lookupTable)) {
+            $this->lookupTable = $lookupTable;
+        }
+        
         $lookupFile = $this->getLookupTableFile($table);
 
         $fileHandle = fopen($lookupFile, 'w');
@@ -163,6 +170,19 @@ class DBConnectCSV extends DBConnect
     protected function updateRow($row)
     {
         return(1);
+    }
+
+
+    /**
+     * Inserts the rows from the specified table
+     * into the database.
+     */
+    protected function insertRows($table)
+    {
+        $rows = $table->getRows();
+        foreach ($rows as $row) {
+            $this->insertRow($row);
+        }
     }
 
     /**
@@ -196,17 +216,6 @@ class DBConnectCSV extends DBConnect
         return(1);
     }
 
-    /**
-     * Inserts the rows from the specified table
-     * into the database.
-     */
-    protected function insertRows($table)
-    {
-        $rows = $table->getRows();
-        foreach ($rows as $row) {
-            $this->insertRow($row);
-        }
-    }
 
     /**
      * @param resource $fh table file handle
@@ -229,35 +238,51 @@ class DBConnectCSV extends DBConnect
                 $this->fileWrite($fh, $lfh, ',');
             }
 
+            #------------------------------------------------------
+            # Calculate the label for the field (if any)
+            #------------------------------------------------------
+            $label = null;
+            if ($field->usesLookup) {
+                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
+                //if ($fieldType === FieldType::CHECKBOX) {  // This is wrong, because CHECKBOX field becomes int fields
+                    if ($value === 1 || $value === '1') {
+                        list($rootName, $checkboxValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
+                        $label = $this->lookupTable->getLabel($table->name, $field->usesLookup, $checkboxValue);
+                    } else {
+                        $label = '0';
+                    }
+                } else {    // Non-checkbox field
+                    $label = $this->lookupTable->getLabel($table->name, $field->usesLookup, $value);
+                }
+            }
+                    
             switch ($fieldType) {
                 case FieldType::CHECKBOX:
-                    $label = null;
-                    if ($field->usesLookup) {
-                        $label = $this->getLookupLabel($field->dbName, $value);
-                    }
-                        $this->fileWrite($fh, $lfh, $value, $label);
+                    //$label = null;
+                    $this->fileWrite($fh, $lfh, $value, $label);
                     break;
                 case FieldType::DATE:
                 case FieldType::DATETIME:
-                        $this->fileWrite($fh, $lfh, $value);
+                    $this->fileWrite($fh, $lfh, $value);
                     break;
                 case FieldType::FLOAT:
-                        $this->fileWrite($fh, $lfh, $value);
+                    $this->fileWrite($fh, $lfh, $value);
                     break;
                 case FieldType::INT:
-                    $label = null;
-                    if ($field->usesLookup) {
-                        $label = $this->getLookupLabel($field->dbName, $value);
-                    }
-                        $this->fileWrite($fh, $lfh, $value, $label);
+                    //$label = null;
+                    $this->fileWrite($fh, $lfh, $value, $label);
                     break;
                 case FieldType::CHAR:
                 case FieldType::VARCHAR:
                 case FieldType::STRING:
+                    if (isset($label)) {
+                        $this->fileWrite($fh, $lfh, '"'.$value.'"', '"'.$label.'"');
+                    } else {
                         $this->fileWrite($fh, $lfh, '"'.$value.'"');
+                    }
                     break;
                 default:
-                        $this->fileWrite($fh, $lfh, $value);
+                    $this->fileWrite($fh, $lfh, $value, $label);
             }
             $position++;
         }
