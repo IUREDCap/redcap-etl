@@ -11,17 +11,17 @@ class VisitsTestUtility
         try {
             $dbh->exec("DROP TABLE IF EXISTS BMI");
             $dbh->exec("DROP TABLE IF EXISTS Contact");
-            $dbh->exec("DROP VIEW  IF EXISTS Contact_vLookup");
+            $dbh->exec("DROP VIEW  IF EXISTS Contact_label_view");
             $dbh->exec("DROP TABLE IF EXISTS Demography");
-            $dbh->exec("DROP VIEW  IF EXISTS Demography_vLookup");
+            $dbh->exec("DROP VIEW  IF EXISTS Demography_label_view");
             $dbh->exec("DROP TABLE IF EXISTS Followup");
-            $dbh->exec("DROP VIEW  IF EXISTS Followup_vLookup");
+            $dbh->exec("DROP VIEW  IF EXISTS Followup_label_view");
             $dbh->exec("DROP TABLE IF EXISTS Labs");
             $dbh->exec("DROP TABLE IF EXISTS Lookup");
             $dbh->exec("DROP TABLE IF EXISTS Recipients");
             $dbh->exec("DROP TABLE IF EXISTS Sent");
             $dbh->exec("DROP TABLE IF EXISTS VisitInfo");
-            $dbh->exec("DROP VIEW  IF EXISTS VisitInfo_vLookup");
+            $dbh->exec("DROP VIEW  IF EXISTS VisitInfo_label_view");
             $dbh->exec("DROP TABLE IF EXISTS VisitResults");
         } catch (Exception $exception) {
             print "ERROR - table deletion: ".$exception->getMessage()."\n";
@@ -314,7 +314,7 @@ class VisitsTestUtility
 
         $sql = 'SELECT record_id, fruit, name, phone, birthdate, color, '
             .' rooms___1, rooms___22, rooms___303 '
-            .' FROM Demography_vLookup ORDER BY record_id';
+            .' FROM Demography_label_view ORDER BY record_id';
 
         $statement  = $dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -343,7 +343,7 @@ class VisitsTestUtility
 
         $sql =
             'SELECT contact_id, record_id, workat, echeck___1, echeck___2 '
-            .'FROM Contact_vLookup ORDER BY contact_id';
+            .'FROM Contact_label_view ORDER BY contact_id';
 
         $statement  = $dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);

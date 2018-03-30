@@ -15,9 +15,12 @@ class Configuration
     const TRANSFORM_RULES_DEFAULT = '3';
 
     # Default values
-    const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
-    const DEFAULT_TIME_LIMIT    = 0;    # zero => no time limit
-    
+    const DEFAULT_BATCH_SIZE        = 100;
+    const DEFAULT_EMAIL_SUBJECT     = 'REDCap ETL Error';
+    const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
+    const DEFAULT_TABLE_PREFIX      = '';   # i.e., No table prefix
+    const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
+
     private $logger;
     private $errorHandler;
 
@@ -277,26 +280,70 @@ class Configuration
             $this->triggerEtl = $properties[ConfigProperties::TRIGGER_ETL];
         }
 
-        // Determine the batch size to use (how many records to process at once)
-        // Batch size is expected to be a positive integer. The Configuration
-        // project should enforce that.
-        $this->batchSize = $properties[ConfigProperties::BATCH_SIZE];
-
+        #-----------------------------------------------------------------------
+        # Determine the batch size to use (how many records to process at once)
+        # Batch size is expected to be a positive integer. The Configuration
+        # project should enforce that, but not the configuration file.
+        #-----------------------------------------------------------------------
+        $this->batchSize = self::DEFAULT_BATCH_SIZE;
+        if (array_key_exists(ConfigProperties::BATCH_SIZE, $properties)) {
+            $batchSize = $properties[ConfigProperties::BATCH_SIZE];
+            
+            $message = "Invalid ".ConfigProperties::BATCH_SIZE." property."
+                . " This property must be an integer greater than 0.";
+                    
+            if (is_int($batchSize)) {
+                if ($batchSize < 1) {
+                    $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                }
+            } elseif (is_string($batchSize)) {
+                if (!empty($batchSize) && intval($batchSize) < 1) {
+                    $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                }
+            } else {
+                $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+            }
+            $this->batchSize = $batchSize;
+        }
+        
+        
         $this->processTransformationRules($properties);
 
         #----------------------------------------------------------------
         # Get the table prefix (if any)
         #----------------------------------------------------------------
+        $this->tablePrefix = self::DEFAULT_TABLE_PREFIX;
         if (array_key_exists(ConfigProperties::TABLE_PREFIX, $properties)) {
-            $this->tablePrefix = $properties[ConfigProperties::TABLE_PREFIX];
+            $tablePrefix = $properties[ConfigProperties::TABLE_PREFIX];
+            
+            if (!empty($tablePrefix)) {
+                # If the prefix contains something other than letters, numbers or underscore
+                if (preg_match("/[^a-zA-Z0-9_]+/", $tablePrefix) === 1) {
+                    $message = "Invalid ".ConfigProperties::TABLE_PREFIX." property."
+                        . " This property may only contain letters, numbers, and underscores.";
+                    $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                }
+                $this->tablePrefix = $tablePrefix;
+            }
         }
 
 
         #----------------------------------------------------------------
         # Get the label view suffix (if any)
         #----------------------------------------------------------------
+        $this->labelViewSuffix = self::DEFAULT_LABEL_VIEW_SUFFIX;
         if (array_key_exists(ConfigProperties::LABEL_VIEW_SUFFIX, $properties)) {
-            $this->labelViewSuffix = $properties[ConfigProperties::LABEL_VIEW_SUFFIX];
+            $labelViewSuffix = $properties[ConfigProperties::LABEL_VIEW_SUFFIX];
+            
+            if (!empty($labelViewSuffix)) {
+                # If the suffix contains something other than letters, numbers or underscore
+                if (preg_match("/[^a-zA-Z0-9_]+/", $labelViewSuffix) === 1) {
+                    $message = "Invalid ".ConfigProperties::LABEL_VIEW_SUFFIX." property."
+                        . " This property may only contain letters, numbers, and underscores.";
+                     $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                }
+                $this->labelViewSuffix = $labelViewSuffix;
+            }
         }
 
 

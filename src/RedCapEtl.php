@@ -63,8 +63,6 @@ class RedCapEtl
 
     protected $logger;
 
-    protected $batchSize = 1;   // In effect batch size of 1 is no batching
-
     protected $schema;
     protected $lookupTable;  // Table object that has label information for
                               // multiple choice REDCap fields.
@@ -72,16 +70,6 @@ class RedCapEtl
     protected $rowsLoadedForTable = array();
   
     protected $dbcon;
-
-    private $tablePrefix = '';   // Default: no prefix
-                                 // This is intened for cases where multiple ETL instances
-                                 // are writing to the same database. If this isn't used,
-                                 // the Lookup table will be overwritten by each instance.
-
-    private $labelViewSuffix = '_vLookup';
-
-    private $fromEmailAddress;
-    private $emailSubject;
 
     private $logFile;
 
@@ -232,8 +220,8 @@ class RedCapEtl
         $dbconfactory = new DBConnectFactory();
         $this->dbcon = $dbconfactory->createDbcon(
             $this->configuration->getDbConnection(),
-            $this->tablePrefix,
-            $this->labelViewSuffix
+            $this->configuration->getTablePrefix(),
+            $this->configuration->getLabelViewSuffix()
         );
     }
 
@@ -260,7 +248,8 @@ class RedCapEtl
             $rulesText = $this->configuration->getTransformationRules();
         }
         
-        $schemaGenerator = new SchemaGenerator($this->dataProject, $this->tablePrefix, $this->logger);
+        $tablePrefix = $this->configuration->getTablePrefix();
+        $schemaGenerator = new SchemaGenerator($this->dataProject, $tablePrefix, $this->logger);
 
         list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
@@ -294,7 +283,9 @@ class RedCapEtl
         # Extract the record ID batches
         #--------------------------------------------------
         $startExtractTime = microtime(true);
-        $recordIdBatches = $this->dataProject->getRecordIdBatches((int) $this->batchSize);
+        $recordIdBatches = $this->dataProject->getRecordIdBatches(
+            (int) $this->configuration->getBatchSize()
+        );
         $endExtractTime = microtime(true);
         $extractTime += $endExtractTime - $startExtractTime;
 
@@ -737,16 +728,6 @@ class RedCapEtl
     public function logInfoToFile($message)
     {
         $this->logger->logToFile($message, $this->logFile);
-    }
-
-    public function getTablePrefix()
-    {
-        return $this->tablePrefix;
-    }
-    
-    public function getLabelViewSuffix()
-    {
-        return $this->labelViewSuffix;
     }
 
     public function getConfiguration()

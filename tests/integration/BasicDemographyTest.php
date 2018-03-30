@@ -37,7 +37,7 @@ class BasicDemographyTest extends TestCase
             }
             
             self::$csvFile      = self::$csvDir . 'Demography.csv';
-            self::$csvLabelFile = self::$csvDir . 'Demography'.$redCapEtl->getlabelViewSuffix().'.csv';
+            self::$csvLabelFile = self::$csvDir . 'Demography'.$config->getlabelViewSuffix().'.csv';
 
             # Try to delete the output file in case it exists from a previous run
             if (file_exists(self::$csvFile)) {

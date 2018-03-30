@@ -11,7 +11,7 @@ require(__DIR__ . '/../dependencies/autoload.php');
 use IU\PHPCap\RedCapProject;
 use IU\REDCapETL\Configuration;
 use IU\REDCapETL\Logger2;
-use IU\REDCapETL\TransformationRules;
+use IU\REDCapETL\RulesGenerator;
 
 if (count($argv) != 2) {
     print "Usage: php $argv[0] <configuration-file>\n";
@@ -29,8 +29,8 @@ try {
 
     $dataProject = new RedCapProject($apiUrl, $apiToken, true);
 
-    $transformationRules = new TransformationRules('');
-    $rules = $transformationRules->generateDefaultRules($dataProject);
+    $rulesGenerator = new RulesGenerator();
+    $rules = $rulesGenerator->generate($dataProject);
 
     print $rules;
 } catch (Exception $exception) {
