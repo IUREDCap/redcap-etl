@@ -80,7 +80,7 @@ class Table
     {
         $primaryId = strtolower($this->name).'_id';
     
-        $field = new Field($primaryId, FieldType::STRING);
+        $field = new Field($primaryId, FieldType::INT);
 
         $this->primary = $field;
     }
