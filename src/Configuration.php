@@ -28,12 +28,16 @@ class Configuration
     private $allowedServers;
     private $batchSize;
     private $caCertFile;
+    
     private $dataSourceApiToken;
     private $dbConnection;
     private $labelViewSuffix;
     private $logProjectApiToken;
+    
+    private $postProcessingSqlFile;
     private $projectId;
     private $redcapApiUrl;
+    
     private $sslVerify;
     private $tablePrefix;
     private $timeLimit;
@@ -50,7 +54,6 @@ class Configuration
     private $emailFromAddres;
     private $emailSubject;
     private $emailToList;
-
 
     /**
      * Creates a Configuration object from either an array or properties
@@ -111,21 +114,7 @@ class Configuration
         
         
         if (!empty($this->logFile)) {
-            #--------------------------------------------------------
-            # If the logging file property used was set in a file,
-            # allow a relative path
-            #---------------------------------------------------------
-            if (!($this->isAbsolutePath($this->logFile))) {
-                if (empty($this->propertiesFile)) {
-                    # if no properties file was specified, and a relative
-                    # path was used, make it relative to this file
-                    $this->logFile = __DIR__.'/'.$this->logFile;
-                } else {
-                    # take path relative to properties file
-                    $propertiesFileDir = dirname(realpath($this->propertiesFile));
-                    $this->logFile = $propertiesFileDir.'/'.$this->logFile;
-                }
-            }
+            $this->logFile = $this->processFile($this->logFile);
             $this->logger->setLogFile($this->logFile);
         }
 
@@ -165,8 +154,8 @@ class Configuration
         if (array_key_exists(ConfigProperties::REDCAP_API_URL, $properties)) {
             $this->redcapApiUrl = $properties[ConfigProperties::REDCAP_API_URL];
         } else {
-            $message = 'No REDCap API URL property was defined.';
-            $this->logger->logInfo($message);
+            $message = 'No "'.ConfigProperties::REDCAP_API_URL.'" property was defined.';
+            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
         }
 
         #---------------------------------------------------------------
@@ -210,7 +199,6 @@ class Configuration
             }
         }
 
-
         #--------------------------------------------------
         # Get the API token for the configuration project
         #--------------------------------------------------
@@ -222,6 +210,15 @@ class Configuration
             $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
         }
 
+        #---------------------------------------------
+        # Get the post-processing SQL file (if any)
+        #---------------------------------------------
+        $this->postProcessingSqlFile = null;
+        if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL_FILE, $properties)) {
+            $file = $properties[ConfigProperties::POST_PROCESSING_SQL_FILE];
+            $this->postProcessingSqlFile = $this->processFile($file);
+        }
+    
         #------------------------------------------------------
         # If a configuration project API token was defined,
         # process the configuration project
@@ -274,8 +271,10 @@ class Configuration
         }
 
 
-        // Record whether or not the actual ETL should be run. This is
-        // used by the DET handler program, but not the batch program
+        #----------------------------------------------------------------------
+        # Record whether or not the actual ETL should be run. This is
+        # used by the DET handler program, but not the batch program
+        #----------------------------------------------------------------------
         if (array_key_exists(ConfigProperties::TRIGGER_ETL, $properties)) {
             $this->triggerEtl = $properties[ConfigProperties::TRIGGER_ETL];
         }
@@ -360,19 +359,8 @@ class Configuration
             if ($this->isFromFile(ConfigProperties::DB_CONNECTION)) {
                 list($dbType, $dbString) = DBConnectFactory::parseConnectionString($this->dbConnection);
                 if ($dbType === DBConnectFactory::DBTYPE_CSV) {
-                    if (!$this->isAbsolutePath($dbString)) {
-                        //$this->dbConnection = ???;
-                        if (empty($this->propertiesFile)) {
-                            # if no properties file was specified, and a relative
-                            # path was used, make it relative to this file
-                            $dbString = __DIR__.'/'.$dbString;
-                        } else {
-                            # take path relative to properties file
-                            $propertiesFileDir = dirname(realpath($this->propertiesFile));
-                            $dbString = $propertiesFileDir.'/'.$dbString;
-                        }
-                        $this->dbConnection = DBConnectFactory::createConnectionString($dbType, $dbString);
-                    }
+                    $dbString = $this->processFile($dbString);
+                    $this->dbConnection = DBConnectFactory::createConnectionString($dbType, $dbString);
                 }
             }
         } else {
@@ -436,12 +424,15 @@ class Configuration
         # from the configuration file.
         #----------------------------------------------------------------------
         foreach ($this->configuration as $key => $value) {
-            # If the property name does not end with '_complete'
-            # (i.e., if it's not an automatically generated
-            # REDCap form completion field)
-            if (preg_match('/_complete$/', $key) === 0) {
+            # If the property name is a valid property that
+            # may be set from the configuration project
+            if (ConfigProperties::isValidInConfigProject($key)) {
+                if ($value != null) {
+                    $value = trim($value);
+                }
+                
                 if (array_key_exists($key, $properties)) {
-                    if (trim($value) !== '') {
+                    if (!empty($value)) {
                         $properties[$key] = $value;
                     }
                 } else {
@@ -500,19 +491,7 @@ class Configuration
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_FILE) {
             if ($this->isFromFile(ConfigProperties::TRANSFORM_RULES_FILE)) {
                 $file = $properties[ConfigProperties::TRANSFORM_RULES_FILE];
-                if ($this->isAbsolutePath($file)) {
-                    $file = realpath($file);
-                } else {
-                    if (empty($this->propertiesFile)) {
-                        # if no properties file was specified, and a relative
-                        # path was used, make it relative to this file
-                        $file = realpath(__DIR__.'/'.$file);
-                    } else {
-                        # take path relative to properties file
-                        $propertiesFileDir = dirname(realpath($this->propertiesFile));
-                        $file = realpath($propertiesFileDir . '/' . $file);
-                    }
-                }
+                $file = $this->processFile($file);
                 $this->transformationRules = file_get_contents($file);
             } else {
                 $results = $this->configProject->exportFile(
@@ -533,6 +512,44 @@ class Configuration
             $message = 'Unrecognized transformation rules source: '.$this->transformRulesSource;
             $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
         }
+    }
+
+
+    public function processFile($file)
+    {
+        if ($file != null) {
+            $file = trim($file);
+        }
+            
+        if (empty($file)) {
+            $realFile = null;
+        } elseif ($this->isAbsolutePath($file)) {
+            $realFile = realpath($file);
+            if ($realFile === false) {
+                $error = 'File "'.$file.'" not found.';
+                $this->errorHandler->throwException($error);
+            }
+        } else { // Relative path
+            if (empty($this->propertiesFile)) {
+                # if no properties file was specified, and a relative
+                # path was used, make it relative to this file
+                $realFile = realpath(__DIR__.'/'.$file);
+                if ($realFile === false) {
+                    $error = 'File "'.$file.'" not found.';
+                    $this->errorHandler->throwException($error);
+                }
+            } else {
+                # take path relative to properties file
+                $propertiesFileDir = dirname(realpath($this->propertiesFile));
+                $realFile = realpath($propertiesFileDir . '/' . $file);
+                if ($realFile === false) {
+                    $error = 'File "'.$file.'" not found.';
+                    $this->errorHandler->throwException($error);
+                }
+            }
+        }
+
+        return $realFile;
     }
 
 
@@ -706,6 +723,11 @@ class Configuration
         return $this->logFile;
     }
 
+    public function getPostProcessingSqlFile()
+    {
+        return $this->postProcessingSqlFile;
+    }
+    
     public function getProjectId()
     {
         return $this->projectId;

@@ -305,4 +305,10 @@ class DBConnectCSV extends DBConnect
             }
         }
     }
+    
+    public function processQueryFile($queryFile)
+    {
+        $message = "Processing a query file is not supported for CSV files";
+        $this->errorHandler->throwException($message);
+    }
 }

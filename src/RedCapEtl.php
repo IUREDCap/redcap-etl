@@ -109,7 +109,7 @@ class RedCapEtl
             $propertiesFile,
             $useWebScriptLogFile
         );
-        
+
         $this->logger = $this->configuration->getLogger();
         
         $this->configProject = $this->configuration->getConfigProject();
@@ -270,6 +270,9 @@ class RedCapEtl
      *
      * Reads records out of REDCap in batches in order to reduce the likelihood
      * of causing memory issues on the Application server or Database server.
+     *
+     * These three steps are joined together at this level so that
+     * the data from REDCap can be worked on in batches.
      */
     public function extractTransformLoad()
     {
@@ -613,14 +616,13 @@ class RedCapEtl
                 $message = "Transformation rules not parsed. Processing stopped.";
                 $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
             } else {
-                //----------------------------------------------------------------------
-                // Extract, Transform, and Load
-                //
-                // These three steps are joined together at this level so that
-                // the data from REDCap can be worked on in batches
-                //----------------------------------------------------------------------
                 $this->createLoadTables();
                 $this->extractTransformLoad();
+                
+                $sqlFile = $this->configuration->getPostProcessingSqlFile();
+                if (!empty($sqlFile)) {
+                    $this->dbcon->processQueryFile($sqlFile);
+                }
 
                 $this->log("Processing complete.");
             }
@@ -671,13 +673,13 @@ class RedCapEtl
                     $result .= "ETL proceeding. Please see log for results\n";
 
                     $this->createLoadTables();
-                    //--------------------------------------------------------------------
-                    // Extract, Transform, and Load
-                    //
-                    // These three steps are joined together at this level so that
-                    // the data from REDCap can be worked on in batches
-                    //--------------------------------------------------------------------
+
                     $this->extractTransformLoad();
+
+                    $sqlFile = $this->configuration->getPostProcessingSqlFile();
+                    if (!empty($sqlFile)) {
+                        $this->dbcon->processQueryFile($sqlFile);
+                    }
                 } // ETL requested
             } // parseMap valid
 

@@ -52,7 +52,7 @@ Installation Steps
 * PHP 5.6+ or 7+, with:
     * curl extension
     * openssl extension
-* Subversion or Git, for retrieving the RDCap ETL code
+* Subversion or Git, for retrieving the REDCap ETL code
 * MySQL (if you want to store the extracted data in a database)
 * Apache web server (if you want to allow REDCap data entry triggers for starting the ETL process)
 * E-mail server (if you want to support e-mail error notifications)
@@ -235,7 +235,7 @@ To use REDCap's DET (Data Entry Trigger) feature to run the ETL process,
 you need to first set this up as described above. Once the setup has
 been completed, in REDCap:
 
-1. Open the configuration project for the ETLprocess that you want to run
+1. Open the configuration project for the ETL process that you want to run
 2. Edit the "Run" form, and for the "Run on Save" field, select the
    option that specifies that the ETL process should be run
 3. Save the "Run" form

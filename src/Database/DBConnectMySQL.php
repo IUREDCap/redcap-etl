@@ -599,4 +599,45 @@ class DBConnectMySQL extends DBConnect
     
         return($result);
     }
+    
+    public function processQueryFile($queryFile)
+    {
+        $queries = file_get_contents($queryFile);
+        if ($queries === false) {
+            $error = 'Could not access query file "'.$queryFile.'": '
+                .error_get_last();
+            $this->errorHandler->throwException($error);
+        } else {
+            $this->processQueries($queries);
+        }
+    }
+    
+    public function processQueries($queries)
+    {
+        #---------------------------------------------------
+        # Note: use of multi_query has advantage that it
+        # does the parsing; there could be cases where
+        # a semi-colons is in a string, or commented out
+        # that would make parsing difficult
+        #---------------------------------------------------
+        $queryNumber = 1;
+        $result = $this->mysqli->multi_query($queries);
+        if ($result === false) {
+            $mysqlError = $this->mysqli->error;
+            $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
+            $this->errorHandler->throwException($error);
+        } else {
+            #print("Query {$queryNumber} info: ".$this->mysqli->info."\n");
+            while ($this->mysqli->more_results()) {
+                $queryNumber++;
+                $result = $this->mysqli->next_result();
+                if ($result === false) {
+                    $mysqlError = $this->mysqli->error;
+                    $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
+                    $this->errorHandler->throwException($error);
+                }
+                # print ("Query {$queryNumber} info: ".$this->mysqli->info."\n");
+            }
+        }
+    }
 }

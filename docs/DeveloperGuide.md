@@ -177,9 +177,9 @@ To set up the system steps:
    "Upload a REDCap project XML file" option for each of the following
    REDCap project files:
 
-        tests/projects/Vists.REDCap.xml
-        tests/projects/VistsConfig.REDCap.xml
-        tests/projects/VistsLog.REDCap.xml
+        tests/projects/Visits.REDCap.xml
+        tests/projects/VisitsConfig.REDCap.xml
+        tests/projects/VisitsLog.REDCap.xml
 
 2. Request an API token for each of the projects you just created (or
    create a token if you are an admin). The configuration and logging
@@ -223,7 +223,7 @@ for the Visits project:
        with "/api/".
 
     2. __config_api_token__ - set this to the REDCap API token for
-       your REDCap Vists Config project created above.
+       your REDCap Visits Config project created above.
 
 You can check the setup so far by running the following command in the
 top-level directory of you REDCap ETL installation:

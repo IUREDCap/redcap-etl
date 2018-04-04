@@ -2,6 +2,8 @@
 
 namespace IU\REDCapETL\Database;
 
+use IU\REDCapETL\EtlErrorHandler;
+
 /**
  *
  * DBConnect knows about Schema ojbects and how to read/write them to
@@ -15,11 +17,15 @@ abstract class DBConnect
     public $errorString;
     protected $tablePrefix;
     protected $labelViewSuffix;
+    
+    private $errorHandler;
 
     public function __construct($dbString, $tablePrefix, $labelViewSuffix)
     {
         $this->tablePrefix = $tablePrefix;
         $this->labelViewSuffix = $labelViewSuffix;
+        
+        $this->errorHandler = new EtlErrorHandler();
     }
 
     public function replaceTable($table)
@@ -73,4 +79,6 @@ abstract class DBConnect
     abstract protected function insertRow($row);
 
     abstract protected function insertRows($table);
+    
+    abstract public function processQueryFile($queryFile);
 }

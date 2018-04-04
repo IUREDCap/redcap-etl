@@ -104,7 +104,8 @@ here are the ones that are used in the configuration file and set in the configu
 <tr>
 <td>redcap_api_url</td>
 <td> X </td> <td> &nbsp; </td>
-<td>The URL for your REDCap API.
+<td>The URL for your REDCap API. Typically this will be your REDCap URL
+with "/api/" appended to the end.
 Not ending the URL with a slash (/) may cause an error.</td> 
 </tr>
 
@@ -214,6 +215,29 @@ an error occurs while running the ETL process.
 </tbody>
 </table>
 
+### Post-Processing Properties
+
+For the MySQL database, REDCap ETL supports a user-specified SQL file that will
+be executed after the ETL process has completed. You can put SQL commands in here
+that rename columns, change the types of columns, create new columns, etc. 
+
+<table>
+<thead>
+<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
+</thead>
+<tbody>
+
+<tr>
+<td>post_processing_sql_file</td>
+<td> X </td> <td> &nbsp; </td>
+<td>File with SQL statements to execute on the database after the ETL process
+has finished. This property cannot be used for CSV files.</td>
+</tr>
+
+
+</tbody>
+</table>
+
 
 ### Other Properties
 
@@ -268,14 +292,13 @@ are not using DETs.</td>
 </tr>
 
 <tr>
-<td>web_script_usrl</td>
+<td>web_script_url</td>
 <td> X </td> <td> &nbsp; </td>
 <td>This property is only used for the automated tests, so
 is is not needed for normal ETL processing. It is used
-to indicate to the tests the URL of the web script, for exampler:
+to indicate to the tests the URL of the web script, for example:
 http://localhost/visits.php</td> 
 </tr>
 
-</tbody>
 </tbody>
 </table>
