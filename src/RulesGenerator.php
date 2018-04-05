@@ -107,7 +107,8 @@ class RulesGenerator
             # so use a string here
             $type = FieldType::STRING;
         } elseif ($fieldType === 'dropdown' || $fieldType === 'radio') {
-            $type = FieldType::INT;
+            # values for multiple choice can have letters
+            $type = FieldType::STRING;
         } elseif (substr($validationType, 0, 5) === 'date_') {
             # starts with 'date_'
             $type = FieldType::DATE;
