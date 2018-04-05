@@ -15,9 +15,8 @@ class VisitsTest extends TestCase
     public static function setUpBeforeClass()
     {
         $logger = new Logger2('visits_test');
-        $properties = parse_ini_file(self::CONFIG_FILE);
 
-        $configuration = new Configuration($logger, $properties);
+        $configuration = new Configuration($logger, null, self::CONFIG_FILE);
 
         list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
         $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;

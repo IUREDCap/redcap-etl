@@ -18,9 +18,8 @@ class VisitsCodeTest extends TestCase
     public static function setUpBeforeClass()
     {
         self::$logger = new Logger2('visits_code_test');
-        $properties = parse_ini_file(self::CONFIG_FILE);
 
-        $configuration = new Configuration(self::$logger, $properties);
+        $configuration = new Configuration(self::$logger, null, self::CONFIG_FILE);
 
         list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
         $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
@@ -39,8 +38,8 @@ class VisitsCodeTest extends TestCase
             $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
             $redCapEtl->run();
         } catch (EtlException $exception) {
-            $logger->logException($exception);
-            $logger->logError('Processing failed.');
+            self::$logger->logException($exception);
+            self::$logger->logError('Processing failed.');
         }
     }
 

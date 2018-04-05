@@ -219,7 +219,8 @@ an error occurs while running the ETL process.
 
 For the MySQL database, REDCap ETL supports a user-specified SQL file that will
 be executed after the ETL process has completed. You can put SQL commands in here
-that rename columns, change the types of columns, create new columns, etc. 
+that can add new tables or views, change the types of columns, set a 
+column to a calculated value, etc. 
 
 <table>
 <thead>

@@ -123,16 +123,18 @@ class VisitsTestUtility
             array(
                 'visitresults_id' => 1,
                 'record_id' => 1,
-                'sleep_hours' => 7.5
+                'sleep_hours' => 7.5,
+                'sleep_minutes' => 450
             ),
             array(
                 'visitresults_id' => 2,
                 'record_id' => 1,
-                'sleep_hours' => 8.5
+                'sleep_hours' => 8.5,
+                'sleep_minutes' => 510
             )
         );
 
-        $sql = 'SELECT visitresults_id, record_id, sleep_hours'
+        $sql = 'SELECT visitresults_id, record_id, sleep_hours, sleep_minutes'
             .' FROM VisitResults ORDER BY visitresults_id';
 
         $statement  = $dbh->query($sql);
