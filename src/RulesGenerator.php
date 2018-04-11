@@ -37,25 +37,45 @@ class RulesGenerator
 
         $recordId = $metadata[0]['field_name'];
 
-
         $rootInstrument = $this->getRootInstrument($metadata);
-        print "ROOT FORM: {$rootInstrument}\n";
         
         if ($isLongitudinal) {
+            $mappings = $dataProject->exportInstrumentEventMappings();
             $rules = $this->generateLongitudinalProjectRules($instruments, $metadata);
         } else {
-            $rules = $this->generateClassicProjectRules($instruments, $metadata);
+            $rules = $this->generateClassicProjectRules($recordId, $instruments, $metadata, $projectXmlDom);
         }
         return $rules;
     }
     
-    public function generateClassicProjectRules($instruments, $metadata)
+    public function generateClassicProjectRules($recordId, $instruments, $metadata, $projectXmlDom)
     {
         $rules = '';
-                       
+        
+        $rootForm = $this->getRootInstrument($metadata);
+        $repeatingForms = $this->getRepeatingInstruments($projectXmlDom);
+        
+        if (in_array($rootForm, $repeatingForms)) {
+            // special case...
+            // Need a way to generate a record_id only table
+            $rootTable = $rootForm . '_root';
+            $primaryKey = strtolower($rootTable) . '_id';
+            $rules .= "TABLE,{$rootTable},{$primaryKey},".RulesParser::ROOT."\n";
+            #$rules .= "FIELD,{$recordId},varchar(255)\n";
+            #$rules .= "FIELD,first_name,string\n";
+            $rules .= "\n";
+        } else {
+            $rootTable = $rootForm;
+        }
+        
         foreach ($instruments as $formName => $formLabel) {
             $primaryKey = strtolower($formName) . '_id';
-            $rules .= "TABLE,".$formName.",$primaryKey,".RulesParser::ROOT."\n";
+            
+            if (in_array($formName, $repeatingForms)) {
+                $rules .= "TABLE,{$formName},{$rootTable},".RulesParser::REPEATING_INSTRUMENTS."\n";
+            } else {
+                $rules .= "TABLE,{$formName},{$primaryKey},".RulesParser::ROOT."\n";
+            }
     
             foreach ($metadata as $field) {
                 if ($field['form_name'] == $formName) {
@@ -126,6 +146,10 @@ class RulesGenerator
         return $rule;
     }
     
+    /**
+     * Gets the "root instrument", i.e., the one that contains the
+     * record ID.
+     */
     public function getRootInstrument($metadata)
     {
         return $metadata[0]['form_name'];
@@ -145,5 +169,20 @@ class RulesGenerator
             array_push($repeatingInstruments, $instrumentName);
         }
         return $repeatingInstruments;
+    }
+
+    public function getRepeatingEvents($projectXmlDom)
+    {
+        $repeatingEvents = array();
+        $repeatingEventNodes = $projectXmlDom->getElementsByTagNameNS(
+            self::REDCAP_XML_NAMESPACE,
+            'RepeatingEvent'
+        );
+
+        foreach ($repeatingEventNodes as $eventNode) {
+            $eventName = $eventNode->getAttribute('redcap:UniqueEventName');
+            array_push($repeatingEvents, $eventName);
+        }
+        return $repeatingEvents;
     }
 }

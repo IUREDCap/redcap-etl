@@ -184,7 +184,7 @@ class Table
         # field.
         #---------------------------------------------------------------
         if ($this->rowsType === RowsType::BY_REPEATING_INSTRUMENTS) {
-            if (!array_key_exists(RowsType::COLUMN_REPEATING_INSTRUMENT, $data)) {
+            if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 return false;
             }
         }
@@ -204,6 +204,12 @@ class Table
         foreach ($this->getFields() as $field) {
             if (isset($this->recordIdFieldName) && $field->name === $this->recordIdFieldName) {
                 $row->data[$field->dbName] = $data[$field->name];
+                # If the record ID is the ONLY field in the table,
+                # (and it has been found if you get to here)
+                # consider the data to be found
+                if (count($this->getFields()) === 1) {
+                    $dataFound = true;
+                }
             } elseif (RedCapEtl::COLUMN_EVENT === $field->name) {
                 // If this is the field to store the current event
                 $row->data[$field->dbName] = $data[RedCapEtl::REDCAP_EVENT_NAME];
@@ -243,6 +249,7 @@ class Table
                 }
             }
         }
+
 
         if ($dataFound) {
             // Get and set primary key
