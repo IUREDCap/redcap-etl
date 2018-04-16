@@ -112,11 +112,10 @@ In this example:
 
 * The database field __registration_id__ (specified in the TABLE command)
   is created automatically as an auto-incremented synthetic key
-  The database field __record_id__ is represents the REDCap record ID, and is
+* The database field __record_id__ represents the REDCap record ID, and is
   created automatically in the database for all tables by REDCap ETL
 * The database fields __record_id__, __first_name__ and __last_name__
-  match the REDCap fields. The REDCap record ID field, in this case called
-  __record_id__, is created automatically for all tables.
+  match the REDCap fields.
 * The REDCap field __dob__ was renamed to __birthdate__ in the database
 * The __birthdate__ database field has Y-M-D format, which is what REDCap
   returns (even though the field was defined as having M-D-Y format in REDCap)
