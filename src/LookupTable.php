@@ -73,7 +73,9 @@ class LookupTable extends Table
         if (empty($this->lookupTableIn[$tableName.':'.$fieldName])) {
             $this->lookupTableIn[$tableName.':'.$fieldName] = true;
 
-            foreach ($this->lookupChoices[$fieldName] as $category => $label) {
+            foreach ($this->lookupChoices[$fieldName] as $value => $label) {
+                # REDCap apparently converts all field names to lower-case
+                $value = strtolower($value);
                 #--------------------------------------------------------
                 # Set up the table/fieldcategory/label for this choice
                 # The primary key will be set automatically
@@ -81,7 +83,7 @@ class LookupTable extends Table
                 $data = array(
                     self::FIELD_TABLE_NAME => $tableName,
                     self::FIELD_FIELD_NAME => $fieldName,
-                    self::FIELD_CATEGORY => $category,
+                    self::FIELD_CATEGORY => $value,
                     self::FIELD_LABEL => $label
                 );
 
@@ -99,7 +101,7 @@ class LookupTable extends Table
                     $this->map[$tableName][$fieldName] = array();
                 }
                 
-                $this->map[$tableName][$fieldName][$category] = $label;
+                $this->map[$tableName][$fieldName][$value] = $label;
             }
         }
     }
@@ -117,21 +119,29 @@ class LookupTable extends Table
         $label = '';
         # if the value is not null and
         # (is not a string or is a non-blank string)
-        if (isset($value) && (!is_string($value) || trim($value) != '')) {
-            $label = $this->map[$tableName][$fieldName][$value];
+        if (isset($value)) {
+            if (is_string($value)) {
+                $value = trim($value);
+                if ($value !== '') {
+                    $value = strtolower($value);
+                    $label = $this->map[$tableName][$fieldName][$value];
+                }
+            } else {
+                $label = $this->map[$tableName][$fieldName][$value];
+            }
         }
         return $label;
     }
 
     /**
-     * Gets a map from category/value to label for the specfied field.
+     * Gets a map from value to label for the specfied field.
      * @param string $tableName the name of the database table for which
      *    the map is to be retrieved.
      * @param string $fieldName the map to get.
      */
-    public function getCategoryLabelMap($tableName, $fieldName)
+    public function getValueLabelMap($tableName, $fieldName)
     {
-        $categoryLabelMap = $this->map[$tableName][$fieldName];
-        return $categoryLabelMap;
+        $valueLabelMap = $this->map[$tableName][$fieldName];
+        return $valueLabelMap;
     }
 }

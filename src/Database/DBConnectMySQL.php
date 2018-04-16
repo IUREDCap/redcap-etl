@@ -259,7 +259,7 @@ class DBConnectMySQL extends DBConnect
                 } // The field uses the lookup table and is not a checkbox field
                 else {
                     $select = 'CASE '.$field->dbName;
-                    $map = $lookup->getCategoryLabelMap($table->name, $fname);
+                    $map = $lookup->getValueLabelMap($table->name, $fname);
                     foreach ($map as $value => $label) {
                         $select .= ' WHEN '."'".($this->mysqli->real_escape_string($value))."'"
                             .' THEN '."'".($this->mysqli->real_escape_string($label))."'";
