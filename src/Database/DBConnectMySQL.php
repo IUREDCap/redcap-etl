@@ -355,7 +355,7 @@ class DBConnectMySQL extends DBConnect
         // If there's an error executing the statement
         if ($rc === false) {
             $this->errorString = $stmt->error;
-            $message = 'MySQL error in query "'.$query.'"'
+            $message = 'MySQL error'
                 .' ['.$stmt->errno.']: '.$stmt->error;
             $code = EtlException::DATABASE_ERROR;
             $this->errorHandler->throwException($message, $code);
