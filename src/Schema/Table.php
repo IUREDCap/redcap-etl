@@ -210,10 +210,10 @@ class Table
                 if (count($this->getFields()) === 1) {
                     $dataFound = true;
                 }
-            } elseif (RedCapEtl::COLUMN_EVENT === $field->name) {
+            } elseif ($field->name === RedCapEtl::COLUMN_EVENT) {
                 // If this is the field to store the current event
-                $row->data[$field->dbName] = $data[RedCapEtl::REDCAP_EVENT_NAME];
-            } elseif (RedCapEtl::COLUMN_SUFFIXES === $field->name) {
+                $row->data[$field->dbName] = $data[$field->name];
+            } elseif ($field->name === RedCapEtl::COLUMN_SUFFIXES) {
                 // if this is the field to store the current suffix
                 $row->data[$field->dbName] = $suffix;
             } elseif ($field->name === RedCapEtl::COLUMN_REPEATING_INSTRUMENT) {
@@ -244,8 +244,11 @@ class Table
                 $row->data[$field->name] = $data[$variableName];
 
                 // Keep track of whether any data is found
-                if (!empty($data[$variableName])) {
-                    $dataFound = true;
+                if ($data[$variableName] != null) {
+                    # if the data field is not a string, or is a non-blank string
+                    if (!is_string($data[$variableName]) || trim($data[$variableName]) != '') {
+                        $dataFound = true;
+                    }
                 }
             }
         }
