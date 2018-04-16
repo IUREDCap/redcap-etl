@@ -15,6 +15,7 @@
       <file>tests/unit/Schema/FieldTest.php</file>
       <file>tests/unit/Schema/FieldTypeTest.php</file>
       <file>tests/unit/Schema/RowTest.php</file>
+      <file>tests/unit/Schema/RowsTypeTest.php</file>
       <file>tests/unit/Schema/SchemaTest.php</file>
       <file>tests/unit/Schema/TableTest.php</file>
     </testsuite>
