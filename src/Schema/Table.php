@@ -227,8 +227,11 @@ class Table
             } else {
                 // Otherwise, get data
                 
+                $isCheckbox = false;
+
                 // If this is a checkbox field
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
+                    $isCheckbox = true;
                     list($rootName,$cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
                     $variableName = $rootName.$suffix.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
                 } else {
@@ -244,10 +247,20 @@ class Table
                 $row->data[$field->name] = $data[$variableName];
 
                 // Keep track of whether any data is found
-                if ($data[$variableName] != null) {
-                    # if the data field is not a string, or is a non-blank string
-                    if (!is_string($data[$variableName]) || trim($data[$variableName]) != '') {
-                        $dataFound = true;
+                $value = $data[$variableName];
+                if (isset($value)) {
+                    if (is_string($value)) {
+                        $value = trim($value);
+                    }
+
+                    if ($isCheckbox) {
+                        if ($value !== 0 && $value !== '' && $value !== '0') {
+                            $dataFound = true;
+                        }
+                    } else {
+                        if ($value !== '') {
+                            $dataFound = true;
+                        }
                     }
                 }
             }
