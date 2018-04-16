@@ -114,7 +114,12 @@ class LookupTable extends Table
      */
     public function getLabel($tableName, $fieldName, $value)
     {
-        $label = $this->map[$tableName][$fieldName][$value];
+        $label = '';
+        # if the value is not null and
+        # (is not a string or is a non-blank string)
+        if (isset($value) && (!is_string($value) || trim($value) != '')) {
+            $label = $this->map[$tableName][$fieldName][$value];
+        }
         return $label;
     }
 
