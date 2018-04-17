@@ -121,7 +121,13 @@ class EtlProject extends \IU\PHPCap\RedCapProject
      * Get records for the specified record IDs, and return them
      * as a map from record ID to the records for that records ID.
      *
-     * map($recordId => $records).
+     * @param array $recordIds an array of REDCap record IDs
+     *    for which records should be retrieved and returned
+     *    in the batch of records.
+     *
+     * @return array a map from record IDs to the records for each
+     *    record ID. A record ID can have multiple records because
+     *    of multiple and/or repeatable events and repeatable forms.
      */
     public function getRecordBatch($recordIds)
     {

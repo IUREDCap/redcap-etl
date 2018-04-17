@@ -33,18 +33,15 @@ class RedCapEtl
 {
     const CHECKBOX_SEPARATOR         = '___';
 
-    const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
-
     # Instrument (form) name that indicates a DET (Data Entry Trigger)
     # should be processed
     const DET_INSTRUMENT_NAME = 'run';
     
     // For creating output fields to represent events and suffixes
-    const COLUMN_EVENT             = 'redcap_event';
+    const COLUMN_EVENT             = 'redcap_event_name';
     const COLUMN_SUFFIXES          = 'redcap_suffix';
     const COLUMN_EVENT_TYPE        = FieldType::STRING;
     const COLUMN_SUFFIXES_TYPE     = FieldType::STRING;
-    const REDCAP_EVENT_NAME        = 'redcap_event_name';
 
     const COLUMN_REPEATING_INSTRUMENT      = 'redcap_repeat_instrument';
     const COLUMN_REPEATING_INSTRUMENT_TYPE = FieldType::STRING;
@@ -434,8 +431,6 @@ class RedCapEtl
                 }
                 break;
         }
-
-        return true;
     }
 
 
@@ -454,7 +449,6 @@ class RedCapEtl
                 $this->transform($childTable, $records, $primaryKey, $suffix);
             }
         }
-        return true;
     }
 
 

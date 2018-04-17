@@ -163,8 +163,6 @@ class SchemaGenerator
                             $fname !== 'redcap_data_access_group' &&
                             (empty($fieldNames[$fname]))) {
                         $msg = "Field not found in REDCap: '".$fname."'";
-                        print_r($fieldNames);
-                        print "\n-----------------------------------------------------------\n\n\n";
                         $this->logger->logInfo($msg);
                         $warnings .= $msg."\n";
                         continue 2; //continue 3;
