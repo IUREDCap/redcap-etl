@@ -306,7 +306,8 @@ class RedCapEtl
         # Set up the Lookup table, used to convert REDCap
         # multiple choice numeric codes to labels
         #---------------------------------------------------
-        $this->loadTableRows($this->lookupTable);
+        ####$this->loadTableRows($this->lookupTable);
+        # The above table is no longer used
                    
         #-------------------------------------------------------
         # For each batch of data, extract, transform, and load
@@ -460,8 +461,9 @@ class RedCapEtl
     public function createLoadTables()
     {
         // foreach table, replace it
-        // NOTE: This works on each table plus the lookup table
-        $tables = array_merge(array($this->lookupTable), $this->schema->getTables());
+        // NOTE: This works on each table [obsolete: plus the lookup table]
+        #$tables = array_merge(array($this->lookupTable), $this->schema->getTables());
+        $tables = $this->schema->getTables();
         foreach ($tables as $table) {
             $this->dbcon->replaceTable($table);
 

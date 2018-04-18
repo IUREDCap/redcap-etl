@@ -81,9 +81,13 @@ class DBConnectMySQL extends DBConnect
     }
 
 
+    /**
+     * Creates the specified table.
+     *
+     * @param Table $table the table to be created.
+     */
     protected function createTable($table)
     {
-
         // Start query
         $query = 'CREATE TABLE '.$table->name.' (';
 
