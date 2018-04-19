@@ -21,6 +21,8 @@ class TableTest extends TestCase
         $table = new Table($name, $parent, $rowsType, $suffixes, $recordIdFieldName);
         $this->assertNotNull($table, 'table not null');
 
+        $this->assertEquals($name, $table->getName(), 'getName test');
+
         $childTable = new Table('child', $table, RowsType::BY_EVENTS, '', $recordIdFieldName);
         $this->assertNotNull($childTable, 'child table not null');
 

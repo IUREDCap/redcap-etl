@@ -409,6 +409,9 @@ class SchemaGenerator
 
             # Process each value of the checkbox
             foreach ($this->lookupChoices[$lookupFieldName] as $value => $label) {
+                # It looks like REDCap uses the lower-case version of the
+                # value for making the field name
+                $value = strtolower($value);
                 // Form the field names for this value
                 $checkBoxFieldName = $fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value;
                 $checkBoxDbFieldName = '';

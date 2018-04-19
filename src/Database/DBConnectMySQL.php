@@ -81,9 +81,13 @@ class DBConnectMySQL extends DBConnect
     }
 
 
+    /**
+     * Creates the specified table.
+     *
+     * @param Table $table the table to be created.
+     */
     protected function createTable($table)
     {
-
         // Start query
         $query = 'CREATE TABLE '.$table->name.' (';
 
@@ -259,7 +263,7 @@ class DBConnectMySQL extends DBConnect
                 } // The field uses the lookup table and is not a checkbox field
                 else {
                     $select = 'CASE '.$field->dbName;
-                    $map = $lookup->getCategoryLabelMap($table->name, $fname);
+                    $map = $lookup->getValueLabelMap($table->name, $fname);
                     foreach ($map as $value => $label) {
                         $select .= ' WHEN '."'".($this->mysqli->real_escape_string($value))."'"
                             .' THEN '."'".($this->mysqli->real_escape_string($label))."'";
@@ -355,7 +359,7 @@ class DBConnectMySQL extends DBConnect
         // If there's an error executing the statement
         if ($rc === false) {
             $this->errorString = $stmt->error;
-            $message = 'MySQL error in query "'.$query.'"'
+            $message = 'MySQL error'
                 .' ['.$stmt->errno.']: '.$stmt->error;
             $code = EtlException::DATABASE_ERROR;
             $this->errorHandler->throwException($message, $code);

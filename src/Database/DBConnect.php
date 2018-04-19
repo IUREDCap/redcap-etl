@@ -28,6 +28,11 @@ abstract class DBConnect
         $this->errorHandler = new EtlErrorHandler();
     }
 
+    /**
+     * Replaces the specified table in the database
+     *
+     * @param Table $table the table to be replaced.
+     */
     public function replaceTable($table)
     {
 
@@ -36,8 +41,6 @@ abstract class DBConnect
         }
 
         $this->createTable($table);
-
-        return(1);
     }
 
 

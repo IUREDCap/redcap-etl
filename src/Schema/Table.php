@@ -210,10 +210,10 @@ class Table
                 if (count($this->getFields()) === 1) {
                     $dataFound = true;
                 }
-            } elseif (RedCapEtl::COLUMN_EVENT === $field->name) {
+            } elseif ($field->name === RedCapEtl::COLUMN_EVENT) {
                 // If this is the field to store the current event
-                $row->data[$field->dbName] = $data[RedCapEtl::REDCAP_EVENT_NAME];
-            } elseif (RedCapEtl::COLUMN_SUFFIXES === $field->name) {
+                $row->data[$field->dbName] = $data[$field->name];
+            } elseif ($field->name === RedCapEtl::COLUMN_SUFFIXES) {
                 // if this is the field to store the current suffix
                 $row->data[$field->dbName] = $suffix;
             } elseif ($field->name === RedCapEtl::COLUMN_REPEATING_INSTRUMENT) {
@@ -227,8 +227,11 @@ class Table
             } else {
                 // Otherwise, get data
                 
+                $isCheckbox = false;
+
                 // If this is a checkbox field
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
+                    $isCheckbox = true;
                     list($rootName,$cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
                     $variableName = $rootName.$suffix.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
                 } else {
@@ -244,8 +247,21 @@ class Table
                 $row->data[$field->name] = $data[$variableName];
 
                 // Keep track of whether any data is found
-                if (!empty($data[$variableName])) {
-                    $dataFound = true;
+                $value = $data[$variableName];
+                if (isset($value)) {
+                    if (is_string($value)) {
+                        $value = trim($value);
+                    }
+
+                    if ($isCheckbox) {
+                        if ($value !== 0 && $value !== '' && $value !== '0') {
+                            $dataFound = true;
+                        }
+                    } else {
+                        if ($value !== '') {
+                            $dataFound = true;
+                        }
+                    }
                 }
             }
         }

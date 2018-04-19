@@ -38,7 +38,7 @@ class VisitsTestUtility
         self::testLabsTable($testCase, $dbh);
         self::testRecipientsTable($testCase, $dbh);
         self::testSentTable($testCase, $dbh);
-        self::testLookupTable($testCase, $dbh);
+        ###self::testLookupTable($testCase, $dbh);
         self::testDemographyView($testCase, $dbh);
         self::testContactView($testCase, $dbh);
         self::testFollowupTable($testCase, $dbh);
@@ -266,6 +266,7 @@ class VisitsTestUtility
     }
 
 
+    /* ------------------------ OBSOLETE
     public static function testLookupTable($testCase, $dbh)
     {
         $expectedData = array(
@@ -295,6 +296,7 @@ class VisitsTestUtility
 
         $testCase->assertEquals($expectedData, $actualData, 'Lookup table test');
     }
+    -------------------------------------- */
 
 
 

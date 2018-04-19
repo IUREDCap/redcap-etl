@@ -15,6 +15,7 @@
       <file>tests/unit/Schema/FieldTest.php</file>
       <file>tests/unit/Schema/FieldTypeTest.php</file>
       <file>tests/unit/Schema/RowTest.php</file>
+      <file>tests/unit/Schema/RowsTypeTest.php</file>
       <file>tests/unit/Schema/SchemaTest.php</file>
       <file>tests/unit/Schema/TableTest.php</file>
     </testsuite>
@@ -46,6 +47,10 @@
   <filter>
     <whitelist>
       <directory suffix=".php">src</directory>
+      <exclude>
+        <file>src/Database/DBConnectSqlite.php</file>
+        <file>src/Database/DBConnectSQLSRV.php</file>
+      </exclude>
     </whitelist>
   </filter>
 </phpunit>

@@ -33,18 +33,15 @@ class RedCapEtl
 {
     const CHECKBOX_SEPARATOR         = '___';
 
-    const DEFAULT_EMAIL_SUBJECT = 'REDCap ETL Error';
-
     # Instrument (form) name that indicates a DET (Data Entry Trigger)
     # should be processed
     const DET_INSTRUMENT_NAME = 'run';
     
     // For creating output fields to represent events and suffixes
-    const COLUMN_EVENT             = 'redcap_event';
+    const COLUMN_EVENT             = 'redcap_event_name';
     const COLUMN_SUFFIXES          = 'redcap_suffix';
     const COLUMN_EVENT_TYPE        = FieldType::STRING;
     const COLUMN_SUFFIXES_TYPE     = FieldType::STRING;
-    const REDCAP_EVENT_NAME        = 'redcap_event_name';
 
     const COLUMN_REPEATING_INSTRUMENT      = 'redcap_repeat_instrument';
     const COLUMN_REPEATING_INSTRUMENT_TYPE = FieldType::STRING;
@@ -309,7 +306,8 @@ class RedCapEtl
         # Set up the Lookup table, used to convert REDCap
         # multiple choice numeric codes to labels
         #---------------------------------------------------
-        $this->loadTableRows($this->lookupTable);
+        ####$this->loadTableRows($this->lookupTable);
+        # The above table is no longer used
                    
         #-------------------------------------------------------
         # For each batch of data, extract, transform, and load
@@ -434,8 +432,6 @@ class RedCapEtl
                 }
                 break;
         }
-
-        return true;
     }
 
 
@@ -454,7 +450,6 @@ class RedCapEtl
                 $this->transform($childTable, $records, $primaryKey, $suffix);
             }
         }
-        return true;
     }
 
 
@@ -466,8 +461,9 @@ class RedCapEtl
     public function createLoadTables()
     {
         // foreach table, replace it
-        // NOTE: This works on each table plus the lookup table
-        $tables = array_merge(array($this->lookupTable), $this->schema->getTables());
+        // NOTE: This works on each table [obsolete: plus the lookup table]
+        #$tables = array_merge(array($this->lookupTable), $this->schema->getTables());
+        $tables = $this->schema->getTables();
         foreach ($tables as $table) {
             $this->dbcon->replaceTable($table);
 

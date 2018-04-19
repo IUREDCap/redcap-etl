@@ -37,18 +37,18 @@ class DBConnectCSV extends DBConnect
         return $file;
     }
 
-    private function getLookupTableFile($table)
+    private function getLabelViewFile($table)
     {
         $file = $this->directory .  $table->name . $this->labelViewSuffix . DBConnectCSV::FILE_EXTENSION;
         return $file;
     }
 
-    private function getLookupFile()
-    {
-        $file = $this->directory . $this->tablePrefix . LookupTable::NAME
-            . DBConnectCSV::FILE_EXTENSION;
-        return $file;
-    }
+    #private function getLookupFile()
+    #{
+    #    $file = $this->directory . $this->tablePrefix . LookupTable::NAME
+    #        . DBConnectCSV::FILE_EXTENSION;
+    #    return $file;
+    #}
 
     /**
      * Gets an array representation of the Lookup "table" (CSV file).
@@ -56,19 +56,20 @@ class DBConnectCSV extends DBConnect
      * it not be called until after the Lookup table has actually
      * been created.
      */
-    private function getLookup()
-    {
-        if (!isset($this->lookup)) {
-            $this->lookup = array();
-            $file = $this->getLookupFile();
-            $fh = fopen($file, 'r');
-            while (($row = fgetcsv($fh)) !== false) {
-                array_push($this->lookup, $row);
-            }
-        }
-        return $this->lookup;
-    }
+    #private function getLookup()
+    #{
+    #    if (!isset($this->lookup)) {
+    #        $this->lookup = array();
+    #        $file = $this->getLookupFile();
+    #        $fh = fopen($file, 'r');
+    #        while (($row = fgetcsv($fh)) !== false) {
+    #            array_push($this->lookup, $row);
+    #        }
+    #    }
+    #    return $this->lookup;
+    #}
 
+    /********
     private function getLookupLabel($fieldName, $value)
     {
         $label = null;
@@ -97,6 +98,7 @@ class DBConnectCSV extends DBConnect
         }
         return $label;
     }
+    **************/
 
     protected function existsTable($table)
     {
@@ -112,6 +114,7 @@ class DBConnectCSV extends DBConnect
 
     protected function createTable($table)
     {
+        print "\ncreate table TABLE: {$table->name}\n";
         $file = $this->getTableFile($table);
         $fh = fopen($file, 'w');
 
@@ -146,18 +149,19 @@ class DBConnectCSV extends DBConnect
      *
      * @param Table table the table for which the
      *     "view" with labels is being created.
-     * @param $lookupTable the lookup table for the schema
+     * @param LookupTable $lookupTable the lookup table for the schema
      *     for which tables are being created.
      */
     public function replaceLookupView($table, $lookupTable)
     {
+        print "\nreplace view TABLE: {$table->name}\n";
         if (!isset($this->lookupTable)) {
             $this->lookupTable = $lookupTable;
         }
         
-        $lookupFile = $this->getLookupTableFile($table);
+        $labelViewFile = $this->getLabelViewFile($table);
 
-        $fileHandle = fopen($lookupFile, 'w');
+        $fileHandle = fopen($labelViewFile, 'w');
         $this->createTableHeader($fileHandle, $table);
         fclose($fileHandle);
     }
@@ -201,8 +205,8 @@ class DBConnectCSV extends DBConnect
         $lfh = null;
         $lookup = null;
         if ($usesLookup) {
-            $lookupFile = $this->getLookupTableFile($table);
-            $lfh = fopen($lookupFile, 'a');
+            $labelViewFile = $this->getLabelViewFile($table);
+            $lfh = fopen($labelViewFile, 'a');
         }
 
         $fh  = fopen($file, 'a');
@@ -219,7 +223,7 @@ class DBConnectCSV extends DBConnect
 
     /**
      * @param resource $fh table file handle
-     * @param resource $lfh lookup "view" of table file handle
+     * @param resource $lfh label "view" of table file handle
      * @param Row $row the row of data to insert
      */
     private function insertRowIntoFile($fh, $lfh, $row)

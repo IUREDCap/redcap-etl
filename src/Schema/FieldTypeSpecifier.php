@@ -5,7 +5,7 @@ namespace IU\REDCapETL\Schema;
 /**
  * Contains a field type specification.
  */
-class FieldTypeAndSize
+class FieldTypeSpecifier
 {
     public $type;  // FieldType
     public $size;  // int
