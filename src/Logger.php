@@ -12,7 +12,7 @@ namespace IU\REDCapETL;
  * If a message is not logged (either because no logging was specified, or specified
  * logging failed), then an attempt is made to log the message to the PHP system log.
  */
-class Logger2
+class Logger
 {
     private $logFile;
     private $logProject;

@@ -10,7 +10,7 @@ require(__DIR__ . '/../dependencies/autoload.php');
 
 use IU\PHPCap\RedCapProject;
 use IU\REDCapETL\Configuration;
-use IU\REDCapETL\Logger2;
+use IU\REDCapETL\Logger;
 use IU\REDCapETL\RulesGenerator;
 
 if (count($argv) != 2) {
@@ -21,7 +21,7 @@ if (count($argv) != 2) {
 }
 
 try {
-    $logger = new Logger2($argv[0]);
+    $logger = new Logger($argv[0]);
     $config = new Configuration($logger, null, $configurationFile);
 
     $apiUrl   = $config->getRedCapApiUrl();

@@ -83,7 +83,7 @@ class RedCapEtl
     /**
      * Constructor.
      *
-     * @param Logger2 $logger logger for information and errors
+     * @param Logger $logger logger for information and errors
      * @param string $propertiesFile the name of the properties file to use.
      * @param boolean $useWebScriptLogFile indicates if the web script
      *     log file should be used instead of the regular log file. This

@@ -29,10 +29,10 @@ set_include_path(get_include_path() . PATH_SEPARATOR . 'REPLACE_INSTALL_DIR');
 require('REPLACE_INSTALL_DIR'.'/dependencies/autoload.php');
 
 use IU\REDCapETL\RedCapEtl;
-use IU\REDCapETL\Logger2;
+use IU\REDCapETL\Logger;
 
 $app = basename(__FILE__, '.php');
-$logger = new Logger2($app);
+$logger = new Logger($app);
 
 #--------------------------------------------------------------------------------
 # The following line should get replaced during install; don't change the format

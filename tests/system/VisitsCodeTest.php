@@ -17,7 +17,7 @@ class VisitsCodeTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$logger = new Logger2('visits_code_test');
+        self::$logger = new Logger('visits_code_test');
 
         $configuration = new Configuration(self::$logger, null, self::CONFIG_FILE);
 

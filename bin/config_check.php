@@ -12,7 +12,7 @@ require(__DIR__.'/../dependencies/autoload.php');
 use IU\REDCapETL\ConfigProperties;
 use IU\REDCapETL\Configuration;
 use IU\REDCapETL\EtlException;
-use IU\REDCapETL\Logger2;
+use IU\REDCapETL\Logger;
 
 if (count($argv) != 2) {
     print "Usage: php $argv[0] <config-file>\n";
@@ -23,7 +23,7 @@ if (count($argv) != 2) {
 
 try {
     $app = basename(__FILE__, '.php');
-    $logger = new Logger2($app);
+    $logger = new Logger($app);
 
     $configuration = new Configuration($logger, null, $configFile);
     $properties = $configuration->getProperties();

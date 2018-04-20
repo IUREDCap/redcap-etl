@@ -18,10 +18,10 @@ require(__DIR__.'/../dependencies/autoload.php');
 use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\Version;
-use IU\REDCapETL\Logger2;
+use IU\REDCapETL\Logger;
 
 $app = basename(__FILE__, '.php');
-$logger = new Logger2($app);
+$logger = new Logger($app);
 
 #---------------------------
 # Set default values

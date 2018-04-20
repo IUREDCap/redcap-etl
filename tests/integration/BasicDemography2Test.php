@@ -23,7 +23,7 @@ class BasicDemography2Test extends TestCase
     {
         try {
             $app = basename(__FILE__, '.php');
-            self::$logger = new Logger2($app);
+            self::$logger = new Logger($app);
 
             $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');

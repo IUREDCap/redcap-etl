@@ -79,7 +79,7 @@ class Configuration
      * and updates the logger based on the configuration information
      * found.
      *
-     * @param Logger2 $logger logger for information and errors
+     * @param Logger $logger logger for information and errors
      * @param array $properties associative array or property names and values.
      * @param string $propertiesFile the name of the properties file to use
      *     (used as an alternative to the properties array).

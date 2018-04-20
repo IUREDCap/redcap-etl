@@ -7,9 +7,9 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\TestProject;
 
 /**
- * PHPUnit tests for Logger2 class.
+ * PHPUnit tests for Logger class.
  */
-class Logger2Test extends TestCase
+class LoggerTest extends TestCase
 {
     private $project;
 
@@ -19,12 +19,12 @@ class Logger2Test extends TestCase
         $apiToken = '11111111112222222222333333333344';
 
         $this->project = new TestProject($apiUrl, $apiToken);
-        $this->project->setApp('Logger2Test');
+        $this->project->setApp('LoggerTest');
     }
     
     public function testConstructor()
     {
-        $logger = new Logger2('test-app');
+        $logger = new Logger('test-app');
         $this->assertNotNull($logger, 'logger not null check');
     }
 
@@ -33,7 +33,7 @@ class Logger2Test extends TestCase
         $logMessages = ['Test 1', 'Test 2', 'Test 3'];
         $logApps     = array_fill(0, count($logMessages), $this->project->getApp());
 
-        $logger = new Logger2($this->project->getApp());
+        $logger = new Logger($this->project->getApp());
         $logger->setLogProject($this->project);
         $logger->setPrintInfo(false);
 
@@ -53,7 +53,7 @@ class Logger2Test extends TestCase
     
     public function testGetApp()
     {
-        $logger = new Logger2($this->project->getApp());
+        $logger = new Logger($this->project->getApp());
 
         $app = $logger->getApp();
         $this->assertEquals($this->project->getApp(), $app, 'get app check');
