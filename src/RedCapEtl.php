@@ -246,7 +246,7 @@ class RedCapEtl
         }
         
         $tablePrefix = $this->configuration->getTablePrefix();
-        $schemaGenerator = new SchemaGenerator($this->dataProject, $tablePrefix, $this->logger);
+        $schemaGenerator = new SchemaGenerator($this->dataProject, $this->configuration, $this->logger);
 
         list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 

@@ -114,7 +114,6 @@ class DBConnectCSV extends DBConnect
 
     protected function createTable($table)
     {
-        print "\ncreate table TABLE: {$table->name}\n";
         $file = $this->getTableFile($table);
         $fh = fopen($file, 'w');
 
@@ -154,7 +153,6 @@ class DBConnectCSV extends DBConnect
      */
     public function replaceLookupView($table, $lookupTable)
     {
-        print "\nreplace view TABLE: {$table->name}\n";
         if (!isset($this->lookupTable)) {
             $this->lookupTable = $lookupTable;
         }

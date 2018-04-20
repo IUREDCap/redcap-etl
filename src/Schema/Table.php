@@ -33,6 +33,8 @@ class Table
                                   // in the Lookup table?
 
     private $recordIdFieldName;
+    
+    private $keyType;
 
     /**
      * Creates a Table object.
@@ -47,10 +49,11 @@ class Table
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
      */
-    public function __construct($name, $parent, $rowsType, $suffixes = array(), $recordIdFieldName = null)
+    public function __construct($name, $parent, $keyType, $rowsType, $suffixes = array(), $recordIdFieldName = null)
     {
         $this->recordIdFieldName = $recordIdFieldName;
-
+        $this->keyType = $keyType;
+        
         $this->name = str_replace(' ', '_', $name);
         $this->parent = $parent;
 
@@ -62,7 +65,7 @@ class Table
         //          the place of where a parent table would have been and
         //          will be of type string.
         if (RowsType::ROOT === $this->rowsType) {
-            $field = new Field($parent, FieldType::STRING);
+            $field = new Field($parent, $this->keyType->getType(), $this->keyType->getSize());
             $this->primary = $field;
         } else {
             // Otherwise, create a new synthetic primary key
@@ -80,7 +83,7 @@ class Table
     {
         $primaryId = strtolower($this->name).'_id';
     
-        $field = new Field($primaryId, FieldType::INT);
+        $field = new Field($primaryId, $this->keyType->getType(), $this->keyType->getSize());
 
         $this->primary = $field;
     }

@@ -38,6 +38,7 @@ class SchemaGenerator
 
     private $dataProject;
     private $logger;
+    private $configuration;
     private $tablePrefix;
 
     /**
@@ -45,11 +46,12 @@ class SchemaGenerator
      *
      * @param string $rulesText the transformation rules text
      */
-    public function __construct($dataProject, $tablePrefix, $logger)
+    public function __construct($dataProject, $configuration, $logger)
     {
-        $this->dataProject = $dataProject;
-        $this->tablePrefix = $tablePrefix;
-        $this->logger      = $logger;
+        $this->dataProject   = $dataProject;
+        $this->configuration = $configuration;
+        $this->tablePrefix   = $configuration->getTablePrefix();
+        $this->logger        = $logger;
     }
 
 
@@ -78,7 +80,8 @@ class SchemaGenerator
         }
 
         $this->lookupChoices = $this->dataProject->getLookupChoices();
-        $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix);
+        $keyType = $this->configuration->getGeneratedKeyType();
+        $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix, $keyType);
 
         $info = '';
         $warnings = '';
@@ -117,6 +120,7 @@ class SchemaGenerator
                 $parentTableName = $this->tablePrefix . $rule->parentTable;
                 $parentTable = $schema->getTable($parentTableName);
 
+                # Table creation will create the primary key
                 $table = $this->generateTable($rule, $parentTable, $this->tablePrefix, $recordIdFieldName);
 
                 $schema->addTable($table);
@@ -309,10 +313,13 @@ class SchemaGenerator
         $tableName = $this->tablePrefix . $rule->tableName;
         $rowsType  = $rule->rowsType;
 
+        $keyType = $this->configuration->getGeneratedKeyType();
+        
         # Create the table
         $table = new Table(
             $tableName,
             $parentTable,
+            $keyType,
             $rowsType,
             $rule->suffixes,
             $recordIdFieldName
@@ -336,7 +343,12 @@ class SchemaGenerator
                 .$rule->getLineNumber().': "'.$rule->getLine().'"';
             return table;   // try to fix
         } else {
-            $field = new Field($recordIdFieldName, FieldType::STRING);
+            $fieldTypeSpecifier = $this->configuration->getGeneratedRecordIdType();
+            $field = new Field(
+                $recordIdFieldName,
+                $fieldTypeSpecifier->getType(),
+                $fieldTypeSpecifier->getSize()
+            );
             $table->addField($field);
         }
 
@@ -345,32 +357,58 @@ class SchemaGenerator
         // the table
         switch ($rowsType) {
             case RowsType::BY_EVENTS:
-                $field = new Field(RedCapEtl::COLUMN_EVENT, RedCapEtl::COLUMN_EVENT_TYPE);
+                $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+                $field = new Field(
+                    RedCapEtl::COLUMN_EVENT,
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
+                );
                 $table->addField($field);
                 break;
 
             case RowsType::BY_REPEATING_INSTRUMENTS:
+                $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
                 $field = new Field(
                     RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
-                    RedCapEtl::COLUMN_REPEATING_INSTRUMENT_TYPE
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
                 );
                 $table->addField($field);
+                
+                $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
                 $field = new Field(
                     RedCapEtl::COLUMN_REPEATING_INSTANCE,
-                    RedCapEtl::COLUMN_REPEATING_INSTANCE_TYPE
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
                 );
                 $table->addField($field);
                 break;
 
             case RowsType::BY_SUFFIXES:
-                $field = new Field(RedCapEtl::COLUMN_SUFFIXES, RedCapEtl::COLUMN_SUFFIXES_TYPE);
+                $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
+                $field = new Field(
+                    RedCapEtl::COLUMN_SUFFIXES,
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
+                );
                 $table->addField($field);
                 break;
 
             case RowsType::BY_EVENTS_SUFFIXES:
-                $field = new Field(RedCapEtl::COLUMN_EVENT, RedCapEtl::COLUMN_EVENT_TYPE);
+                $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+                $field = new Field(
+                    RedCapEtl::COLUMN_EVENT,
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
+                );
                 $table->addField($field);
-                $field = new Field(RedCapEtl::COLUMN_SUFFIXES, RedCapEtl::COLUMN_SUFFIXES_TYPE);
+                
+                $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
+                $field = new Field(
+                    RedCapEtl::COLUMN_SUFFIXES,
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
+                );
                 $table->addField($field);
                 break;
 

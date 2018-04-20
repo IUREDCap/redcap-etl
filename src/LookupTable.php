@@ -29,11 +29,12 @@ class LookupTable extends Table
     private $lookupChoices;
     private $lookupTableIn;  // For efficiently checking if field was already inserted
     
-    public function __construct($lookupChoices, $tablePrefix)
+    public function __construct($lookupChoices, $tablePrefix, $keyType)
     {
         parent::__construct(
             $tablePrefix . self::NAME,
             self::FIELD_PRIMARY_ID,
+            $keyType,
             RulesParser::ROOT,
             array()
         );

@@ -21,6 +21,13 @@ class ConfigProperties
     const EMAIL_SUBJECT          = 'email_subject';
     const EMAIL_TO_LIST          = 'email_to_list';
     
+    const GENERATED_INSTANCE_TYPE  = 'generated_instance_type';   # for redcap_repeat_instance
+    const GENERATED_KEY_TYPE       = 'generated_key_type';        # for primary and foreign keys
+    const GENERATED_LABEL_TYPE     = 'generated_label_type';      # for label fields in label views
+    const GENERATED_NAME_TYPE      = 'generated_name_type';       # for redcap_event_name, redcap_repeat_instrument
+    const GENERATED_RECORD_ID_TYPE = 'generated_record_id_type';  # for generated REDCap record ID field
+    const GENERATED_SUFFIX_TYPE    = 'generated_suffix_type';     # for redcap_suffix fields
+
     const LABEL_VIEW_SUFFIX        = 'label_view_suffix';
     const LOG_FILE                 = 'log_file';
     const LOG_PROJECT_API_TOKEN    = 'log_project_api_token';
@@ -43,6 +50,7 @@ class ConfigProperties
     const WEB_SCRIPT_LOG_FILE    = 'web_script_log_file';
     const WEB_SCRIPT_URL         = 'web_script_url';
  
+
     /**
      * Indicates if the specified property is a valid configuration
      * property.

@@ -7,6 +7,8 @@ use IU\PHPCap\PhpCapException;
 
 use IU\REDCapETL\Database\DBConnectFactory;
 
+use IU\REDCapETL\Schema\FieldTypeSpecifier;
+
 class Configuration
 {
     # Transform rules source values
@@ -17,6 +19,14 @@ class Configuration
     # Default values
     const DEFAULT_BATCH_SIZE        = 100;
     const DEFAULT_EMAIL_SUBJECT     = 'REDCap ETL Error';
+
+    const DEFAULT_GENERATED_INSTANCE_TYPE  = 'int';
+    const DEFAULT_GENERATED_KEY_TYPE       = 'int';
+    const DEFAULT_GENERATED_LABEL_TYPE     = 'varchar(255)';
+    const DEFAULT_GENERATED_NAME_TYPE      = 'varchar(255)';
+    const DEFAULT_GENERATED_RECORD_ID_TYPE = 'varchar(255)';
+    const DEFAULT_GENERATED_SUFFIX_TYPE    = 'varchar(255)';
+
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
     const DEFAULT_TABLE_PREFIX      = '';   # i.e., No table prefix
     const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
@@ -31,6 +41,14 @@ class Configuration
     
     private $dataSourceApiToken;
     private $dbConnection;
+
+    private $generatedInstanceType;
+    private $generatedKeyType;
+    private $generatedLabelType;
+    private $generatedNameType;
+    private $generatedRecordIdType;
+    private $generatedSuffixType;
+
     private $labelViewSuffix;
     private $logProjectApiToken;
     
@@ -218,7 +236,56 @@ class Configuration
             $file = $properties[ConfigProperties::POST_PROCESSING_SQL_FILE];
             $this->postProcessingSqlFile = $this->processFile($file);
         }
+
+        #-----------------------------------------------------------------
+        # Initialize generated field types and then
+        # process any generated field type properties
+        #-----------------------------------------------------------------
+        $this->generatedInstanceType = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_INSTANCE_TYPE);
+        $this->generatedKeyType      = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_KEY_TYPE);
+        $this->generatedLabelType    = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_LABEL_TYPE);
+        $this->generatedNameType     = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_NAME_TYPE);
+        $this->generatedRecordIdType = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_RECORD_ID_TYPE);
+        $this->generatedSuffixType   = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_SUFFIX_TYPE);
+        
+        if (array_key_exists(ConfigProperties::GENERATED_INSTANCE_TYPE, $properties)) {
+            $this->generatedInstanceType = FieldTypeSpecifier::create(
+                $properties[ConfigProperties::GENERATED_INSTANCE_TYPE]
+            );
+        }
+        
+        if (array_key_exists(ConfigProperties::GENERATED_KEY_TYPE, $properties)) {
+            $this->generatedKeyType = FieldTypeSpecifier::create(
+                $properties[ConfigProperties::GENERATED_KEY_TYPE]
+            );
+        }
+     
+        if (array_key_exists(ConfigProperties::GENERATED_LABEL_TYPE, $properties)) {
+            $this->generatedLabelType = FieldTypeSpecifier::create(
+                $properties[ConfigProperties::GENERATED_LABEL_TYPE]
+            );
+        }
     
+        if (array_key_exists(ConfigProperties::GENERATED_NAME_TYPE, $properties)) {
+            $this->generatedNameType = FieldTypeSpecifier::create(
+                $properties[ConfigProperties::GENERATED_NAME_TYPE]
+            );
+        }
+   
+        if (array_key_exists(ConfigProperties::GENERATED_RECORD_ID_TYPE, $properties)) {
+            $this->generatedRecordIdType = FieldTypeSpecifier::create(
+                $properties[ConfigProperties::GENERATED_RECORD_ID_TYPE]
+            );
+        }
+   
+        if (array_key_exists(ConfigProperties::GENERATED_SUFFIX_TYPE, $properties)) {
+            $this->generatedSuffixType = FieldTypeSpecifier::create(
+                $properties[ConfigProperties::GENERATED_SUFFIX_TYPE]
+            );
+        }
+
+
+
         #------------------------------------------------------
         # If a configuration project API token was defined,
         # process the configuration project
@@ -228,6 +295,9 @@ class Configuration
         }
 
 
+        #--------------------------------
+        # Processed allowed servers
+        #--------------------------------
         if (array_key_exists(ConfigProperties::ALLOWED_SERVERS, $properties)) {
             $this->allowedServers = $properties[ConfigProperties::ALLOWED_SERVERS];
         }
@@ -712,7 +782,37 @@ class Configuration
     {
         return $this->toEmailList;
     }
+    
+    public function getGeneratedInstanceType()
+    {
+        return $this->generatedInstanceType;
+    }
+    
+    public function getGeneratedKeyType()
+    {
+        return $this->generatedKeyType;
+    }
+    
+    public function getGeneratedLabelType()
+    {
+        return $this->generatedLabelType;
+    }
+    
+    public function getGeneratedNameType()
+    {
+        return $this->generatedNameType;
+    }
+    
+    public function getGeneratedRecordIdType()
+    {
+        return $this->generatedRecordIdType;
+    }
 
+    public function getGeneratedSuffixType()
+    {
+        return $this->generatedSuffixType;
+    }
+    
     public function getLabelViewSuffix()
     {
         return $this->labelViewSuffix;

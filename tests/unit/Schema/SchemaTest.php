@@ -26,8 +26,10 @@ class SchemaTest extends TestCase
         $schemaString = $schema->toString();
         $this->assertEquals($expectedSchemaString, $schemaString, 'schema to string check');
 
-        $rootTable = new Table('root', 'root_id', RowsType::ROOT, array(), 'record_id');
-        $table     = new Table('events', $rootTable, RowsType::BY_EVENTS, array(), 'record_id');
+        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
+      
+        $rootTable = new Table('root', 'root_id', $keyType, RowsType::ROOT, array(), 'record_id');
+        $table     = new Table('events', $rootTable, $keyType, RowsType::BY_EVENTS, array(), 'record_id');
         $schema->addTable($rootTable);
         $schema->addTable($table);
 
