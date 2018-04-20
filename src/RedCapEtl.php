@@ -113,8 +113,8 @@ class RedCapEtl
 
         #-------------------------------------------------------------
         # Callback function for use in the RedCap class so
-        # that project objects retrieved will have class EtlProject,
-        # which has extensions for REDCapETL.
+        # that project objects retrieved will have class
+        # EtlRedCapProject, which has extensions for REDCapETL.
         #-------------------------------------------------------------
         $callback = function (
             $apiUrl,
@@ -124,7 +124,7 @@ class RedCapEtl
             $errorHandler = null,
             $connection = null
         ) {
-            return new EtlProject(
+            return new EtlRedCapProject(
                 $apiUrl,
                 $apiToken,
                 $sslVerify,

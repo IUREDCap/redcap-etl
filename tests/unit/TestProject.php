@@ -2,7 +2,7 @@
 
 namespace IU\REDCapETL;
 
-class TestProject extends EtlProject
+class TestProject extends EtlRedCapProject
 {
     private $records;
 

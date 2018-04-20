@@ -5,7 +5,7 @@ namespace IU\RedCapEtl;
 /**
  * REDCap Project class for REDCap ETL that extends PHPCap's RedCapProject class.
  */
-class EtlProject extends \IU\PHPCap\RedCapProject
+class EtlRedCapProject extends \IU\PHPCap\RedCapProject
 {
     private $app;
     private $metadata;
