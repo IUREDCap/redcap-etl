@@ -2,8 +2,6 @@
 
 namespace IU\REDCapETL\Database;
 
-use IU\REDCapETL\EtlErrorHandler;
-
 /**
  *
  * DbConnection knows about Schema ojbects and how to read/write them to
@@ -24,8 +22,6 @@ abstract class DbConnection
     {
         $this->tablePrefix = $tablePrefix;
         $this->labelViewSuffix = $labelViewSuffix;
-        
-        $this->errorHandler = new EtlErrorHandler();
     }
 
     /**

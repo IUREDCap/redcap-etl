@@ -2,7 +2,6 @@
 
 namespace IU\REDCapETL\Database;
 
-use IU\REDCapETL\EtlErrorHandler;
 use IU\REDCapETL\RedCapEtl;
 
 /**
@@ -17,11 +16,8 @@ class DbConnectionFactory
     
     #const DBTYPE_SQLSRV = 'SQLServer';
 
-    private $errorHandler;
-
     public function __construct()
     {
-        $this->errorHandler = new EtlErrorHandler();
     }
 
     public function createDbcon($connectionString, $tablePrefix, $labelViewSuffix)
@@ -43,7 +39,7 @@ class DbConnectionFactory
 
             default:
                 $message = 'Invalid database type: "'.$dbType.'". Valid types are: CSV and MySQL.';
-                $this->errorHandler->throwException($mesage);
+                throw new EtlException($mesage, EtlException::INPUT_ERROR);
         }
 
         return($dbcon);

@@ -32,7 +32,6 @@ class Configuration
     const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
 
     private $logger;
-    private $errorHandler;
 
     private $app;
     private $allowedServers;
@@ -87,7 +86,6 @@ class Configuration
     public function __construct($logger, $properties = null, $propertiesFile = null, $useWebScriptLogFile = false)
     {
         $this->logger = $logger;
-        $this->errorHandler = new EtlErrorHandler();
 
         $this->app = $this->logger->getApp();
 
@@ -100,14 +98,14 @@ class Configuration
             if (!isset($propertiesFile) || trim($propertiesFile) === '') {
                 $message = 'No properties or properties file was specified.';
                 $code    = EtlException::INPUT_ERROR;
-                $this->errorHandler->throwException($message, $code);
+                throw new EtlException($message, $code);
             } else {
                 $propertiesFile = trim($propertiesFile);
                 $properties = parse_ini_file($propertiesFile);
                 if ($properties === false) {
                     $message = 'The properties file \"'.$propertiesFile.'\" could not be read.';
                     $code    = EtlException::INPUT_ERROR;
-                    $this->errorHandler->throwException($message, $code);
+                    throw new EtlException($message, $code);
                 }
             }
         }
@@ -173,7 +171,7 @@ class Configuration
             $this->redcapApiUrl = $properties[ConfigProperties::REDCAP_API_URL];
         } else {
             $message = 'No "'.ConfigProperties::REDCAP_API_URL.'" property was defined.';
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+            throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
         #---------------------------------------------------------------
@@ -192,7 +190,7 @@ class Configuration
                 $message = 'Unrecognized value \"'.$sslVerify.'\" for '
                     .ConfigProperties::SSL_VERIFY
                     .' property; a true a false value should be specified.';
-                $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                throw new EtlException($message, EtlException::INPUT_ERROR);
             }
         } else {
             $this->sslVerify = true;
@@ -225,7 +223,7 @@ class Configuration
             $configProjectApiToken = $properties[ConfigProperties::CONFIG_API_TOKEN];
         } else {
             $message = 'No configuration project API token property was defined.';
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+            throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
         #---------------------------------------------
@@ -311,7 +309,7 @@ class Configuration
             $this->dataSourceApiToken = $properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
         } else {
             $message = 'No data source API token was found in the configuration project.';
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+            throw new EtlException($message, EtlException::INPUT_ERROR);
         }
         
         #-------------------------------------------------------------------------------
@@ -363,14 +361,14 @@ class Configuration
                     
             if (is_int($batchSize)) {
                 if ($batchSize < 1) {
-                    $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                    throw new EtlException($message, EtlException::INPUT_ERROR);
                 }
             } elseif (is_string($batchSize)) {
                 if (!empty($batchSize) && intval($batchSize) < 1) {
-                    $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                    throw new EtlException($message, EtlException::INPUT_ERROR);
                 }
             } else {
-                $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                throw new EtlException($message, EtlException::INPUT_ERROR);
             }
             $this->batchSize = $batchSize;
         }
@@ -390,7 +388,7 @@ class Configuration
                 if (preg_match("/[^a-zA-Z0-9_]+/", $tablePrefix) === 1) {
                     $message = "Invalid ".ConfigProperties::TABLE_PREFIX." property."
                         . " This property may only contain letters, numbers, and underscores.";
-                    $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                    throw new EtlException($message, EtlException::INPUT_ERROR);
                 }
                 $this->tablePrefix = $tablePrefix;
             }
@@ -409,7 +407,7 @@ class Configuration
                 if (preg_match("/[^a-zA-Z0-9_]+/", $labelViewSuffix) === 1) {
                     $message = "Invalid ".ConfigProperties::LABEL_VIEW_SUFFIX." property."
                         . " This property may only contain letters, numbers, and underscores.";
-                     $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                     throw new EtlException($message, EtlException::INPUT_ERROR);
                 }
                 $this->labelViewSuffix = $labelViewSuffix;
             }
@@ -436,7 +434,7 @@ class Configuration
         } else {
             $message = 'No database connection was specified in the '
                 . 'configuration project.';
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+            throw new EtlException($message, EtlException::INPUT_ERROR);
         }
     
         return true;
@@ -472,7 +470,7 @@ class Configuration
             );
         } catch (PhpCapException $exception) {
             $message = 'Unable to set up RedCap object.';
-            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
+            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
         #-----------------------------------------------------------------------
@@ -483,7 +481,7 @@ class Configuration
             $results = $this->configProject->exportRecords();
         } catch (PhpCapException $exception) {
             $error = "Could not get Configuration data";
-            $this->errorHandler->throwException($error, EtlException::PHPCAP_ERROR, $exception);
+            throw new EtlException($error, EtlException::PHPCAP_ERROR, $exception);
         }
         $this->configuration = $results[0];
 
@@ -533,7 +531,7 @@ class Configuration
             $this->projectId = $this->configProject->exportProjectInfo()['project_id'];
         } catch (PhpCapException $exception) {
             $message = "Unable to retrieve project_id.";
-            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
+            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
         return $properties;
@@ -552,11 +550,11 @@ class Configuration
                 $this->transformationRules = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
                 if ($this->transformationRules == '') {
                     $error = 'No transformation rules were entered.';
-                    $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
+                    throw new EtlException($error, EtlException::FILE_ERROR);
                 }
             } else {
                 $error = 'No transformation rules text was defined.';
-                $this->errorHandler->throwException($error, EtlException::INPUT_ERROR);
+                throw new EtlException($error, EtlException::INPUT_ERROR);
             }
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_FILE) {
             if ($this->isFromFile(ConfigProperties::TRANSFORM_RULES_FILE)) {
@@ -571,7 +569,7 @@ class Configuration
                 $this->transformationRules = $results;
                 if ($this->transformationRules == '') {
                     $error = 'No transformation rules file was found.';
-                    $this->errorHandler->throwException($error, EtlException::FILE_ERROR);
+                    throw new EtlException($error, EtlException::FILE_ERROR);
                 }
             }
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_DEFAULT) {
@@ -580,7 +578,7 @@ class Configuration
             $this->transformationRules == '';
         } else {
             $message = 'Unrecognized transformation rules source: '.$this->transformRulesSource;
-            $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+            throw new EtlException($message, EtlException::INPUT_ERROR);
         }
     }
 
@@ -597,7 +595,7 @@ class Configuration
             $realFile = realpath($file);
             if ($realFile === false) {
                 $error = 'File "'.$file.'" not found.';
-                $this->errorHandler->throwException($error);
+                throw new EtlException($error);
             }
         } else { // Relative path
             if (empty($this->propertiesFile)) {
@@ -606,7 +604,7 @@ class Configuration
                 $realFile = realpath(__DIR__.'/'.$file);
                 if ($realFile === false) {
                     $error = 'File "'.$file.'" not found.';
-                    $this->errorHandler->throwException($error);
+                    throw new EtlException($error);
                 }
             } else {
                 # take path relative to properties file
@@ -614,7 +612,7 @@ class Configuration
                 $realFile = realpath($propertiesFileDir . '/' . $file);
                 if ($realFile === false) {
                     $error = 'File "'.$file.'" not found.';
-                    $this->errorHandler->throwException($error);
+                    throw new EtlException($error);
                 }
             }
         }

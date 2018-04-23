@@ -311,6 +311,6 @@ class CsvDbConnection extends DbConnection
     public function processQueryFile($queryFile)
     {
         $message = "Processing a query file is not supported for CSV files";
-        $this->errorHandler->throwException($message);
+        throw new EtlException($message, EtlException::INPUT_ERROR);
     }
 }

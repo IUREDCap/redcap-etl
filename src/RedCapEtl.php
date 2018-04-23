@@ -95,8 +95,6 @@ class RedCapEtl
         $propertiesFile,
         $useWebScriptLogFile = false
     ) {
-        $this->errorHandler = new EtlErrorHandler();
-
         $this->app = $logger->getApp();
 
         $properties = null;
@@ -168,7 +166,7 @@ class RedCapEtl
             $redCap->setProjectConstructorCallback($callback);
         } catch (PhpCapException $exception) {
             $message = 'Unable to set up RedCap object.';
-            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
+            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
 
@@ -191,7 +189,7 @@ class RedCapEtl
             $this->dataProject = $redCap->getProject($dataToken);
         } catch (PhpCapException $exception) {
             $message = 'Could not get data project.';
-            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
+            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
         # $endDataProject = microtime(true);
@@ -584,7 +582,7 @@ class RedCapEtl
             $this->configProject->importRecords($records);
         } catch (PhpCapException $exception) {
             $message = 'Unable to load results and reset ETL trigger';
-            $this->errorHandler->throwException($message, EtlException::PHPCAP_ERROR, $exception);
+            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
         return true;
@@ -610,7 +608,7 @@ class RedCapEtl
 
             if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
                 $message = "Transformation rules not parsed. Processing stopped.";
-                $this->errorHandler->throwException($message, EtlException::INPUT_ERROR);
+                throw new EtlException($message, EtlException::INPUT_ERROR);
             } else {
                 $this->createLoadTables();
                 $this->extractTransformLoad();

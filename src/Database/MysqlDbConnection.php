@@ -5,7 +5,6 @@ namespace IU\REDCapETL\Database;
 use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\LookupTable;
 use IU\REDCapETL\EtlException;
-use IU\REDCapETL\EtlErrorHandler;
 use IU\REDCapETL\Schema\FieldType;
 
 /**
@@ -21,13 +20,9 @@ class MysqlDbConnection extends DbConnection
     private $insertRowStatements;
     private $insertRowBindTypes;
 
-    private $errorHandler;
-
     public function __construct($dbString, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $tablePrefix, $labelViewSuffix);
-
-        $this->errorHandler = new EtlErrorHandler();
 
         // Initialize error string
         $this->errorString = '';
@@ -45,7 +40,7 @@ class MysqlDbConnection extends DbConnection
         if ($this->mysqli->connect_errno) {
             $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;
             $code = EtlException::DATABASE_ERROR;
-            $this->errorHandler->throwException($message, $code);
+            throw new EtlException($message, $code);
         }
 
         $this->insertRowStatements = array();
@@ -74,7 +69,7 @@ class MysqlDbConnection extends DbConnection
             $message = 'MySQL error in query "'.$query.'"'
                 .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
             $code = EtlException::DATABASE_ERROR;
-            $this->errorHandler->throwException($message, $code);
+            throw new EtlException($message, $code);
         }
 
         return(1);
@@ -145,7 +140,7 @@ class MysqlDbConnection extends DbConnection
             $message = 'MySQL error in query "'.$query.'"'
                 .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
             $code = EtlException::DATABASE_ERROR;
-            $this->errorHandler->throwException($message, $code);
+            throw new EtlException($message, $code);
         }
 
         return(1);
@@ -220,7 +215,7 @@ class MysqlDbConnection extends DbConnection
             $message = 'MySQL error in query "'.$query.'"'
                 .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
             $code = EtlException::DATABASE_ERROR;
-            $this->errorHandler->throwException($message, $code);
+            throw new EtlException($message, $code);
         }
 
 
@@ -289,7 +284,7 @@ class MysqlDbConnection extends DbConnection
             $message = 'MySQL error in query "'.$query.'"'
                 .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
             $code = EtlException::DATABASE_ERROR;
-            $this->errorHandler->throwException($message, $code);
+            throw new EtlException($message, $code);
         }
 
 
@@ -362,7 +357,7 @@ class MysqlDbConnection extends DbConnection
             $message = 'MySQL error'
                 .' ['.$stmt->errno.']: '.$stmt->error;
             $code = EtlException::DATABASE_ERROR;
-            $this->errorHandler->throwException($message, $code);
+            throw new EtlException($message, $code);
         }
 
     
@@ -518,7 +513,7 @@ class MysqlDbConnection extends DbConnection
                 $message = 'MySQL error in query "'.$query.'"'
                     .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
                 $code = EtlException::DATABASE_ERROR;
-                $this->errorHandler->throwException($message, $code);
+                throw new EtlException($message, $code);
             }
 
             foreach ($params as $param) {
@@ -597,7 +592,7 @@ class MysqlDbConnection extends DbConnection
                 $message = 'MySQL error: '
                     .' ['.$statement->errno.']: '.$statement->error;
                 $code = EtlException::DATABASE_ERROR;
-                $this->errorHandler->throwException($message, $code);
+                throw new EtlException($message, $code);
             }
         }
     
@@ -610,7 +605,7 @@ class MysqlDbConnection extends DbConnection
         if ($queries === false) {
             $error = 'Could not access query file "'.$queryFile.'": '
                 .error_get_last();
-            $this->errorHandler->throwException($error);
+            throw new EtlException($error);
         } else {
             $this->processQueries($queries);
         }
@@ -629,7 +624,7 @@ class MysqlDbConnection extends DbConnection
         if ($result === false) {
             $mysqlError = $this->mysqli->error;
             $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
-            $this->errorHandler->throwException($error);
+            throw new EtlException($error);
         } else {
             #print("Query {$queryNumber} info: ".$this->mysqli->info."\n");
             while ($this->mysqli->more_results()) {
@@ -638,7 +633,7 @@ class MysqlDbConnection extends DbConnection
                 if ($result === false) {
                     $mysqlError = $this->mysqli->error;
                     $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
-                    $this->errorHandler->throwException($error);
+                    throw new EtlException($error);
                 }
                 # print ("Query {$queryNumber} info: ".$this->mysqli->info."\n");
             }

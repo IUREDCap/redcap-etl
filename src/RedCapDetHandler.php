@@ -10,8 +10,6 @@ class RedCapDetHandler
 {
     protected $debug = '';
     
-    private $errorHandler;
-    
     private $projectId = '';
     private $allowedServers;
 
@@ -23,8 +21,6 @@ class RedCapDetHandler
      */
     public function __construct($projectId, $allowedServers, $logger)
     {
-        $this->errorHandler = new EtlErrorHandler();
-     
         $this->debug = 'no';
 
         $this->projectId = $projectId;
@@ -105,7 +101,7 @@ class RedCapDetHandler
         // If not a valid IP address
         if (!ip2long($serverRemoteAddress)) {
             $error = "Invalid server remote address: ".$_SERVER['REMOTE_ADDR']."\n";
-            $this->errorHandler->throwException($error, EtlException::DET_ERROR);
+            throw new EtlException($error, EtlException::DET_ERROR);
             // $this->notifier->notify($error);
             exit(1);
         }
@@ -118,7 +114,7 @@ class RedCapDetHandler
             if (isset($hostname)) {
                 $error .= " (hostname = ".$hostname.")\n";
             }
-            $this->errorHandler->throwException($error, EtlException::DET_ERROR);
+            throw new EtlException($error, EtlException::DET_ERROR);
             //$this->notifier->notify($error);
 
             exit(1);
@@ -138,7 +134,7 @@ class RedCapDetHandler
         if ((int) $detId !== (int) $this->projectId) {
             $error = "Project id supplied by data entry trigger ('".$detId."') ".
                 "does not match expected id for survey ('".$this->projectId."').";
-            $this->errorHandler->throwException($error, EtlException::DET_ERROR);
+            throw new EtlException($error, EtlException::DET_ERROR);
             //$this->notifier->notify($error);
         }
 

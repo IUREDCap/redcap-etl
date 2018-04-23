@@ -7,7 +7,6 @@
         Unit Tests
     -->
     <testsuite name="unit">
-      <file>tests/unit/EtlErrorHandlerTest.php</file>
       <file>tests/unit/EtlExceptionTest.php</file>
       <file>tests/unit/Logger2Test.php</file>
       <file>tests/unit/RedCapDetHandlerTest.php</file>
