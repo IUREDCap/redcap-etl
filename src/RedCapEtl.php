@@ -37,16 +37,12 @@ class RedCapEtl
     # should be processed
     const DET_INSTRUMENT_NAME = 'run';
     
-    // For creating output fields to represent events and suffixes
+    // For creating output fields to represent events, suffixes and
+    // repeating instruments
     const COLUMN_EVENT             = 'redcap_event_name';
     const COLUMN_SUFFIXES          = 'redcap_suffix';
-    const COLUMN_EVENT_TYPE        = FieldType::STRING;
-    const COLUMN_SUFFIXES_TYPE     = FieldType::STRING;
-
     const COLUMN_REPEATING_INSTRUMENT      = 'redcap_repeat_instrument';
-    const COLUMN_REPEATING_INSTRUMENT_TYPE = FieldType::STRING;
     const COLUMN_REPEATING_INSTANCE        = 'redcap_repeat_instance';
-    const COLUMN_REPEATING_INSTANCE_TYPE   = FieldType::INT;
 
     // For setting whether or not DET invokes the ETL or just parses
     const TRIGGER_ETL_NO  = '0';
@@ -61,8 +57,6 @@ class RedCapEtl
     protected $logger;
 
     protected $schema;
-    protected $lookupTable;  // Table object that has label information for
-                              // multiple choice REDCap fields.
 
     protected $rowsLoadedForTable = array();
   
@@ -109,30 +103,7 @@ class RedCapEtl
         
         $this->configProject = $this->configuration->getConfigProject();
 
-        #-------------------------------------------------------------
-        # Callback function for use in the RedCap class so
-        # that project objects retrieved will have class
-        # EtlRedCapProject, which has extensions for REDCapETL.
-        #-------------------------------------------------------------
-        $callback = function (
-            $apiUrl,
-            $apiToken,
-            $sslVerify = false,
-            $caCertificateFile = null,
-            $errorHandler = null,
-            $connection = null
-        ) {
-            return new EtlRedCapProject(
-                $apiUrl,
-                $apiToken,
-                $sslVerify,
-                $caCertificateFile,
-                $errorHandler,
-                $connection
-            );
-        };
-
-        
+       
         #---------------------------------------------------------
         # Set time limit
         #---------------------------------------------------------
@@ -152,15 +123,35 @@ class RedCapEtl
         }
 
 
-        $apiUrl = $this->configuration->getRedCapApiUrl();
-
         #-----------------------------------------------------------
         # Create RedCap object to use for getting REDCap projects
         #-----------------------------------------------------------
+        $apiUrl = $this->configuration->getRedCapApiUrl();
         $superToken = null; // There is no need to create projects, so this is not needed
         $sslVerify  = $this->configuration->getSslVerify();
         $caCertFile = $this->configuration->getCaCertFile();
 
+        # Callback function for use in the RedCap class so
+        # that project objects retrieved will have class
+        # EtlRedCapProject, which has extensions for REDCapETL.
+        $callback = function (
+            $apiUrl,
+            $apiToken,
+            $sslVerify = false,
+            $caCertificateFile = null,
+            $errorHandler = null,
+            $connection = null
+        ) {
+            return new EtlRedCapProject(
+                $apiUrl,
+                $apiToken,
+                $sslVerify,
+                $caCertificateFile,
+                $errorHandler,
+                $connection
+            );
+        };
+        
         try {
             $redCap = new RedCap($apiUrl, $superToken, $sslVerify, $caCertFile);
             $redCap->setProjectConstructorCallback($callback);
@@ -192,15 +183,12 @@ class RedCapEtl
             throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
-        # $endDataProject = microtime(true);
-        # print "    Data project time: ".($endDataProject - $startDataProject)." seconds\n";
 
-
-        // Create a new Schema
+        #-----------------------------------------
+        # Initialize the schema
+        #-----------------------------------------
         $this->schema = new Schema();
 
-        # $endLog = microtime(true);
-        # print "    Log setup time: ".($endLog - $startLog)." seconds\n";
 
         #---------------------------------------------
         # Log the version number of REDCap ETL
@@ -248,12 +236,9 @@ class RedCapEtl
 
         list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
-        #print_r($lookupTable);
-        #print_r($parseResult);
         ###print "\n".($schema->toString())."\n";
 
         $this->schema      = $schema;
-        $this->lookupTable = $schema->getLookupTable();
 
         return $parseResult;
     }
@@ -299,13 +284,6 @@ class RedCapEtl
         # There will be one record for each event for each record_id
         #--------------------------------------------------------------
         $recordEventsCount = 0;
-
-        #---------------------------------------------------
-        # Set up the Lookup table, used to convert REDCap
-        # multiple choice numeric codes to labels
-        #---------------------------------------------------
-        ####$this->loadTableRows($this->lookupTable);
-        # The above table is no longer used
                    
         #-------------------------------------------------------
         # For each batch of data, extract, transform, and load
@@ -458,9 +436,7 @@ class RedCapEtl
      */
     public function createLoadTables()
     {
-        // foreach table, replace it
-        // NOTE: This works on each table [obsolete: plus the lookup table]
-        #$tables = array_merge(array($this->lookupTable), $this->schema->getTables());
+        // foreach table, replace it with an empty table
         $tables = $this->schema->getTables();
         foreach ($tables as $table) {
             $this->dbcon->replaceTable($table);
@@ -469,7 +445,7 @@ class RedCapEtl
 
             // If this table uses the Lookup table, create a view
             if ($table->usesLookup === true) {
-                $this->dbcon->replaceLookupView($table, $this->lookupTable);
+                $this->dbcon->replaceLookupView($table, $this->schema->getLookupTable());
                 $msg .= '; Lookup table created';
             }
 
@@ -480,40 +456,17 @@ class RedCapEtl
 
 
     /**
-     * Write rows to the database.
+     * Loads the rows that have been stored in the schema into the target database
+     * and deletes the rows after they have been loaded.
      */
     protected function loadRows()
     {
-        // foreach table object, store it's rows in the database and
-        // then remove them from the table object
-        // NOTE: This works on each table AND on each lookup table
-        foreach (array_merge(array($this->lookupTable), $this->schema->getTables()) as $table) {
-            #$rc = $this->dbcon->storeRows($table);
-            #if (false === $rc) {
-            #    $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
-            #}
-
-            # Single row storage (stores one row at a time):
-            # foreach row, load it
+        #--------------------------------------------------------------
+        # foreach table object, store it's rows in the database and
+        # then remove them from the table object
+        #--------------------------------------------------------------
+        foreach ($this->schema->getTables() as $table) {
             $this->loadTableRows($table);
-            /***
-            foreach ($table->getRows() as $row) {
-                $rc = $this->dbcon->storeRow($row);
-                if (false === $rc) {
-                    $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
-                }
-            }
-
-            // Add to summary how many rows created for this table
-            if (array_key_exists($table->name, $this->rowsLoadedForTable)) {
-                $this->rowsLoadedForTable[$table->name] += $table->getNumRows();
-            } else {
-                $this->rowsLoadedForTable[$table->name] = $table->getNumRows();
-            }
-
-            // Empty the rows for this table
-            $table->emptyRows();
-            *****/
         }
 
         return true;
