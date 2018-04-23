@@ -48,8 +48,7 @@
     <whitelist>
       <directory suffix=".php">src</directory>
       <exclude>
-        <file>src/Database/DBConnectSqlite.php</file>
-        <file>src/Database/DBConnectSQLSRV.php</file>
+        <file>src/Database/SqlServerDbConnection.php</file>
       </exclude>
     </whitelist>
   </filter>

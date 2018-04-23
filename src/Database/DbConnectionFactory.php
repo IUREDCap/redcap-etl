@@ -30,15 +30,15 @@ class DbConnectionFactory
 
         switch ($dbType) {
             case DbConnectionFactory::DBTYPE_MYSQL:
-                $dbcon = new DbConnectionMySQL($dbString, $tablePrefix, $labelViewSuffix);
+                $dbcon = new MysqlDbConnection($dbString, $tablePrefix, $labelViewSuffix);
                 break;
 
             #case DbConnectionFactory::DBTYPE_SQLSRV:
-            #    $dbcon = new DbConnectionSQLSRV($dbString, $tablePrefix, $labelViewSuffix);
+            #    $dbcon = new SqlServerDbConnection($dbString, $tablePrefix, $labelViewSuffix);
             #    break;
 
             case DbConnectionFactory::DBTYPE_CSV:
-                $dbcon = new DbConnectionCSV($dbString, $tablePrefix, $labelViewSuffix);
+                $dbcon = new CsvDbConnection($dbString, $tablePrefix, $labelViewSuffix);
                 break;
 
             default:

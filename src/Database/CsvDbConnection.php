@@ -11,7 +11,7 @@ use IU\REDCapETL\Schema\FieldType;
  * When this class is used, CSV files are generated, instead of
  * database tables.
  */
-class DbConnectionCSV extends DbConnection
+class CsvDbConnection extends DbConnection
 {
     const FILE_EXTENSION = '.csv';
 
@@ -33,20 +33,20 @@ class DbConnectionCSV extends DbConnection
 
     private function getTableFile($table)
     {
-        $file = $this->directory  . $table->name . DbConnectionCSV::FILE_EXTENSION;
+        $file = $this->directory  . $table->name . CsvDbConnection::FILE_EXTENSION;
         return $file;
     }
 
     private function getLabelViewFile($table)
     {
-        $file = $this->directory .  $table->name . $this->labelViewSuffix . DbConnectionCSV::FILE_EXTENSION;
+        $file = $this->directory .  $table->name . $this->labelViewSuffix . CsvDbConnection::FILE_EXTENSION;
         return $file;
     }
 
     #private function getLookupFile()
     #{
     #    $file = $this->directory . $this->tablePrefix . LookupTable::NAME
-    #        . DbConnectionCSV::FILE_EXTENSION;
+    #        . CsvDbConnection::FILE_EXTENSION;
     #    return $file;
     #}
 
