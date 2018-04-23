@@ -5,7 +5,7 @@ namespace IU\REDCapETL;
 use IU\PHPCap\RedCap;
 use IU\PHPCap\PhpCapException;
 
-use IU\REDCapETL\Database\DBConnectFactory;
+use IU\REDCapETL\Database\DbConnectionFactory;
 
 use IU\REDCapETL\Schema\FieldTypeSpecifier;
 
@@ -427,10 +427,10 @@ class Configuration
             # type and a relative path was used, replace the relative path with
             # an absolute path
             if ($this->isFromFile(ConfigProperties::DB_CONNECTION)) {
-                list($dbType, $dbString) = DBConnectFactory::parseConnectionString($this->dbConnection);
-                if ($dbType === DBConnectFactory::DBTYPE_CSV) {
+                list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($this->dbConnection);
+                if ($dbType === DbConnectionFactory::DBTYPE_CSV) {
                     $dbString = $this->processFile($dbString);
-                    $this->dbConnection = DBConnectFactory::createConnectionString($dbType, $dbString);
+                    $this->dbConnection = DbConnectionFactory::createConnectionString($dbType, $dbString);
                 }
             }
         } else {

@@ -12,7 +12,7 @@ use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
 
-use IU\REDCapETL\Database\DBConnectFactory;
+use IU\REDCapETL\Database\DbConnectionFactory;
 
 /**
  * Class for REDCap ETL (Extract, Transform, Load).
@@ -214,7 +214,7 @@ class RedCapEtl
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
         #---------------------------------------------------
-        $dbconfactory = new DBConnectFactory();
+        $dbconfactory = new DbConnectionFactory();
         $this->dbcon = $dbconfactory->createDbcon(
             $this->configuration->getDbConnection(),
             $this->configuration->getTablePrefix(),

@@ -6,13 +6,13 @@ use IU\REDCapETL\EtlErrorHandler;
 
 /**
  *
- * DBConnect knows about Schema ojbects and how to read/write them to
+ * DbConnection knows about Schema ojbects and how to read/write them to
  * storage systems such as MySQL and CSV files
  *
- * DBConnect is a parent class that is extended by storage-system
+ * DbConnection is a parent class that is extended by storage-system
  * specific classes. It should not be instantiated.
  */
-abstract class DBConnect
+abstract class DbConnection
 {
     public $errorString;
     protected $tablePrefix;

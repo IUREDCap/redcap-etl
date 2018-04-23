@@ -6,10 +6,10 @@ use IU\REDCapETL\EtlErrorHandler;
 use IU\REDCapETL\RedCapEtl;
 
 /**
- * DBConnectFactory - Creates storage-specific objects.
- * DBConnectFactory creates a DBConnect* object
+ * DbConnectionFactory - Creates storage-specific objects.
+ * DbConnectionFactory creates a DbConnection* object
  */
-class DBConnectFactory
+class DbConnectionFactory
 {
     // Database types
     const DBTYPE_CSV    = 'CSV';
@@ -29,16 +29,16 @@ class DBConnectFactory
         list($dbType, $dbString) = $this->parseConnectionString($connectionString);
 
         switch ($dbType) {
-            case DBConnectFactory::DBTYPE_MYSQL:
-                $dbcon = new DBConnectMySQL($dbString, $tablePrefix, $labelViewSuffix);
+            case DbConnectionFactory::DBTYPE_MYSQL:
+                $dbcon = new DbConnectionMySQL($dbString, $tablePrefix, $labelViewSuffix);
                 break;
 
-            #case DBConnectFactory::DBTYPE_SQLSRV:
-            #    $dbcon = new DBConnectSQLSRV($dbString, $tablePrefix, $labelViewSuffix);
+            #case DbConnectionFactory::DBTYPE_SQLSRV:
+            #    $dbcon = new DbConnectionSQLSRV($dbString, $tablePrefix, $labelViewSuffix);
             #    break;
 
-            case DBConnectFactory::DBTYPE_CSV:
-                $dbcon = new DBConnectCSV($dbString, $tablePrefix, $labelViewSuffix);
+            case DbConnectionFactory::DBTYPE_CSV:
+                $dbcon = new DbConnectionCSV($dbString, $tablePrefix, $labelViewSuffix);
                 break;
 
             default:

@@ -2,31 +2,15 @@
 
 namespace IU\REDCapETL\Database;
 
-// DBConnection provides classes for interacting with a data store,
-// such as a relational database or files.
-//
-// Classes:
-//    DBConnect - Parent class. Storage-system specific classes
-//                inherit from DBConnection. Should not be instantiated.
-//    DBConnectMySQL - Interacts w/ MySQL database
-//    DBConnectSQLSRV - Interacts w/ SQL Server database
-//    DBConnectCSV - Interacts w/ CSV files
-//    DBConnectFactory - Creates storage-specific objects.
-//
-//=========================================================================
-
+use IU\REDCapETL\RedCapEtl;
+use IU\REDCapETL\LookupTable;
 
 /**
- *
- * DBConnectSQLSRV extends DBConnect and knows how to read/write to a
- * SQL Server database.
- *
- * WORK IN PROGRESS
+ * For Sqlite - UNFINISHED
  */
-class DBConnectSQLSRV extends DBConnect
+class DbConnectionSqlite extends DbConnection
 {
-
-    private $pdo;
+    private $mysqli;
 
     private $insertRowStatements;
     private $insertRowBindTypes;
@@ -39,19 +23,17 @@ class DBConnectSQLSRV extends DBConnect
         $this->errorString = '';
 
         // Get parameters from dbString
-        list($host,$database,$username,$password) = explode(':', $dbString, 4);
-        $dsn = "odbc:Driver={ODBC Driver 13 for SQL Server};".
-        "Server=$host;Database=$database";
+        list($host,$username,$password,$database) = explode(':', $dbString);
+        ###list($host,$database,$username,$password) = explode(':',$dbString,4);
 
-        // Get PDO/ODBC connection
-        $opt = array(
-         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-         PDO::ATTR_EMULATE_PREPARES   => false,
-         );
-        $this->pdo = new PDO($dsn, $username, $password, $opt);
+        // Get MySQL connection
+        // NOTE: Could add error checking
+        // mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        // Setting the above causes the program to stop for any uncaugt errors
+        $this->mysqli = new \mysqli($host, $username, $password, $database);
 
-        $this->insertRowStmts = array();
+        $this->insertRowStatements = array();
+        $this->insertRowBindTypes = array();
 
         return(1);
     }
@@ -59,30 +41,25 @@ class DBConnectSQLSRV extends DBConnect
     protected function existsTable($table)
     {
 
-        // Note: existsTable currently assumes that a table always exists,
+        // Note: exists_table currently assumes that a table always exists,
         //       as there is no practical problem with attempting to drop
         //       a non-existent table
 
         return(true);
     }
 
+
     protected function dropTable($table)
     {
-
         // Define query
-        //$query = "DROP TABLE IF EXISTS ". $table->name;
-
-        $query = "IF EXISTS ".
-        "(SELECT * from INFORMATION_SCHEMA.TABLES ".
-        "WHERE TABLE_NAME = '". $table->name .
-        "' and TABLE_SCHEMA = 'dbo') ".
-        "DROP TABLE dbo.". $table->name;
+        $query = "DROP TABLE IF EXISTS ". $table->name;
 
         // Execute query
-        $this->pdo->query($query);  // NOTE: Add error checking?
+        $this->mysqli->query($query); // NOTE: add error checking?
 
         return(1);
     }
+
 
     protected function createTable($table)
     {
@@ -127,16 +104,13 @@ class DBConnectSQLSRV extends DBConnect
         $query .= ')';
 
         // Execute query
-        $this->pdo->query($query); // NOTE: add error checking?
+        $this->mysqli->query($query); // NOTE: add error checking?
 
         return(1);
     }
 
     public function replaceLookupView($table, $lookup)
     {
-
-        // ADA DEBUG -- Making this a stub for now
-        return(1);
 
         $selects = array();
 
@@ -155,7 +129,7 @@ class DBConnectSQLSRV extends DBConnect
                 // the category embedded in the name of the checkbox field
 
                 // Separate root from category
-                    list($rootName,$cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
+                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
 
                     $agg = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
                          "and l.category=".$cat.", label, NULL)) ";
@@ -174,10 +148,10 @@ class DBConnectSQLSRV extends DBConnect
             }
         }
 
-        $query = 'CREATE OR REPLACE VIEW '.$table->name.$this->labelViewSuffix.' AS ';
+        $query = 'CREATE OR REPLACE VIEW '.$table->name.$labelViewSiffux.' AS ';
 
         $select = 'SELECT '. implode(', ', $selects);
-        $from = 'FROM '.$this->tablePrefix.RedCalEtl::LOOKUP_TABLE_NAME.' l, '.$table->name.' t';
+        $from = 'FROM '.$this->tablePrefix.LookupTable::NAME.' l, '.$table->name.' t';
         $where = "WHERE l.table_name like '".$table->name."'";
         $groupBy = 'GROUP BY t.'.$table->primary->name;
 
@@ -218,8 +192,6 @@ class DBConnectSQLSRV extends DBConnect
     protected function insertRow($row)
     {
 
-        // How to prepare/bind/execute PDO https://phpdelusions.net/pdo#methods
-
         // How to handle unknow # of vars in bind_param. See answer by abd.agha
         // http://stackoverflow.com/questions/1913899/mysqli-binding-params-using-call-user-func-array
 
@@ -227,38 +199,36 @@ class DBConnectSQLSRV extends DBConnect
         //     If the query doesn't already exist, it will be created
         list($stmt,$bindTypes) = $this->getInsertRowStmt($row->table);
 
-        // Bind each parameter
-        $fields = $row->table->getAllFields();
-        for ($i=0; $i < count($fields); $i++) {
-            $field = $fields[$i];
+        // Start bind parameters list with bind_types and escaped table name
+        $params = array($bindTypes);
 
+        // Add escaped field values, in order, to bind parameters
+        foreach ($row->table->getAllFields() as $field) {
             // Replace empty string with null
-            $value = $row->data[$field->dbName];
-            $toBind = ('' !== $value) ? $value : null;
+            $escaped = $this->mysqli->real_escape_string($row->data[$field->dbName]);
+            $toBind = ('' !== $escaped) ? $escaped : null;
 
-            // Bind param
-            if (false ===
-            $stmt->bindValue(':'.strtolower($field->dbName), $toBind, $bindTypes[$field->dbName])
-            ) {
-              // ADA DEBUG
-                print implode($this->pdo->errorInfo()."\n", 0);
-            }
+            array_push($params, $toBind);
         }
 
+        // Get references to each parameter -- necessary because
+        // call_user_func_array wants references
+        $paramRefs = array();
+        foreach ($params as $key => $value) {
+            $paramRefs[$key] = &$params[$key];
+        }
+
+        // Bind references to prepared query
+        call_user_func_array(array($stmt, 'bind_param'), $paramRefs);
+    
         // Execute query
-        // See examples from http://php.net/manual/en/pdostatement.execute.php
         $rc = $stmt->execute();   //NOTE add error checking?
 
         // If there's an error executing the statement
         if (false === $rc) {
-            // ADA DEBUG
-            // NOT SURE WHAT TO USE FOR AN ERROR STRING HERE
-            $this->errorString = implode($this->pdo->errorInfo() . "\n", 0);
+            $this->errorString = $stmt->error;
             return(false);
         }
-
-        // Close the cursor
-        $stmt->closeCursor();
     
         return(1);
     }
@@ -266,33 +236,33 @@ class DBConnectSQLSRV extends DBConnect
     private function getInsertRowStmt($table)
     {
 
-        // How to prepare/bind/execute PDO https://phpdelusions.net/pdo#methods
-
         // If we've already created this query, return it
-        if (isset($this->insertRowStatements[$table->name])) {
-            return(array($this->insertRowStatements[$table->name],
+        if (isset($this->insertRowStmts[$table->name])) {
+            return(array($this->insertRowStmts[$table->name],
                $this->insertRowBindTypes[$table->name]));
         } // Otherwise, create and save the query and its associated bind types
         else {
             // Create field_names, positions array, and params arrays
             $fieldNames = array();
             $bindPositions = array();
-            $bindTypes = array();
+            $bindTypes = '';
             foreach ($table->getAllFields() as $field) {
                 array_push($fieldNames, $field->dbName);
-
-                array_push($bindPositions, ':'.strtolower($field->dbName));
+                array_push($bindPositions, '?');
 
                 switch ($field->type) {
-                    case FieldType::INT:
-                        $bindTypes[$field->dbName] = PDO::PARAM_INT;
-                        break;
-
                     case FieldType::STRING:
                     case FieldType::DATE:
+                        $bindTypes .= 's';
+                        break;
+
                     case FieldType::FLOAT:
+                          $bindTypes .= 'd';
+                        break;
+
+                    case FieldType::INT:
                     default:
-                          $bindTypes[$field->dbName] = PDO::PARAM_STR;
+                          $bindTypes .= 'i';
                         break;
                 }
             }
@@ -307,13 +277,12 @@ class DBConnectSQLSRV extends DBConnect
             $query .= 'VALUES (' . implode(",", $bindPositions) .')';
       
             // Prepare query
-            $stmt = $this->pdo->prepare($query);  //NOTE add error checking?
+            $stmt = $this->mysqli->prepare($query);  //NOTE add error checking?
 
-            // Check that stmt was created
+            // ADA DEBUG
             if (!$stmt) {
                  error_log("query :".$query."\n", 0);
-                 error_log("Statement failed: ".
-                 implode("\n", $this->pdo->errorInfo() . "\n", 0));
+                 error_log("Statement failed: ". $this->mysqli->error . "\n", 0);
             }
 
             $this->insertRowStatements[$table->name] = $stmt;
@@ -321,5 +290,5 @@ class DBConnectSQLSRV extends DBConnect
     
             return(array($stmt,$bindTypes));
         } // else
-    } // get_insert_row_stmt
+    }
 }

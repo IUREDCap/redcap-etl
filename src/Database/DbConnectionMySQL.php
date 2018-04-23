@@ -9,12 +9,12 @@ use IU\REDCapETL\EtlErrorHandler;
 use IU\REDCapETL\Schema\FieldType;
 
 /**
- * DBConnectMySQL - Interacts w/ MySQL database
+ * DbConnectionMySQL - Interacts w/ MySQL database
  *
- * DBConnectMySQL extends DBConnect and knows how to read/write to a
+ * DbConnectionMySQL extends DbConnection and knows how to read/write to a
  * MySQL database.
  */
-class DBConnectMySQL extends DBConnect
+class DbConnectionMySQL extends DbConnection
 {
     private $mysqli;
 

@@ -12,8 +12,6 @@ use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
 
-use IU\REDCapETL\Database\DBConnectFactory;
-
 /**
  * Transformation rules used for transforming data from
  * the extracted format to the load format used in the
