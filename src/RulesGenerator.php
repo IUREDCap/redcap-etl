@@ -5,7 +5,7 @@ namespace IU\REDCapETL;
 use IU\REDCapETL\Schema\FieldType;
 
 /**
- * Rules generated class for automatically generating
+ * Rules generator class for automatically generating
  * transformation rules for a REDCap project.
  */
 class RulesGenerator

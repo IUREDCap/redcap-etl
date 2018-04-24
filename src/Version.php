@@ -1,6 +1,6 @@
 <?php
 
-namespace IU\RedCapEtl;
+namespace IU\REDCapETL;
 
 /**
  * Class for storing software version information.

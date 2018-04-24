@@ -1,6 +1,6 @@
 <?php
 
-namespace IU\RedCapEtl;
+namespace IU\REDCapETL;
 
 /**
  * REDCap Project class for REDCap ETL that extends PHPCap's RedCapProject class.

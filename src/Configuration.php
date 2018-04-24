@@ -9,6 +9,11 @@ use IU\REDCapETL\Database\DbConnectionFactory;
 
 use IU\REDCapETL\Schema\FieldTypeSpecifier;
 
+/**
+ * Class used to store ETL configuration information from
+ * the configuration file and the optional configuration
+ * project if defined.
+ */
 class Configuration
 {
     # Transform rules source values
@@ -539,7 +544,9 @@ class Configuration
 
 
     /**
-     * Gets the transformation rules.
+     * Processes the transformation rules.
+     *
+     * @param array $properties The current properties.
      */
     private function processTransformationRules($properties)
     {
@@ -583,6 +590,14 @@ class Configuration
     }
 
 
+    /**
+     * Processes a file and returns the absolute pathname for the file.
+     * Relative file paths in the configuration file are considered
+     * to be relative to the directory of the configuration file.
+     *
+     * @param string $file Relative or absolute path for file to be
+     *     processed.
+     */
     public function processFile($file)
     {
         if ($file != null) {
@@ -620,7 +635,14 @@ class Configuration
         return $realFile;
     }
 
-
+    /**
+     * Indicated if the specified e-mail address is valid.
+     *
+     * @param string $email The e-mail address to check.
+     *
+     * @return boolean returns true of the specified e-mail address
+     *     is valid, and false otherwise.
+     */
     public function isValidEmail($email)
     {
         $isValid = false;
@@ -651,6 +673,11 @@ class Configuration
 
     /**
      * Indicates is the specified path is an absolute path.
+     *
+     * @param string $path the path to check.
+     *
+     * @return boolean returns true of the path is an absoulte path,
+     *     and false otherwise.
      */
     private function isAbsolutePath($path)
     {
@@ -686,6 +713,11 @@ class Configuration
      * Indicates if the current value for the specified property
      * is from the configuration file or array argument
      * (as opposed to the configuration project).
+     *
+     * @param string $property the property to check.
+     *
+     * @return boolean returns true if the property is from the
+     *     configuration file, and false otherwise.
      */
     public function isFromFile($property)
     {

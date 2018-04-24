@@ -5,7 +5,8 @@ namespace IU\REDCapETL\Schema;
 use IU\REDCapEtl\EtlException;
 
 /**
- * Contains a field type specification.
+ * Contains a complete type specification for a field, including the
+ * type and size of the field.
  */
 class FieldTypeSpecifier
 {
@@ -15,8 +16,10 @@ class FieldTypeSpecifier
     /**
      * Constructor.
      *
-     * @param FieldType $type the type (name) for the field.
-     * @param int $size the size of the field (for field types that have sizes)
+     * @param string $type the type (name) for the field.
+     * @param int $size the size of the field (for field types that have sizes).
+     *
+     * @see FieldType
      */
     public function __construct($type, $size)
     {
@@ -25,7 +28,8 @@ class FieldTypeSpecifier
     }
     
     /**
-     * # WORK IN PROGRESS
+     * Creates a field type specifier from the specified field type definition
+     * string.
      *
      * @param string $fieldTypeDefinition a field type definition string,
      *     e.g., "int", "char(10)", "varchar(255)".

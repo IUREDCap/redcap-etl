@@ -5,8 +5,7 @@ namespace IU\REDCapETL\Database;
 use IU\REDCapETL\RedCapEtl;
 
 /**
- * DbConnectionFactory - Creates storage-specific objects.
- * DbConnectionFactory creates a DbConnection* object
+ * Factory class for creating database connections.
  */
 class DbConnectionFactory
 {
@@ -20,7 +19,7 @@ class DbConnectionFactory
     {
     }
 
-    public function createDbcon($connectionString, $tablePrefix, $labelViewSuffix)
+    public function createDbConnection($connectionString, $tablePrefix, $labelViewSuffix)
     {
         list($dbType, $dbString) = $this->parseConnectionString($connectionString);
 

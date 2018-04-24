@@ -57,8 +57,9 @@ class SchemaGenerator
      * Generates the database schema from the rules (text).
      *
      * @return array the first element of the array is the Schema
-     *    object for the database, the second is the status
-     *    information.
+     *    object for the database, the second is and array where
+     *    the first element is that parse status, and the second
+     *    is a string with info, warning and error messages.
      */
     public function generateSchema($rulesText)
     {

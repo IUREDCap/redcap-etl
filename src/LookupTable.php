@@ -9,10 +9,6 @@ use IU\REDCapETL\Schema\FieldType;
 /**
  * Table class for storing multiple choice field categories (numeric codes)
  * and their corresponding labels.
- *
- * **** Note - could combine the Lookup class into this (it would
- *             basically be a memory copy of the tables rows that
- *             are set up for quick access).
  */
 class LookupTable extends Table
 {

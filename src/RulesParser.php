@@ -10,6 +10,9 @@ use IU\REDCapETL\Rules\TableRule;
 use IU\REDCapETL\Schema\FieldType;
 use IU\REDCapETL\Schema\RowsType;
 
+/**
+ * Parser class for ETL transformation rules.
+ */
 class RulesParser
 {
     # Separators; example: "TABLE,  Fifth, Main, EVENTS:a;b"

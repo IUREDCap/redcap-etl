@@ -8,10 +8,7 @@ use IU\REDCapETL\EtlException;
 use IU\REDCapETL\Schema\FieldType;
 
 /**
- * MysqlDbConnection - Interacts w/ MySQL database
- *
- * MysqlDbConnection extends DbConnection and knows how to read/write to a
- * MySQL database.
+ * Database connection class for MySQL databases.
  */
 class MysqlDbConnection extends DbConnection
 {

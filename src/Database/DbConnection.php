@@ -3,12 +3,8 @@
 namespace IU\REDCapETL\Database;
 
 /**
- *
- * DbConnection knows about Schema ojbects and how to read/write them to
- * storage systems such as MySQL and CSV files
- *
- * DbConnection is a parent class that is extended by storage-system
- * specific classes. It should not be instantiated.
+ * Abstract database connection class that is used as
+ * a parent class by storage-system specific classes.
  */
 abstract class DbConnection
 {

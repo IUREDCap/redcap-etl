@@ -2,6 +2,9 @@
 
 namespace IU\REDCapETL\Rules;
 
+/**
+ * Parse tree representation of the ETL transformation rules.
+ */
 class Rules
 {
     /** @var array an array of Rule objects */
@@ -15,6 +18,11 @@ class Rules
         $this->parsedLineCount = 0;
     }
 
+    /**
+     * Adds the specified rule.
+     *
+     * @param Rule the rule to add.
+     */
     public function addRule($rule)
     {
         array_push($this->rules, $rule);

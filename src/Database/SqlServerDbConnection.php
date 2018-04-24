@@ -3,11 +3,7 @@
 namespace IU\REDCapETL\Database;
 
 /**
- *
- * SqlServerDbConnection extends DbConnection and knows how to read/write to a
- * SQL Server database.
- *
- * WORK IN PROGRESS
+ * Database connection class for SQL server (UNFINISHED).
  */
 class SqlServerDbConnection extends DbConnection
 {
