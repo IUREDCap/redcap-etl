@@ -8,9 +8,12 @@ namespace IU\REDCapETL\Schema;
  */
 class Row
 {
-    public $table = '';  // The table that contains this row
+    /** @var Table The table that contains this row. */
+    public $table = null;
 
-    public $data = array();  // Map from field_name => value
+    /** @var array Map from field name to value
+        for transferring a row from REDCap to a database */
+    public $data = array();
 
     /**
      * Creates a row.

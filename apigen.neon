@@ -5,7 +5,7 @@
 #-----------------------------------------------------------
 source: [src]
 destination: docs/api
-title: "PHPCap"
+title: "REDCap ETL"
 
 accessLevels: [private,protected,public]
 

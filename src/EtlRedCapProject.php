@@ -4,10 +4,13 @@ namespace IU\RedCapEtl;
 
 /**
  * REDCap Project class for REDCap ETL that extends PHPCap's RedCapProject class.
+ * This class provides caching of results from REDCap and extended functionality.
  */
 class EtlRedCapProject extends \IU\PHPCap\RedCapProject
 {
+    /** @var string the name of the application */
     private $app;
+    
     private $metadata;
     private $primaryKey;
     private $fieldNames;
@@ -49,7 +52,7 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
      * @return array a map of field names to a map of categories to labels
      *     for that field name.
      *
-     * $results = array($fieldName1 => array($category1 => $label1, ...), ...)
+     *     array($fieldName1 => array($value1 => $label1, ...), ...)
      */
     public function getLookupChoices()
     {
@@ -101,6 +104,9 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
         return $results;
     }
 
+    /**
+     * Gets a map of the field names of the project
+     */
     public function getFieldNames()
     {
         if (empty($this->fieldNames)) {
@@ -112,7 +118,6 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
             }
         }
 
-        ###print_r($this->fieldNames);
         return $this->fieldNames;
     }
 

@@ -8,7 +8,7 @@
     -->
     <testsuite name="unit">
       <file>tests/unit/EtlExceptionTest.php</file>
-      <file>tests/unit/Logger2Test.php</file>
+      <file>tests/unit/LoggerTest.php</file>
       <file>tests/unit/RedCapDetHandlerTest.php</file>
 
       <file>tests/unit/Schema/FieldTest.php</file>

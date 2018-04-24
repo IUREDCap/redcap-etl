@@ -12,7 +12,8 @@ class TestProject extends EtlRedCapProject
         $type = 'flat',
         $overwriteBehavior = 'normal',
         $dateFormat = 'YMD',
-        $returnContent = 'count'
+        $returnContent = 'count',
+        $forceAutoNumber = false
     ) {
         if (!isset($this->records)) {
             $record = array();

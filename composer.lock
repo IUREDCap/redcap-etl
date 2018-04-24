@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "34ee86e59bc72689d422a4a46f652491",
-    "content-hash": "392a17c7bf2ce1633ba8bc1de31edc47",
+    "hash": "f124fa1f5de672a86e2c7123c055bac5",
+    "content-hash": "9dbc41150798d36c6e22494cfd2bc632",
     "packages": [
         {
             "name": "phpcap/phpcap",
