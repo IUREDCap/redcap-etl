@@ -11,6 +11,7 @@
 		"phpcap/phpcap" : "^0.3.0"
 	},
         "require-dev" : {
+        "apigen/apigen" : "v4.1.2",
 		"phpunit/phpunit" : "6.3.0",
         "squizlabs/php_codesniffer" : "2.8.1",
 		"kzykhys/php-csv-parser" : "1.4.1"

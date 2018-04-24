@@ -18,6 +18,9 @@
 # Composer PHP archive file
 composer.phar
 
+# api documentation directory
+/docs/api
+
 # tests configuration file
 /tests/config.ini
 

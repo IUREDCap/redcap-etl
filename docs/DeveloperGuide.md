@@ -297,6 +297,21 @@ The output
 could be stored in a different directory, but directory tests/coverage
 has been set up to be ignored by Git.
 
+API Documentation
+-----------------------------------
+
+The API documentation is programatically generated and is not stored
+in GitHub.
+
+To generate the API documentation, execute the following command in the
+top-level REDCap ETL directory:
+
+    ./vendor/bin/apigen generate
+    
+To view the API documentation, open the following file with a web browser:
+
+    ./docs/api/index.html
+    
 
 Coding Standards Compliance
 ------------------------------------
