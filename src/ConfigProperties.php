@@ -3,7 +3,7 @@
 namespace IU\REDCapETL;
 
 /**
- * Configurations properties class.
+ * Configuration properties class.
  */
 class ConfigProperties
 {

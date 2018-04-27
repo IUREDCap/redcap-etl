@@ -7,7 +7,9 @@ namespace IU\REDCapETL;
  */
 class Notifier
 {
-    protected $sender = '';     // Email address to be used as From: address
+    /** @var string from e-mail address. */
+    protected $sender = '';
+    
     protected $recipients = '';  // Email address list of recipients
     protected $subject = '';    // Subject of sent emails
     protected $file = null;     // Optional file used for logging
@@ -25,6 +27,8 @@ class Notifier
   
     /**
      * Sends an e-mail notification.
+     *
+     * @param string $message the message to send.
      *
      * @return array an array of strings that are the send to e-mail addresses
      *     for which the send failed (if any).
@@ -62,11 +66,11 @@ class Notifier
      * For info about how to send attachemnts in emails sent from PHP:
      * http://webcheatsheet.com/php/send_email_text_html_attachment.php#attachment
      *
-     * $mailToAddress,       // string or array thereof
-     * $attachments,          // array of $attachment
-     * $message,              // string
-     * $subjectString,       // string
-     * $fromAddress          // string or array thereof
+     * @param mixed $mailToAddress string or array to e-mail addresses.
+     * @param array $attachments array of attachments.
+     * @param string $message the e-mail message to send.
+     * @param string $subjectString the e-mail subject.
+     * @param string $fromAddress e-mail from address.
      *
      * @return array list of send to e-mails for which the send failed (if any).
      */

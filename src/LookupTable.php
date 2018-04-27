@@ -7,7 +7,7 @@ use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
 
 /**
- * Table class for storing multiple choice field categories (numeric codes)
+ * Table class for storing multiple choice field values and
  * and their corresponding labels.
  */
 class LookupTable extends Table
@@ -58,8 +58,8 @@ class LookupTable extends Table
     
     
     /**
-     * Adds a multiple choice field's categories (i.e., numeric codes)
-     * and labels (for the categories) into the Lookup table.
+     * Adds a multiple choice field's values and corresponding
+     * labels into the Lookup table.
      *
      * @param string $tablename the name of the table that contains the
      *     field to be added.
@@ -104,7 +104,7 @@ class LookupTable extends Table
     }
 
     /**
-     * Gets the label for the specified input values.
+     * Gets the label for the specified field's value.
      *
      * @param string $tableName the name of the database table for which
      *    the label is to be retrieved.
@@ -131,7 +131,8 @@ class LookupTable extends Table
     }
 
     /**
-     * Gets a map from value to label for the specfied field.
+     * Gets a map from values to labels for the specfied field.
+     *
      * @param string $tableName the name of the database table for which
      *    the map is to be retrieved.
      * @param string $fieldName the map to get.
