@@ -7,7 +7,7 @@ REDCap ETL System Components
 The main components of an installed REDCap ETL system
 are shown in the diagram below, and described in the text below.
 
-![alt text](etl-process.png "ETL Process")
+![ETL Process](etl-process.png)
 
 * **Configuration File.** This file contains configuration information for a REDCap ETL
 process. A single REDCap ETL instance can have multiple configuration files that describe
