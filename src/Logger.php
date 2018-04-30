@@ -98,7 +98,9 @@ class Logger
 
 
     /**
-     * Set the REDCap project for logging.
+     * Sets the REDCap project for logging.
+     *
+     * @param EtlRedCapProject $project the REDCap logging project.
      */
     public function setLogProject($project)
     {
@@ -232,10 +234,9 @@ class Logger
     }
 
     /**
-     * Logs the specified message to the log file, if one was specified.
+     * Logs the specified message to the log file, if one was configured.
      *
      * @param string $message the message to log.
-     * @param string $error if
      * @return array first element is true if the logging operation succeeded, or false otherwise.
      *               second element is unset if no error occurred, and a string with the error
      *               message if an error did occur.

@@ -105,7 +105,10 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
     }
 
     /**
-     * Gets a map of the field names of the project
+     * Gets a map of the field names of the project.
+     *
+     * @return array map where the keys are the export field names
+     *     from REDCap and the values are all 1.
      */
     public function getFieldNames()
     {

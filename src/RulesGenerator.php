@@ -16,6 +16,9 @@ class RulesGenerator
      * Generates transformation rules for the
      * specified data project.
      *
+     * @param EtlRedCapProject $dataProject the REDCap project that
+     *     contains the data for which rules are being generated.
+     *
      * @return string the auto-generated transformation rules.
      */
     public function generate($dataProject)
@@ -111,7 +114,14 @@ class RulesGenerator
         return $rules;
     }
 
-    
+
+    /**
+     * Gets the tranformation rule for the specified field.
+     *
+     * @param array $field REDCap metada for a field.
+     *
+     * @return Rule transformation rule for the specified field.
+     */
     public function getFieldRule($field)
     {
         $rule = null;

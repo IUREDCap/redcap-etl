@@ -144,10 +144,12 @@ class RulesParser
     /**
      * Parses a Field Rule.
      *
-     * @param array $values array of comma-separated string values from
+     * @param array $values array of string values from
      *     the line that has the rule to be parsed.
      * @param string $line the original line containing the rule; used
      *     for error messages.
+     * @param int $lineNumber the line number of the rule in the original
+     *     transformation rules text.
      */
     private function parseFieldRule($values, $line, $lineNumber)
     {

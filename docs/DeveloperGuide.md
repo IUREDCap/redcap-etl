@@ -107,7 +107,6 @@ The test types above are listed in order of least to most setup effort.
 | __MySQL database setup required__     |      |            | &#10003;  |
 | __Web server setup required__         |      |            | &#10003;  |
 | __Webs script setup required__        |      |            | &#10003;  |
-| __REDCap DET setup required__         |      |            | &#10003;  |
 
 
 

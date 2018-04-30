@@ -110,6 +110,8 @@ class LookupTable extends Table
      *    the label is to be retrieved.
      * @param string $fieldName the field name for of the label to get.
      * @param string $value the (coded) value of the label to get.
+     *
+     * @return string the label for the specified field.
      */
     public function getLabel($tableName, $fieldName, $value)
     {
@@ -136,6 +138,8 @@ class LookupTable extends Table
      * @param string $tableName the name of the database table for which
      *    the map is to be retrieved.
      * @param string $fieldName the map to get.
+     *
+     * @return array map from values to labels for the specified field.
      */
     public function getValueLabelMap($tableName, $fieldName)
     {

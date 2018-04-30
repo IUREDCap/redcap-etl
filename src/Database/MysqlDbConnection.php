@@ -6,6 +6,7 @@ use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\LookupTable;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\Table;
 
 /**
  * Database connection class for MySQL databases.

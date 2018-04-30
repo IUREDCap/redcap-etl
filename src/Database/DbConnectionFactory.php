@@ -19,6 +19,16 @@ class DbConnectionFactory
     {
     }
 
+    /**
+     * Creates a database connection based on the database type contained in the
+     * specified connection string.
+     *
+     * @param string $connectionString the database connection string, which contains
+     *     the database type and the connection details.
+     * @param string $tablePrefix the table name prefix to use for generated tables.
+     * @param string $labelViewSuffix suffix used for label views, i.e., views of tables
+     *     that replace multiple choice value codes with their corresponding labels.
+     */
     public function createDbConnection($connectionString, $tablePrefix, $labelViewSuffix)
     {
         list($dbType, $dbString) = $this->parseConnectionString($connectionString);
