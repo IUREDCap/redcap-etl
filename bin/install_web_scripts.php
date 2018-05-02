@@ -2,12 +2,12 @@
 <?php
 
 #-------------------------------------------------------------
-# Installs web scripts for REDCap ETL.
+# Installs web scripts for REDCap-ETL.
 #
 # Installs scripts for all web script specifications found
 # in configuration (.ini) files in the configuration
 # directory, which defaults to the config directory in
-# the REDCap ETL installation.
+# the REDCap-ETL installation.
 #
 # Options:
 #    [-c <config-dir>] -w <web-directory>

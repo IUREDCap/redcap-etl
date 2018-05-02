@@ -3,7 +3,7 @@
 namespace IU\REDCapETL;
 
 /**
- * Exception class for REDCap ETL.
+ * Exception class for REDCap-ETL.
  *
  * @see http://php.net/manual/en/class.exception.php
  *         Information on additional methods provided by parent class Exception.

@@ -20,10 +20,8 @@
 # explicitly set.
 #--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-// Required libraries
-//--------------------------------------------------------------------------
-// NOTE: INSTALL_DIR will be replaced by the installation program
+
+# NOTE: REPLACE_INSTALL_DIR will be replaced by the installation program
 set_include_path(get_include_path() . PATH_SEPARATOR . 'REPLACE_INSTALL_DIR');
 
 require('REPLACE_INSTALL_DIR'.'/dependencies/autoload.php');
@@ -45,7 +43,6 @@ $propertiesFile = null;
 try {
     $useWebScriptLogFile = true;
     $redCapEtl = new RedCapEtl($logger, $propertiesFile, $useWebScriptLogFile);
-    $logger = $redCapEtl->getLogger();
     $redCapEtl->runForDet();
 } catch (EtlException $exception) {
     $logger->logException($exception);

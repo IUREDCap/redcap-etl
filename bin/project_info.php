@@ -5,7 +5,7 @@ require(__DIR__.'/../dependencies/autoload.php');
 
 #-----------------------------------------------------------
 # Script for getting information about the REDCap projects
-# associated with a REDCap ETL properties file. This
+# associated with a REDCap-ETL properties file. This
 # script outputs the ID and title for the Config, Log,
 # and Data projects.
 #

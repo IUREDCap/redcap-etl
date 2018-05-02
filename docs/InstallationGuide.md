@@ -1,16 +1,16 @@
-REDCap ETL Installation Guide
+REDCap-ETL Installation Guide
 ==================================
 
 
-REDCap ETL System Components
+REDCap-ETL System Components
 -------------------------------------------------------
-The main components of an installed REDCap ETL system
+The main components of an installed REDCap-ETL system
 are shown in the diagram below, and described in the text below.
 
 ![ETL Process](etl-process.png)
 
-* **Configuration File.** This file contains configuration information for a REDCap ETL
-process. A single REDCap ETL instance can have multiple configuration files that describe
+* **Configuration File.** This file contains configuration information for a REDCap-ETL
+process. A single REDCap-ETL instance can have multiple configuration files that describe
 different ETL processes.
 The configuration file either needs to define all needed configuration information, or
 have a REDCap API token for a configuration project that contains the remaining necessary
@@ -19,16 +19,16 @@ REDCap API. When the ETL process runs, this is the first file that will be acces
 * **REDCap Projects**
     * **Configuration Project.** This optional project contains configuration
 information for the ETL process.  The advantage of using this project is that
-it allows users who have access to REDCap, but not the REDCap ETL server,
+it allows users who have access to REDCap, but not the REDCap-ETL server,
 to be able to change
 certain configuration properties, and to start the ETL process. This disadvantage of
 using this project are that it increases the complexity of the installation.
     * **Data Project.** This is the REDCap project that contains the data to be extracted.
     * **Logging Project.** This optional project is used for logging. The advantage of using this project is that
-users who have access to REDCap, but not the REDCap ETL server, can access the log information.
+users who have access to REDCap, but not the REDCap-ETL server, can access the log information.
 The disadvantages of
 using this project are that it increases the complexity of the installation and slows down performance.
-* **REDCap ETL.** The software that actually does the Extract Transform and Load.
+* **REDCap-ETL.** The software that actually does the Extract Transform and Load.
 * **Database.** There needs to be some kind of database where the extracted and transformed data
 can be loaded, such as a MySQL database, although this could be as simple as a directory for CSV files.
 * **Apache Web Server.** The Apache web server is necessary if you want to use REDCap's data entry triggers (DETs) to check the transformation rules and/or start
@@ -52,7 +52,7 @@ Installation Steps
 * PHP 5.6+ or 7+, with:
     * curl extension
     * openssl extension
-* Subversion or Git, for retrieving the REDCap ETL code
+* Subversion or Git, for retrieving the REDCap-ETL code
 * MySQL (if you want to store the extracted data in a database)
 * Apache web server (if you want to allow REDCap data entry triggers for starting the ETL process)
 * E-mail server (if you want to support e-mail error notifications)
@@ -88,7 +88,7 @@ Create a database and database user that will be used as the place to store the 
     GRANT ALL ON `etl_user`.* TO 'etl'@'localhost';
 
 
-### Step 3 - Get the REDCap ETL Software
+### Step 3 - Get the REDCap-ETL Software
 
 Get the code:
 
@@ -110,20 +110,20 @@ Setting up a REDCap configuration project is optional. Configuration
 can be specified using only the configuration file (see below) instead.
 
 Using a configuration project adds complexity to the setup, and will
-require an API token for REDCap ETL to access the configuration
+require an API token for REDCap-ETL to access the configuration
 project. The possible advantages of using a configuration project are:
 
-* It allows users who do not have access to the REDCap ETL server
+* It allows users who do not have access to the REDCap-ETL server
   to modify configuration information
 * It allows users who do not have access to the server to run the
-  REDCap ETL process using REDCap's DET (Data Entry Trigger) feature
+  REDCap-ETL process using REDCap's DET (Data Entry Trigger) feature
   
 
 
 
 In REDCap, create a new project using the
 "Upload a REDCap project XML file " option using the file
-**projects/redcap-etl-config.xml** from REDCap ETL downloaded
+**projects/redcap-etl-config.xml** from REDCap-ETL downloaded
 in the previous step.
 
 Set at least all of the required fields for this project, and get a REDCap API token for the project. This token will need to be placed in your configuration
@@ -135,7 +135,7 @@ See [Configuration Guide](ConfigurationGuide.md) for more information.
 
 ### Step 5 (Optional) - Set up a Logging Project
 
-In REDCap, create a new project using the "Upload a REDCap project XML file" option using the file **projects/redcap-etl-log.xml** from REDCap ETL downloaded previously. Then get an API token for this project, and then set the field for this in the configuration project.
+In REDCap, create a new project using the "Upload a REDCap project XML file" option using the file **projects/redcap-etl-log.xml** from REDCap-ETL downloaded previously. Then get an API token for this project, and then set the field for this in the configuration project.
 
 
 
@@ -146,13 +146,13 @@ be used in conjunction with a configuration project.
 
 If you are using a configuration project, your configuration file will
 still need to specify at least your REDCap API's URL, and the REDCap API token
-of your configuration project, so that REDCap ETL will be able to locate your
+of your configuration project, so that REDCap-ETL will be able to locate your
 configuration project.
 
 The standard place to store configuration files is in the **config/**
-directory of the REDCap ETL installation. This is the default directory
+directory of the REDCap-ETL installation. This is the default directory
 that the web script installation script (see below) will search for configuration
-files. However, they could be stored in any directory where REDCap ETL
+files. However, they could be stored in any directory where REDCap-ETL
 has read access.
 
 To create a new configuration file, the file **config/config-example.ini**
@@ -172,7 +172,13 @@ On Ubuntu 16, for example, you can set up an e-mail server using the following c
 
 ### Step 8 (Optional) - Set up a Data Entry Trigger
 
-Setting up a Data Entry Trigger (DET) will allow you to run the ETL process from REDCap. Once set up, when you save the "Run" form in the configuration project, with the option to run the ETL process, a DET will be generated that will execute a web script on the REDCap ETL server that will start the ETL process. This can be useful if there are users who need to manually start the ETL process, but do not have access to the REDCap ETL server.
+Setting up a Data Entry Trigger (DET) will allow you to run the ETL
+process from REDCap. Once set up, when you save the "Run" form in the
+configuration project, with the option to run the ETL process, a DET
+will be generated that will execute a web script on the REDCap-ETL
+server that will start the ETL process. This can be useful if there are
+users who need to manually start the ETL process, but do not have
+access to the REDCap-ETL server.
 
 #### Web server setup
 You need to set up a web server to run web scripts that will process DETs.
@@ -182,29 +188,39 @@ For example, to install the Apache web server on Ubuntu 16, use:
         sudo apt install apache2 libapache2-mod-php
 
 #### Web script installation
-To set up the Data Entry Trigger (DET) web script, that will process the DET, use the following command:
+To set up the Data Entry Trigger (DET) web script, that will process the
+DET, use the following command:
 
         bin/install_web_scripts.php
     
-You need to specify the directory where you want the web scripts installed. And, if you placed you configuration file(s) in a directory other that REDCap ETL's config directory, you will also need to specify a configuration directory. When this web script is run, it will recurse through the config directory, and install the web scripts (if any) specified in the configuration (.ini) files that it finds to the specified web directory. For example:
+You need to specify the directory where you want the web scripts
+installed. And, if you placed you configuration file(s) in a directory
+other that REDCap-ETL's config directory, you will also need to specify
+a configuration directory. When this web script is run, it will recurse
+through the config directory, and install the web scripts (if any)
+specified in the configuration (.ini) files that it finds to the
+specified web directory. For example:
 
         php install_web_scripts.php -w /var/www/html
     
-would install all web scripts specified in configuration (.ini) files in REDCap ETL's config directory to the /var/www/html directory.
+would install all web scripts specified in configuration (.ini) files in
+REDCap-ETL's config directory to the /var/www/html directory.
 
 #### Configure the DET in REDCap
 You need to configure the DET in REDCap. To do this:
 
 1. Go to **Project Setup** for your configuration project in REDCap.
-2. In the **Enable optional modules and customization** section, click on the **Additional customizations** button.
-3. In the customizations dialog, check the **Data Entry Trigger** box, and enter the URL for your installed web script.
+2. In the **Enable optional modules and customization** section, click
+   on the **Additional customizations** button.
+3. In the customizations dialog, check the **Data Entry Trigger** box,
+   and enter the URL for your installed web script.
 4. Click on the **Save** button
 
 
 Running the ETL Process
 -------------------------------------
 
-There are 3 ways to run REDCap ETL:
+There are 3 ways to run REDCap-ETL:
 
 1. __Manual.__ Execute the **bin/redcap_etl.php** command manually on the server
 2. __DET.__ Generate a DET (Data Entry Trigger) by saving the "Run" form of
@@ -220,7 +236,7 @@ and specify the configuration file to use, for example:
         /opt/redcap-etl/bin/redcap_etl.php -c /opt/redcap-etl/config/visits.ini
 In the example above:
 
-* `/opt/redcap-etl` is the directory where REDCap ETL was installed on
+* `/opt/redcap-etl` is the directory where REDCap-ETL was installed on
   the server
 * `/opt/redcap-etl/config/visits.ini` is a configuration file set up
   by a user that specifies an ETL process
@@ -255,9 +271,9 @@ For this example:
 
 * `0 2 * * *` indicates that the ETL process will be run at 2:00am
   every day. See cron documentation for more details.
-* `/opt/redcap-etl` is the directory where REDCap ETL has been installed
+* `/opt/redcap-etl` is the directory where REDCap-ETL has been installed
   in this case
-* `redcap_etl.php` is the standard REDCap ETL script for running the
+* `redcap_etl.php` is the standard REDCap-ETL script for running the
   ETL process
 * `/opt/redcap-etl/config/visits.ini` is the configuration file
   for the ETL process that has been set up by the user

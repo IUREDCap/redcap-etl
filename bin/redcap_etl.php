@@ -2,7 +2,7 @@
 <?php
 
 #-------------------------------------------------------------
-# This is the batch script for REDCap ETL: Extracting data
+# This is the batch script for REDCap-ETL: Extracting data
 # from REDCap, transforming REDCap Records into Tables/Rows,
 # and loading the data into a data store.
 # This is the script that would typically be used for cron
@@ -43,7 +43,6 @@ if (array_key_exists('c', $options)) {
 
 try {
     $redCapEtl = new RedCapEtl($logger, $configFile);
-    $logger = $redCapEtl->getLogger();
     $redCapEtl->run();
 } catch (EtlException $exception) {
     $logger->logException($exception);

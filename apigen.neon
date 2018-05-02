@@ -5,7 +5,7 @@
 #-----------------------------------------------------------
 source: [src]
 destination: docs/api
-title: "REDCap ETL"
+title: "REDCap-ETL"
 
 accessLevels: [private,protected,public]
 

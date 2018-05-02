@@ -3,7 +3,7 @@
 namespace IU\REDCapETL;
 
 /**
- * REDCap Project class for REDCap ETL that extends PHPCap's RedCapProject class.
+ * REDCap Project class for REDCap-ETL that extends PHPCap's RedCapProject class.
  * This class provides caching of results from REDCap and extended functionality.
  */
 class EtlRedCapProject extends \IU\PHPCap\RedCapProject

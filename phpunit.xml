@@ -21,7 +21,7 @@
 
     <!--
         Integration Tests
-        - tests integration of REDCap ETL classes
+        - tests integration of REDCap-ETL classes
         - require a REDCap instance and test configuration
     -->
     <testsuite name="integration">
@@ -31,9 +31,9 @@
 
     <!--
         System Tests
-        - test a REDCap ETL installed system
+        - test a REDCap-ETL installed system
         - require a REDCap instance,  test configuration,
-          and installation of the REDCap ETL software on
+          and installation of the REDCap-ETL software on
           a server
     -->
     <testsuite name="system">

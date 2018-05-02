@@ -32,7 +32,7 @@ try {
     foreach ($properties as $property => $value) {
         if (!ConfigProperties::isValid($property)) {
             print "WARNING: property {$property} is not a valid"
-                ." REDCap ETL configuration property.\n";
+                ." REDCap-ETL configuration property.\n";
             $warningsCount++;
         }
     }

@@ -1,10 +1,10 @@
-REDCap ETL Developer Guide
+REDCap-ETL Developer Guide
 ======================================
 
 Development Environment Setup
 -------------------------------------
 
-This is a list of the steps for setting up a REDCap ETL development environment. Example commands are shown for Ubuntu 16.
+This is a list of the steps for setting up a REDCap-ETL development environment. Example commands are shown for Ubuntu 16.
 
 1. Install PHP
 
@@ -45,7 +45,7 @@ This is a list of the steps for setting up a REDCap ETL development environment.
         git config --global user.name "J Smith"
 
 8. Get the code. Execute the following command in the directory where
-   you want to put REDCap ETL:
+   you want to put REDCap-ETL:
 
         git clone https://github.iu.edu/ABITC/redcap-etl
 
@@ -53,18 +53,18 @@ This is a list of the steps for setting up a REDCap ETL development environment.
 
         composer install
 
-### REDCap ETL Directory Structure
+### REDCap-ETL Directory Structure
 
 After the steps above have been successfully completed,
-the REDCap ETL software directory should have a structure similar to
+the REDCap-ETL software directory should have a structure similar to
 what is listed below. The main directories and files are as follows:
 
 * __bin/__ - directory containing scripts
-* __config/__ - default configuration directory for REDCap ETL
+* __config/__ - default configuration directory for REDCap-ETL
 * __dependencies/__ - static dependencies used for production installation
 * __docs/__ - documentation
-* __projects/__ - REDCap ETL project templates for configuration and logging
-* __src/__ - the REDCap ETL source code directory
+* __projects/__ - REDCap-ETL project templates for configuration and logging
+* __src/__ - the REDCap-ETL source code directory
 * __tests/__ - automated tests directory
     * __config/__ - directory for test configuration files that have been
     customized for your system
@@ -83,7 +83,7 @@ what is listed below. The main directories and files are as follows:
 are installed
 * _composer.json_ - JSON configuration file for Composer
 * _phpunit.xml_ - configuration file for automated tests run with PHPUnit 
-* _README.md_ - main README file for REDCap ETL
+* _README.md_ - main README file for REDCap-ETL
 
 
 
@@ -114,7 +114,7 @@ The test types above are listed in order of least to most setup effort.
 You should be able to run the unit tests at this point if you have
 completed the previous steps.
 To run the unit tests, enter the following in a command shell
-at the top-level directory of the REDCap ETL installation:
+at the top-level directory of the REDCap-ETL installation:
 
     ./vendor/bin/phpunit --testsuite unit
     
@@ -134,7 +134,7 @@ tests:
 
 1. In REDCap, create a project using the
    "Upload a REDCap project XML file" option, and specify the
-   following file from REDCap ETL:
+   following file from REDCap-ETL:
 
         tests/projects/BasicDemography.REDCap.xml
 
@@ -164,7 +164,7 @@ for the Basic Demography project:
     
 After the above steps have been completed successfully, you should be
 able to run the integration tests by executing the following command
-in the top-level directory of your REDCap ETL installation:
+in the top-level directory of your REDCap-ETL installation:
 
     ./vendor/bin/phpunit --testsuite integration
 
@@ -225,7 +225,7 @@ for the Visits project:
        your REDCap Visits Config project created above.
 
 You can check the setup so far by running the following command in the
-top-level directory of you REDCap ETL installation:
+top-level directory of you REDCap-ETL installation:
 
         ./bin/project_info.php tests/config/visits.ini 
     
@@ -245,7 +245,7 @@ up in your REDCap configuration project as you normally would in
 a production installation.
 
 To install the web script, from the top-level directory of your
-REDCap ETL installation, run the install_web_scripts.php
+REDCap-ETL installation, run the install_web_scripts.php
 script, for example:
 
         ./bin/install_web_scripts.php -c tests/config -w /var/www/html
@@ -266,7 +266,7 @@ Notes:
 
 After the above steps have been completed successfully, you should be
 able to run the system tests by executing the following command
-in the top-level directory of your REDCap ETL installation:
+in the top-level directory of your REDCap-ETL installation:
 
     ./vendor/bin/phpunit --testsuite system
 
@@ -277,7 +277,7 @@ To run all of the automated test, in the top-level directory run:
 
     ./vendor/bin/phpunit
 
-The system tests use the REDCap ETL scripts, so the DET web script
+The system tests use the REDCap-ETL scripts, so the DET web script
 will need to be set up.
 
 
@@ -303,7 +303,7 @@ The API documentation is programatically generated and is not stored
 in GitHub.
 
 To generate the API documentation, execute the following command in the
-top-level REDCap ETL directory:
+top-level REDCap-ETL directory:
 
     ./vendor/bin/apigen generate
     
@@ -315,14 +315,14 @@ To view the API documentation, open the following file with a web browser:
 Coding Standards Compliance
 ------------------------------------
 
-REDCap ETL follows these PHP coding standards:
+REDCap-ETL follows these PHP coding standards:
 
 * [PSR-1: Basic Coding Standard](http://www.php-fig.org/psr/psr-1/)
 * [PSR-2: Coding Style Guide](http://www.php-fig.org/psr/psr-2/)
 * [PSR-4: Autoloader](http://www.php-fig.org/psr/psr-4/)
 * Lower camel case variable names, e.g., $primaryKey
 
-From the top-level directory of your REDCap ETL installation,
+From the top-level directory of your REDCap-ETL installation,
 the following command can be used
 to check for coding standards compliance:
 

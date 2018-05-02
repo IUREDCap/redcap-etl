@@ -23,7 +23,7 @@ class Configuration
 
     # Default values
     const DEFAULT_BATCH_SIZE        = 100;
-    const DEFAULT_EMAIL_SUBJECT     = 'REDCap ETL Error';
+    const DEFAULT_EMAIL_SUBJECT     = 'REDCap-ETL Error';
 
     const DEFAULT_GENERATED_INSTANCE_TYPE  = 'int';
     const DEFAULT_GENERATED_KEY_TYPE       = 'int';

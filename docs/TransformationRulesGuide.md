@@ -60,10 +60,10 @@ __`<field_name>`__ is the name of the field in REDCap.
   the name of the field in the database where the extracted data is loaded
 
 
-__`<field_type>`__ can be one of the REDCap ETL types in the table below that shows
-the database types used to store the different REDCap ETL types.
+__`<field_type>`__ can be one of the REDCap-ETL types in the table below that shows
+the database types used to store the different REDCap-ETL types.
 
-| REDCap ETL Type | MySQL Type      | CSV (Spreadsheet) Type | 
+| REDCap-ETL Type | MySQL Type      | CSV (Spreadsheet) Type | 
 | --------------- | --------------- | ---------------------- |
 | int             | int             | number                 |
 | float           | float           | number                 |
@@ -99,7 +99,7 @@ The transformation rules used are:
     FIELD,last_name,string
     FIELD,dob,date,birthdate
 
-Running the REDCap ETL process for the above example will create a table
+Running the REDCap-ETL process for the above example will create a table
 named **registration** with the following data:
  
 | registration_id | record_id | first_name | last_name | birthdate  |
@@ -113,7 +113,7 @@ In this example:
 * The database field __registration_id__ (specified in the TABLE command)
   is created automatically as an auto-incremented synthetic key
 * The database field __record_id__ represents the REDCap record ID, and is
-  created automatically in the database for all tables by REDCap ETL
+  created automatically in the database for all tables by REDCap-ETL
 * The database fields __record_id__, __first_name__ and __last_name__
   match the REDCap fields.
 * The REDCap field __dob__ was renamed to __birthdate__ in the database
