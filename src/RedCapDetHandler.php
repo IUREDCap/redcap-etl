@@ -18,17 +18,23 @@ class RedCapDetHandler
     /**
      * Creates a REDCap DET (Data Entry Trigger) handler.
      *
+     * @param int $projectId the REDCap project ID for the configuration project.
+     *     This is the project that will send the DET.
+     * @param string $allowedServers a comma-separated list of servers that
+     *     are allowed to send DETs.
+     * @param Logger $logger object used for logging.
      */
     public function __construct($projectId, $allowedServers, $logger)
     {
         $this->debug = 'no';
 
         $this->projectId = $projectId;
+        $this->logger    = $logger;
 
         // Create array of allowed servers (by hostname)
         if (preg_match("/,/", $allowedServers)) {
             if ('yes' == $this->debug) {
-                print "Found multiple allowed servers<br/>";
+                $this->logger->logInfo("Found multiple allowed servers");
             }
             $this->allowedServers = preg_split("/,/", $allowedServers);
         } else {
@@ -102,8 +108,6 @@ class RedCapDetHandler
         if (!ip2long($serverRemoteAddress)) {
             $error = "Invalid server remote address: ".$_SERVER['REMOTE_ADDR']."\n";
             throw new EtlException($error, EtlException::DET_ERROR);
-            // $this->notifier->notify($error);
-            exit(1);
         }
 
         // Check to see if the requesting server is allowed
@@ -115,9 +119,6 @@ class RedCapDetHandler
                 $error .= " (hostname = ".$hostname.")\n";
             }
             throw new EtlException($error, EtlException::DET_ERROR);
-            //$this->notifier->notify($error);
-
-            exit(1);
         }
 
         return true;
@@ -130,12 +131,10 @@ class RedCapDetHandler
      */
     public function checkDetId($detId)
     {
-
         if ((int) $detId !== (int) $this->projectId) {
             $error = "Project id supplied by data entry trigger ('".$detId."') ".
                 "does not match expected id for survey ('".$this->projectId."').";
             throw new EtlException($error, EtlException::DET_ERROR);
-            //$this->notifier->notify($error);
         }
 
         return true;
