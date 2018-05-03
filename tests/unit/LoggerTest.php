@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\TestProject;
 
 /**
- * PHPUnit tests for Logger class.
+ * PHPUnit tests for the Logger class.
  */
 class LoggerTest extends TestCase
 {

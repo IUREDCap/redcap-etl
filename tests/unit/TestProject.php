@@ -2,6 +2,10 @@
 
 namespace IU\REDCapETL;
 
+/**
+ * Test project class used for mocking the EtlRedCapProject class
+ * for unit testing.
+ */
 class TestProject extends EtlRedCapProject
 {
     private $records;

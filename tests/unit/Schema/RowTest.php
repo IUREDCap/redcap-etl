@@ -5,7 +5,7 @@ namespace IU\REDCapETL\Schema;
 use PHPUnit\Framework\TestCase;
 
 /**
- * PHPUnit tests for Row class.
+ * PHPUnit tests for the Row class.
  */
 class RowTest extends TestCase
 {

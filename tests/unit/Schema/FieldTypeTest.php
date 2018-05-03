@@ -5,7 +5,7 @@ namespace IU\REDCapETL\Schema;
 use PHPUnit\Framework\TestCase;
 
 /**
- * PHPUnit tests for Logger class.
+ * PHPUnit tests for the FieldType class.
  */
 class FieldTypeTest extends TestCase
 {

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\TestProject;
 
 /**
- * PHPUnit tests for RedCapDetHandler class.
+ * PHPUnit tests for the RedCapDetHandler class.
  */
 class RedCapDetHandlerTest extends TestCase
 {

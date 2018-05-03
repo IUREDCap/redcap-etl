@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\TestProject;
 
 /**
- * PHPUnit tests for EtlException class.
+ * PHPUnit tests for the EtlException class.
  */
 class EtlExceptionTest extends TestCase
 {

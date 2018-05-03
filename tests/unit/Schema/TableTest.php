@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\RedCapEtl;
 
 /**
- * PHPUnit tests for Table class.
+ * PHPUnit tests for the Table class.
  */
 class TableTest extends TestCase
 {

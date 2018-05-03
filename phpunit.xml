@@ -11,6 +11,8 @@
       <file>tests/unit/LoggerTest.php</file>
       <file>tests/unit/RedCapDetHandlerTest.php</file>
 
+      <file>tests/unit/Database/DbConnectionFactoryTest.php</file>
+      
       <file>tests/unit/Schema/FieldTest.php</file>
       <file>tests/unit/Schema/FieldTypeTest.php</file>
       <file>tests/unit/Schema/RowTest.php</file>
