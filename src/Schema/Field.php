@@ -36,7 +36,7 @@ class Field
     {
         $in = str_repeat(' ', $indent);
         $string = '';
-        if (isset($size)) {
+        if (isset($this->size)) {
             $string .= "{$in}{$this->name} : {$this->type}({$this->size})\n";
         } else {
             $string .= "{$in}{$this->name} : {$this->type}\n";

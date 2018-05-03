@@ -31,4 +31,19 @@ class FieldTest extends TestCase
 
         $this->assertEquals($expectedValue, $value, 'toString value check');
     }
+    
+    public function testToStringForCharType()
+    {
+        $name = 'email';
+        $type = FieldType::CHAR;
+        $size = 40;
+
+        $field = new Field($name, $type, $size);
+
+        $value = $field->toString(4);
+
+        $expectedValue = '    '.$name.' : '.$type."(".$size.")\n";
+
+        $this->assertEquals($expectedValue, $value, 'toString value check');
+    }
 }
