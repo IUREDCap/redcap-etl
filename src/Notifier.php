@@ -10,18 +10,25 @@ class Notifier
     /** @var string from e-mail address. */
     protected $sender = '';
     
-    protected $recipients = '';  // Email address list of recipients
-    protected $subject = '';    // Subject of sent emails
-    protected $file = null;     // Optional file used for logging
+    /** @var string comma-separated list of recipient e-mail addresses. */
+    protected $recipients = '';
+    
+    /** @var string subject used for e-mail notifications */
+    protected $subject = '';
 
-    public function __construct($from, $to, $subject, $file = null)
+    /**
+     * Creates a Notifier object.
+     *
+     * @param string $sender the e-mail address of the sender.
+     * @param string $recipients comma-separated list of recipient
+     *     e-mail addresses.
+     * @param string $subject the subject to used for e-mail notifications.
+     */
+    public function __construct($sender, $recipients, $subject)
     {
-        $this->sender    = $from;
-        $this->recipients = $to;
-        $this->subject   = $subject;
-        if (isset($file) && is_string($file) && trim($file) != '') {
-            $this->file = trim($file);
-        }
+        $this->sender     = $sender;
+        $this->recipients = $recipients;
+        $this->subject    = $subject;
     }
 
   
@@ -35,20 +42,6 @@ class Notifier
      */
     public function notify($message)
     {
-        $fileLogOk = true;
-        if (isset($this->file)) {
-            $callerStackFrame = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-            $fileLogOk = Logger::logErrorToFile($message, $this->file, $callerStackFrame);
-        }
-
-        #-----------------------------------------------------------------------
-        # If a log file was specified and writing to it failed, append to the
-        # nofitication message that will be e-mailed.
-        #-----------------------------------------------------------------------
-        if ($fileLogOk === false) {
-            $message .= ' [Note: attempt to log this messsage to file "'.$this->file.'" failed.]';
-        }
-
         $failedSendTos = $this->sendmail(
             $this->recipients,
             array(),
@@ -93,9 +86,8 @@ class Notifier
         }
 
         // It MIGHT be useful to validate the email address syntax here,
-        // but that wouldn't be easy.  filter_var( $email,
-        // FILTER_VALIDATE_EMAIL)) requires PHP 5.2 and up, and at the
-        // present time we are running PHP 5.1.6.
+        // or somewhere else, possibly using
+        // filter_var( $email, FILTER_VALIDATE_EMAIL)
   
         // We MIGHT also like to validate the existence of the email
         // target, perhaps by using smtp_validateEmail.class.php.
@@ -148,13 +140,29 @@ class Notifier
         return $faliedSendTos;
     }
 
-    public function setSender($sender)
+    
+    public function getRecipients()
     {
-        $this->sender = $sender;
+        return $this->recipients;
     }
     
     public function setRecipients($recipients)
     {
         $this->recipients = $recipients;
+    }
+    
+    public function getSender()
+    {
+        return $this->sender;
+    }
+    
+    public function setSender($sender)
+    {
+        $this->sender = $sender;
+    }
+    
+    public function getSubject()
+    {
+        return $this->subject;
     }
 }
