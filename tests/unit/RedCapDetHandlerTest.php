@@ -84,9 +84,6 @@ class RedCapDetHandlerTest extends TestCase
 
         global $_SERVER;
 
-        $checkAllowedServers = $detHandler->checkAllowedServers();
-        $this->assertTrue($checkAllowedServers);
-
         $_SERVER['REMOTE_ADDR'] = '::1';
         $checkAllowedServers = $detHandler->checkAllowedServers();
         $this->assertTrue($checkAllowedServers);
