@@ -135,7 +135,7 @@ class Configuration
         
         
         if (!empty($this->logFile)) {
-            $this->logFile = $this->processFile($this->logFile);
+            $this->logFile = $this->processFile($this->logFile, $fileShouldExist = false);
             $this->logger->setLogFile($this->logFile);
         }
 
@@ -597,43 +597,52 @@ class Configuration
      *
      * @param string $file Relative or absolute path for file to be
      *     processed.
+     * @param boolean $fileShouldExist if true, the file should already
+     *    exists, so an exception will be thrown if it does nore.
      */
-    public function processFile($file)
+    public function processFile($file, $fileShouldExist = true)
     {
         if ($file != null) {
             $file = trim($file);
         }
             
         if (empty($file)) {
+            # no file specified, which is OK
             $realFile = null;
-        } elseif ($this->isAbsolutePath($file)) {
-            $realFile = realpath($file);
-            if ($realFile === false) {
-                $error = 'File "'.$file.'" not found.';
-                throw new EtlException($error);
+        } else {
+            if ($this->isAbsolutePath($file)) {
+                $dir = dirname($file);
+                $realDir = realpath($dir);
+            } else { // Relative path
+                if (empty($this->propertiesFile)) {
+                    # if no properties file was specified, and a relative
+                    # path was used, make it relative to this file
+                    $realDir = realpath(__DIR__);
+                } else {
+                    # take path relative to properties file
+                    $propertiesFileDir = dirname(realpath($this->propertiesFile));
+                    $realDir = realpath($propertiesFileDir);
+                }
             }
-        } else { // Relative path
-            if (empty($this->propertiesFile)) {
-                # if no properties file was specified, and a relative
-                # path was used, make it relative to this file
-                $realFile = realpath(__DIR__.'/'.$file);
-                if ($realFile === false) {
-                    $error = 'File "'.$file.'" not found.';
-                    throw new EtlException($error);
-                }
-            } else {
-                # take path relative to properties file
-                $propertiesFileDir = dirname(realpath($this->propertiesFile));
-                $realFile = realpath($propertiesFileDir . '/' . $file);
-                if ($realFile === false) {
-                    $error = 'File "'.$file.'" not found.';
-                    throw new EtlException($error);
-                }
+        }
+
+        $realFile = $realDir.'/'.$file;
+
+        if ($fileShouldExist) {
+            if (file_exists($realFile) === false) {
+                $message = 'File "'.$file.'" not found.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+        } else {
+            if ($realDir === false) {
+                $message = 'Directory "'.$dir.'" for file "'.$file.'" not found.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
             }
         }
 
         return $realFile;
     }
+
 
     /**
      * Indicated if the specified e-mail address is valid.

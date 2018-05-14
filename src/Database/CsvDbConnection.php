@@ -74,7 +74,7 @@ class CsvDbConnection extends DbConnection
     {
         $label = null;
         $lookup = $this->getLookup();
-        
+
         $rootName = null;
         $category = null;
         if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $fieldName)) {
@@ -83,7 +83,7 @@ class CsvDbConnection extends DbConnection
 
         # @TODO FIX numeric subscripts!!!!!!!!!!!!!!!!!!!
         # (Also want to ignore the header row for label lookup.)
-      
+
         foreach ($lookup as $row) {
             if (isset($category)) {
                 if (($value === 1 || $value === "1")

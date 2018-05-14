@@ -33,9 +33,6 @@ class RedCapDetHandler
 
         // Create array of allowed servers (by hostname)
         if (preg_match("/,/", $allowedServers)) {
-            if ('yes' == $this->debug) {
-                $this->logger->logInfo("Found multiple allowed servers");
-            }
             $this->allowedServers = preg_split("/,/", $allowedServers);
         } else {
             $this->allowedServers = array($allowedServers);

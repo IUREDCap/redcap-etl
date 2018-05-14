@@ -40,7 +40,7 @@ class RedCapDetHandlerTest extends TestCase
         $this->assertNotNull($detHandler, 'DET handler not null check');
     }
 
-    public function testGetDetParams() 
+    public function testGetDetParams()
     {
         $projectId      = 1234;
         $recordId       = 1;
@@ -70,17 +70,17 @@ class RedCapDetHandlerTest extends TestCase
 
         $idCheck = $detHandler->checkDetId($projectId);
         $this->assertTrue($idCheck);
-
     }
 
 
 
-    public function testCheckAllowedServersPass() 
+    public function testCheckAllowedServersPass()
     {
         $projectId      = 1234;
         $allowedServers = '';
 
-        $detHandler = new RedCapDetHandler($projectId, $allowedServers, null);
+        $logger = new Logger(__FILE__);
+        $detHandler = new RedCapDetHandler($projectId, $allowedServers, $logger);
 
         global $_SERVER;
 
@@ -91,10 +91,9 @@ class RedCapDetHandlerTest extends TestCase
         $_SERVER['REMOTE_ADDR'] = '1.1.1.1';
         $this->expectException(EtlException::class);
         $checkAllowedServers = $detHandler->checkAllowedServers();
-
     }
 
-    public function testCheckAllowedServersFail() 
+    public function testCheckAllowedServersFail()
     {
         $projectId      = 1234;
         $allowedServers = '';
@@ -102,13 +101,13 @@ class RedCapDetHandlerTest extends TestCase
         $detHandler = new RedCapDetHandler($projectId, $allowedServers, null);
 
         global $_SERVER;
-        $_SERVER['REMOTE_ADDR'] = "127.0.0";        
+        $_SERVER['REMOTE_ADDR'] = "127.0.0";
 
         $this->expectException(EtlException::class);
         $checkAllowedServers = $detHandler->checkAllowedServers();
     }
 
-    public function testCheckDetId() 
+    public function testCheckDetId()
     {
         $projectId      = 1234;
         $allowedServers = '';
