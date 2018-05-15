@@ -19,7 +19,7 @@ class TableTest extends TestCase
         $recordIdFieldName = 'recordId';
 
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
-        
+
         $table = new Table($name, $parent, $keyType, $rowsType, $suffixes, $recordIdFieldName);
         $this->assertNotNull($table, 'table not null');
 
@@ -27,6 +27,15 @@ class TableTest extends TestCase
 
         $childTable = new Table('child', $table, $keyType, RowsType::BY_EVENTS, '', $recordIdFieldName);
         $this->assertNotNull($childTable, 'child table not null');
+
+        $childTable->setForeign($table);
+
+        //Create primary key for child table
+        $childTable->createPrimary();
+
+        // Haven't added any rows, so count should be zero
+        $rowsCount = $table->getNumRows();
+        $this->assertEquals(0, $rowsCount);
 
         #$expectedRowData = array('id' => 100, 'name' => 'Bob');
         #$expectedRowString = " (id: 100, name: Bob)\n";

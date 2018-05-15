@@ -47,3 +47,5 @@ composer.phar
 /tests/output/*
 !/tests/output/README.md
 
+# ignore atom tags
+*.tags
