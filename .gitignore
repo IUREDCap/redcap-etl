@@ -48,4 +48,4 @@ composer.phar
 !/tests/output/README.md
 
 # ignore atom tags
-*.tags
+*.tags*
