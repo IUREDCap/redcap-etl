@@ -43,6 +43,18 @@ class BasicDemographyTest extends TestCase
                 unlink(self::$csvFile);
             }
             
+            #----------------------------------------------
+            # Test the data project
+            #----------------------------------------------
+            $dataProject = $redCapEtl->getDataProject();
+            $this->assertNotNull($dataProject, 'data project not null');
+            
+            $isLongitudinal = $dataProject->isLongitudinal();
+            $this->assertFalse($isLongitudinal, 'is longitudinal');
+            
+            #-------------------------
+            # Run the ETL process
+            #-------------------------
             $redCapEtl->run();
         } catch (EtlException $exception) {
             self::$logger->logException($exception);

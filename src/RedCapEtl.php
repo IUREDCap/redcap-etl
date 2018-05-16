@@ -673,4 +673,9 @@ class RedCapEtl
     {
         return $this->configuration;
     }
+    
+    public function getDataProject()
+    {
+        return $this->dataProject;
+    }
 }

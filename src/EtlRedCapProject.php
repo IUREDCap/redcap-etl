@@ -12,6 +12,7 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
     private $app;
     
     private $metadata;
+    private $projectInfo;
     private $primaryKey;
     private $fieldNames;
     
@@ -30,6 +31,24 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
         return $this->metadata;
     }
 
+    public function getProjectInfo()
+    {
+        if (!isset($this->projectInfo)) {
+            $this->projectInfo = $this->exportProjectInfo();
+        }
+        return $this->projectInfo;
+    }
+
+    public function isLongitudinal()
+    {
+        $isLongitudinal = false;
+        $projectInfo = $this->getProjectInfo(); # call getter method, since lazy loading is used
+        $isLongitudinalValue = $projectInfo['is_longitudinal'];
+        if ($isLongitudinalValue === 1) {
+            $isLongitudinal = true;
+        }
+        return $isLongitudinal;
+    }
 
     /**
      * Gets the name for the primary key (record ID) field
