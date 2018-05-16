@@ -210,11 +210,12 @@ file):
 The next thing you need to do is to create the configuration file
 for the Visits project:
 
-1. Copy the visits configuration file from the 
+1. Copy the visits configuration and SQL post-processing files from the 
    tests/config-init directory to the tests/config
    directory, for example, from the top-level directory:
    
         cp tests/config-init/visits.ini tests/config
+        cp tests/config-init/visits.sql tests/config
 
 2. Edit the file tests/config/visits.ini and set the 
    following properties to appropriate values:
