@@ -22,7 +22,7 @@ if (count($argv) != 2) {
 
 try {
     $logger = new Logger($argv[0]);
-    $config = new Configuration($logger, null, $configurationFile);
+    $config = new Configuration($logger, $configurationFile);
 
     $apiUrl   = $config->getRedCapApiUrl();
     $apiToken = $config->getDataSourceApiToken();

@@ -84,11 +84,10 @@ class Configuration
      * found.
      *
      * @param Logger $logger logger for information and errors
-     * @param array $properties associative array or property names and values.
      * @param string $propertiesFile the name of the properties file to use
      *     (used as an alternative to the properties array).
      */
-    public function __construct($logger, $properties = null, $propertiesFile = null, $useWebScriptLogFile = false)
+    public function __construct($logger, $propertiesFile, $useWebScriptLogFile = false)
     {
         $this->logger = $logger;
 
@@ -97,21 +96,19 @@ class Configuration
         $this->propertiesFile = $propertiesFile;
 
         #--------------------------------------------------------------------
-        # If there isn't a properties array, then read the properties file
+        # Read the properties file
         #--------------------------------------------------------------------
-        if (!isset($properties) || !is_array($properties)) {
-            if (!isset($propertiesFile) || trim($propertiesFile) === '') {
-                $message = 'No properties or properties file was specified.';
+        if (!isset($propertiesFile) || trim($propertiesFile) === '') {
+            $message = 'No properties or properties file was specified.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        } else {
+            $propertiesFile = trim($propertiesFile);
+            $properties = parse_ini_file($propertiesFile);
+            if ($properties === false) {
+                $message = 'The properties file \"'.$propertiesFile.'\" could not be read.';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
-            } else {
-                $propertiesFile = trim($propertiesFile);
-                $properties = parse_ini_file($propertiesFile);
-                if ($properties === false) {
-                    $message = 'The properties file \"'.$propertiesFile.'\" could not be read.';
-                    $code    = EtlException::INPUT_ERROR;
-                    throw new EtlException($message, $code);
-                }
             }
         }
 
@@ -187,9 +184,10 @@ class Configuration
         #---------------------------------------------------------------
         if (array_key_exists(ConfigProperties::SSL_VERIFY, $properties)) {
             $sslVerify = $properties[ConfigProperties::SSL_VERIFY];
-            if (!isset($sslVerify) || $sslVerify === '' || $sslVerify === '0') {
+            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0') {
                 $this->sslVerify = false;
-            } elseif ($sslVerify === '1') {
+            } elseif (!isset($sslVerify) || $sslVerify === ''
+                    || strcasecmp($sslVerify, 'true') === 0 || $sslVerify === '1') {
                 $this->sslVerify = true;
             } else {
                 $message = 'Unrecognized value \"'.$sslVerify.'\" for '
@@ -237,7 +235,9 @@ class Configuration
         $this->postProcessingSqlFile = null;
         if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL_FILE, $properties)) {
             $file = $properties[ConfigProperties::POST_PROCESSING_SQL_FILE];
-            $this->postProcessingSqlFile = $this->processFile($file);
+            if (!empty($file)) {
+                $this->postProcessingSqlFile = $this->processFile($file, $fileShouldExist = false);
+            }
         }
 
         #-----------------------------------------------------------------
@@ -424,7 +424,12 @@ class Configuration
         # where the transformed REDCap data will be stored
         #---------------------------------------------------
         if (array_key_exists(ConfigProperties::DB_CONNECTION, $properties)) {
-            $this->dbConnection = $properties[ConfigProperties::DB_CONNECTION];
+            $this->dbConnection = trim($properties[ConfigProperties::DB_CONNECTION]);
+            
+            if (empty($this->dbConnection)) {
+                $message = 'No database connection was specified in the configuration.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
             
             # If this property was defined in a file and uses the CSV database
             # type and a relative path was used, replace the relative path with
@@ -432,13 +437,12 @@ class Configuration
             if ($this->isFromFile(ConfigProperties::DB_CONNECTION)) {
                 list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($this->dbConnection);
                 if ($dbType === DbConnectionFactory::DBTYPE_CSV) {
-                    $dbString = $this->processFile($dbString);
+                    $dbString = $this->processDirectory($dbString);
                     $this->dbConnection = DbConnectionFactory::createConnectionString($dbType, $dbString);
                 }
             }
         } else {
-            $message = 'No database connection was specified in the '
-                . 'configuration project.';
+            $message = 'No database connection was specified in the configuration.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
     
@@ -599,48 +603,88 @@ class Configuration
      *     processed.
      * @param boolean $fileShouldExist if true, the file should already
      *    exists, so an exception will be thrown if it does nore.
+     *
+     * @return string absolute path for file to use.
      */
     public function processFile($file, $fileShouldExist = true)
     {
-        if ($file != null) {
+        if ($file == null) {
+            $file = '';
+        } else {
             $file = trim($file);
         }
-            
-        if (empty($file)) {
-            # no file specified, which is OK
-            $realFile = null;
-        } else {
-            if ($this->isAbsolutePath($file)) {
-                $dir = dirname($file);
-                $realDir = realpath($dir);
-            } else { // Relative path
-                if (empty($this->propertiesFile)) {
-                    # if no properties file was specified, and a relative
-                    # path was used, make it relative to this file
-                    $realDir = realpath(__DIR__);
-                } else {
-                    # take path relative to properties file
-                    $propertiesFileDir = dirname(realpath($this->propertiesFile));
-                    $realDir = realpath($propertiesFileDir);
-                }
+ 
+        if ($this->isAbsolutePath($file)) {
+            if ($fileShouldExist) {
+                $realFile = realpath($file);
+            } else {
+                $dirName  = dirname($file);
+                $realDir  = realpath($dirName);
+                $fileName = basename($file);
+                $realFile = $realDir.'/'.$fileName;
+            }
+        } else { // Relative path
+            # take path relative to properties file
+            $propertiesFileDir = dirname(realpath($this->propertiesFile));
+            if ($fileShouldExist) {
+                $realFile = realpath($propertiesFileDir.'/'.$file);
+            } else {
+                $dirName  = dirname($file);
+                $fileName = basename($file);
+                $realDir  = realpath($propertiesFileDir.'/'.$dirName);
+                $realFile = realpath($realDir.'/'.$fileName);
             }
         }
 
-        $realFile = $realDir.'/'.$file;
-
         if ($fileShouldExist) {
-            if (file_exists($realFile) === false) {
+            if ($realFile === false) {
                 $message = 'File "'.$file.'" not found.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
         } else {
             if ($realDir === false) {
-                $message = 'Directory "'.$dir.'" for file "'.$file.'" not found.';
+                $message = 'Directory for file "'.$file.'" not found.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
         }
 
         return $realFile;
+    }
+    
+    /**
+     * Processes the specified directory path and returns its canonicalized
+     * absolute path name.
+     *
+     * @param string $path the path to process.
+     *
+     * @return string the canonicalized absolute path name for the specified
+     *     path.
+     */
+    public function processDirectory($path)
+    {
+        if ($path == null) {
+            $message = 'Null path specified as argument to '.__METHOD__;
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        } elseif (!is_string($path)) {
+            $message = 'Non-string path specified as argument to '.__METHOD__;
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        } else {
+            $path = trim($path);
+        }
+        
+        if ($this->isAbsolutePath($path)) {
+            $realDir  = realpath($path);
+        } else { // Relative path
+            $propertiesFileDir = dirname(realpath($this->propertiesFile));
+            $realDir = realpath($propertiesFileDir.'/'.$path);
+        }
+        
+        if ($realDir === false) {
+            $message = 'Directory "'.$dir.'" not found.';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+            
+        return $realDir;
     }
 
 

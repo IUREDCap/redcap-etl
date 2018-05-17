@@ -79,10 +79,8 @@ class RedCapEtl
     ) {
         $this->app = $logger->getApp();
 
-        $properties = null;
         $this->configuration = new Configuration(
             $logger,
-            $properties,
             $propertiesFile,
             $useWebScriptLogFile
         );

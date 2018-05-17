@@ -25,7 +25,7 @@ try {
     $app = basename(__FILE__, '.php');
     $logger = new Logger($app);
 
-    $configuration = new Configuration($logger, null, $configFile);
+    $configuration = new Configuration($logger, $configFile);
     $properties = $configuration->getProperties();
     
     $warningsCount = 0;

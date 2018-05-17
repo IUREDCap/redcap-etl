@@ -16,7 +16,7 @@ class VisitsTest extends TestCase
     {
         $logger = new Logger('visits_test');
 
-        $configuration = new Configuration($logger, null, self::CONFIG_FILE);
+        $configuration = new Configuration($logger, self::CONFIG_FILE);
 
         list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
         $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
