@@ -9,9 +9,8 @@
 require(__DIR__ . '/../dependencies/autoload.php');
 
 use IU\PHPCap\RedCapProject;
-use IU\REDCapETL\Configuration;
+use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\Logger;
-use IU\REDCapETL\RulesGenerator;
 
 if (count($argv) != 2) {
     print "Usage: php $argv[0] <configuration-file>\n";
@@ -22,16 +21,8 @@ if (count($argv) != 2) {
 
 try {
     $logger = new Logger($argv[0]);
-    $config = new Configuration($logger, $configurationFile);
-
-    $apiUrl   = $config->getRedCapApiUrl();
-    $apiToken = $config->getDataSourceApiToken();
-
-    $dataProject = new RedCapProject($apiUrl, $apiToken, true);
-
-    $rulesGenerator = new RulesGenerator();
-    $rules = $rulesGenerator->generate($dataProject);
-
+    $redCapEtl = new RedCapEtl($logger, $configurationFile);
+    $rules = $redCapEtl->autoGenerateRules();
     print $rules;
 } catch (Exception $exception) {
     print "Error: ".$exception->getMessage()."\n";

@@ -212,8 +212,7 @@ class RedCapEtl
         # otherwise, get the from the configuration
         #-----------------------------------------------------------------------------
         if ($this->configuration->getTransformRulesSource() === Configuration::TRANSFORM_RULES_DEFAULT) {
-            $rulesGenerator = new RulesGenerator();
-            $rulesText = $rulesGenerator->generate($this->dataProject);
+            $rulesText = $this->autoGenerateRules();
         } else {
             $rulesText = $this->configuration->getTransformationRules();
         }
@@ -228,6 +227,17 @@ class RedCapEtl
         $this->schema      = $schema;
 
         return $parseResult;
+    }
+
+    public function autoGenerateRules()
+    {
+        if (!isset($this->dataProject)) {
+            $message = 'No data project was found.';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+        $rulesGenerator = new RulesGenerator();
+        $rulesText = $rulesGenerator->generate($this->dataProject);
+        return $rulesText;
     }
 
 
@@ -521,7 +531,7 @@ class RedCapEtl
         try {
             $this->configProject->importRecords($records);
         } catch (PhpCapException $exception) {
-            $message = 'Unable to load results and reset ETL trigger';
+                $message = 'Unable to load results and reset ETL trigger';
             throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
