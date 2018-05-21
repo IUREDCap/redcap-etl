@@ -22,7 +22,7 @@ information for the ETL process.  The advantage of using this project is that
 it allows users who have access to REDCap, but not the REDCap-ETL server,
 to be able to change
 certain configuration properties, and to start the ETL process. The disadvantage of
-using this project are that it increases the complexity of the installation.
+using this project is that it increases the complexity of the installation.
     * **Data Project.** This is the REDCap project that contains the data to be extracted.
     * **Logging Project.** This optional project is used for logging. The advantage of using this project is that
 users who have access to REDCap, but not the REDCap-ETL server, can access the log information.
