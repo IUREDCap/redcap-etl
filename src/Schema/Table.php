@@ -191,7 +191,7 @@ class Table
                 return false;
             }
         }
-	    else if($this->rowsType === RowsType::BY_EVENTS and array_key_exists(RedCapEtl::COLUMN_EVENT, $data)) {
+	    else if($this->rowsType === RowsType::BY_EVENTS && array_key_exists(RedCapEtl::COLUMN_EVENT, $data)) {
             if (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data) ||
 		        array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data)) {
                 return false;
