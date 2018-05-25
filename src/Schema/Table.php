@@ -192,8 +192,10 @@ class Table
             }
         }
 	    else if($this->rowsType === RowsType::BY_EVENTS && array_key_exists(RedCapEtl::COLUMN_EVENT, $data)) {
-            if (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data) ||
-		        array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data)) {
+            if ((array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data) &&
+                    !is_null($data[RedCapEtl::COLUMN_REPEATING_INSTRUMENT])) ||
+                (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data) &&
+                    !is_null($data[RedCapEtl::COLUMN_REPEATING_INSTANCE]))) {
                 return false;
             }
         }
