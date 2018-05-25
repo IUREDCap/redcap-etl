@@ -197,7 +197,7 @@ class Table
         # redcap_repeat_instance column. Values present in either
         # column indicate a repeating instrument or repeating event
         #---------------------------------------------------------------
-        else if($this->rowsType === RowsType::BY_EVENTS && array_key_exists(RedCapEtl::COLUMN_EVENT, $data)) {
+        else if($this->rowsType === RowsType::BY_EVENTS) {
             if (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 if (!empty($data[RedCapEtl::COLUMN_REPEATING_INSTRUMENT])) {
                     return false;
