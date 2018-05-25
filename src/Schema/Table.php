@@ -191,12 +191,22 @@ class Table
                 return false;
             }
         }
-	    else if($this->rowsType === RowsType::BY_EVENTS && array_key_exists(RedCapEtl::COLUMN_EVENT, $data)) {
-            if ((array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data) &&
-                    !is_null($data[RedCapEtl::COLUMN_REPEATING_INSTRUMENT])) ||
-                (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data) &&
-                    !is_null($data[RedCapEtl::COLUMN_REPEATING_INSTANCE]))) {
-                return false;
+        #---------------------------------------------------------------
+        # If a row is being created for an EVENT table, don't include
+        # the data if it contains a value for redcap_repeat_instrument/
+        # redcap_repeat_instance column. Values present in either
+        # column indicate a repeating instrument or repeating event
+        #---------------------------------------------------------------
+        else if($this->rowsType === RowsType::BY_EVENTS && array_key_exists(RedCapEtl::COLUMN_EVENT, $data)) {
+            if (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
+                if (!empty($data[RedCapEtl::COLUMN_REPEATING_INSTRUMENT])) {
+                    return false;
+                }
+            }
+            if (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data)) {
+                if (!empty($data[RedCapEtl::COLUMN_REPEATING_INSTANCE])) {
+                    return false;
+                }
             }
         }
 
