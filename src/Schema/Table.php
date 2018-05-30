@@ -190,14 +190,13 @@ class Table
             if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 return false;
             }
-        }
-        #---------------------------------------------------------------
-        # If a row is being created for an EVENT table, don't include
-        # the data if it contains a value for redcap_repeat_instrument/
-        # redcap_repeat_instance column. Values present in either
-        # column indicate a repeating instrument or repeating event
-        #---------------------------------------------------------------
-        else if($this->rowsType === RowsType::BY_EVENTS) {
+        } elseif ($this->rowsType === RowsType::BY_EVENTS) {
+            #---------------------------------------------------------------
+            # If a row is being created for an EVENT table, don't include
+            # the data if it contains a value for redcap_repeat_instrument/
+            # redcap_repeat_instance column. Values present in either
+            # column indicate a repeating instrument or repeating event
+            #---------------------------------------------------------------
             if (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 if (!empty($data[RedCapEtl::COLUMN_REPEATING_INSTRUMENT])) {
                     return false;
