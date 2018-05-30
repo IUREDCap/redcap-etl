@@ -302,7 +302,7 @@ has been set up to be ignored by Git.
 API Documentation
 -----------------------------------
 
-The API documentation is programatically generated and is not stored
+The API documentation is programmatically generated and is not stored
 in GitHub.
 
 To generate the API documentation, execute the following command in the
