@@ -176,12 +176,6 @@ class RedCapEtl
         $this->schema = new Schema();
 
 
-        #---------------------------------------------
-        # Log the version number of REDCap-ETL
-        #---------------------------------------------
-        $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-
-
         #---------------------------------------------------
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
@@ -431,7 +425,7 @@ class RedCapEtl
      * creates some views based on those tables. If there are existing
      * tables, then those tables are dropped first.
      */
-    public function createLoadTables()
+    protected function createLoadTables()
     {
         // foreach table, replace it with an empty table
         $tables = $this->schema->getTables();
@@ -545,6 +539,7 @@ class RedCapEtl
     public function run()
     {
         try {
+            $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
             $this->log("Starting processing.");
 
             //-------------------------------------------------------------------------
@@ -582,6 +577,7 @@ class RedCapEtl
      */
     public function runForDet()
     {
+        $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
         $this->logger->logInfo('Executing web script '.$this->logger->getApp());
 
         $detHandler = $this->getDetHandler();
