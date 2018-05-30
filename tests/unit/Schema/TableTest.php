@@ -3,7 +3,6 @@
 namespace IU\REDCapETL\Schema;
 
 use PHPUnit\Framework\TestCase;
-use IU\REDCapETL\RedCapEtl;
 
 /**
  * PHPUnit tests for the Table class.
