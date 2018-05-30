@@ -14,6 +14,8 @@
       <file>tests/unit/RedCapDetHandlerTest.php</file>
 
       <file>tests/unit/Database/DbConnectionFactoryTest.php</file>
+
+      <file>tests/unit/Rules/RuleTest.php</file>
       
       <file>tests/unit/Schema/FieldTest.php</file>
       <file>tests/unit/Schema/FieldTypeTest.php</file>

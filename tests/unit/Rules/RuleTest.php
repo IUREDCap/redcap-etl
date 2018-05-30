@@ -34,7 +34,7 @@ class RuleTest extends TestCase
       $hasErrors = $rule->hasErrors();
       $this->assertEquals(false, $hasErrors, 'No errors check');
       $errors = $rule->getErrors();
-      $this->assertNull($errors, 'No errors returned check');
+      $this->assertEquals(0, count($errors), 'No errors returned check');
 
 
       // Test that the rule accepts and returns errors
@@ -47,7 +47,7 @@ class RuleTest extends TestCase
       $hasErrors = $rule->hasErrors();
       $this->assertEquals(true, $hasErrors, 'Errors check');
       $errors = $rule->getErrors();
-      $this->asserEquals($expectedErrors, $errors, 'Errors returned check');
+      $this->assertEquals($expectedErrors, $errors, 'Errors returned check');
 
     }
 }
