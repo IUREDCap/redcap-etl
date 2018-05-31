@@ -178,7 +178,6 @@ class Table
      * @param string $data the data values used to create the row.
      * @param string $foreignKey the name of the foreign key field for the row.
      * @param string $suffix the suffix value for the row (if any).
-     * @param boolean $isLongitudinal whether project is longitudinal or classic
      */
     public function createRow($data, $foreignKey, $suffix)
     {
