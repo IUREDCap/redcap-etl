@@ -9,7 +9,7 @@ use IU\REDCapETL\TestProject;
 /**
  * PHPUnit tests for the Logger class.
  */
-class ConfigurateTest extends TestCase
+class ConfigurationTest extends TestCase
 {
     public function setUp()
     {
@@ -18,7 +18,45 @@ class ConfigurateTest extends TestCase
     public function testConfig()
     {
         $propertiesFile = __DIR__.'/../data/config-test.ini';
-        $config = new Configuration('test-app', $propertiesFile);
+        $logger = new Logger('test-app');
+
+        $config = new Configuration($logger, $propertiesFile);
         $this->assertNotNull($config, 'logger not null check');
+    }
+
+    public function testNullPropertiesFile()
+    {
+        $propertiesFile = null;
+        $logger = new Logger('test-app');
+
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $propertiesFile);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught');
+
+        $expectedCode = EtlException::INPUT_ERROR;
+        $this->assertEquals($expectedCode, $exception->getCode(), 'Exception code check');
+    }
+
+    public function testNonExistentPropertiesFile()
+    {
+        $propertiesFile = __DIR__.'/../data/non-existent-config-file.ini';
+        $logger = new Logger('test-app');
+
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $propertiesFile);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught');
+
+        $expectedCode = EtlException::INPUT_ERROR;
+        $this->assertEquals($expectedCode, $exception->getCode(), 'Exception code check');
     }
 }

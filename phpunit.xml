@@ -7,7 +7,8 @@
         Unit Tests
     -->
     <testsuite name="unit">
-      <file>tests/unit/Configuration.php</file>
+      <file>tests/unit/ConfigPropertiesTest.php</file>
+      <file>tests/unit/ConfigurationTest.php</file>
       <file>tests/unit/EtlExceptionTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
       <file>tests/unit/NotifierTest.php</file>

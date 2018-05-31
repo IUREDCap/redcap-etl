@@ -104,7 +104,10 @@ class Configuration
             throw new EtlException($message, $code);
         } else {
             $propertiesFile = trim($propertiesFile);
-            $properties = parse_ini_file($propertiesFile);
+
+            # suppress errors for this, because it should be
+            # hnadled by the check for $properties being false
+            @ $properties = parse_ini_file($propertiesFile);
             if ($properties === false) {
                 $message = 'The properties file \"'.$propertiesFile.'\" could not be read.';
                 $code    = EtlException::INPUT_ERROR;
