@@ -3,9 +3,7 @@
 namespace IU\REDCapETL;
 
 use IU\REDCapETL\Rules\FieldRule;
-use IU\REDCapETL\Rules\Rule;
 use IU\REDCapETL\Rules\TableRule;
-
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
 use IU\REDCapETL\Schema\RowsType;
@@ -368,7 +366,7 @@ class SchemaGenerator
             case RowsType::BY_REPEATING_INSTRUMENTS:
                 $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
                 $field = new Field(
-                    RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
+                    RedCapEtl::COLUMN_EVENT,
                     $fieldTypeSpecifier->getType(),
                     $fieldTypeSpecifier->getSize()
                 );
@@ -376,11 +374,20 @@ class SchemaGenerator
                 
                 $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
                 $field = new Field(
+                    RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
+                );
+                $table->addField($field);
+
+                $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+                $field = new Field(
                     RedCapEtl::COLUMN_REPEATING_INSTANCE,
                     $fieldTypeSpecifier->getType(),
                     $fieldTypeSpecifier->getSize()
                 );
                 $table->addField($field);
+
                 break;
 
             case RowsType::BY_SUFFIXES:
