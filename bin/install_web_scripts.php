@@ -67,13 +67,13 @@ foreach ($regex as $iniFile => $object) {
     if (isset($webScript) && trim($webScript) !== '') {
         $webFile = $webDir . '/' . $webScript;
 
-        $file_contents = file_get_contents($webScriptFile);
-        $file_contents = str_replace($replace, $installDir, $file_contents);
-        $file_contents = str_replace(
+        $fileContents = file_get_contents($webScriptFile);
+        $fileContents = str_replace($replace, $installDir, $fileContents);
+        $fileContents = str_replace(
             'propertiesFile = null;',
             "propertiesFile = '".$iniFile."';",
-            $file_contents
+            $fileContents
         );
-        file_put_contents($webFile, $file_contents);
+        file_put_contents($webFile, $fileContents);
     }
 }

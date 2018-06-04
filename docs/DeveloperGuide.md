@@ -329,4 +329,6 @@ From the top-level directory of your REDCap-ETL installation,
 the following command can be used
 to check for coding standards compliance:
 
-    ./vendor/bin/phpcs --standard=PSR1,PSR2 src tests/unit tests/integration tests/system bin
+    ./vendor/bin/phpcs
+
+The coding standards checks that are done (by default) are configured in the file __phpcs.xml__ in the top-level directory.

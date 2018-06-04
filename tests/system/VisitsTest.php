@@ -27,14 +27,14 @@ class VisitsTest extends TestCase
 
     public static function runBatchEtl()
     {
-        $etl_output = array();
+        $etlOutput = array();
         $command = "cd ".self::BIN_DIR.";"." php ".self::ETL_COMMAND." -c ".self::CONFIG_FILE;
-        $etl_result = exec($command, $etl_output);
+        $etlResult = exec($command, $etlOutput);
 
         $expectedResult = 'Processing complete.';
 
-        print "ETL Result: $etl_result\n";
-        if ($etl_result !== 'Processing complete.') {
+        print "ETL Result: $etlResult\n";
+        if ($etlResult !== 'Processing complete.') {
             print "    ***WARNING: Expected ETL result is: $expectedResult\n";
         }
     }
