@@ -387,7 +387,24 @@ class SchemaGenerator
                     $fieldTypeSpecifier->getSize()
                 );
                 $table->addField($field);
+                break;
 
+            case RowsType::BY_REPEATING_EVENTS:
+                $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+                $field = new Field(
+                    RedCapEtl::COLUMN_EVENT,
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
+                );
+                $table->addField($field);
+
+                $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+                $field = new Field(
+                    RedCapEtl::COLUMN_REPEATING_INSTANCE,
+                    $fieldTypeSpecifier->getType(),
+                    $fieldTypeSpecifier->getSize()
+                );
+                $table->addField($field);
                 break;
 
             case RowsType::BY_SUFFIXES:

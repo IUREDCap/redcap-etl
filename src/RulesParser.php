@@ -6,7 +6,6 @@ use IU\REDCapETL\Rules\FieldRule;
 use IU\REDCapETL\Rules\Rule;
 use IU\REDCapETL\Rules\Rules;
 use IU\REDCapETL\Rules\TableRule;
-
 use IU\REDCapETL\Schema\FieldType;
 use IU\REDCapETL\Schema\RowsType;
 
@@ -38,6 +37,7 @@ class RulesParser
     const EVENTS                = 'EVENTS';
     const SUFFIXES              = 'SUFFIXES';
     const REPEATING_INSTRUMENTS = 'REPEATING_INSTRUMENTS';
+    const REPEATING_EVENTS      = 'REPEATING_EVENTS';
                 
     public function __construct()
     {
@@ -233,6 +233,10 @@ class RulesParser
 
             case self::REPEATING_INSTRUMENTS:
                 $rowsType = RowsType::BY_REPEATING_INSTRUMENTS;
+                break;
+
+            case self::REPEATING_EVENTS:
+                $rowsType = RowsType::BY_REPEATING_EVENTS;
                 break;
 
             case self::SUFFIXES:

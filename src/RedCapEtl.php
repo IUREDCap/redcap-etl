@@ -3,16 +3,12 @@
 
 namespace IU\REDCapETL;
 
-use IU\PHPCap\RedCap;
 use IU\PHPCap\PhpCapException;
-
-use IU\REDCapETL\Schema\Field;
-use IU\REDCapETL\Schema\FieldType;
+use IU\PHPCap\RedCap;
+use IU\REDCapETL\Database\DbConnectionFactory;
 use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
-
-use IU\REDCapETL\Database\DbConnectionFactory;
 
 /**
  * REDCap-ETL (Extract, Transform, Load) class.
@@ -375,6 +371,14 @@ class RedCapEtl
             // If repeatable forms
             case RowsType::BY_REPEATING_INSTRUMENTS:
                 // Foreach Record (i.e., foreach repeatable form)
+                foreach ($records as $record) {
+                    $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
+                }
+                break;
+
+            // If repeatable events
+            case RowsType::BY_REPEATING_EVENTS:
+                // Foreach Record (i.e., foreach repeatable event)
                 foreach ($records as $record) {
                     $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
                 }
