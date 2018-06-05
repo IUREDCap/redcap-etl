@@ -217,13 +217,13 @@ class Table
                     return false;
                 }
             }
-        } elseif($this->rowsType === RowsType::BY_REPEATING_EVENTS) {
+        } elseif ($this->rowsType === RowsType::BY_REPEATING_EVENTS) {
             #---------------------------------------------------------------
             # If a row is being created for a REPEATING_EVENTS table, only
             # include data if redcap_event_name and redcap_repeat_instance
             # are present, and redcap_repeat_instrument is empty
             #---------------------------------------------------------------
-            if(!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data) ||
+            if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data) ||
                 !array_key_exists(RedCapEtl::COLUMN_EVENT, $data)) {
                 return false;
             }
@@ -233,11 +233,13 @@ class Table
                 }
             }
             if (array_key_exists(RedCapEtl::COLUMN_EVENT, $data) &&
-                (empty($data[RedCapEtl::COLUMN_EVENT])) || is_null($data[RedCapEtl::COLUMN_EVENT])) {
+                ((empty($data[RedCapEtl::COLUMN_EVENT])) ||
+                    is_null($data[RedCapEtl::COLUMN_EVENT]))) {
                     return false;
             }
             if (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data) &&
-                (empty($data[RedCapEtl::COLUMN_REPEATING_INSTANCE])) || is_null($data[RedCapEtl::COLUMN_REPEATING_INSTANCE])) {
+                ((empty($data[RedCapEtl::COLUMN_REPEATING_INSTANCE])) ||
+                    is_null($data[RedCapEtl::COLUMN_REPEATING_INSTANCE]))) {
                     return false;
             }
         }
