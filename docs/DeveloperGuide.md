@@ -132,29 +132,32 @@ To set up the integration tests, you need to first set up
 the Basic Demography REDCap project that has the data for the
 tests:
 
-1. In REDCap, create a project using the
-   "Upload a REDCap project XML file" option, and specify the
-   following file from REDCap-ETL:
+1. In REDCap, create one project using the
+   "Upload a REDCap project XML file" option, for each of the
+   following files from REDCap-ETL:
 
         tests/projects/BasicDemography.REDCap.xml
+        tests/projects/RepeatingEvents.REDCap.xml
 
-2. Request an API token for the project you just created (or
-   create a token if you are an admin). The token needs to have export
+2. Request API tokens for the projects you just created (or
+   create tokens if you are an admin). The tokens needs to have export
    permission.
 
-The next thing you need to do is to create the configuration file
-for the Basic Demography project:
+The next thing you need to do is to create the configuration files
+for the tests:
 
-1. Copy the basic demography configuration and transformation rules
+1. Copy the configuration and transformation rules
    files from the tests/config-init directory to the tests/config
-   directory, for example, from the top-level directory:
+   directory. From the top-level directory:
    
         cp tests/config-init/basic-demography.ini tests/config
         cp tests/config-init/basic-demography-rules.txt tests/config
         cp tests/config-init/basic-demography-2.ini tests/config
+        cp tests/config-init/repeating-events.ini tests/config
+        cp tests/config-init/repeating-events-rules.txt tests/config
 
-2. Edit the tests/config/basic-demography.ini and 
-   tests/config/basic-demography-2.ini files, and set the 
+2. Edit the .ini files that were copied to the tests/config/
+   directory, and set the 
    following properties to appropriate values:
    
     1. __redcap_api_url__ - set this to the URL for your REDCap's API. Be
