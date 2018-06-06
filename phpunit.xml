@@ -34,6 +34,7 @@
     <testsuite name="integration">
       <file>tests/integration/BasicDemographyTest.php</file>
       <file>tests/integration/BasicDemography2Test.php</file>
+      <file>tests/integration/RepeatingEventsTest.php</file>
     </testsuite>
 
     <!--
