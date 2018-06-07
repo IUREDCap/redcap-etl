@@ -10,6 +10,8 @@ class TestProject extends EtlRedCapProject
 {
     private $records;
 
+    private $importGeneratesException = false;
+
     public function importRecords(
         $records,
         $format = 'php',
@@ -19,6 +21,15 @@ class TestProject extends EtlRedCapProject
         $returnContent = 'count',
         $forceAutoNumber = false
     ) {
+        # This check added so that there is
+        # an easy way to cause this method to
+        # generate an exception
+        if ($this->importGeneratesException) {
+            $message = 'data import error';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        }
+
         if (!isset($this->records)) {
             $record = array();
         }
@@ -34,5 +45,10 @@ class TestProject extends EtlRedCapProject
         ksort($allRecords);
         $allRecords = array_values($allRecords);
         return $allRecords;
+    }
+
+    public function setImportGeneratesException($generatesException)
+    {
+        $this->importGeneratesException = $generatesException;
     }
 }

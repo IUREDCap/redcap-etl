@@ -26,4 +26,7 @@
     <file>tests/system</file>
     <file>tests/unit</file>
 
+    <!-- How to exclude files: -->
+    <!--<exclude-pattern>...pattern...</exclude-pattern> -->
+
 </ruleset>
