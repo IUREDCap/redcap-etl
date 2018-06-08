@@ -17,9 +17,12 @@ This is a list of the steps for setting up a REDCap-ETL development environment.
 
         sudo apt install composer
 
-3. Install sendmail (needed for the Notifier class, which sends e-mail notifications of errors)
+3. Install sendmail (needed for logging to e-mail)
 
         sudo apt install sendmail
+        
+    The script **bin/email_test.php** can be used to test if e-mail logging
+works.
 
 4. Install MySQL
 
