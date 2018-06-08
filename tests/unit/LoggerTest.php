@@ -4,6 +4,9 @@ namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
 
+use IU\PHPCap\ErrorHandlerInterface;
+use IU\PHPCap\PhpCapException;
+
 use IU\REDCapETL\TestProject;
 
 /**
@@ -141,5 +144,123 @@ class LoggerTest extends TestCase
 
 
         SystemFunctions::setOverrideMail(false);
+    }
+    
+    public function testLogError()
+    {
+        $logger = new Logger($this->project->getApp());
+        $logger->setPrintInfo(false);
+        
+        SystemFunctions::setOverrideErrorLog(true);
+        $message = 'This is an error log test.';
+        $logger->logError($message);
+        $lastErrorLogMessage = SystemFunctions::getLastErrorLogMessage();
+        $this->assertEquals(
+            $message,
+            $lastErrorLogMessage,
+            'Log error check'
+        );
+        SystemFunctions::setOverrideErrorLog(false);
+    }
+    
+    public function testLogException()
+    {
+        $logger = new Logger($this->project->getApp());
+        $logger->setPrintInfo(false);
+        
+        $logFile = __DIR__.'/../logs/test-log-exception.txt';
+        if (file_exists($logFile)) {
+            unlink($logFile);
+        }
+        $logger->setLogFile($logFile);
+        
+        $message = 'This is an exception log test.';
+        $code = EtlException::INPUT_ERROR;
+        $exception = new EtlException($message, $code);
+        $logger->logException($exception);
+        
+        # Get only the first line of the file, since it will have the
+        # error messages. The other lines will contain a stack trace.
+        $fh = fopen($logFile, 'r');
+        $logEntry = fgets($fh);
+        fclose($fh);
+        
+        # Remove the timestamp and trailing newline
+        list($timestamp, $fileMessage) = explode(': ', $logEntry);
+        $fileMessage = trim($fileMessage);
+
+        $this->assertEquals(
+            $message,
+            $fileMessage,
+            'Log exception check'
+        );
+        
+        #----------------------------------------------
+        # Test with error_log
+        #----------------------------------------------
+        $logger->setLogFile(null);   # turn off file logging
+        $logFile = __DIR__.'/../logs/test-log-exception-to-error-log.txt';
+        if (file_exists($logFile)) {
+            unlink($logFile);
+        }
+        ini_set("log_errors", 1);
+        ini_set("error_log", $logFile);
+                
+        $logger->logException($exception);
+                
+        # Get only the first line of the file, since it will have the
+        # error messages. The other lines will contain a stack trace.
+        $fh = fopen($logFile, 'r');
+        $logEntry = fgets($fh);
+        fclose($fh);
+        
+        # Remove the timestamp and trailing newline
+        list($timestamp, $fileMessage) = explode('] ', $logEntry);
+        $fileMessage = trim($fileMessage);
+
+        $this->assertEquals(
+            $message,
+            $fileMessage,
+            'Log exception to error_log check'
+        );
+    }
+    
+    public function testLogPhpCapException()
+    {
+        $logger = new Logger($this->project->getApp());
+        $logger->setPrintInfo(false);
+        
+        $logFile = __DIR__.'/../logs/test-log-phpcap-exception.txt';
+        if (file_exists($logFile)) {
+            unlink($logFile);
+        }
+        $logger->setLogFile($logFile);
+        
+        $phpcapMessage = 'REDCap API error.';
+        $code = ErrorHandlerInterface::REDCAP_API_ERROR;
+        $phpcapException = new PhpCapException($phpcapMessage, $code);
+       
+        $message = 'PHPCap error.';
+        $code = EtlException::PHPCAP_ERROR;
+        $exception = new EtlException($message, $code, $phpcapException);
+        $logger->logException($exception);
+        
+        $combinedMessage = $message.' - Caused by PHPCap exception: '.$phpcapMessage;
+        
+        # Get only the first line of the file, since it will have the
+        # error messages. The other lines will contain a stack trace.
+        $fh = fopen($logFile, 'r');
+        $logEntry = fgets($fh);
+        fclose($fh);
+        
+        # Remove the timestamp and trailing newline
+        list($timestamp, $fileMessage) = explode(': ', $logEntry, 2);
+        $fileMessage = trim($fileMessage);
+
+        $this->assertEquals(
+            $combinedMessage,
+            $fileMessage,
+            'Log exception check'
+        );
     }
 }

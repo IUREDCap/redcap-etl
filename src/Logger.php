@@ -188,7 +188,7 @@ class Logger
         # about the original PHPCap error.
         #--------------------------------------------------------------------
         if ($exception->getCode() === EtlException::PHPCAP_ERROR) {
-            $previouseException = $exception->getPrevious();
+            $previousException = $exception->getPrevious();
             if (isset($previousException)) {
                 $message .= ' - Caused by PHPCap exception: '.$previousException->getMessage();
             }
@@ -342,11 +342,15 @@ class Logger
 
     /**
      * Sends an email.
-     * For info about how to send attachemnts in emails sent from PHP:
+     *
+     * Attachments have been disabled. For info about how to send
+     * attachemnts in emails sent from PHP:
      * http://webcheatsheet.com/php/send_email_text_html_attachment.php#attachment
      *
      * @param mixed $mailToAddress string or array to e-mail addresses.
-     * @param array $attachments array of attachments.
+     * @param array $attachments array of attachments. NOTE: attachements
+     *     are not currently supported. There is code for supporting them
+     *     below, but it has been commented out.
      * @param string $message the e-mail message to send.
      * @param string $subjectString the e-mail subject.
      * @param string $fromAddress e-mail from address.
@@ -384,8 +388,10 @@ class Logger
             "X-Mailer: php";
         $sendmailOpts = '-f '.$fromAddress;
 
+        /* If attachments are needed, the following code should be
+         * uncommented and tested:
         // Check if any attachments are being sent
-        if (0 < count($attachments)) {
+        if (count($attachments) > 0) {
             // Create a boundary string. It must be unique so we use the MD5
             // algorithm to generate a random hash.
             $randomHash = md5(date('r', time()));
@@ -408,12 +414,13 @@ class Logger
                     "Content-Type: ".$attachment['content_type']."\n".
                     "Content-Transfer-Encoding: base64\n".
                     "Content-Disposition: attachment\n\n";
-      
+
                 $message .= $attachHeader.$attachment['data'];
             }
 
             $message .= "--PHP-mixed-".$randomHash."--\n\n";
         }
+        */
 
         $faliedSendTos = array();
         foreach ($mailToAddresses as $mailto) {
