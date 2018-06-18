@@ -217,13 +217,15 @@ class RulesParser
 
         $rowsType = array();
         $suffixes = array();
+        $rowsTypeSuffixes = array();
 
         if (preg_match(self::ROWSTYPE_SEPARATOR, $rowsDef)) {
             $rowsEncode = explode(self::ROWSTYPE_SEPARATOR, $rowsDef);
             foreach ($rowsEncode as $rowType){
-                list($rowsType, $suffixes) = $this->assignRowsType($rowType);
+                array_push($rowsTypeSuffixes, $this->assignRowsType($rowType));
             }
         } else list($rowsType, $suffixes) = $this->assignRowsType($rowsDef);
+
 
         return (array($rowsType,$suffixes));
     }
