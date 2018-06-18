@@ -18,6 +18,7 @@ class RulesParser
     const ELEMENTS_SEPARATOR  = ',';
     const ROWS_DEF_SEPARATOR   = ':';   # row type separator
     const SUFFIXES_SEPARATOR   = ';';
+    const ROWSTYPE_SEPARATOR   = '&';
     
     const ELEMENT_TABLE       = 'TABLE';
     const ELEMENT_FIELD       = 'FIELD';
@@ -214,10 +215,22 @@ class RulesParser
     {
         $rowsDef = trim($rowsDef);
 
-        $regex = '/'.self::SUFFIXES_SEPARATOR.'/';
-
-        $rowsType = '';
+        $rowsType = array();
         $suffixes = array();
+
+        if (preg_match(self::ROWSTYPE_SEPARATOR, $rowsDef)) {
+            $rowsEncode = explode(self::ROWSTYPE_SEPARATOR, $rowsDef);
+            foreach ($rowsEncode as $rowType){
+                list($rowsType, $suffixes) = $this->assignRowsType($rowType);
+            }
+        } else list($rowsType, $suffixes) = $this->assignRowsType($rowsDef);
+
+        return (array($rowsType,$suffixes));
+    }
+
+    private function assignRowsType($rowsEncode)
+    {
+        $regex = '/' . self::SUFFIXES_SEPARATOR . '/';
 
         list($rowsEncode, $suffixesDef) = array_pad(explode(self::ROWS_DEF_SEPARATOR, $rowsDef), 2, null);
 
@@ -252,7 +265,6 @@ class RulesParser
             default:
                 $rowsType = false;
         }
-
         return (array($rowsType,$suffixes));
     }
 
@@ -286,7 +298,7 @@ class RulesParser
 
     protected function generalSqlClean($input)
     {
-        $cleaned = preg_replace("/[^a-zA-Z0-9_;:]+/i", "", $input);
+        $cleaned = preg_replace("/[^a-zA-Z0-9_;:&]+/i", "", $input);
         return $cleaned;
     }
 
