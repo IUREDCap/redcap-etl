@@ -349,94 +349,96 @@ class SchemaGenerator
             $table->addField($field);
         }
 
-        // Depending on type of table, add output fields to represent
-        // which iteration of a field's value is stored in a row of
-        // the table
-        switch ($rowsType) {
-            case RowsType::BY_EVENTS:
-                $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_EVENT,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
-                break;
+        foreach ($rowsType as $rowType) {
+            // Depending on type of table, add output fields to represent
+            // which iteration of a field's value is stored in a row of
+            // the table
+            switch ($rowsType) {
+                case in_array(RowsType::BY_EVENTS, $rowsType, true):
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_EVENT,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
+                    break;
 
-            case RowsType::BY_REPEATING_INSTRUMENTS:
-                $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_EVENT,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
-                
-                $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
+                case in_array(RowsType::BY_REPEATING_INSTRUMENTS, $rowsType, true):
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_EVENT,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
 
-                $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_REPEATING_INSTANCE,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
-                break;
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
 
-            case RowsType::BY_REPEATING_EVENTS:
-                $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_EVENT,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_REPEATING_INSTANCE,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
+                    break;
 
-                $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_REPEATING_INSTANCE,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
-                break;
+                case in_array(RowsType::BY_REPEATING_EVENTS, $rowsType, true):
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_EVENT,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
 
-            case RowsType::BY_SUFFIXES:
-                $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_SUFFIXES,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
-                break;
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_REPEATING_INSTANCE,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
+                    break;
 
-            case RowsType::BY_EVENTS_SUFFIXES:
-                $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_EVENT,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
-                
-                $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
-                $field = new Field(
-                    RedCapEtl::COLUMN_SUFFIXES,
-                    $fieldTypeSpecifier->getType(),
-                    $fieldTypeSpecifier->getSize()
-                );
-                $table->addField($field);
-                break;
+                case in_array(RowsType::BY_REPEATING_EVENTS, $rowsType, true):
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_SUFFIXES,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
+                    break;
 
-            default:
-                break;
+                case in_array(RowsType::BY_EVENTS_SUFFIXES, $rowsType, true):
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_EVENT,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
+
+                    $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
+                    $field = new Field(
+                        RedCapEtl::COLUMN_SUFFIXES,
+                        $fieldTypeSpecifier->getType(),
+                        $fieldTypeSpecifier->getSize()
+                    );
+                    $table->addField($field);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         return $table;

@@ -49,7 +49,7 @@ class Rule
     /**
      * Indicates if this rule currently has any errors.
      *
-     * @return boollean returns true if this rule has 1 or more errors,
+     * @return boolean returns true if this rule has 1 or more errors,
      *     and false otherwise.
      */
     public function hasErrors()

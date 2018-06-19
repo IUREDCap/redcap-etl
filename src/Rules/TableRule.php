@@ -13,6 +13,7 @@ class TableRule extends Rule
     public function __construct($line, $lineNumber)
     {
         $this->suffixes = array();
+        $this->rowsType = array();
         parent::__construct($line, $lineNumber);
     }
 }

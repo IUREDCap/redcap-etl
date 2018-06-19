@@ -18,11 +18,11 @@ class Table
 
     protected $children = array();   // Child tables
 
-    public $rowsType = '';
+    public $rowsType = array();            // RowsTypes specified for this table (joined with &)
     public $rowsSuffixes = array();        // Suffixes specified for this table
-    private $possibleSuffixes = array(); // Suffixes allowed for this table
-                                          //   combined with any suffixes
-                                          //   allowed for its parent table
+    private $possibleSuffixes = array();   // Suffixes allowed for this table
+                                           //   combined with any suffixes
+                                           //   allowed for its parent table
 
     protected $fields = array();
     protected $rows = array();
@@ -49,7 +49,7 @@ class Table
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
      */
-    public function __construct($name, $parent, $keyType, $rowsType, $suffixes = array(), $recordIdFieldName = null)
+    public function __construct($name, $parent, $keyType, $rowsType = array(), $suffixes = array(), $recordIdFieldName = null)
     {
         $this->recordIdFieldName = $recordIdFieldName;
         $this->keyType = $keyType;
@@ -64,7 +64,7 @@ class Table
         // ASSUMES: The field for the primary key will be given in
         //          the place of where a parent table would have been and
         //          will be of type string.
-        if (RowsType::ROOT === $this->rowsType) {
+        if (in_array(RowsType::ROOT, $this->rowsType, true)) {
             $field = new Field($parent, $this->keyType->getType(), $this->keyType->getSize());
             $this->primary = $field;
         } else {
@@ -99,7 +99,9 @@ class Table
         // If the field being added has the same name as the primary key,
         // do not add it again
         if ($this->primary->name != $field->dbName) {
+            if(!($field->isIdentifier() && $this->identifierFieldExists($field))) {
             array_push($this->fields, $field);
+            }
         }
     }
 
@@ -431,5 +433,22 @@ class Table
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Check if identifier field already exists in this table
+     *
+     * @param $identifierField field to check
+     *
+     * @return bool true if field exists
+     */
+    private function identifierFieldExists($identifierField)
+    {
+        foreach ($this->fields as $fieldInTable) {
+            if($fieldInTable === $identifierField)
+                return true;
+        }
+        return false;
+
     }
 }

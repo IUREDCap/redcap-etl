@@ -97,7 +97,7 @@ class RulesParser
            
             $lineNumber++;
         }
-        
+
         return $rules;
     }
     
@@ -140,8 +140,8 @@ class RulesParser
         
         return $tableRule;
     }
-    
-    
+
+
     /**
      * Parses a Field Rule.
      *
@@ -151,6 +151,7 @@ class RulesParser
      *     for error messages.
      * @param int $lineNumber the line number of the rule in the original
      *     transformation rules text.
+     * @return FieldRule
      */
     private function parseFieldRule($values, $line, $lineNumber)
     {
@@ -219,22 +220,22 @@ class RulesParser
         $suffixes = array();
         $rowsTypeSuffixes = array();
 
-        if (preg_match(self::ROWSTYPE_SEPARATOR, $rowsDef)) {
-            $rowsEncode = explode(self::ROWSTYPE_SEPARATOR, $rowsDef);
-            foreach ($rowsEncode as $rowType){
-                array_push($rowsTypeSuffixes, $this->assignRowsType($rowType));
-            }
-        } else list($rowsType, $suffixes) = $this->assignRowsType($rowsDef);
-
+        $rowsEncode = explode(self::ROWSTYPE_SEPARATOR, $rowsDef);
+        foreach ($rowsEncode as $rowType){
+            $rowsTypeSuffixes = $this->assignRowsType($rowType);
+            array_push($rowsType,$rowsTypeSuffixes[0]);
+            array_push($suffixes,$rowsTypeSuffixes[1]);
+        }
 
         return (array($rowsType,$suffixes));
     }
 
-    private function assignRowsType($rowsEncode)
+    private function assignRowsType($rowType)
     {
+        $suffixes = array();
         $regex = '/' . self::SUFFIXES_SEPARATOR . '/';
 
-        list($rowsEncode, $suffixesDef) = array_pad(explode(self::ROWS_DEF_SEPARATOR, $rowsDef), 2, null);
+        list($rowsEncode, $suffixesDef) = array_pad(explode(self::ROWS_DEF_SEPARATOR, $rowType), 2, null);
 
         switch ($rowsEncode) {
             case self::ROOT:

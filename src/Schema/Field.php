@@ -2,6 +2,8 @@
 
 namespace IU\REDCapETL\Schema;
 
+use IU\REDCapETL\RedCapEtl;
+
 /**
  * Field is used to store information about a relational table's field
  */
@@ -42,5 +44,15 @@ class Field
             $string .= "{$in}{$this->name} : {$this->type}\n";
         }
         return $string;
+    }
+
+    public function isIdentifier()
+    {
+        if($this->name === RedCapEtl::COLUMN_EVENT ||
+            $this->name === RedCapEtl::COLUMN_REPEATING_INSTRUMENT ||
+            $this->name === RedCapEtl::COLUMN_REPEATING_INSTANCE) {
+            return true;
+        }
+        return false;
     }
 }
