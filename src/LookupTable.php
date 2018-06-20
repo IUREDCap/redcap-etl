@@ -85,7 +85,7 @@ class LookupTable extends Table
                 );
 
                 // Add the row, using no foreign key or suffix
-                $this->createRow($data, '', '');
+                $this->createRow($data, '', '', $this->rowsType);
 
                 #---------------------------------------------------
                 # Update the map

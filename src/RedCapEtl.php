@@ -353,55 +353,63 @@ class RedCapEtl
      */
     protected function transform($table, $records, $foreignKey, $suffix)
     {
-        // Look at row_event for this table
-        switch ($table->rowsType) {
-            // If root
-            case RowsType::ROOT:
-                $this->createRowAndRecurse($table, $records, $foreignKey, $suffix);
-                break;
+        foreach ($table->rowsType as $rowType) {
+            // Look at row_event for this table
+            switch ($rowType) {
+                // If root
+                case RowsType::ROOT:
+                    $this->createRowAndRecurse($table, $records, $foreignKey, $suffix, $rowType);
+                    break;
 
-            // If events
-            case RowsType::BY_EVENTS:
-                // Foreach Record (i.e., foreach event)
-                foreach ($records as $record) {
-                    $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
-                }
-                break;
+                // If events
+                case RowsType::BY_EVENTS:
+                    // Foreach Record (i.e., foreach event)
+                    foreach ($records as $record) {
+                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix, $rowType);
+                    }
+                    break;
 
-            // If repeatable forms
-            case RowsType::BY_REPEATING_INSTRUMENTS:
-                // Foreach Record (i.e., foreach repeatable form)
-                foreach ($records as $record) {
-                    $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
-                }
-                break;
+                // If repeatable forms
+                case RowsType::BY_REPEATING_INSTRUMENTS:
+                    // Foreach Record (i.e., foreach repeatable form)
+                    foreach ($records as $record) {
+                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix, $rowType);
+                    }
+                    break;
 
-            // If repeatable events
-            case RowsType::BY_REPEATING_EVENTS:
-                // Foreach Record (i.e., foreach repeatable event)
-                foreach ($records as $record) {
-                    $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix);
-                }
-                break;
+                // If repeatable events
+                case RowsType::BY_REPEATING_EVENTS:
+                    // Foreach Record (i.e., foreach repeatable event)
+                    foreach ($records as $record) {
+                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix, $rowType);
+                    }
+                    break;
 
-            // If suffix
-            case RowsType::BY_SUFFIXES:
-                // Foreach Suffix
-                foreach ($table->rowsSuffixes as $newSuffix) {
-                    $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$newSuffix);
-                }
-                break;
-
-            // If events and suffix
-            case RowsType::BY_EVENTS_SUFFIXES:
-                // Foreach Record (i.e., foreach event)
-                foreach ($records as $record) {
+                // If suffix
+                case RowsType::BY_SUFFIXES:
                     // Foreach Suffix
                     foreach ($table->rowsSuffixes as $newSuffix) {
-                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix.$newSuffix);
+                        $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$newSuffix, $rowType);
                     }
-                }
-                break;
+                    break;
+
+                // If events and suffix
+                case RowsType::BY_EVENTS_SUFFIXES:
+                    // Foreach Record (i.e., foreach event)
+                    foreach ($records as $record) {
+                        // Foreach Suffix
+                        foreach ($table->rowsSuffixes as $newSuffix) {
+                            $this->createRowAndRecurse(
+                                $table,
+                                array($record),
+                                $foreignKey,
+                                $suffix.$newSuffix,
+                                $rowType
+                            );
+                        }
+                    }
+                    break;
+            }
         }
     }
 
@@ -409,10 +417,10 @@ class RedCapEtl
     /**
      * See 'transform' function for explanation of variables.
      */
-    protected function createRowAndRecurse($table, $records, $foreignKey, $suffix)
+    protected function createRowAndRecurse($table, $records, $foreignKey, $suffix, $rowType)
     {
         // Create Row using 1st Record
-        $primaryKey = $table->createRow($records[0], $foreignKey, $suffix);
+        $primaryKey = $table->createRow($records[0], $foreignKey, $suffix, $rowType);
 
         // If primary key generated, recurse for child tables
         if ($primaryKey) {

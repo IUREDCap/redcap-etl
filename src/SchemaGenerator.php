@@ -366,13 +366,14 @@ class SchemaGenerator
 
                 case RowsType::BY_REPEATING_INSTRUMENTS:
                     $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_EVENT,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
-
+                    if ($this->dataProject->isLongitudinal()) {
+                        $field = new Field(
+                            RedCapEtl::COLUMN_EVENT,
+                            $fieldTypeSpecifier->getType(),
+                            $fieldTypeSpecifier->getSize()
+                        );
+                        $table->addField($field);
+                    }
                     $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
                     $field = new Field(
                         RedCapEtl::COLUMN_REPEATING_INSTRUMENT,

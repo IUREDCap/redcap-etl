@@ -187,8 +187,9 @@ class Table
      * @param string $data the data values used to create the row.
      * @param string $foreignKey the name of the foreign key field for the row.
      * @param string $suffix the suffix value for the row (if any).
+     * @return bool|int TRUE if row was created, FALSE if ignored
      */
-    public function createRow($data, $foreignKey, $suffix)
+    public function createRow($data, $foreignKey, $suffix, $rowType)
     {
         #---------------------------------------------------------------
         # If a row is being created for a repeating instrument, don't
@@ -198,7 +199,7 @@ class Table
         # there is no value for redcap_event_name, redcap_repeat_instance
         # or redcap_repeat_instrument
         #---------------------------------------------------------------
-        if ($this->rowsType === RowsType::BY_REPEATING_INSTRUMENTS) {
+        if ($rowType === RowsType::BY_REPEATING_INSTRUMENTS) {
             if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 return false;
             } elseif (array_key_exists(RedCapEtl::COLUMN_EVENT, $data) &&
@@ -209,7 +210,7 @@ class Table
                         return false;
                 }
             }
-        } elseif ($this->rowsType === RowsType::BY_EVENTS) {
+        } elseif ($rowType === RowsType::BY_EVENTS) {
             #---------------------------------------------------------------
             # If a row is being created for an EVENT table, don't include
             # the data if it contains a value for redcap_repeat_instrument/
@@ -226,7 +227,7 @@ class Table
                     return false;
                 }
             }
-        } elseif ($this->rowsType === RowsType::BY_REPEATING_EVENTS) {
+        } elseif ($rowType === RowsType::BY_REPEATING_EVENTS) {
             #---------------------------------------------------------------
             # If a row is being created for a REPEATING_EVENTS table, only
             # include data if redcap_event_name and redcap_repeat_instance
