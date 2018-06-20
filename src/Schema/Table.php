@@ -49,9 +49,14 @@ class Table
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
      */
-    public function __construct($name, $parent, $keyType, $rowsType = array(),
-                                $suffixes = array(), $recordIdFieldName = null)
-    {
+    public function __construct(
+        $name,
+        $parent,
+        $keyType,
+        $rowsType = array(),
+        $suffixes = array(),
+        $recordIdFieldName = null
+    ) {
         $this->recordIdFieldName = $recordIdFieldName;
         $this->keyType = $keyType;
         
@@ -344,9 +349,9 @@ class Table
     {
         // If this table is BY_SUFFIXES and doesn't yet have its possible
         // suffixes set
-        if ((in_array(RowsType::BY_SUFFIXES, $this->rowsType,true) ||
+        if ((in_array(RowsType::BY_SUFFIXES, $this->rowsType, true) ||
             in_array(RowsType::BY_EVENTS_SUFFIXES, $this->rowsType, true)) &&
-            (empty ($this->possibleSuffixes))) {
+            (empty($this->possibleSuffixes))) {
             // If there are no parent suffixes, use an empty string
             $parentSuffixes = $this->parent->getPossibleSuffixes();
             if (empty($parentSuffixes)) {
