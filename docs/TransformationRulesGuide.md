@@ -39,6 +39,7 @@ Note: if the table is a root table, it has no parent table, and the field after 
         EVENTS:<suffixes>
         <suffixes>
         REPEATING_INSTRUMENTS
+        REPEATING_EVENTS
 
 * `<suffixes>` is in the format
 
