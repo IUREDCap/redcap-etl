@@ -97,6 +97,7 @@ class Table
     public function addField($field)
     {
         // If the field being added has the same name as the primary key,
+        // or if the identifier field has already been added
         // do not add it again
         if ($this->primary->name != $field->dbName) {
             if(!($field->isIdentifier() && $this->identifierFieldExists($field))) {
@@ -342,8 +343,8 @@ class Table
     {
         // If this table is BY_SUFFIXES and doesn't yet have its possible
         // suffixes set
-        if (((RowsType::BY_SUFFIXES === $this->rowsType) ||
-            (RowsType::BY_EVENTS_SUFFIXES === $this->rowsType)) &&
+        if ((in_array(RowsType::BY_SUFFIXES, $this->rowsType,true) ||
+            in_array(RowsType::BY_EVENTS_SUFFIXES, $this->rowsType, true)) &&
             (empty($this->possibleSuffixes))) {
             // If there are no parent suffixes, use an empty string
             $parentSuffixes = $this->parent->getPossibleSuffixes();
@@ -355,7 +356,7 @@ class Table
             foreach ($parentSuffixes as $par) {
                 // Loop through all the possibleSuffixes of the current table
                 foreach ($this->rowsSuffixes as $cur) {
-                    array_push($this->possibleSuffixes, $par.$cur);
+                        array_push($this->possibleSuffixes, $par . $cur);
                 }
             }
         }
@@ -368,6 +369,7 @@ class Table
      * debugging purposes).
      *
      * @param integer $indent the number of spaces to indent each line.
+     * @return string
      */
     public function toString($indent = 0)
     {
@@ -445,7 +447,7 @@ class Table
     private function identifierFieldExists($identifierField)
     {
         foreach ($this->fields as $fieldInTable) {
-            if($fieldInTable === $identifierField)
+            if($fieldInTable == $identifierField)
                 return true;
         }
         return false;

@@ -353,8 +353,8 @@ class SchemaGenerator
             // Depending on type of table, add output fields to represent
             // which iteration of a field's value is stored in a row of
             // the table
-            switch ($rowsType) {
-                case in_array(RowsType::BY_EVENTS, $rowsType, true):
+            switch ($rowType) {
+                case RowsType::BY_EVENTS:
                     $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
                     $field = new Field(
                         RedCapEtl::COLUMN_EVENT,
@@ -364,7 +364,7 @@ class SchemaGenerator
                     $table->addField($field);
                     break;
 
-                case in_array(RowsType::BY_REPEATING_INSTRUMENTS, $rowsType, true):
+                case RowsType::BY_REPEATING_INSTRUMENTS:
                     $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
                     $field = new Field(
                         RedCapEtl::COLUMN_EVENT,
@@ -390,7 +390,7 @@ class SchemaGenerator
                     $table->addField($field);
                     break;
 
-                case in_array(RowsType::BY_REPEATING_EVENTS, $rowsType, true):
+                case RowsType::BY_REPEATING_EVENTS:
                     $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
                     $field = new Field(
                         RedCapEtl::COLUMN_EVENT,
@@ -408,7 +408,7 @@ class SchemaGenerator
                     $table->addField($field);
                     break;
 
-                case in_array(RowsType::BY_REPEATING_EVENTS, $rowsType, true):
+                case RowsType::BY_SUFFIXES:
                     $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
                     $field = new Field(
                         RedCapEtl::COLUMN_SUFFIXES,
@@ -418,7 +418,7 @@ class SchemaGenerator
                     $table->addField($field);
                     break;
 
-                case in_array(RowsType::BY_EVENTS_SUFFIXES, $rowsType, true):
+                case RowsType::BY_EVENTS_SUFFIXES:
                     $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
                     $field = new Field(
                         RedCapEtl::COLUMN_EVENT,
@@ -485,7 +485,7 @@ class SchemaGenerator
                 $field = new Field($checkBoxFieldName, FieldType::INT, null, $checkBoxDbFieldName);
                 $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value] = $field;
             }
-        } else {  # Non-chackbox field
+        } else {  # Non-checkbox field
             // Process a single field
             $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName);
             $fields[$fieldName] = $field;
