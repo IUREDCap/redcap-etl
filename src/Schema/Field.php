@@ -48,7 +48,7 @@ class Field
 
     public function isIdentifier()
     {
-        if($this->name === RedCapEtl::COLUMN_EVENT ||
+        if ($this->name === RedCapEtl::COLUMN_EVENT ||
             $this->name === RedCapEtl::COLUMN_REPEATING_INSTRUMENT ||
             $this->name === RedCapEtl::COLUMN_REPEATING_INSTANCE) {
             return true;

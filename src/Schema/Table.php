@@ -49,7 +49,8 @@ class Table
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
      */
-    public function __construct($name, $parent, $keyType, $rowsType = array(), $suffixes = array(), $recordIdFieldName = null)
+    public function __construct($name, $parent, $keyType, $rowsType = array(),
+                                $suffixes = array(), $recordIdFieldName = null)
     {
         $this->recordIdFieldName = $recordIdFieldName;
         $this->keyType = $keyType;
@@ -100,8 +101,8 @@ class Table
         // or if the identifier field has already been added
         // do not add it again
         if ($this->primary->name != $field->dbName) {
-            if(!($field->isIdentifier() && $this->identifierFieldExists($field))) {
-            array_push($this->fields, $field);
+            if (!($field->isIdentifier() && $this->identifierFieldExists($field))) {
+                array_push($this->fields, $field);
             }
         }
     }
@@ -345,7 +346,7 @@ class Table
         // suffixes set
         if ((in_array(RowsType::BY_SUFFIXES, $this->rowsType,true) ||
             in_array(RowsType::BY_EVENTS_SUFFIXES, $this->rowsType, true)) &&
-            (empty($this->possibleSuffixes))) {
+            (empty ($this->possibleSuffixes))) {
             // If there are no parent suffixes, use an empty string
             $parentSuffixes = $this->parent->getPossibleSuffixes();
             if (empty($parentSuffixes)) {
@@ -447,10 +448,10 @@ class Table
     private function identifierFieldExists($identifierField)
     {
         foreach ($this->fields as $fieldInTable) {
-            if($fieldInTable == $identifierField)
+            if ($fieldInTable == $identifierField) {
                 return true;
+            }
         }
         return false;
-
     }
 }

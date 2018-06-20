@@ -33,7 +33,7 @@ class Schema
         array_push($this->tables, $table);
 
         // If it is a root table, add to list of root tables
-        if (in_array(RowsType::ROOT,$table->rowsType)) {
+        if (in_array(RowsType::ROOT, $table->rowsType)) {
             array_push($this->rootTables, $table);
         }
     }
