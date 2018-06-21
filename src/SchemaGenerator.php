@@ -349,97 +349,81 @@ class SchemaGenerator
             $table->addField($field);
         }
 
-        foreach ($rowsType as $rowType) {
-            // Depending on type of table, add output fields to represent
-            // which iteration of a field's value is stored in a row of
-            // the table
-            switch ($rowType) {
-                case RowsType::BY_EVENTS:
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_EVENT,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
-                    break;
 
-                case RowsType::BY_REPEATING_INSTRUMENTS:
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                    if ($this->dataProject->isLongitudinal()) {
-                        $field = new Field(
-                            RedCapEtl::COLUMN_EVENT,
-                            $fieldTypeSpecifier->getType(),
-                            $fieldTypeSpecifier->getSize()
-                        );
-                        $table->addField($field);
-                    }
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
+        #--------------------------------------------------------------
+        # Figure out which identifier fields the rows should contain
+        #--------------------------------------------------------------
+        $hasEvent      = false;
+        $hasInstrument = false;
+        $hasInstance   = false;
+        $hasSuffixes   = false;
 
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_REPEATING_INSTANCE,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
-                    break;
+        if (in_array(RowsType::BY_SUFFIXES, $rowsType)) {
+            $hasSuffixes = true;
+        }
 
-                case RowsType::BY_REPEATING_EVENTS:
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_EVENT,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
-
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_REPEATING_INSTANCE,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
-                    break;
-
-                case RowsType::BY_SUFFIXES:
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_SUFFIXES,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
-                    break;
-
-                case RowsType::BY_EVENTS_SUFFIXES:
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_EVENT,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
-
-                    $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
-                    $field = new Field(
-                        RedCapEtl::COLUMN_SUFFIXES,
-                        $fieldTypeSpecifier->getType(),
-                        $fieldTypeSpecifier->getSize()
-                    );
-                    $table->addField($field);
-                    break;
-
-                default:
-                    break;
+        if ($this->dataProject->isLongitudinal()) {
+            # Longitudinal study
+            if (in_array(RowsType::BY_REPEATING_INSTRUMENTS, $rowsType)) {
+                $hasEvent      = true;
+                $hasInstrument = true;
+                $hasInstance   = true;
+            } elseif (in_array(RowsType::BY_REPEATING_EVENTS, $rowsType)) {
+                $hasEvent      = true;
+                $hasInstance   = true;
+            } elseif (in_array(RowsType::BY_EVENTS, $rowsType)) {
+                $hasEvent      = true;
             }
+
+            if (in_array(RowsType::BY_EVENTS_SUFFIXES, $rowsType)) {
+                $hasEvent      = true;
+                $hasSuffixes   = true;
+            }
+        } else {
+            # Classic (non-longitudinal) study
+            if (in_array(RowsType::BY_REPEATING_INSTRUMENTS, $rowsType)) {
+                $hasInstrument = true;
+                $hasInstance   = true;
+            }
+        }
+
+        #--------------------------------------------------------------
+        # Create event/instrument/instance/suffix identifier fields
+        #--------------------------------------------------------------
+        if ($hasEvent) {
+            $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+            $field = new Field(RedCapEtl::COLUMN_EVENT, $fieldTypeSpecifier->getType(), $fieldTypeSpecifier->getSize());
+            $table->addField($field);
+        }
+
+        if ($hasInstrument) {
+            $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+            $field = new Field(
+                RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
+                $fieldTypeSpecifier->getType(),
+                $fieldTypeSpecifier->getSize()
+            );
+            $table->addField($field);
+        }
+
+        if ($hasInstance) {
+            $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+            $field = new Field(
+                RedCapEtl::COLUMN_REPEATING_INSTANCE,
+                $fieldTypeSpecifier->getType(),
+                $fieldTypeSpecifier->getSize()
+            );
+            $table->addField($field);
+        }
+
+        if ($hasSuffixes) {
+            $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
+            $field = new Field(
+                RedCapEtl::COLUMN_SUFFIXES,
+                $fieldTypeSpecifier->getType(),
+                $fieldTypeSpecifier->getSize()
+            );
+            $table->addField($field);
         }
 
         return $table;
