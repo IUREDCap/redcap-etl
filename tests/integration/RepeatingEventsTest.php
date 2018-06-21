@@ -18,10 +18,14 @@ class RepeatingEventsTest extends TestCase
 
     private static $enrollmentCsvFile;
     private static $enrollmentCsvLabelFile;
+
     private static $baselineCsvFile;
     private static $visitsCsvFile;
     private static $homeWeightVisitsCsvFile;
     private static $homeCardiovascularVisitsCsvFile;
+
+    private static $baselineAndVisitsCsvFile;
+    private static $baselineAndHomeVisitsCsvFile;
     private static $allVisitsCsvFile;
 
 
@@ -53,6 +57,8 @@ class RepeatingEventsTest extends TestCase
         self::$visitsCsvFile                   = self::$csvDir . 're_visits.csv';
         self::$homeWeightVisitsCsvFile         = self::$csvDir . 're_home_weight_visits.csv';
         self::$homeCardiovascularVisitsCsvFile = self::$csvDir . 're_home_cardiovascular_visits.csv';
+        self::$baselineAndVisitsCsvFile        = self::$csvDir . 're_baseline_and_visits.csv';
+        self::$baselineAndHomeVisitsCsvFile    = self::$csvDir . 're_baseline_and_home_visits.csv';
         self::$allVisitsCsvFile                = self::$csvDir . 're_all_visits.csv';
 
 
@@ -62,21 +68,35 @@ class RepeatingEventsTest extends TestCase
         if (file_exists(self::$enrollmentCsvFile)) {
             unlink(self::$enrollmentCsvFile);
         }
+
         if (file_exists(self::$enrollmentCsvLabelFile)) {
             unlink(self::$enrollmentCsvLabelFile);
         }
+
         if (file_exists(self::$baselineCsvFile)) {
             unlink(self::$baselineCsvFile);
         }
+
         if (file_exists(self::$visitsCsvFile)) {
             unlink(self::$visitsCsvFile);
         }
+
         if (file_exists(self::$homeWeightVisitsCsvFile)) {
             unlink(self::$homeWeightVisitsCsvFile);
         }
+
         if (file_exists(self::$homeCardiovascularVisitsCsvFile)) {
             unlink(self::$homeCardiovascularVisitsCsvFile);
         }
+
+        if (file_exists(self::$baselineAndVisitsCsvFile)) {
+            unlink(self::$baselineAndVisitsCsvFile);
+        }
+
+        if (file_exists(self::$baselineAndHomeVisitsCsvFile)) {
+            unlink(self::$baselineAndHomeVisitsCsvFile);
+        }
+
         if (file_exists(self::$allVisitsCsvFile)) {
             unlink(self::$allVisitsCsvFile);
         }
@@ -211,9 +231,6 @@ class RepeatingEventsTest extends TestCase
 
     public function testHomeCardiovascularVisitsTable()
     {
-        #---------------------------------------------------------------------
-        # Check standard table with (coded) values for multipl-choice answers
-        #---------------------------------------------------------------------
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$homeCardiovascularVisitsCsvFile);
         $csv = $parser->parse();
 
@@ -223,18 +240,49 @@ class RepeatingEventsTest extends TestCase
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals(201, count($csv), 're_home_cardiovascular_visits row count check.');
+        $this->assertEquals(201, count($csv), 'Row count check.');
 
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
 
 
+    public function testBaselineAndVisitsTable()
+    {
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineAndVisitsCsvFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
+            __DIR__.'/../data/re_baseline_and_visits.csv'
+        );
+        $expectedCsv = $parser2->parse();
+
+        $header = $csv[0];
+        $this->assertEquals(301, count($csv), 'Row count check.');
+
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+
+    public function testBaselineAndHomeVisitsTable()
+    {
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineAndHomeVisitsCsvFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
+            __DIR__.'/../data/re_baseline_and_home_visits.csv'
+        );
+        $expectedCsv = $parser2->parse();
+
+        $header = $csv[0];
+        $this->assertEquals(501, count($csv), 'Row count check.');
+
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+
     public function testAllVisitsTable()
     {
-        #---------------------------------------------------------------------
-        # Check standard table with (coded) values for multipl-choice answers
-        #---------------------------------------------------------------------
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$allVisitsCsvFile);
         $csv = $parser->parse();
 
