@@ -22,6 +22,7 @@ class RepeatingEventsTest extends TestCase
     private static $visitsCsvFile;
     private static $homeWeightVisitsCsvFile;
     private static $homeCardiovascularVisitsCsvFile;
+    private static $allVisitsCsvFile;
 
 
     const CONFIG_FILE = __DIR__.'/../config/repeating-events.ini';
@@ -52,6 +53,7 @@ class RepeatingEventsTest extends TestCase
         self::$visitsCsvFile                   = self::$csvDir . 're_visits.csv';
         self::$homeWeightVisitsCsvFile         = self::$csvDir . 're_home_weight_visits.csv';
         self::$homeCardiovascularVisitsCsvFile = self::$csvDir . 're_home_cardiovascular_visits.csv';
+        self::$allVisitsCsvFile                = self::$csvDir . 're_all_visits.csv';
 
 
         #-----------------------------------------------
@@ -74,6 +76,9 @@ class RepeatingEventsTest extends TestCase
         }
         if (file_exists(self::$homeCardiovascularVisitsCsvFile)) {
             unlink(self::$homeCardiovascularVisitsCsvFile);
+        }
+        if (file_exists(self::$allVisitsCsvFile)) {
+            unlink(self::$allVisitsCsvFile);
         }
  
 
@@ -164,7 +169,6 @@ class RepeatingEventsTest extends TestCase
 
     public function testVisitsTable()
     {
-            
         #---------------------------------------------------------------------
         # Check standard table with (coded) values for multipl-choice answers
         #---------------------------------------------------------------------
@@ -222,6 +226,26 @@ class RepeatingEventsTest extends TestCase
         $this->assertEquals(201, count($csv), 're_home_cardiovascular_visits row count check.');
 
         
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+
+    public function testAllVisitsTable()
+    {
+        #---------------------------------------------------------------------
+        # Check standard table with (coded) values for multipl-choice answers
+        #---------------------------------------------------------------------
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$allVisitsCsvFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
+            __DIR__.'/../data/re_all_visits.csv'
+        );
+        $expectedCsv = $parser2->parse();
+
+        $header = $csv[0];
+        $this->assertEquals(701, count($csv), 're_all_visits row count check.');
+
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
 }
