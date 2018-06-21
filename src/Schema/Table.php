@@ -398,7 +398,21 @@ class Table
             $string .= $this->foreign."\n";
         }
 
-        $string .= "{$in}rows type: {$this->rowsType}\n";
+        # Print the rows type(s)
+        $string .= "{$in}rows type: ";
+        if ($this->rowsType != null) {
+            if (!is_array($this->rowsType)) {
+                $string .= "{$this->rowsType}\n";
+            } else {
+                for ($i = 0; $i < count($this->rowsType); $i++) {
+                    if ($i > 0) {
+                        $string .= " & ";
+                    }
+                    $string .= $this->rowsType[$i];
+                }
+                $string .= "\n";
+            }
+        }
 
         $string .= "{$in}Rows Suffixes:";
         foreach ($this->rowsSuffixes as $suffix) {
