@@ -28,8 +28,8 @@ class SchemaTest extends TestCase
 
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
       
-        $rootTable = new Table('root', 'root_id', $keyType, RowsType::ROOT, array(), 'record_id');
-        $table     = new Table('events', $rootTable, $keyType, RowsType::BY_EVENTS, array(), 'record_id');
+        $rootTable = new Table('root', 'root_id', $keyType, array(RowsType::ROOT), array(), 'record_id');
+        $table     = new Table('events', $rootTable, $keyType, array(RowsType::BY_EVENTS), array(), 'record_id');
         $schema->addTable($rootTable);
         $schema->addTable($table);
 
