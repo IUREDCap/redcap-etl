@@ -26,10 +26,14 @@ class RepeatingEventsTest extends TestCase
 
     private static $baselineAndVisitsCsvFile;
     private static $baselineAndHomeVisitsCsvFile;
+    private static $visitsAndHomeVisitsCsvFile;
     private static $allVisitsCsvFile;
 
 
     const CONFIG_FILE = __DIR__.'/../config/repeating-events.ini';
+
+    const TEST_DATA_DIR   = __DIR__.'/../data/';     # directory with test data comparison files
+
 
     public static function setUpBeforeClass()
     {
@@ -59,6 +63,7 @@ class RepeatingEventsTest extends TestCase
         self::$homeCardiovascularVisitsCsvFile = self::$csvDir . 're_home_cardiovascular_visits.csv';
         self::$baselineAndVisitsCsvFile        = self::$csvDir . 're_baseline_and_visits.csv';
         self::$baselineAndHomeVisitsCsvFile    = self::$csvDir . 're_baseline_and_home_visits.csv';
+        self::$visitsAndHomeVisitsCsvFile      = self::$csvDir . 're_visits_and_home_visits.csv';
         self::$allVisitsCsvFile                = self::$csvDir . 're_all_visits.csv';
 
 
@@ -97,6 +102,10 @@ class RepeatingEventsTest extends TestCase
             unlink(self::$baselineAndHomeVisitsCsvFile);
         }
 
+        if (file_exists(self::$visitsAndHomeVisitsCsvFile)) {
+            unlink(self::$visitsAndHomeVisitsCsvFile);
+        }
+ 
         if (file_exists(self::$allVisitsCsvFile)) {
             unlink(self::$allVisitsCsvFile);
         }
@@ -116,19 +125,19 @@ class RepeatingEventsTest extends TestCase
 
     public function testProject()
     {
-        $this->assertNotNull(self::$redCapEtl, 'redCapEtl not null');
+        $this->assertNotNull(self::$redCapEtl, 'redCapEtl not null check');
 
         #----------------------------------------------
         # Test the data project
         #----------------------------------------------
         $dataProject = self::$redCapEtl->getDataProject();
-        $this->assertNotNull($dataProject, 'data project not null');
+        $this->assertNotNull($dataProject, 'data project not null check');
 
         #-----------------------------------------
         # Check that the project is longitudinal
         #-----------------------------------------
         $isLongitudinal = $dataProject->isLongitudinal();
-        $this->assertTrue($isLongitudinal, 'is longitudinal');
+        $this->assertTrue($isLongitudinal, 'is longitudinal check');
     }
 
     public function testEnrollmentTable()
@@ -139,14 +148,12 @@ class RepeatingEventsTest extends TestCase
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$enrollmentCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_enrollment.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
         $this->assertEquals($header[1], 'record_id', 'Record id header test.');
-        $this->assertEquals(101, count($csv), 're_enrollment row count check.');
+        $this->assertEquals(101, count($csv), 'Row count check.');
 
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
@@ -157,12 +164,10 @@ class RepeatingEventsTest extends TestCase
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$enrollmentCsvLabelFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_enrollment_label_view.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment_label_view.csv');
         $expectedCsv = $parser2->parse();
 
-        $this->assertEquals(101, count($csv), 're_enrollment row count check.');
+        $this->assertEquals(101, count($csv), 'Row count check.');
         $this->assertEquals($expectedCsv, $csv, 'CSV label file check.');
     }
 
@@ -175,13 +180,11 @@ class RepeatingEventsTest extends TestCase
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_baseline.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals(101, count($csv), 're_baseline row count check.');
+        $this->assertEquals(101, count($csv), 'Row count check.');
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
@@ -189,19 +192,14 @@ class RepeatingEventsTest extends TestCase
 
     public function testVisitsTable()
     {
-        #---------------------------------------------------------------------
-        # Check standard table with (coded) values for multipl-choice answers
-        #---------------------------------------------------------------------
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$visitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals(201, count($csv), 're_visits row count check.');
+        $this->assertEquals(201, count($csv), 'Row count check.');
 
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
@@ -210,19 +208,14 @@ class RepeatingEventsTest extends TestCase
 
     public function testHomeWeightVisitsTable()
     {
-        #---------------------------------------------------------------------
-        # Check standard table with (coded) values for multipl-choice answers
-        #---------------------------------------------------------------------
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$homeWeightVisitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_home_weight_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_weight_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals(201, count($csv), 're_home_weight_visits row count check.');
+        $this->assertEquals(201, count($csv), 'Row count check.');
 
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
@@ -234,9 +227,7 @@ class RepeatingEventsTest extends TestCase
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$homeCardiovascularVisitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_home_cardiovascular_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_cardiovascular_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
@@ -252,9 +243,7 @@ class RepeatingEventsTest extends TestCase
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineAndVisitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_baseline_and_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
@@ -269,13 +258,26 @@ class RepeatingEventsTest extends TestCase
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineAndHomeVisitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_baseline_and_home_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_home_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
         $this->assertEquals(501, count($csv), 'Row count check.');
+
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+
+    public function testVisitsAndHomeVisitsTable()
+    {
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$visitsAndHomeVisitsCsvFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits_and_home_visits.csv');
+        $expectedCsv = $parser2->parse();
+
+        $header = $csv[0];
+        $this->assertEquals(601, count($csv), 'Row count check.');
 
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
@@ -286,9 +288,7 @@ class RepeatingEventsTest extends TestCase
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$allVisitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_all_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_all_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];

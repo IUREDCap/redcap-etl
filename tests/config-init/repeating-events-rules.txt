@@ -84,6 +84,23 @@ FIELD,systolic1,int
 FIELD,systolic2,int
 FIELD,systolic3,int
 
+TABLE,re_visits_and_home_visits,re_enrollment,REPEATING_EVENTS & REPEATING_INSTRUMENTS
+FIELD,weight_time,datetime
+FIELD,weight_kg,float
+FIELD,height_m,float
+FIELD,weight_complete,int
+FIELD,cardiovascular_date,date
+FIELD,hdl_mg_dl,int
+FIELD,ldl_mg_dl,int
+FIELD,triglycerides_mg_dl,int
+FIELD,diastolic1,int
+FIELD,diastolic2,int
+FIELD,diastolic3,int
+FIELD,systolic1,int
+FIELD,systolic2,int
+FIELD,systolic3,int
+FIELD,cardiovascular_complete,int
+
 TABLE,re_all_visits,re_enrollment,EVENTS & REPEATING_EVENTS & REPEATING_INSTRUMENTS
 FIELD,weight_time,datetime
 FIELD,weight_kg,float
