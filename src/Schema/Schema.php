@@ -2,8 +2,6 @@
 
 namespace IU\REDCapETL\Schema;
 
-use IU\REDCapETL\RedCapEtl;
-
 /**
  * Schema is used for holding information about dynamically created
  * tables/fields, as well as rows of data assigned to those tables.
@@ -35,7 +33,7 @@ class Schema
         array_push($this->tables, $table);
 
         // If it is a root table, add to list of root tables
-        if (RowsType::ROOT == $table->rowsType) {
+        if (in_array(RowsType::ROOT, $table->rowsType)) {
             array_push($this->rootTables, $table);
         }
     }

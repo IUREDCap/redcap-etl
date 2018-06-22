@@ -18,11 +18,11 @@ class Table
 
     protected $children = array();   // Child tables
 
-    public $rowsType = '';
+    public $rowsType = array();            // RowsTypes specified for this table (joined with &)
     public $rowsSuffixes = array();        // Suffixes specified for this table
-    private $possibleSuffixes = array(); // Suffixes allowed for this table
-                                          //   combined with any suffixes
-                                          //   allowed for its parent table
+    private $possibleSuffixes = array();   // Suffixes allowed for this table
+                                           //   combined with any suffixes
+                                           //   allowed for its parent table
 
     protected $fields = array();
     protected $rows = array();
@@ -49,8 +49,14 @@ class Table
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
      */
-    public function __construct($name, $parent, $keyType, $rowsType, $suffixes = array(), $recordIdFieldName = null)
-    {
+    public function __construct(
+        $name,
+        $parent,
+        $keyType,
+        $rowsType = array(),
+        $suffixes = array(),
+        $recordIdFieldName = null
+    ) {
         $this->recordIdFieldName = $recordIdFieldName;
         $this->keyType = $keyType;
         
@@ -64,7 +70,7 @@ class Table
         // ASSUMES: The field for the primary key will be given in
         //          the place of where a parent table would have been and
         //          will be of type string.
-        if (RowsType::ROOT === $this->rowsType) {
+        if (in_array(RowsType::ROOT, $this->rowsType, true)) {
             $field = new Field($parent, $this->keyType->getType(), $this->keyType->getSize());
             $this->primary = $field;
         } else {
@@ -97,9 +103,12 @@ class Table
     public function addField($field)
     {
         // If the field being added has the same name as the primary key,
+        // or if the identifier field has already been added
         // do not add it again
         if ($this->primary->name != $field->dbName) {
-            array_push($this->fields, $field);
+            if (!($field->isIdentifier() && $this->identifierFieldExists($field))) {
+                array_push($this->fields, $field);
+            }
         }
     }
 
@@ -178,8 +187,9 @@ class Table
      * @param string $data the data values used to create the row.
      * @param string $foreignKey the name of the foreign key field for the row.
      * @param string $suffix the suffix value for the row (if any).
+     * @return bool|int TRUE if row was created, FALSE if ignored
      */
-    public function createRow($data, $foreignKey, $suffix)
+    public function createRow($data, $foreignKey, $suffix, $rowType)
     {
         #---------------------------------------------------------------
         # If a row is being created for a repeating instrument, don't
@@ -189,7 +199,7 @@ class Table
         # there is no value for redcap_event_name, redcap_repeat_instance
         # or redcap_repeat_instrument
         #---------------------------------------------------------------
-        if ($this->rowsType === RowsType::BY_REPEATING_INSTRUMENTS) {
+        if ($rowType === RowsType::BY_REPEATING_INSTRUMENTS) {
             if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 return false;
             } elseif (array_key_exists(RedCapEtl::COLUMN_EVENT, $data) &&
@@ -200,7 +210,7 @@ class Table
                         return false;
                 }
             }
-        } elseif ($this->rowsType === RowsType::BY_EVENTS) {
+        } elseif ($rowType === RowsType::BY_EVENTS) {
             #---------------------------------------------------------------
             # If a row is being created for an EVENT table, don't include
             # the data if it contains a value for redcap_repeat_instrument/
@@ -217,7 +227,7 @@ class Table
                     return false;
                 }
             }
-        } elseif ($this->rowsType === RowsType::BY_REPEATING_EVENTS) {
+        } elseif ($rowType === RowsType::BY_REPEATING_EVENTS) {
             #---------------------------------------------------------------
             # If a row is being created for a REPEATING_EVENTS table, only
             # include data if redcap_event_name and redcap_repeat_instance
@@ -340,8 +350,8 @@ class Table
     {
         // If this table is BY_SUFFIXES and doesn't yet have its possible
         // suffixes set
-        if (((RowsType::BY_SUFFIXES === $this->rowsType) ||
-            (RowsType::BY_EVENTS_SUFFIXES === $this->rowsType)) &&
+        if ((in_array(RowsType::BY_SUFFIXES, $this->rowsType, true) ||
+            in_array(RowsType::BY_EVENTS_SUFFIXES, $this->rowsType, true)) &&
             (empty($this->possibleSuffixes))) {
             // If there are no parent suffixes, use an empty string
             $parentSuffixes = $this->parent->getPossibleSuffixes();
@@ -353,7 +363,7 @@ class Table
             foreach ($parentSuffixes as $par) {
                 // Loop through all the possibleSuffixes of the current table
                 foreach ($this->rowsSuffixes as $cur) {
-                    array_push($this->possibleSuffixes, $par.$cur);
+                        array_push($this->possibleSuffixes, $par . $cur);
                 }
             }
         }
@@ -366,6 +376,7 @@ class Table
      * debugging purposes).
      *
      * @param integer $indent the number of spaces to indent each line.
+     * @return string
      */
     public function toString($indent = 0)
     {
@@ -387,7 +398,21 @@ class Table
             $string .= $this->foreign."\n";
         }
 
-        $string .= "{$in}rows type: {$this->rowsType}\n";
+        # Print the rows type(s)
+        $string .= "{$in}rows type: ";
+        if ($this->rowsType != null) {
+            if (!is_array($this->rowsType)) {
+                $string .= "{$this->rowsType}\n";
+            } else {
+                for ($i = 0; $i < count($this->rowsType); $i++) {
+                    if ($i > 0) {
+                        $string .= " & ";
+                    }
+                    $string .= $this->rowsType[$i];
+                }
+                $string .= "\n";
+            }
+        }
 
         $string .= "{$in}Rows Suffixes:";
         foreach ($this->rowsSuffixes as $suffix) {
@@ -431,5 +456,22 @@ class Table
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Check if identifier field already exists in this table
+     *
+     * @param $identifierField field to check
+     *
+     * @return bool true if field exists
+     */
+    private function identifierFieldExists($identifierField)
+    {
+        foreach ($this->fields as $fieldInTable) {
+            if ($fieldInTable == $identifierField) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -18,6 +18,7 @@ class RulesParser
     const ELEMENTS_SEPARATOR  = ',';
     const ROWS_DEF_SEPARATOR   = ':';   # row type separator
     const SUFFIXES_SEPARATOR   = ';';
+    const ROWSTYPE_SEPARATOR   = '&';
     
     const ELEMENT_TABLE       = 'TABLE';
     const ELEMENT_FIELD       = 'FIELD';
@@ -96,7 +97,7 @@ class RulesParser
            
             $lineNumber++;
         }
-        
+
         return $rules;
     }
     
@@ -139,8 +140,8 @@ class RulesParser
         
         return $tableRule;
     }
-    
-    
+
+
     /**
      * Parses a Field Rule.
      *
@@ -150,6 +151,7 @@ class RulesParser
      *     for error messages.
      * @param int $lineNumber the line number of the rule in the original
      *     transformation rules text.
+     * @return FieldRule
      */
     private function parseFieldRule($values, $line, $lineNumber)
     {
@@ -214,12 +216,27 @@ class RulesParser
     {
         $rowsDef = trim($rowsDef);
 
-        $regex = '/'.self::SUFFIXES_SEPARATOR.'/';
-
-        $rowsType = '';
+        $rowsType = array();
         $suffixes = array();
+        $rowsTypeSuffixes = array();
 
-        list($rowsEncode, $suffixesDef) = array_pad(explode(self::ROWS_DEF_SEPARATOR, $rowsDef), 2, null);
+        $rowsEncode = explode(self::ROWSTYPE_SEPARATOR, $rowsDef);
+        foreach ($rowsEncode as $rowType) {
+            $rowsTypeSuffixes = $this->assignRowsType($rowType);
+            array_push($rowsType, $rowsTypeSuffixes[0]);
+            foreach ($rowsTypeSuffixes[1] as $rowsTypeSuffix) {
+                array_push($suffixes, $rowsTypeSuffix);
+            }
+        }
+        return (array($rowsType,$suffixes));
+    }
+
+    private function assignRowsType($rowType)
+    {
+        $suffixes = array();
+        $regex = '/' . self::SUFFIXES_SEPARATOR . '/';
+
+        list($rowsEncode, $suffixesDef) = array_pad(explode(self::ROWS_DEF_SEPARATOR, $rowType), 2, null);
 
         switch ($rowsEncode) {
             case self::ROOT:
@@ -252,7 +269,6 @@ class RulesParser
             default:
                 $rowsType = false;
         }
-
         return (array($rowsType,$suffixes));
     }
 
@@ -286,7 +302,7 @@ class RulesParser
 
     protected function generalSqlClean($input)
     {
-        $cleaned = preg_replace("/[^a-zA-Z0-9_;:]+/i", "", $input);
+        $cleaned = preg_replace("/[^a-zA-Z0-9_;:&]+/i", "", $input);
         return $cleaned;
     }
 

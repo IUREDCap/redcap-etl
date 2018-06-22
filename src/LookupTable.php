@@ -2,9 +2,9 @@
 
 namespace IU\REDCapETL;
 
-use IU\REDCapETL\Schema\Table;
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\Table;
 
 /**
  * Table class for storing multiple choice field values and
@@ -31,7 +31,7 @@ class LookupTable extends Table
             $tablePrefix . self::NAME,
             self::FIELD_PRIMARY_ID,
             $keyType,
-            RulesParser::ROOT,
+            array(RulesParser::ROOT),
             array()
         );
 
@@ -85,7 +85,7 @@ class LookupTable extends Table
                 );
 
                 // Add the row, using no foreign key or suffix
-                $this->createRow($data, '', '');
+                $this->createRow($data, '', '', $this->rowsType);
 
                 #---------------------------------------------------
                 # Update the map

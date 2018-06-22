@@ -46,8 +46,8 @@ class RowsType
         $valid = false;
 
         switch ($rowsType) {
-            case RowsType::BY_SUFFIXES:
-            case RowsType::BY_EVENTS_SUFFIXES:
+            case in_array(RowsType::BY_SUFFIXES, $rowsType, true):
+            case in_array(RowsType::BY_EVENTS_SUFFIXES, $rowsType, true):
                 $valid = true;
                 break;
 

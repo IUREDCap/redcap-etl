@@ -10,14 +10,30 @@ use PHPUnit\Framework\TestCase;
 class RepeatingEventsTest extends TestCase
 {
     private static $redCapEtl;
+    private static $config;
 
     private static $csvDir;
-    private static $enrollmentCsvFile;
-    private static $enrollmentCsvLabelFile;
     private static $logger;
     private static $properties;
 
+    private static $enrollmentCsvFile;
+    private static $enrollmentCsvLabelFile;
+
+    private static $baselineCsvFile;
+    private static $visitsCsvFile;
+    private static $homeWeightVisitsCsvFile;
+    private static $homeCardiovascularVisitsCsvFile;
+
+    private static $baselineAndVisitsCsvFile;
+    private static $baselineAndHomeVisitsCsvFile;
+    private static $visitsAndHomeVisitsCsvFile;
+    private static $allVisitsCsvFile;
+
+
     const CONFIG_FILE = __DIR__.'/../config/repeating-events.ini';
+
+    const TEST_DATA_DIR   = __DIR__.'/../data/';     # directory with test data comparison files
+
 
     public static function setUpBeforeClass()
     {
@@ -25,64 +41,119 @@ class RepeatingEventsTest extends TestCase
         self::$logger = new Logger($app);
 
         self::$redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
-    }
+
+        #-----------------------------
+        # Get the CSV directory
+        #-----------------------------
+        self::$config = self::$redCapEtl->getConfiguration();
+        self::$csvDir = str_ireplace('CSV:', '', self::$config->getDbConnection());
+        if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
+            self::$csvDir .= DIRECTORY_SEPARATOR;
+        }
+
+        #-------------------------------------------
+        # Set the files to use
+        #-------------------------------------------
+        self::$enrollmentCsvFile      = self::$csvDir . 're_enrollment.csv';
+        self::$enrollmentCsvLabelFile = self::$csvDir . 're_enrollment'.self::$config->getlabelViewSuffix().'.csv';
+        self::$baselineCsvFile        = self::$csvDir . 're_baseline.csv';
+
+        self::$visitsCsvFile                   = self::$csvDir . 're_visits.csv';
+        self::$homeWeightVisitsCsvFile         = self::$csvDir . 're_home_weight_visits.csv';
+        self::$homeCardiovascularVisitsCsvFile = self::$csvDir . 're_home_cardiovascular_visits.csv';
+        self::$baselineAndVisitsCsvFile        = self::$csvDir . 're_baseline_and_visits.csv';
+        self::$baselineAndHomeVisitsCsvFile    = self::$csvDir . 're_baseline_and_home_visits.csv';
+        self::$visitsAndHomeVisitsCsvFile      = self::$csvDir . 're_visits_and_home_visits.csv';
+        self::$allVisitsCsvFile                = self::$csvDir . 're_all_visits.csv';
 
 
-    public function testEnrollmentTable()
-    {
+        #-----------------------------------------------
+        # Delete files from previous run (if any)
+        #-----------------------------------------------
+        if (file_exists(self::$enrollmentCsvFile)) {
+            unlink(self::$enrollmentCsvFile);
+        }
+
+        if (file_exists(self::$enrollmentCsvLabelFile)) {
+            unlink(self::$enrollmentCsvLabelFile);
+        }
+
+        if (file_exists(self::$baselineCsvFile)) {
+            unlink(self::$baselineCsvFile);
+        }
+
+        if (file_exists(self::$visitsCsvFile)) {
+            unlink(self::$visitsCsvFile);
+        }
+
+        if (file_exists(self::$homeWeightVisitsCsvFile)) {
+            unlink(self::$homeWeightVisitsCsvFile);
+        }
+
+        if (file_exists(self::$homeCardiovascularVisitsCsvFile)) {
+            unlink(self::$homeCardiovascularVisitsCsvFile);
+        }
+
+        if (file_exists(self::$baselineAndVisitsCsvFile)) {
+            unlink(self::$baselineAndVisitsCsvFile);
+        }
+
+        if (file_exists(self::$baselineAndHomeVisitsCsvFile)) {
+            unlink(self::$baselineAndHomeVisitsCsvFile);
+        }
+
+        if (file_exists(self::$visitsAndHomeVisitsCsvFile)) {
+            unlink(self::$visitsAndHomeVisitsCsvFile);
+        }
+ 
+        if (file_exists(self::$allVisitsCsvFile)) {
+            unlink(self::$allVisitsCsvFile);
+        }
+ 
+
+        #-------------------------
+        # Run the ETL process
+        #-------------------------
         try {
-            $this->assertNotNull(self::$redCapEtl, 'redCapEtl not null');
-
-            $config = self::$redCapEtl->getConfiguration();
-            $this->assertNotNull($config, 'redCapEtl configuration not null');
-
-            self::$csvDir = str_ireplace('CSV:', '', $config->getDbConnection());
-            if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
-                self::$csvDir .= DIRECTORY_SEPARATOR;
-            }
-            
-            self::$enrollmentCsvFile      = self::$csvDir . 're_enrollment.csv';
-            self::$enrollmentCsvLabelFile = self::$csvDir . 're_enrollment'.$config->getlabelViewSuffix().'.csv';
-            # Try to delete the output files in case they exists from a previous run
-            if (file_exists(self::$enrollmentCsvFile)) {
-                unlink(self::$enrollmentCsvFile);
-            }
-            if (file_exists(self::$enrollmentCsvLabelFile)) {
-                unlink(self::$enrollmentCsvLabelFile);
-            }
-            
-            #----------------------------------------------
-            # Test the data project
-            #----------------------------------------------
-            $dataProject = self::$redCapEtl->getDataProject();
-            $this->assertNotNull($dataProject, 'data project not null');
-            
-            $isLongitudinal = $dataProject->isLongitudinal();
-            $this->assertTrue($isLongitudinal, 'is longitudinal');
-            
-            #-------------------------
-            # Run the ETL process
-            #-------------------------
             self::$redCapEtl->run();
         } catch (EtlException $exception) {
             self::$logger->logException($exception);
             self::$logger->logError('Processing failed.');
         }
+    }
 
+
+    public function testProject()
+    {
+        $this->assertNotNull(self::$redCapEtl, 'redCapEtl not null check');
+
+        #----------------------------------------------
+        # Test the data project
+        #----------------------------------------------
+        $dataProject = self::$redCapEtl->getDataProject();
+        $this->assertNotNull($dataProject, 'data project not null check');
+
+        #-----------------------------------------
+        # Check that the project is longitudinal
+        #-----------------------------------------
+        $isLongitudinal = $dataProject->isLongitudinal();
+        $this->assertTrue($isLongitudinal, 'is longitudinal check');
+    }
+
+    public function testEnrollmentTable()
+    {
         #---------------------------------------------------------------------
         # Check standard table with (coded) values for multipl-choice answers
         #---------------------------------------------------------------------
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$enrollmentCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_enrollment.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
         $this->assertEquals($header[1], 'record_id', 'Record id header test.');
-        $this->assertEquals(101, count($csv), 're_enrollment row count check.');
+        $this->assertEquals(101, count($csv), 'Row count check.');
 
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
@@ -93,67 +164,27 @@ class RepeatingEventsTest extends TestCase
         $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$enrollmentCsvLabelFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_enrollment_label_view.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment_label_view.csv');
         $expectedCsv = $parser2->parse();
 
-        $this->assertEquals(101, count($csv), 're_enrollment row count check.');
+        $this->assertEquals(101, count($csv), 'Row count check.');
         $this->assertEquals($expectedCsv, $csv, 'CSV label file check.');
     }
 
 
     public function testBaselineTable()
     {
-        try {
-            $this->assertNotNull(self::$redCapEtl, 'redCapEtl not null');
-
-            $config = self::$redCapEtl->getConfiguration();
-            $this->assertNotNull($config, 'redCapEtl configuration not null');
-
-            self::$csvDir = str_ireplace('CSV:', '', $config->getDbConnection());
-            if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
-                self::$csvDir .= DIRECTORY_SEPARATOR;
-            }
-            
-            $baselineCsvFile      = self::$csvDir . 're_baseline.csv';
-            # Try to delete the output files in case they exists from a previous run
-            if (file_exists($baselineCsvFile)) {
-                unlink($baselineCsvFile);
-            }
-            
-            #----------------------------------------------
-            # Test the data project
-            #----------------------------------------------
-            $dataProject = self::$redCapEtl->getDataProject();
-            $this->assertNotNull($dataProject, 'data project not null');
-            
-            $isLongitudinal = $dataProject->isLongitudinal();
-            $this->assertTrue($isLongitudinal, 'is longitudinal');
-            
-            #-------------------------
-            # Run the ETL process
-            #-------------------------
-            self::$redCapEtl->run();
-        } catch (EtlException $exception) {
-            self::$logger->logException($exception);
-            self::$logger->logError('Processing failed.');
-        }
-
         #---------------------------------------------------------------------
         # Check standard table with (coded) values for multipl-choice answers
         #---------------------------------------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile($baselineCsvFile);
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_baseline.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals(101, count($csv), 're_baseline row count check.');
-
+        $this->assertEquals(101, count($csv), 'Row count check.');
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
@@ -161,54 +192,14 @@ class RepeatingEventsTest extends TestCase
 
     public function testVisitsTable()
     {
-        try {
-            $this->assertNotNull(self::$redCapEtl, 'redCapEtl not null');
-
-            $config = self::$redCapEtl->getConfiguration();
-            $this->assertNotNull($config, 'redCapEtl configuration not null');
-
-            self::$csvDir = str_ireplace('CSV:', '', $config->getDbConnection());
-            if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
-                self::$csvDir .= DIRECTORY_SEPARATOR;
-            }
-            
-            $visitsCsvFile      = self::$csvDir . 're_visits.csv';
-            # Try to delete the output files in case they exists from a previous run
-            if (file_exists($visitsCsvFile)) {
-                unlink($visitsCsvFile);
-            }
-            
-            #----------------------------------------------
-            # Test the data project
-            #----------------------------------------------
-            $dataProject = self::$redCapEtl->getDataProject();
-            $this->assertNotNull($dataProject, 'data project not null');
-            
-            $isLongitudinal = $dataProject->isLongitudinal();
-            $this->assertTrue($isLongitudinal, 'is longitudinal');
-            
-            #-------------------------
-            # Run the ETL process
-            #-------------------------
-            self::$redCapEtl->run();
-        } catch (EtlException $exception) {
-            self::$logger->logException($exception);
-            self::$logger->logError('Processing failed.');
-        }
-
-        #---------------------------------------------------------------------
-        # Check standard table with (coded) values for multipl-choice answers
-        #---------------------------------------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile($visitsCsvFile);
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$visitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals(201, count($csv), 're_visits row count check.');
+        $this->assertEquals(201, count($csv), 'Row count check.');
 
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
@@ -217,54 +208,14 @@ class RepeatingEventsTest extends TestCase
 
     public function testHomeWeightVisitsTable()
     {
-        try {
-            $this->assertNotNull(self::$redCapEtl, 'redCapEtl not null');
-
-            $config = self::$redCapEtl->getConfiguration();
-            $this->assertNotNull($config, 'redCapEtl configuration not null');
-
-            self::$csvDir = str_ireplace('CSV:', '', $config->getDbConnection());
-            if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
-                self::$csvDir .= DIRECTORY_SEPARATOR;
-            }
-            
-            $homeWeightVisitsCsvFile      = self::$csvDir . 're_home_weight_visits.csv';
-            # Try to delete the output files in case they exists from a previous run
-            if (file_exists($homeWeightVisitsCsvFile)) {
-                unlink($homeWeightVisitsCsvFile);
-            }
-            
-            #----------------------------------------------
-            # Test the data project
-            #----------------------------------------------
-            $dataProject = self::$redCapEtl->getDataProject();
-            $this->assertNotNull($dataProject, 'data project not null');
-            
-            $isLongitudinal = $dataProject->isLongitudinal();
-            $this->assertTrue($isLongitudinal, 'is longitudinal');
-            
-            #-------------------------
-            # Run the ETL process
-            #-------------------------
-            self::$redCapEtl->run();
-        } catch (EtlException $exception) {
-            self::$logger->logException($exception);
-            self::$logger->logError('Processing failed.');
-        }
-
-        #---------------------------------------------------------------------
-        # Check standard table with (coded) values for multipl-choice answers
-        #---------------------------------------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile($homeWeightVisitsCsvFile);
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$homeWeightVisitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_home_weight_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_weight_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals(201, count($csv), 're_home_weight_visits row count check.');
+        $this->assertEquals(201, count($csv), 'Row count check.');
 
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
@@ -273,56 +224,76 @@ class RepeatingEventsTest extends TestCase
 
     public function testHomeCardiovascularVisitsTable()
     {
-        try {
-            $this->assertNotNull(self::$redCapEtl, 'redCapEtl not null');
-
-            $config = self::$redCapEtl->getConfiguration();
-            $this->assertNotNull($config, 'redCapEtl configuration not null');
-
-            self::$csvDir = str_ireplace('CSV:', '', $config->getDbConnection());
-            if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
-                self::$csvDir .= DIRECTORY_SEPARATOR;
-            }
-            
-            $homeCardiovascularVisitsCsvFile      = self::$csvDir . 're_home_cardiovascular_visits.csv';
-            # Try to delete the output files in case they exists from a previous run
-            if (file_exists($homeCardiovascularVisitsCsvFile)) {
-                unlink($homeCardiovascularVisitsCsvFile);
-            }
-            
-            #----------------------------------------------
-            # Test the data project
-            #----------------------------------------------
-            $dataProject = self::$redCapEtl->getDataProject();
-            $this->assertNotNull($dataProject, 'data project not null');
-            
-            $isLongitudinal = $dataProject->isLongitudinal();
-            $this->assertTrue($isLongitudinal, 'is longitudinal');
-            
-            #-------------------------
-            # Run the ETL process
-            #-------------------------
-            self::$redCapEtl->run();
-        } catch (EtlException $exception) {
-            self::$logger->logException($exception);
-            self::$logger->logError('Processing failed.');
-        }
-
-        #---------------------------------------------------------------------
-        # Check standard table with (coded) values for multipl-choice answers
-        #---------------------------------------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile($homeCardiovascularVisitsCsvFile);
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$homeCardiovascularVisitsCsvFile);
         $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/re_home_cardiovascular_visits.csv'
-        );
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_cardiovascular_visits.csv');
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals(201, count($csv), 're_home_cardiovascular_visits row count check.');
+        $this->assertEquals(201, count($csv), 'Row count check.');
 
         
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+
+    public function testBaselineAndVisitsTable()
+    {
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineAndVisitsCsvFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_visits.csv');
+        $expectedCsv = $parser2->parse();
+
+        $header = $csv[0];
+        $this->assertEquals(301, count($csv), 'Row count check.');
+
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+
+    public function testBaselineAndHomeVisitsTable()
+    {
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineAndHomeVisitsCsvFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_home_visits.csv');
+        $expectedCsv = $parser2->parse();
+
+        $header = $csv[0];
+        $this->assertEquals(501, count($csv), 'Row count check.');
+
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+
+    public function testVisitsAndHomeVisitsTable()
+    {
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$visitsAndHomeVisitsCsvFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits_and_home_visits.csv');
+        $expectedCsv = $parser2->parse();
+
+        $header = $csv[0];
+        $this->assertEquals(601, count($csv), 'Row count check.');
+
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+
+    public function testAllVisitsTable()
+    {
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$allVisitsCsvFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_all_visits.csv');
+        $expectedCsv = $parser2->parse();
+
+        $header = $csv[0];
+        $this->assertEquals(701, count($csv), 're_all_visits row count check.');
+
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
 }

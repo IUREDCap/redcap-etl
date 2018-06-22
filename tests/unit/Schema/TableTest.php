@@ -19,12 +19,12 @@ class TableTest extends TestCase
 
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
         
-        $table = new Table($name, $parent, $keyType, $rowsType, $suffixes, $recordIdFieldName);
+        $table = new Table($name, $parent, $keyType, array($rowsType), $suffixes, $recordIdFieldName);
         $this->assertNotNull($table, 'table not null');
 
         $this->assertEquals($name, $table->getName(), 'getName test');
 
-        $childTable = new Table('child', $table, $keyType, RowsType::BY_EVENTS, '', $recordIdFieldName);
+        $childTable = new Table('child', $table, $keyType, array(RowsType::BY_EVENTS), '', $recordIdFieldName);
         $this->assertNotNull($childTable, 'child table not null');
 
         #$expectedRowData = array('id' => 100, 'name' => 'Bob');
