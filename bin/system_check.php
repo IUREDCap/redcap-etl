@@ -19,6 +19,12 @@ if (in_array('curl', get_loaded_extensions())) {
     print "curl disabled - ERROR: curl needs to be enabled in PHP\n";
 }
 
+if (in_array('dom', get_loaded_extensions())) {
+    print "dom enabled\n";
+} else {
+    print "dom disabled - ERROR: curl needs to be enabled in PHP\n";
+}
+
 if (in_array('openssl', get_loaded_extensions())) {
     print "openssl enabled\n";
 } else {
