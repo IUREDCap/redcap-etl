@@ -103,12 +103,9 @@ class Table
     public function addField($field)
     {
         // If the field being added has the same name as the primary key,
-        // or if the identifier field has already been added
         // do not add it again
         if ($this->primary->name != $field->dbName) {
-            if (!($field->isIdentifier() && $this->identifierFieldExists($field))) {
-                array_push($this->fields, $field);
-            }
+            array_push($this->fields, $field);
         }
     }
 
