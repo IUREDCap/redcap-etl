@@ -454,21 +454,4 @@ class Table
     {
         return $this->name;
     }
-
-    /**
-     * Check if identifier field already exists in this table
-     *
-     * @param $identifierField field to check
-     *
-     * @return bool true if field exists
-     */
-    private function identifierFieldExists($identifierField)
-    {
-        foreach ($this->fields as $fieldInTable) {
-            if ($fieldInTable == $identifierField) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
