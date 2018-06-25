@@ -531,7 +531,7 @@ class Configuration
             if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $properties)) {
                 $this->emailToList = trim($properties[ConfigProperties::EMAIL_TO_LIST]);
                 if (!empty($this->emailToList)) {
-                    $this->logger->setLogEmailTo($this->emailToList);
+                    $this->logger->setLogToEmail($this->emailToList);
                 }
             }
         }

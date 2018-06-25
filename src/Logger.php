@@ -16,7 +16,6 @@ class Logger
 {
     private $logFile;
     private $logProject;
-    private $notifier;
     private $printInfo = true; // whether info that is logged should
                                       // be printed to standard output
 
@@ -24,6 +23,10 @@ class Logger
     private $projectIdBase; // For project logging, the record ID base
     private $projectIndex;
     private $projectDate;
+
+    private $logFromEmail;
+    private $logToEmail;
+    private $logEmailSubject;
 
 
     /**
@@ -38,7 +41,6 @@ class Logger
         $this->projectIndex = 0;
         $this->logFile    = null;
         $this->logProject = null;
-        $this->notifier   = null;
     }
 
     /**
@@ -51,6 +53,11 @@ class Logger
         $this->logFile = $logFile;
     }
 
+    public function getLogFile()
+    {
+        return $this->logFile;
+    }
+
     /**
      * Set the e-mail values for logging to e-mail.
      *
@@ -60,40 +67,40 @@ class Logger
      */
     public function setLogEmail($from, $to, $subject)
     {
-        try {
-            $this->notifier = new Notifier($from, $to, $subject);
-        } catch (Exception $exception) {
-            $message = 'Unable to create notifier: '.$exception.getMessage();
-            error_log($message, 0);
-            $this->notifier = null;
-        }
+        $this->logFromEmail    = $from;
+        $this->logToEmail      = $to;
+        $this->logEmailSubject = $subject;
     }
+
+    public function getLogFromEmail()
+    {
+        return $this->logFromEmail;
+    }
+
+    public function getLogToEmail()
+    {
+        return $this->logToEmail;
+    }
+
+    public function getLogEmailSubject()
+    {
+        return $this->logEmailSubject;
+    }
+
 
     /**
      * Sets the from e-mail for logging
      *
      * @param string $from the from e-mail address to used for logging.
      */
-    public function setLogEmailFrom($from)
+    public function setLogFromEmail($from)
     {
-        try {
-            $this->notifier->setSender($from);
-        } catch (Exception $exception) {
-            $message = 'Unable to set log e-mail from address: '.$exception.getMessage();
-            error_log($message, 0);
-            $this->notifier = null;
-        }
+        $this->logFromEmail = $from;
     }
     
-    public function setLogEmailTo($to)
+    public function setLogToEmail($to)
     {
-        try {
-            $this->notifier->setRecipients($to);
-        } catch (Exception $exception) {
-            $message = 'Unable to set log e-mail to list: '.$exception.getMessage();
-            error_log($message, 0);
-            $this->notifier = null;
-        }
+        $this->logToEmail = $to;
     }
 
 
@@ -152,15 +159,6 @@ class Logger
             print $info."\n";
         }
 
-        #-----------------------------------------------------
-        # If the information wasn't logged to the log file or
-        # project, and it wasn't printed, write it to PHP's
-        # system log
-        #-----------------------------------------------------
-        if (!$loggedToFile && !$loggedToProject && $this->printInfo === false) {
-            error_log($info, 0);
-        }
-
         #---------------------------------------
         # Log logging errors
         #---------------------------------------
@@ -190,7 +188,7 @@ class Logger
         # about the original PHPCap error.
         #--------------------------------------------------------------------
         if ($exception->getCode() === EtlException::PHPCAP_ERROR) {
-            $previouseException = $exception->getPrevious();
+            $previousException = $exception->getPrevious();
             if (isset($previousException)) {
                 $message .= ' - Caused by PHPCap exception: '.$previousException->getMessage();
             }
@@ -289,7 +287,7 @@ class Logger
             try {
                 $this->logProject->importRecords($records);
                 $logged = true;
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 $logged = false;
                 $error = 'Logging to project failed: '.($exception->getMessage());
                 error_log($error, 0);
@@ -315,10 +313,16 @@ class Logger
     {
         $logged = false;
 
-        if (isset($this->notifier)) {
-            # NOTE: need to change notify to return a value??????? !!!!!!!!!!!!!!!!!!
+        if (!empty($this->logFromEmail) && !empty($this->logToEmail)) {
             try {
-                $failedSendTos = $this->notifier->notify($error);
+                $failedSendTos = $this->sendMail(
+                    $this->logToEmail,
+                    $attachments = array(),
+                    $message = $error,
+                    $this->logEmailSubject,
+                    $this->logFromEmail
+                );
+
                 if (count($failedSendTos) > 0) {
                     error_log('Logging to e-mail failed for the following e-mail addreses: '
                         .(implode(', ', $failedSendTos)), 0);
@@ -335,16 +339,107 @@ class Logger
         return $logged;
     }
 
+
+    /**
+     * Sends an email.
+     *
+     * Attachments have been disabled. For info about how to send
+     * attachemnts in emails sent from PHP:
+     * http://webcheatsheet.com/php/send_email_text_html_attachment.php#attachment
+     *
+     * @param mixed $mailToAddress string or array to e-mail addresses.
+     * @param array $attachments array of attachments. NOTE: attachements
+     *     are not currently supported. There is code for supporting them
+     *     below, but it has been commented out.
+     * @param string $message the e-mail message to send.
+     * @param string $subjectString the e-mail subject.
+     * @param string $fromAddress e-mail from address.
+     *
+     * @return array list of send to e-mails for which the send failed (if any).
+     */
+    protected function sendMail(
+        $mailToAddress,
+        $attachments,
+        $message,
+        $subjectString,
+        $fromAddress
+    ) {
+        // If the address is not an array, and there's a comma in the
+        // address, it must really be a string holding a list of addresses,
+        // so convert split it into an array.
+        if (is_array($mailToAddress)) {
+            $mailToAddresses = $mailToAddress;
+        } elseif (preg_match("/,/", $mailToAddress)) {
+            $mailToAddresses = preg_split("/,/", $mailToAddress);
+        } else {
+            $mailToAddresses = array($mailToAddress);
+        }
+
+        // It MIGHT be useful to validate the email address syntax here,
+        // or somewhere else, possibly using
+        // filter_var( $email, FILTER_VALIDATE_EMAIL)
+  
+        // We MIGHT also like to validate the existence of the email
+        // target, perhaps by using smtp_validateEmail.class.php.
+  
+        // Foreach mailto address
+        $headers =
+            "From: ".$fromAddress."\r\n" .
+            "X-Mailer: php";
+        $sendmailOpts = '-f '.$fromAddress;
+
+        /* If attachments are needed, the following code should be
+         * uncommented and tested:
+        // Check if any attachments are being sent
+        if (count($attachments) > 0) {
+            // Create a boundary string. It must be unique so we use the MD5
+            // algorithm to generate a random hash.
+            $randomHash = md5(date('r', time()));
+
+            // Add boundary string and mime type specification to headers
+            $headers .= "\r\nContent-Type: multipart/mixed; ".
+                "boundary=\"PHP-mixed-".$randomHash."\"";
+
+            // Start the body of the message.
+            $textHeader = "--PHP-mixed-".$randomHash."\n".
+                "Content-Type: text/plain; charset=\"iso-8859-1\"\n".
+                "Content-Transfer-Encoding: 7bit\n\n";
+            $textFooter = "--PHP-mixed-".$randomHash."\n\n";
+
+            $message = $textHeader.$message."\n".$textFooter;
+
+            // Attach each file
+            foreach ($attachments as $attachment) {
+                $attachHeader = "--PHP-mixed-".$randomHash."\n".
+                    "Content-Type: ".$attachment['content_type']."\n".
+                    "Content-Transfer-Encoding: base64\n".
+                    "Content-Disposition: attachment\n\n";
+
+                $message .= $attachHeader.$attachment['data'];
+            }
+
+            $message .= "--PHP-mixed-".$randomHash."--\n\n";
+        }
+        */
+
+        $faliedSendTos = array();
+        foreach ($mailToAddresses as $mailto) {
+            $sent = mail($mailto, $subjectString, $message, $headers, $sendmailOpts);
+            if ($sent === false) {
+                array_push($failedSentTos, $mailTo);
+            }
+        }
+
+        return $faliedSendTos;
+    }
+
+    
+
     /**
      * Gets the name of the application that is running the ETL process.
      */
     public function getApp()
     {
         return $this->app;
-    }
-
-    public function getNotifier()
-    {
-        return $this->notifier;
     }
 }

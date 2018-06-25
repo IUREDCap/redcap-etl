@@ -163,12 +163,15 @@ for more information about the configuration properties.
 
 ### Step 7 (Optional) - Set up an E-mail Server
 
-You can optionally set up an e-mail server that will be used for sending
-error notifications to a specified list of users.
+You can optionally set up an e-mail server that will be used for logging
+errors using e-mail to a specified list of users.
 
 On Ubuntu 16, for example, you can set up an e-mail server using the following command:
 
         sudo apt install sendmail
+
+The script **bin/email_test.php** can be used to test if e-mail logging
+works.
 
 ### Step 8 (Optional) - Set up a Data Entry Trigger
 
