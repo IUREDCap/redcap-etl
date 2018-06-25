@@ -106,9 +106,7 @@ class Table
         // or if the identifier field has already been added
         // do not add it again
         if ($this->primary->name != $field->dbName) {
-            if (!($field->isIdentifier() && $this->identifierFieldExists($field))) {
                 array_push($this->fields, $field);
-            }
         }
     }
 
@@ -456,22 +454,5 @@ class Table
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Check if identifier field already exists in this table
-     *
-     * @param $identifierField field to check
-     *
-     * @return bool true if field exists
-     */
-    private function identifierFieldExists($identifierField)
-    {
-        foreach ($this->fields as $fieldInTable) {
-            if ($fieldInTable == $identifierField) {
-                return true;
-            }
-        }
-        return false;
     }
 }
