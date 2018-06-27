@@ -6,7 +6,8 @@ into records in your database.
 Transformation Rules Syntax
 -----------------------------------------
 
-Transformation rules consists of one or more TABLE statements, where each TABLE statement is followed by one or more FIELD statements. Each statement needs to be on its own line.
+Transformation rules consists of one or more TABLE statements, where each TABLE statement is followed by zero or more FIELD statements that specify what REDCap fields are
+stored in the table. Each statement needs to be on its own line.
 
     TABLE, <table_name>, <parent_table|primary_key_name>, <rows_type>
     FIELD, <field_name>, <field_type>[, <database_field_name>]
@@ -17,6 +18,9 @@ Transformation rules consists of one or more TABLE statements, where each TABLE 
     TABLE, <table_name>, <parent_table|primary_key_name>, <rows_type>
     FIELD, <field_name>, <field_type>[, <database_field_name>]
     ...
+
+A table statement that has no fields following it will generate a table that contains only the record IDs for the records in the project, since REDCap record ID field is
+stored in every table by default.
 
 The transformation rules language is line-oriented, and each line has a 
 comma-separated value (CSV) syntax. This allows the transformation rules to be
@@ -30,22 +34,95 @@ Table statements specify the tables that should be generated in your database.
 
     TABLE, <table_name>, <parent_table|primary_key_name>, <rows_type>
 
-Note: if the table is a root table, it has no parent table, and the field after the table name should be the name to used for the table's (synthetic) primary key.
+Note: if the table is a root table, it has no parent table, and the field after the table name is the name to use for the table's (synthetic) primary key:
 
-* `<rows_type>` is one of:
+    TABLE, <table_name>, <primary_key_name>, ROOT
+    
+For non-root tables, the field after the table name is the name of its parent table.
 
-        ROOT
-        EVENTS
-        EVENTS:<suffixes>
-        <suffixes>
-        REPEATING_INSTRUMENTS
-        REPEATING_EVENTS
+    TABLE, <table_name>, <parent_table>, <rows_type>
 
-* `<suffixes>` is in the format
 
-        suffix1; suffix2; ...
+The possible `<rows_type>` values are shown in the table below:
 
-* Root tables currently need a synthetic primary key (usually <table_name\>_id) in the place of &lt;parent_table&gt;
+
+<table>
+    <thead>
+    <th>
+      <td>Rows Type</td><td>Description</td>
+    </th>
+    </thead>
+    <tbody>
+    <tr>
+      <td>ROOT</td>
+      <td>
+      This is typically used for a table that stores REDCap fields that have
+      a one-to-one relationship with
+      the REDCap record ID, for example: first name, last name, birthdate.
+      </td>
+    </tr>
+    <tr>
+      <td>EVENTS</td>
+      <td>
+      This is typically used for a table that stores fields that are in multiple,
+      non-repeating events in a longitudinal study, where the fields have a many-to-one
+      relationship with the record ID. For example, you might have a field
+      "total_cholesterol" in events "Initial Visit" and "Final Visit", so there would
+      be 2 "total_cholesterol" values per record ID.
+      </td>
+    </tr>
+    <tr>
+      <td>REPEATING_EVENTS</td>
+      <td>
+      This is typically used for a table that stores REDCap fields that are in a
+      repeating event in a longitudinal study, and therefore will have a many-to-one
+      relationship with the record ID.
+      </td>
+    </tr>
+    <tr>
+      <td>REPEATING_INSTRUMENTS</td>
+      <td>
+      This is typically used for a table that stores REDCap fields that are in repeating
+      instruments, and therefore will have a many-to-one relationship with the record ID.
+      </td>
+    </tr>
+    <tr>
+      <td>&lt;suffixes&gt;</td>
+      <td>
+      This is typically used for a table that stores related REDCap fields that have
+      the same prefix, but different suffixes. For example, you might specify
+      suffixes of "1;2;3" for fields "heart_rate1",
+      "heart_rate2" and "heart_rate3" that represent different heart rate
+      measurements of a participant, and would represent a many-to-one relationship
+      of heart rate to the the record ID field.
+      </td>
+    </tr>
+    <tr>
+      <td>EVENTS:&lt;suffixes&gt;</td>
+      <td>
+      This is typically used for a table that stores related REDCap fields that have
+      the same prefix, but different suffixes, that occur in multiple events in
+      a longitudinal study. For example, you might specify
+      suffixes of "1;2;3" for fields "heart_rate1",
+      "heart_rate2" and "heart_rate3" that represent different heart rate
+      measurements of a participant, and are in events "Initial Visit" and "Final Visit".
+      The events would represent a many-to-one relationship with the record ID, and
+      heart rate field would represent a many-to-one relationship with
+      the event that contained them.
+      </td>
+    </tr>
+    </tbody>
+</table>
+
+For longitudinal studies, the three rows type `EVENTS`, `REPEATING_INSTRUMENTS` and `REPEATING_EVENTS` can be combined together using the `&` operator, for example:
+
+    TABLE, visits, enrollment, EVENTS & REPEATING_EVENTS
+
+`<suffixes>` is in the format
+
+    <suffix1>; <suffix2>; ...
+
+
 
 #### FIELD Statements
 
@@ -75,7 +152,7 @@ the database types used to store the different REDCap-ETL types.
 | datetime        | datetime        | datetime               |
 | checkbox        | int             | number                 |
 
-NOTE: TABLE, FIELD, &lt;rows_type&gt;, and &lt;field_type&gt; are all case sensitive. TABLE, FIELD, ROOT, and EVENTS must be uppercase. Int, float, string, date, and checkbox must be lowercase.
+NOTE: `TABLE`, `FIELD`, `<rows_type>`, and `<field_type>`; are all case sensitive. So, for example, `TABLE`, `FIELD`, `ROOT`, and `EVENTS` must be uppercase, and `int`, `float`, `string`, `date`, and `checkbox` must be lowercase.
 
 
 Transformation Rules Examples

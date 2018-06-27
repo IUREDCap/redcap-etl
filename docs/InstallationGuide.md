@@ -85,7 +85,7 @@ Create a database and database user that will be used as the place to store the 
 
     CREATE DATABASE `etl`;
     CREATE USER 'etl_user'@'localhost' IDENTIFIED BY 'etlPassword';
-    GRANT ALL ON `etl_user`.* TO 'etl'@'localhost';
+    GRANT ALL ON `etl`.* TO 'etl_user'@'localhost';
 
 
 ### Step 3 - Get the REDCap-ETL Software
