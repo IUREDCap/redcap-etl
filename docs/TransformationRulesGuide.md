@@ -48,9 +48,9 @@ The possible `<rows_type>` values are shown in the table below:
 
 <table>
     <thead>
-    <th>
-      <td>Rows Type</td><td>Description</td>
-    </th>
+    <tr>
+      <th>Rows Type</th><th>Description</th>
+    </tr>
     </thead>
     <tbody>
     <tr>
