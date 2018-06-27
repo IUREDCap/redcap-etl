@@ -12,6 +12,13 @@ class RulesGenerator
 {
     const REDCAP_XML_NAMESPACE = 'https://projectredcap.org';
     
+    private $isLongitudinal;
+    private $instruments;
+    private $recordId;
+    private $metadata;
+    private $projectXmlDom;
+    private $eventMappings;
+
     /**
      * Generates transformation rules for the
      * specified data project.
@@ -29,34 +36,38 @@ class RulesGenerator
         # Get project information and metadata
         #----------------------------------------------------
         $projectInfo = $dataProject->exportProjectInfo();
-        $isLongitudinal = $projectInfo['is_longitudinal'];
+        $this->isLongitudinal = $projectInfo['is_longitudinal'];
                 
-        $instruments = $dataProject->exportInstruments();
-        $metadata    = $dataProject->exportMetadata();
+        $this->instruments = $dataProject->exportInstruments();
+        $this->metadata    = $dataProject->exportMetadata();
         
         $projectXml  = $dataProject->exportProjectXml($metadataOnly = true);
-        $projectXmlDom = new \DomDocument();
-        $projectXmlDom->loadXML($projectXml);
+        $this->projectXmlDom = new \DomDocument();
+        $this->projectXmlDom->loadXML($projectXml);
 
-        $recordId = $metadata[0]['field_name'];
+        $this->recordId = $this->metadata[0]['field_name'];
 
-        $rootInstrument = $this->getRootInstrument($metadata);
-        
-        if ($isLongitudinal) {
-            $mappings = $dataProject->exportInstrumentEventMappings();
-            $rules = $this->generateLongitudinalProjectRules($instruments, $metadata);
+        $rootInstrument = $this->getRootInstrument();
+
+        $repeatingEvents = $this->getRepeatingEvents();
+
+        $repeatingInstruments = $this->getRepeatingInstruments();
+
+        if ($this->isLongitudinal) {
+            $this->eventMappings = $dataProject->exportInstrumentEventMappings();
+            $rules = $this->generateLongitudinalProjectRules();
         } else {
-            $rules = $this->generateClassicProjectRules($recordId, $instruments, $metadata, $projectXmlDom);
+            $rules = $this->generateClassicProjectRules();
         }
         return $rules;
     }
     
-    public function generateClassicProjectRules($recordId, $instruments, $metadata, $projectXmlDom)
+    protected function generateClassicProjectRules()
     {
         $rules = '';
         
-        $rootForm = $this->getRootInstrument($metadata);
-        $repeatingForms = $this->getRepeatingInstruments($projectXmlDom);
+        $rootForm = $this->getRootInstrument();
+        $repeatingForms = $this->getRepeatingInstruments();
         
         if (in_array($rootForm, $repeatingForms)) {
             // special case...
@@ -64,14 +75,14 @@ class RulesGenerator
             $rootTable = $rootForm . '_root';
             $primaryKey = strtolower($rootTable) . '_id';
             $rules .= "TABLE,{$rootTable},{$primaryKey},".RulesParser::ROOT."\n";
-            #$rules .= "FIELD,{$recordId},varchar(255)\n";
+            #$rules .= "FIELD,{$this->recordId},varchar(255)\n";
             #$rules .= "FIELD,first_name,string\n";
             $rules .= "\n";
         } else {
             $rootTable = $rootForm;
         }
         
-        foreach ($instruments as $formName => $formLabel) {
+        foreach ($this->instruments as $formName => $formLabel) {
             $primaryKey = strtolower($formName) . '_id';
             
             if (in_array($formName, $repeatingForms)) {
@@ -80,7 +91,7 @@ class RulesGenerator
                 $rules .= "TABLE,{$formName},{$primaryKey},".RulesParser::ROOT."\n";
             }
     
-            foreach ($metadata as $field) {
+            foreach ($this->metadata as $field) {
                 if ($field['form_name'] == $formName) {
                     $rule = $this->getFieldRule($field);
                     if (isset($rule)) {
@@ -93,25 +104,56 @@ class RulesGenerator
         return $rules;
     }
     
-    public function generateLongitudinalProjectRules($instruments, $metadata)
+    protected function generateLongitudinalProjectRules()
     {
         $rules = '';
         
-        foreach ($instruments as $formName => $formLabel) {
+        # Create table with only record ID - it's possible that the
+        # same record ID is in multiple arms
+        $rootTable = 'root';
+        $rules .= 'TABLE,'.$rootTable.',root_id,'.RulesParser::ROOT."\n";
+        $rules .= "\n";
+
+
+        foreach ($this->instruments as $formName => $formLabel) {
+            $events = $this->getEvents($formName);
+
             $primaryKey = strtolower($formName) . '_id';
-            $rules .= "TABLE,".$formName.",$primaryKey,".RulesParser::ROOT."\n";
-    
-            foreach ($metadata as $field) {
-                if ($field['form_name'] == $formName) {
-                    $rule = $this->getFieldRule($field);
-                    if (isset($rule)) {
-                        $rules .= $rule;
-                    }
-                }
+            
+            if ($this->isInEvent($formName)) {
+                $rules .= "TABLE,".$formName.",$rootTable,".RulesParser::EVENTS."\n";
+                $rules .= $this->generateFields($formName);
+                $rules .= "\n";
             }
-            $rules .= "\n";
+            
+            if ($this->isInRepeatingEvent($formName)) {
+                $rules .= "TABLE,{$formName}_repeating_events,{$rootTable},".RulesParser::REPEATING_EVENTS."\n";
+                $rules .= $this->generateFields($formName);
+                $rules .= "\n";
+            }
+                        
+            if ($this->isRepeatingInstrument($formName)) {
+                $rules .= "TABLE,{$formName}_repeating_instruments,{$rootTable},"
+                    .RulesParser::REPEATING_INSTRUMENTS."\n";
+                $rules .= $this->generateFields($formName);
+                $rules .= "\n";
+            }
         }
         return $rules;
+    }
+    
+    protected function generateFields($formName)
+    {
+        $fields = '';
+        foreach ($this->metadata as $field) {
+            if ($field['form_name'] == $formName) {
+                $rule = $this->getFieldRule($field);
+                if (isset($rule)) {
+                    $fields .= $rule;
+                }
+            }
+        }
+        return $fields;
     }
 
 
@@ -122,7 +164,7 @@ class RulesGenerator
      *
      * @return Rule transformation rule for the specified field.
      */
-    public function getFieldRule($field)
+    protected function getFieldRule($field)
     {
         $rule = null;
         $type = FieldType::STRING;
@@ -160,31 +202,40 @@ class RulesGenerator
      * Gets the "root instrument", i.e., the one that contains the
      * record ID.
      */
-    public function getRootInstrument($metadata)
+    protected function getRootInstrument()
     {
-        return $metadata[0]['form_name'];
+        return $this->metadata[0]['form_name'];
     }
 
-    public function getRepeatingInstruments($projectXmlDom)
+    protected function getRepeatingInstruments()
     {
         $repeatingInstruments = array();
 
-        $repeatingInstrumentNodes = $projectXmlDom->getElementsByTagNameNS(
+        $repeatingInstrumentNodes = $this->projectXmlDom->getElementsByTagNameNS(
             self::REDCAP_XML_NAMESPACE,
             'RepeatingInstrument'
         );
     
         foreach ($repeatingInstrumentNodes as $instrumentNode) {
             $instrumentName = $instrumentNode->getAttribute('redcap:RepeatInstrument');
-            array_push($repeatingInstruments, $instrumentName);
+            
+            if ($this->isLongitudinal) {
+                $eventName      = $instrumentNode->getAttribute('redcap:UniqueEventName');
+                $entry = array();
+                $entry['form'] = $instrumentName;
+                $entry['unique_event_name'] = $eventName;
+                array_push($repeatingInstruments, $entry);
+            } else {
+                array_push($repeatingInstruments, $instrumentName);
+            }
         }
         return $repeatingInstruments;
     }
 
-    public function getRepeatingEvents($projectXmlDom)
+    protected function getRepeatingEvents()
     {
         $repeatingEvents = array();
-        $repeatingEventNodes = $projectXmlDom->getElementsByTagNameNS(
+        $repeatingEventNodes = $this->projectXmlDom->getElementsByTagNameNS(
             self::REDCAP_XML_NAMESPACE,
             'RepeatingEvent'
         );
@@ -194,5 +245,93 @@ class RulesGenerator
             array_push($repeatingEvents, $eventName);
         }
         return $repeatingEvents;
+    }
+
+    /**
+     * Gets the events that contain the specified form.
+     *
+     * @param string the name of the form for which to get the events.
+     *
+     * @return array unique event names of events containing specified form.
+     */
+    protected function getEvents($form)
+    {
+        $events = array();
+        foreach ($this->eventMappings as $mapping) {
+            if ($mapping['form'] === $form) {
+                array_push($events, $mapping['unique_event_name']);
+            }
+        }
+        return $events;
+    }
+
+
+    /**
+     * Indicates if the form is in a non-repeating event as a
+     * non-repeating instrument.
+     *
+     * @return boolean true if the specified form is a non-repeating
+     *     form in a non-repeating event, and false otherwise
+     */
+    protected function isInEvent($form)
+    {
+        $isInEvent = false;
+        $events = $this->getEvents($form);
+        $repeatingEvents = $this->getRepeatingEvents();
+        $repeatingInstruments = $this->getRepeatingInstruments();
+
+        foreach ($events as $event) {
+            if (!in_array($event, $repeatingEvents)) {
+                $isRepeatingInstrument = false;
+                foreach ($repeatingInstruments as $repeatingInstrument) {
+                    if ($repeatingInstrument['form'] === $form
+                        && $repeatingInstrument['unique_event_name'] === $event) {
+                        $isRepeatingInstrument = true;
+                        break;
+                    }
+                    if (!$isRepeatingInstrument) {
+                        $isInEvent = true;
+                    }
+                }
+            }
+        }
+        return $isInEvent;
+    }
+
+    /**
+     * Indicates if the specified form is in a repeating event.
+     *
+     * @return boolean true if the specified form is in a repeating
+     *     event, and false otherwise.
+     */
+    protected function isInRepeatingEvent($form)
+    {
+        $isInRepeatingEvent = false;
+        $events = $this->getEvents($form);
+        
+        $repeatingEvents = $this->getRepeatingEvents();
+        
+        foreach ($events as $event) {
+            if (in_array($event, $repeatingEvents)) {
+                $isInRepeatingEvent = true;
+                break;
+            }
+        }
+        return $isInRepeatingEvent;
+    }
+
+    protected function isRepeatingInstrument($form)
+    {
+        $isRepeatingInstrument = false;
+        
+        $repeatingInstruments = $this->getRepeatingInstruments();
+        if ($this->isLongitudinal) {
+            $repeatingInstruments = array_column($repeatingInstruments, 'form');
+        }
+        
+        if (in_array($form, $repeatingInstruments)) {
+            $isRepeatingInstrument = true;
+        }
+        return $isRepeatingInstrument;
     }
 }
