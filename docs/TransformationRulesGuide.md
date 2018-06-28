@@ -3,6 +3,7 @@ Transformation Rules
 The transformation rules specify how the records in REDCap should be transformed
 into records in your database.
 
+
 Transformation Rules Syntax
 -----------------------------------------
 
@@ -19,8 +20,8 @@ stored in the table. Each statement needs to be on its own line.
     FIELD, <field_name>, <field_type>[, <database_field_name>]
     ...
 
-A table statement that has no fields following it will generate a table that contains only the record IDs for the records in the project, since REDCap record ID field is
-stored in every table by default.
+A table statement that has no fields following it will generate a table that contains only 
+a synthetic primary key field and a record ID field.
 
 The transformation rules language is line-oriented, and each line has a 
 comma-separated value (CSV) syntax. This allows the transformation rules to be
@@ -43,6 +44,13 @@ For non-root tables, the field after the table name is the name of its parent ta
     TABLE, <table_name>, <parent_table>, <rows_type>
 
 
+The `<rows_type>` indicates the following things about the table:
+
+1. If the table is a root table or a child table of another table.
+2. What data rows from REDCap will be stored in the table.
+3. What identifier/key fields the rows of the database table will contain.
+
+
 The possible `<rows_type>` values are shown in the table below:
 
 
@@ -56,7 +64,8 @@ The possible `<rows_type>` values are shown in the table below:
     <tr>
       <td>ROOT</td>
       <td>
-      This is typically used for a table that stores REDCap fields that have
+      This indicates that the table is a root table (it has no parent table) and
+      is typically used for a table that stores REDCap fields that have
       a one-to-one relationship with
       the REDCap record ID, for example: first name, last name, birthdate.
       </td>
@@ -64,8 +73,10 @@ The possible `<rows_type>` values are shown in the table below:
     <tr>
       <td>EVENTS</td>
       <td>
-      This is typically used for a table that stores fields that are in multiple,
-      non-repeating events in a longitudinal study, where the fields have a many-to-one
+      If this rows type is specified, only REDCap values that are in rows that are "standard"
+      events (i.e., from non-repeating forms that are in non-repeating events) will
+      be stored in the database table. Since the same form can be in multiple (non-repeating)
+      events, in general, the rows in the database table will have a many-to-one
       relationship with the record ID. For example, you might have a field
       "total_cholesterol" in events "Initial Visit" and "Final Visit", so there would
       be 2 "total_cholesterol" values per record ID.
@@ -74,22 +85,21 @@ The possible `<rows_type>` values are shown in the table below:
     <tr>
       <td>REPEATING_EVENTS</td>
       <td>
-      This is typically used for a table that stores REDCap fields that are in a
-      repeating event in a longitudinal study, and therefore will have a many-to-one
-      relationship with the record ID.
+      This rows type indicates that only REDCap values from rows that are in
+      repeating events will be stored in the database table.
       </td>
     </tr>
     <tr>
       <td>REPEATING_INSTRUMENTS</td>
       <td>
-      This is typically used for a table that stores REDCap fields that are in repeating
-      instruments, and therefore will have a many-to-one relationship with the record ID.
+      This rows type indicates that only REDCap values that are in
+      repeating instruments will be stored in the database table.
       </td>
     </tr>
     <tr>
       <td>&lt;suffixes&gt;</td>
       <td>
-      This is typically used for a table that stores related REDCap fields that have
+      This is typically used for a table that store related REDCap fields that have
       the same prefix, but different suffixes. For example, you might specify
       suffixes of "1;2;3" for fields "heart_rate1",
       "heart_rate2" and "heart_rate3" that represent different heart rate
@@ -114,13 +124,42 @@ The possible `<rows_type>` values are shown in the table below:
     </tbody>
 </table>
 
+** & operator for rows type**
+
 For longitudinal studies, the three rows type `EVENTS`, `REPEATING_INSTRUMENTS` and `REPEATING_EVENTS` can be combined together using the `&` operator, for example:
 
     TABLE, visits, enrollment, EVENTS & REPEATING_EVENTS
 
+**Suffixes**
+
 `<suffixes>` is in the format
 
     <suffix1>; <suffix2>; ...
+
+
+__Identifier/key fields__
+
+REDCap-ETL will automatically create various identifier and key fields in
+each database table:
+
+* **`<primary_key>`** - a numeric synthetic key
+* **`<foreign_key>`** - a numeric foreign key that references a primary key of
+    the table's parent table.
+    This field is created for all tables with a rows type other than `ROOT`. 
+* **`<record_id>`** - the record ID from REDCap
+* **`redcap_event_name`** - the REDCap unique event name for the data record in REDCap. This is
+    only created if the REDCap study is longitudinal, and the table's rows type is one
+    of the following: `EVENTS`, `REPEATING_EVENTS`, `REPEATING_INSTRUMENTS`,
+    `EVENTS:<suffixes>`
+* **`redcap_repeat_instrument`** - the REDCap instrument name for the data record in REDCap. This
+    is only created for tables with the rows type `REPEATING_INSTRUMENTS`
+* **`redcap_repeat_instance`** - the REDCap instance value for the data record in REDCap.
+    This field is only created for tables with rows types `REPEATING_EVENTS` or
+    `REPEATING_INSTRUMENTS`.
+* **`redcap_suffix`** - this field contains the suffix value for the record. This field is
+    only created for tables that have a rows type of `<suffixes>` or `EVENTS:<suffixes>`.
+
+
 
 
 
@@ -158,7 +197,7 @@ NOTE: `TABLE`, `FIELD`, `<rows_type>`, and `<field_type>`; are all case sensitiv
 Transformation Rules Examples
 ----------------------------------------------
 
-## Root Table Example
+### Root Table Example
 
 This is a simple example with a single ROOT table. For this example, the project is non-longitudinal and
 has one form called "Registration". The data entered are as follows:
@@ -203,7 +242,7 @@ In this example:
   you are interested in.
 
 
-## Complex Example
+### Complex Example
 
 #### REDCap Data
 
