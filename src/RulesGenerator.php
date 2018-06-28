@@ -47,12 +47,6 @@ class RulesGenerator
 
         $this->recordId = $this->metadata[0]['field_name'];
 
-        $rootInstrument = $this->getRootInstrument();
-
-        $repeatingEvents = $this->getRepeatingEvents();
-
-        $repeatingInstruments = $this->getRepeatingInstruments();
-
         if ($this->isLongitudinal) {
             $this->eventMappings = $dataProject->exportInstrumentEventMappings();
             $rules = $this->generateLongitudinalProjectRules();
@@ -91,14 +85,7 @@ class RulesGenerator
                 $rules .= "TABLE,{$formName},{$primaryKey},".RulesParser::ROOT."\n";
             }
     
-            foreach ($this->metadata as $field) {
-                if ($field['form_name'] == $formName) {
-                    $rule = $this->getFieldRule($field);
-                    if (isset($rule)) {
-                        $rules .= $rule;
-                    }
-                }
-            }
+            $rules .= $this->generateFields($formName);
             $rules .= "\n";
         }
         return $rules;
@@ -232,6 +219,11 @@ class RulesGenerator
         return $repeatingInstruments;
     }
 
+    /**
+     * Gets the repeating events.
+     *
+     * @return arrray list or unique event names for the repeating events.
+     */
     protected function getRepeatingEvents()
     {
         $repeatingEvents = array();
