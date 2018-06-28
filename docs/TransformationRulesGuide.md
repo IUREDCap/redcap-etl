@@ -124,7 +124,7 @@ The possible `<rows_type>` values are shown in the table below:
     </tbody>
 </table>
 
-** & operator for rows type**
+**&amp; operator for rows type**
 
 For longitudinal studies, the three rows type `EVENTS`, `REPEATING_INSTRUMENTS` and `REPEATING_EVENTS` can be combined together using the `&` operator, for example:
 
