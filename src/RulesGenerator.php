@@ -101,7 +101,6 @@ class RulesGenerator
         $rules .= 'TABLE,'.$rootTable.',root_id,'.RulesParser::ROOT."\n";
         $rules .= "\n";
 
-
         foreach ($this->instruments as $formName => $formLabel) {
             $events = $this->getEvents($formName);
 
@@ -272,19 +271,20 @@ class RulesGenerator
         $repeatingEvents = $this->getRepeatingEvents();
         $repeatingInstruments = $this->getRepeatingInstruments();
 
-        foreach ($events as $event) {
-            if (!in_array($event, $repeatingEvents)) {
-                $isRepeatingInstrument = false;
-                foreach ($repeatingInstruments as $repeatingInstrument) {
-                    if ($repeatingInstrument['form'] === $form
-                        && $repeatingInstrument['unique_event_name'] === $event) {
-                        $isRepeatingInstrument = true;
-                        break;
-                    }
-                    if (!$isRepeatingInstrument) {
-                        $isInEvent = true;
-                    }
+        $nonRepeatingEvents = array_diff($events, $repeatingEvents);
+
+        foreach ($nonRepeatingEvents as $event) {
+            $isRepeatingInstrument = false;
+            foreach ($repeatingInstruments as $repeatingInstrument) {
+                if ($repeatingInstrument['form'] === $form
+                    && $repeatingInstrument['unique_event_name'] === $event) {
+                    $isRepeatingInstrument = true;
+                    break;
                 }
+            }
+            if (!$isRepeatingInstrument) {
+                $isInEvent = true;
+                break;
             }
         }
         return $isInEvent;
