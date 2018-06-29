@@ -259,7 +259,7 @@ The visit form is used by 3 events: Visit1, Visit2 and Visit3.
 
 **REDCap Data**
 
-| record_id | redcap_event_name  | first_name | last_name | dob       | registration_complete | weight | height | visit_complete |
+| record_id | redcap_event_name  | first_name | last_name | dob       | registration_<br />complete | weight | height | visit_<br />complete |
 |-----------|--------------------|------------|-----------|-----------|----------------------:|-------:|-------:|---------------:|
 | 1001	    | registration_arm_1 | Anahi      | Gislason  | 8/27/1973 | 2                     |        |        |                |
 | 1001      | visit1_arm_1       |            |           |           |                       | 90     | 1.7    | 2              |
