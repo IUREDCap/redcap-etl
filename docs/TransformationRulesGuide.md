@@ -39,7 +39,7 @@ has one form called "Registration".
 In this example:
 
 * The database table name is specified as **registration**
-* The database table is specified with a "rows type" of ROOT, because the rows of data have
+* The database table is specified with a **"rows type"** of ROOT, because the rows of data have
   a one-to-one mapping to record IDs, i.e., each study participant has
   one first name, one last name, and one birthdate.
 * The database field **registration_id** (specified in the TABLE command)
@@ -56,6 +56,7 @@ In this example:
   rule for every field, so you can specify rules for only those fields that
   you are interested in.
 
+---
 
 Transformation Rules Syntax
 -----------------------------------------
@@ -73,7 +74,7 @@ stored in the table. Each statement needs to be on its own line.
     FIELD, <field_name>, <field_type>[, <database_field_name>]
     ...
 
-A table statement that has no fields following it will generate a table that contains only 
+A table statement with rows type ROOT that has no fields following it will generate a table that contains only 
 a synthetic primary key field and a record ID field.
 
 The transformation rules language is line-oriented, and each line has a 
@@ -152,7 +153,7 @@ The possible `<rows_type>` values are shown in the table below:
     <tr>
       <td>&lt;suffixes&gt;</td>
       <td>
-      This is typically used for a table that store related REDCap fields that have
+      This is typically used for a table that stores related REDCap fields that have
       the same prefix, but different suffixes. For example, you might specify
       suffixes of "1;2;3" for fields "heart_rate1",
       "heart_rate2" and "heart_rate3" that represent different heart rate
@@ -189,17 +190,23 @@ For longitudinal studies, the three rows type `EVENTS`, `REPEATING_INSTRUMENTS` 
 
     <suffix1>; <suffix2>; ...
 
+for example:
+
+    1;2;3;4
+    a;b;c
+    first; second; third
+
 
 __Identifier/key fields__
 
 REDCap-ETL will automatically create various identifier and key fields in
 each database table:
 
-* **`<primary_key>`** - a numeric synthetic key
-* **`<foreign_key>`** - a numeric foreign key that references a primary key of
+* **`<primary_key>`** - a numeric synthetic key  (created for all tables)
+* **`<foreign_key>`** - a numeric foreign key that references the primary key of
     the table's parent table.
     This field is created for all tables with a rows type other than `ROOT`. 
-* **`<record_id>`** - the record ID from REDCap
+* **`<record_id>`** - the record ID from REDCap (created for all tables)
 * **`redcap_event_name`** - the REDCap unique event name for the data record in REDCap. This is
     only created if the REDCap study is longitudinal, and the table's rows type is one
     of the following: `EVENTS`, `REPEATING_EVENTS`, `REPEATING_INSTRUMENTS`,
@@ -225,9 +232,9 @@ Field statements specify the fields that are generated in the tables in your dat
 __`<field_name>`__ is the name of the field in REDCap.
 
 * If __`<database_field_name>`__ is not set, __`<field_name>`__ will also be the name
-  of the field in the database where the extracted data is loaded
-* If __`<database_field_name>`__ is set, then it will be uses as
-  the name of the field in the database where the extracted data is loaded
+  of the field in the database where the extracted data are loaded
+* If __`<database_field_name>`__ is set, then it will be used as
+  the name of the field in the database where the extracted data are loaded
 
 
 __`<field_type>`__ can be one of the REDCap-ETL types in the table below that shows
@@ -254,12 +261,12 @@ Transformation Rules Examples
 
 ### Events Example
 
-In this example, the REDCap project is a longitudinal project with a registration form, and a visit form.
+In this example, the REDCap project is a longitudinal project with a registration form and a visit form.
 The visit form is used by 3 events: Visit1, Visit2 and Visit3.
 
 **REDCap Data**
 
-| record_id | redcap_event_name  | first_name | last_name | dob       | registration_<br />complete | weight | height | visit_<br />complete |
+| record_id | redcap_event_name  | first_name | last_name | dob       | registration_complete | weight | height | visit_complete |
 |-----------|--------------------|------------|-----------|-----------|----------------------:|-------:|-------:|---------------:|
 | 1001	    | registration_arm_1 | Anahi      | Gislason  | 8/27/1973 | 2                     |        |        |                |
 | 1001      | visit1_arm_1       |            |           |           |                       | 90     | 1.7    | 2              |
@@ -322,7 +329,7 @@ For the **visits** table:
 
 ### Complex Example
 
-#### REDCap Data
+**REDCap Data**
 
 | Event   | Variable | Record1    | Record2  | Record3 |
 |---------|----------|------------|----------|---------|
@@ -351,62 +358,7 @@ For the **visits** table:
 | evB     | var8b    | yellow1    | yellow2  | yellow3 |
 
 
-#### MySQL Data
-
-NOTE: This only shows data transformed from REDCap record 1
-
-
-__Table Main__
-
-| record_id | var1 | var2  |
-|-----------|------|-------|
-|         1 | Joe  | Smith |
-
-__Table Second__
-
-| second_id | record_id | redcap_event | var3 | var4 |
-|-----------|-----------|--------------|------|------|
-|         1 |         1 | evA          |   10 |   20 |
-|         2 |         1 | evB          |  101 |  201 |
-
-
-__Table Third__
-
-| third_id | record_id | redcap_event | var7    |
-|----------|-----------|--------------|---------|
-|        1 |         1 | evA          |  10,000 |
-|        2 |         1 | evB          |  20,000 |
-
-
-__Table Fourth__
-
-| fourth_id | third_id | redcap_suffix | var5  | var6  |
-|-----------|----------|---------------|-------|-------|
-|         1 |        1 |             a |  1001 |  2001 |
-|         2 |        1 |             b |  1002 |  2002 |
-|         3 |        2 |             a |  3001 |  4001 |
-|         4 |        2 |             b |  3002 |  4002 |
-
-
-__Table Fifth__
-
-| fifth_id | record_id | redcap_event | redcap_suffix | var8     |
-|----------|-----------|--------------|---------------|----------|
-|        1 |         1 | evA          | a             | red1     |
-|        2 |         1 | evA          | b             | green1   |
-|        3 |         1 | evB          | a             | blue1    |
-|        4 |         1 | evB          | b             | yellow1  |
-
-
-* NOTE: In this example, var3/var4 need to be put in one table while var7 needs to be put in a different table, despite the fact that all three variables have the same 1-many relationship with var1/var2.
-
-* NOTE: This syntax assumes that Events will always be used to define 1-many relationships to the root parent table. Although we might envision a more complex situation in which events are named such that some events are considered children of other events, in practice that has not been done.
-
-* NOTE: This example does not include a situation in which a child table that uses suffixes has a parent table that also uses suffixes, but the transforming code can handle that situation.
-
-
-Mapping
-
+**Tranformation Rules**
 
     TABLE,  Main, Main_id, ROOT
     FIELD,  record, int
@@ -426,5 +378,62 @@ Mapping
 
     TABLE,  Fifth, Main, EVENTS:a;b
     FIELD,  var8, st
+
+
+**Database Tables**
+
+NOTE: This only shows data transformed from REDCap record 1
+
+
+**Main**
+
+| record_id | var1 | var2  |
+|-----------|------|-------|
+|         1 | Joe  | Smith |
+
+__Second__
+
+| second_id | record_id | redcap_event_name | var3 | var4 |
+|-----------|-----------|-------------------|------|------|
+|         1 |         1 | evA               |   10 |   20 |
+|         2 |         1 | evB               |  101 |  201 |
+
+
+__Third__
+
+| third_id | record_id | redcap_event_name | var7    |
+|----------|-----------|-------------------|---------|
+|        1 |         1 | evA               |  10,000 |
+|        2 |         1 | evB               |  20,000 |
+
+
+__Fourth__
+
+| fourth_id | third_id | redcap_suffix | var5  | var6  |
+|-----------|----------|---------------|-------|-------|
+|         1 |        1 |             a |  1001 |  2001 |
+|         2 |        1 |             b |  1002 |  2002 |
+|         3 |        2 |             a |  3001 |  4001 |
+|         4 |        2 |             b |  3002 |  4002 |
+
+
+__Fifth__
+
+| fifth_id | record_id | redcap_event_name | redcap_suffix | var8     |
+|----------|-----------|-------------------|---------------|----------|
+|        1 |         1 | evA               | a             | red1     |
+|        2 |         1 | evA               | b             | green1   |
+|        3 |         1 | evB               | a             | blue1    |
+|        4 |         1 | evB               | b             | yellow1  |
+
+
+* NOTE: In this example, var3/var4 need to be put in one table while var7 needs to be put in a different table, despite the fact that all three variables have the same 1-many relationship with var1/var2.
+
+* NOTE: This syntax assumes that Events will always be used to define 1-many relationships to the root parent table. Although we might envision a more complex situation in which events are named such that some events are considered children of other events, in practice that has not been done.
+
+* NOTE: This example does not include a situation in which a child table that uses suffixes has a parent table that also uses suffixes, but the transforming code can handle that situation.
+
+
+
 
 
