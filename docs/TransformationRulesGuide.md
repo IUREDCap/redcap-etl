@@ -1,7 +1,60 @@
 Transformation Rules
 ===================================================
-The transformation rules specify how the records in REDCap should be transformed
+The transformation rules specify how the records in REDCap are transformed
 into records in your database.
+
+
+Simple Transformation Rules Example
+----------------------------------------
+This is a simple example with a single database table. 
+For this example, the project is non-longitudinal and
+has one form called "Registration".
+
+**REDCap Data**
+
+
+| record_id | first_name | last_name | dob        | registration_complete |
+| ---------:| ---------- | --------- | ---------- |----------------------:|
+|      1001 | Anahi	     | Gislason	 | 08-27-1973 | 2                     |
+|      1002 | Marianne   | Crona     | 06-18-1958 | 2                     |
+|      1003 | Ryann	     | Tillman	 | 08-28-1967 | 2                     |
+
+**Transformation Rules**
+
+    TABLE,registration,registration_id,ROOT
+    FIELD,first_name,string
+    FIELD,last_name,string
+    FIELD,dob,date,birthdate
+
+**Database Table**
+
+**registration**
+
+| registration_id | record_id | first_name | last_name | birthdate  |
+| ---------------:| --------- | ---------- | --------- | ---------- |
+| 1               | 1001      | Anahi      | Gislason  | 1973-08-27 |
+| 2               | 1002      | Marianne   | Crona     | 1958-06-18 |
+| 3               | 1003      | Ryann      | Tillman   | 1967-08-28 |
+
+In this example:
+
+* The database table name is specified as **registration**
+* The database table is specified with a "rows type" of ROOT, because the rows of data have
+  a one-to-one mapping to record IDs, i.e., each study participant has
+  one first name, one last name, and one birthdate.
+* The database field **registration_id** (specified in the TABLE command)
+  is created automatically as an auto-incremented synthetic key
+* The database field __record_id__ represents the REDCap record ID, and is
+  created automatically in the database for all tables by REDCap-ETL
+* The database fields __record_id__, __first_name__ and __last_name__
+  match the REDCap fields.
+* The REDCap field __dob__ with type __date__, was renamed to __birthdate__ in the database
+* The __birthdate__ database field has Y-M-D format, which is what REDCap
+  returns (even though the field was defined as having M-D-Y format in REDCap)
+* No transformation rule was defined for the REDCap **registration_complete** field,
+  so it does not show up in the database. You are not required to specify a
+  rule for every field, so you can specify rules for only those fields that
+  you are interested in.
 
 
 Transformation Rules Syntax
@@ -180,7 +233,7 @@ __`<field_name>`__ is the name of the field in REDCap.
 __`<field_type>`__ can be one of the REDCap-ETL types in the table below that shows
 the database types used to store the different REDCap-ETL types.
 
-| REDCap-ETL Type | MySQL Type      | CSV (Spreadsheet) Type | 
+| REDCap-ETL Type | MySQL Type      | CSV (Spreadsheet) Type |
 | --------------- | --------------- | ---------------------- |
 | int             | int             | number                 |
 | float           | float           | number                 |
@@ -193,53 +246,78 @@ the database types used to store the different REDCap-ETL types.
 
 NOTE: `TABLE`, `FIELD`, `<rows_type>`, and `<field_type>`; are all case sensitive. So, for example, `TABLE`, `FIELD`, `ROOT`, and `EVENTS` must be uppercase, and `int`, `float`, `string`, `date`, and `checkbox` must be lowercase.
 
+---
+
 
 Transformation Rules Examples
 ----------------------------------------------
 
-### Root Table Example
+### Events Example
 
-This is a simple example with a single ROOT table. For this example, the project is non-longitudinal and
-has one form called "Registration". The data entered are as follows:
+In this example, the REDCap project is a longitudinal project with a registration form, and a visit form.
+The visit form is used by 3 events: Visit1, Visit2 and Visit3.
+
+**REDCap Data**
+
+| record_id | redcap_event_name  | first_name | last_name | dob       | registration_complete | weight | height | visit_complete |
+|-----------|--------------------|------------|-----------|-----------|----------------------:|-------:|-------:|---------------:|
+| 1001	    | registration_arm_1 | Anahi      | Gislason  | 8/27/1973 | 2                     |        |        |                |
+| 1001      | visit1_arm_1       |            |           |           |                       | 90     | 1.7    | 2              |
+| 1001      | visit2_arm_1       |            |           |           |                       | 91     | 1.7    | 2              |
+| 1001      | visit3_arm_1       |            |           |           |                       | 92     | 1.7    | 2              |
+| 1002      | registration_arm_1 | Marianne   | Crona     | 6/18/1958 | 2                     |        |        |                |
+| 1002      | visit1_arm_1       |            |           |           |                       | 88     | 1.8    | 2              |
+| 1002      | visit2_arm_1       |            |           |           |                       | 88     | 1.8    | 2              |
+| 1002      | visit3_arm_1       |            |           |           |                       | 87     | 1.8    | 2              |
+| 1003      | registration_arm_1 | Ryann      | Tillman   | 8/28/1967 | 2                     |        |        |                |
+| 1003      | visit1_arm_1       |            |           |           |                       | 100    | 1.9    | 2              |
+| 1003      | visit2_arm_1       |            |           |           |                       | 102    | 1.9    | 2              |
+| 1003      | visit3_arm_1       |            |           |           |                       | 105    | 1.9    | 2              |
 
 
-| record_id | first_name | last_name | dob        | registration_complete  |
-| --------- | ---------- | --------- | ---------- | ---------------------: |
-|      1001 | Anahi	     | Gislason	 | 08-27-1973 | 2                      |
-|      1002 | Marianne   | Crona     | 06-18-1958 | 2                      |
-|      1003 | Ryann	     | Tillman	 | 08-28-1967 | 2                      |
-
-The transformation rules used are:
+**Transformation Rules**
 
     TABLE,registration,registration_id,ROOT
+    FIELD,record_id,string
     FIELD,first_name,string
     FIELD,last_name,string
-    FIELD,dob,date,birthdate
+    FIELD,dob,date
 
-Running the REDCap-ETL process for the above example will create a table
-named **registration** with the following data:
- 
+    TABLE,visit,registration,EVENTS
+    FIELD,weight,string
+    FIELD,height,string
+
+**Database Tables**
+
+**registration**
+
 | registration_id | record_id | first_name | last_name | birthdate  |
-| --------------- | --------- | ---------- | --------- | ---------- |
+|----------------:|-----------|------------|-----------|------------|
 | 1               | 1001      | Anahi      | Gislason  | 1973-08-27 |
 | 2               | 1002      | Marianne   | Crona     | 1958-06-18 |
 | 3               | 1003      | Ryann      | Tillman   | 1967-08-28 |
 
-In this example:
+**visits**
 
-* The database field __registration_id__ (specified in the TABLE command)
-  is created automatically as an auto-incremented synthetic key
-* The database field __record_id__ represents the REDCap record ID, and is
-  created automatically in the database for all tables by REDCap-ETL
-* The database fields __record_id__, __first_name__ and __last_name__
-  match the REDCap fields.
-* The REDCap field __dob__ was renamed to __birthdate__ in the database
-* The __birthdate__ database field has Y-M-D format, which is what REDCap
-  returns (even though the field was defined as having M-D-Y format in REDCap)
-* No transformation rule was defined for the REDCap __registration_complete__ field,
-  so it does not show up in the database. You are not required to specify a
-  rule for every field, so you can specify rules for only those fields that
-  you are interested in.
+| visit_id | registration_id | record_id | redcap_event_name | weight | height |
+|---------:|----------------:|-----------|-------------------|-------:|-------:|
+| 1        | 1               | 1001      | visit1_arm_1      | 90     | 1.7    |
+| 2        | 1               | 1001      | visit2_arm_1      | 91     | 1.7    |
+| 3        | 1               | 1001      | visit3_arm_1      | 92     | 1.7    |
+| 4        | 2               | 1002      | visit1_arm_1      | 88     | 1.8    |
+| 5        | 2               | 1002      | visit2_arm_1      | 88     | 1.8    |
+| 6        | 2               | 1002      | visit3_arm_1      | 87     | 1.8    |
+| 7        | 3               | 1003      | visit1_arm_1      | 100    | 1.9    |
+| 8        | 3               | 1003      | visit2_arm_1      | 102    | 1.9    |
+| 9        | 3               | 1003      | visit3_arm_1      | 105    | 1.9    |
+
+For the **visits** table:
+
+* **visit_id** is the synthetic primary key automatically generated by REDCap-ETL
+* **registration_id** is the foreign key automatically generated by REDCap-ETL that points
+    to the parent table **registration**
+
+---
 
 
 ### Complex Example
