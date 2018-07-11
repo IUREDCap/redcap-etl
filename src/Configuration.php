@@ -834,6 +834,11 @@ class Configuration
         return $this->batchSize;
     }
 
+    public function setBatchSize($batchSize)
+    {
+        $this->batchSize = $batchSize;
+    }
+
     public function getCaCertFile()
     {
         return $this->caCertFile;

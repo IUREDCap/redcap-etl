@@ -240,6 +240,8 @@ class RedCapEtl
      *
      * These three steps are joined together at this level so that
      * the data from REDCap can be worked on in batches.
+     *
+     * @return int the number of record IDs processed.
      */
     public function extractTransformLoad()
     {
@@ -329,7 +331,7 @@ class RedCapEtl
 
         $this->log("Number of record events transformed: ". $recordEventsCount);
     
-        return true;
+        return $recordIdCount;
     }
 
 
@@ -547,6 +549,8 @@ class RedCapEtl
 
     /**
      * Runs the entire ETL process.
+     *
+     * @return int the number of record IDs found (and hopefully processed).
      */
     public function run()
     {
@@ -568,7 +572,7 @@ class RedCapEtl
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             } else {
                 $this->createLoadTables();
-                $this->extractTransformLoad();
+                $numberOfRecordIds = $this->extractTransformLoad();
                 
                 $sqlFile = $this->configuration->getPostProcessingSqlFile();
                 if (!empty($sqlFile)) {
@@ -581,11 +585,15 @@ class RedCapEtl
             $this->log('Processing failed.');
             throw $exception;  // re-throw the exception
         }
+
+        return $numberOfRecordIds;
     }
 
 
     /**
      * Runs the ETL process for a REDCap DET (Data Entry Trigger)
+     *
+     * @return int the number of record IDs found (and hopefully processed).
      */
     public function runForDet()
     {
@@ -627,7 +635,7 @@ class RedCapEtl
 
                     $this->createLoadTables();
 
-                    $this->extractTransformLoad();
+                    $numberOfRecordIds = $this->extractTransformLoad();
 
                     $sqlFile = $this->configuration->getPostProcessingSqlFile();
                     if (!empty($sqlFile)) {
@@ -644,6 +652,8 @@ class RedCapEtl
             #-----------------------------------------------------------
             $this->uploadResultAndReset($result, $recordId);
         }
+
+        return $numberOfRecordIds;
     }
 
 
