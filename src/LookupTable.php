@@ -4,6 +4,7 @@ namespace IU\REDCapETL;
 
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Table;
 
 /**
@@ -31,7 +32,7 @@ class LookupTable extends Table
             $tablePrefix . self::NAME,
             self::FIELD_PRIMARY_ID,
             $keyType,
-            array(RulesParser::ROOT),
+            array(RowsType::ROOT),
             array()
         );
 
