@@ -84,7 +84,6 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
      
         // Foreach field
         foreach ($fields as $field) {
-            // Check the type of field
             switch ($field['field_type']) {
                 // If it's a radio, dropdown, or checkbox field
                 case 'radio':
@@ -100,6 +99,11 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
                     foreach ($choices as $choice) {
                         if ($choice === "") {
                              continue;
+                        } elseif (strpos($choice, ',') === false) {
+                            $message = 'Field "'.($field['field_name']).'" in form "'.($field['form_name'])
+                                .'" does not have a label for value "'.$choice.'".';
+                            $code = EtlException::INPUT_ERROR;
+                            throw new EtlException($message, $code);
                         }
 
                         // Get the category and label
