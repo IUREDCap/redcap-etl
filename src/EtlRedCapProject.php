@@ -101,7 +101,7 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
                              continue;
                         } elseif (strpos($choice, ',') === false) {
                             $message = 'Field "'.($field['field_name']).'" in form "'.($field['form_name'])
-                                .'" does not have a label for value "'.$choice.'".';
+                                .'" does not have a label for choice value "'.$choice.'".';
                             $code = EtlException::INPUT_ERROR;
                             throw new EtlException($message, $code);
                         }
