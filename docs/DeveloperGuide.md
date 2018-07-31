@@ -21,7 +21,7 @@ This is a list of the steps for setting up a REDCap-ETL development environment.
 
         sudo apt install sendmail
         
-    The script **bin/email_test.php** can be used to test if e-mail logging
+    Note: after REDCap-ETL has been installed, its **bin/email_test.php** script can be used to test if e-mail logging
 works.
 
 4. Install MySQL
@@ -50,7 +50,7 @@ works.
 8. Get the code. Execute the following command in the directory where
    you want to put REDCap-ETL:
 
-        git clone https://github.iu.edu/ABITC/redcap-etl
+        git clone https://github.com/IUREDCap/redcap-etl
 
 9. Install Composer dependencies. In the top-level directory where the code was downloaded, run:
 

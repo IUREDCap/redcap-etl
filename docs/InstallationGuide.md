@@ -63,7 +63,6 @@ Example commands for setting up an Ubuntu 16 system:
 
     sudo apt install php php-curl
     sudo apt install git
-    sudo apt install subversion
 
 ### Step 2 (Optional) - Set up a MySQL Database
 
@@ -90,12 +89,13 @@ Create a database and database user that will be used as the place to store the 
 
 ### Step 3 - Get the REDCap-ETL Software
 
-Get the code:
+The basic Git command to get the code is:
 
-    git clone https://github.iu.edu/ABITC/redcap-etl
+    git clone https://github.com/IUREDCap/redcap-etl
 
-    git clone https://github.iu.edu/ABITC/redcap-etl /opt/redcap-etl
-    sudo svn export https://github.iu.edu/ABITC/redcap-etl/trunk /opt/redcap-etl
+To install the code to the **/opt/redcap-etl** directory, the following command could be used:
+
+    sudo git clone https://github.com/IUREDCap/redcap-etl /opt/redcap-etl
 
 Set the permissions for the new directory as desired. For example, if the process
 was being run as user etl in group etl, the following command might be used on a Linux
