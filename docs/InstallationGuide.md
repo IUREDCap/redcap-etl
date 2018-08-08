@@ -31,7 +31,9 @@ using this project are that it increases the complexity of the installation and 
 * **REDCap-ETL.** The software that actually does the Extract Transform and Load.
 * **Database.** There needs to be some kind of database where the extracted and transformed data
 can be loaded, such as a MySQL database, although this could be as simple as a directory for CSV files.
-* **Apache Web Server.** The Apache web server is necessary if you want to use REDCap's data entry triggers (DETs) to check the transformation rules and/or start
+* **Web Server.** A web server, such as Apache, that supports PHP is necessary if you want to
+  use REDCap's data entry triggers (DETs)
+  to check the transformation rules and/or start
 the ETL (Extract Transform Load) process from REDCap.
 This will allow users to run the process by editing and saving a form in the REDCap
 configuration project,
@@ -53,9 +55,6 @@ Installation Steps
     * curl extension
     * openssl extension
 * Subversion or Git, for retrieving the REDCap-ETL code
-* MySQL (if you want to store the extracted data in a database)
-* Apache web server (if you want to allow REDCap data entry triggers for starting the ETL process)
-* E-mail server (if you want to support e-mail error notifications)
 * In addition, you need to be using REDCap version 7+
 
 
@@ -184,7 +183,7 @@ users who need to manually start the ETL process, but do not have
 access to the REDCap-ETL server.
 
 #### Web server setup
-You need to set up a web server to run web scripts that will process DETs.
+You need to set up a web server that supports PHP to run web scripts that will process DETs.
 
 For example, to install the Apache web server on Ubuntu 16, use:
 
