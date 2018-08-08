@@ -165,6 +165,16 @@ class RedCapEtl
             throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
+        #--------------------------------------------------------------
+        # Get the logging project (the optional REDCap project where
+        # logging message are written)
+        #--------------------------------------------------------------
+        $logToken = $this->configuration->getLogProjectApiToken();
+        if (!empty($logToken)) {
+            $this->logProject = $redCap->getProject($logToken);
+            $this->logProject->setApp($this->logger->getApp());
+            $this->logger->setLogProject($this->logProject);
+        }
 
         #-----------------------------------------
         # Initialize the schema

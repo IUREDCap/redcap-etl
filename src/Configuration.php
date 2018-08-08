@@ -914,6 +914,11 @@ class Configuration
         return $this->logFile;
     }
 
+    public function getLogProjectApiToken()
+    {
+        return $this->logProjectApiToken;
+    }
+
     public function getPostProcessingSqlFile()
     {
         return $this->postProcessingSqlFile;
