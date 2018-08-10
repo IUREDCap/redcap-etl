@@ -2,7 +2,7 @@
 
 namespace IU\REDCapETL\Schema;
 
-use IU\REDCapEtl\EtlException;
+use IU\REDCapETL\EtlException;
 
 /**
  * Contains a complete type specification for a field, including the
@@ -10,7 +10,10 @@ use IU\REDCapEtl\EtlException;
  */
 class FieldTypeSpecifier
 {
-    private $type;  // FieldType
+    /** @var string the type of the field (from constant in class FieldType), e.g., char, int, sting */
+    private $type;
+
+    /** @var int the size of the field */
     private $size;  // int
 
     /**

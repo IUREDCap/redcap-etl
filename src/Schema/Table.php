@@ -77,8 +77,6 @@ class Table
             // Otherwise, create a new synthetic primary key
             $this->createPrimary();
         }
-
-        return(1);
     }
 
     /**
@@ -181,9 +179,12 @@ class Table
     /**
      * Creates a row with the specified data in the table.
      *
-     * @param string $data the data values used to create the row.
+     * @param array $data the data values used to create the rowi; represented as a map from
+     *     field names to field values.
      * @param string $foreignKey the name of the foreign key field for the row.
      * @param string $suffix the suffix value for the row (if any).
+     * @param string $rowType the type of the row (which should be a constant from RowsType).
+     *
      * @return bool|int TRUE if row was created, FALSE if ignored
      */
     public function createRow($data, $foreignKey, $suffix, $rowType)
@@ -240,14 +241,12 @@ class Table
                 }
             }
             if (array_key_exists(RedCapEtl::COLUMN_EVENT, $data) &&
-                ((empty($data[RedCapEtl::COLUMN_EVENT])) ||
-                    is_null($data[RedCapEtl::COLUMN_EVENT]))) {
-                    return false;
+                    empty($data[RedCapEtl::COLUMN_EVENT])) {
+                return false;
             }
             if (array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTANCE, $data) &&
-                ((empty($data[RedCapEtl::COLUMN_REPEATING_INSTANCE])) ||
-                    is_null($data[RedCapEtl::COLUMN_REPEATING_INSTANCE]))) {
-                    return false;
+                    empty($data[RedCapEtl::COLUMN_REPEATING_INSTANCE])) {
+                return false;
             }
         }
 
