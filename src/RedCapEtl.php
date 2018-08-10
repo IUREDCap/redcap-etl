@@ -171,9 +171,14 @@ class RedCapEtl
         #--------------------------------------------------------------
         $logToken = $this->configuration->getLogProjectApiToken();
         if (!empty($logToken)) {
-            $this->logProject = $redCap->getProject($logToken);
-            $this->logProject->setApp($this->logger->getApp());
-            $this->logger->setLogProject($this->logProject);
+            try {
+                $this->logProject = $redCap->getProject($logToken);
+                $this->logProject->setApp($this->logger->getApp());
+                $this->logger->setLogProject($this->logProject);
+            } catch (PhpCapException $exception) {
+                $message = 'Could not get logging project.';
+                throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
+            }
         }
 
         #-----------------------------------------
@@ -295,6 +300,20 @@ class RedCapEtl
             $recordBatch = $this->dataProject->getRecordBatch($recordIdBatch);
             $endExtractTime = microtime(true);
             $extractTime += $endExtractTime - $startExtractTime;
+
+            if (count($recordBatch) < count($recordIdBatch)) {
+                $message = "Attempted to retrieve ".count($recordIdBatch)." records, but only "
+                    .count($recordBatch)." were actually retrieved."
+                    ." This error can be caused by a very large batch size. If you are using a large"
+                    ." batch size (1,000 or greater), try reducing it to 500 or less.";
+                $code =  EtlException::INPUT_ERROR;
+                throw new EtlException($message, $code);
+            } elseif (count($recordBatch) > count($recordIdBatch)) {
+                $message = "Attempted to retrieve ".count($recordIdBatch)." records, but "
+                    .count($recordBatch)." were actually retrieved.";
+                $code =  EtlException::INPUT_ERROR;
+                throw new EtlException($message, $code);
+            }
 
             foreach ($recordBatch as $recordId => $records) {
                 $recordEventsCount += count($records);
