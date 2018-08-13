@@ -301,18 +301,28 @@ class RedCapEtl
             $endExtractTime = microtime(true);
             $extractTime += $endExtractTime - $startExtractTime;
 
-            if (count($recordBatch) < count($recordIdBatch)) {
-                $message = "Attempted to retrieve ".count($recordIdBatch)." records, but only "
-                    .count($recordBatch)." were actually retrieved."
-                    ." This error can be caused by a very large batch size. If you are using a large"
-                    ." batch size (1,000 or greater), try reducing it to 500 or less.";
-                $code =  EtlException::INPUT_ERROR;
-                throw new EtlException($message, $code);
-            } elseif (count($recordBatch) > count($recordIdBatch)) {
-                $message = "Attempted to retrieve ".count($recordIdBatch)." records, but "
-                    .count($recordBatch)." were actually retrieved.";
-                $code =  EtlException::INPUT_ERROR;
-                throw new EtlException($message, $code);
+            if ($this->configuration->getExtractedRecordCountCheck()) {
+                if (count($recordBatch) < count($recordIdBatch)) {
+                    $message = "Attempted to retrieve ".count($recordIdBatch)." records, but only "
+                        .count($recordBatch)." were actually retrieved."
+                        ." This error can be caused by a very large batch size. If you are using a large"
+                        ." batch size (1,000 or greater), try reducing it to 500 or less."
+                        ." This error could also be caused by records being deleted while the ETL process"
+                        ." is running."
+                        ." You can turn this error check off by setting the "
+                        .ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK." to false.";
+                    $code =  EtlException::INPUT_ERROR;
+                    throw new EtlException($message, $code);
+                } elseif (count($recordBatch) > count($recordIdBatch)) {
+                    $message = "Attempted to retrieve ".count($recordIdBatch)." records, but "
+                        .count($recordBatch)." were actually retrieved."
+                        ." This error could be caused by records being added while the"
+                        ." ETL process is running."
+                        ." You can turn this error check off by setting the "
+                        .ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK." to false.";
+                    $code =  EtlException::INPUT_ERROR;
+                    throw new EtlException($message, $code);
+                }
             }
 
             foreach ($recordBatch as $recordId => $records) {

@@ -21,6 +21,8 @@ class ConfigProperties
     const EMAIL_SUBJECT          = 'email_subject';
     const EMAIL_TO_LIST          = 'email_to_list';
     
+    const EXTRACTED_RECORD_COUNT_CHECK = 'extracted_record_count_check';
+
     const GENERATED_INSTANCE_TYPE  = 'generated_instance_type';   # for redcap_repeat_instance
     const GENERATED_KEY_TYPE       = 'generated_key_type';        # for primary and foreign keys
     const GENERATED_LABEL_TYPE     = 'generated_label_type';      # for label fields in label views

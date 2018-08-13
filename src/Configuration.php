@@ -46,6 +46,8 @@ class Configuration
     private $dataSourceApiToken;
     private $dbConnection;
 
+    private $extractedRecordCountCheck;
+
     private $generatedInstanceType;
     private $generatedKeyType;
     private $generatedLabelType;
@@ -187,7 +189,7 @@ class Configuration
         #---------------------------------------------------------------
         if (array_key_exists(ConfigProperties::SSL_VERIFY, $properties)) {
             $sslVerify = $properties[ConfigProperties::SSL_VERIFY];
-            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0') {
+            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0' || $sslVerify === '') {
                 $this->sslVerify = false;
             } elseif (!isset($sslVerify) || $sslVerify === ''
                     || strcasecmp($sslVerify, 'true') === 0 || $sslVerify === '1') {
@@ -200,6 +202,31 @@ class Configuration
             }
         } else {
             $this->sslVerify = true;
+        }
+
+
+        #---------------------------------------------------------------
+        # Get extracted record count check flag
+        #
+        # Indicates if the count of extracted records should be checked
+        # against the number of record IDs passed to REDCap to see if
+        # they match.
+        #---------------------------------------------------------------
+        if (array_key_exists(ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK, $properties)) {
+            $countCheck = $properties[ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK];
+            if (strcasecmp($countCheck, 'false') === 0 || $countCheck === '0' || $countCheck === '') {
+                $this->extractedRecordCountCheck = false;
+            } elseif (!isset($countCheck) || $countCheck === ''
+                    || strcasecmp($countCheck, 'true') === 0 || $countCheck === '1') {
+                $this->extractedRecordCountCheck = true;
+            } else {
+                $message = 'Unrecognized value \"'.$countCheck.'\" for '
+                    .ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK
+                    .' property; a true a false value should be specified.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+        } else {
+            $this->extractedRecordCountCheck = true;
         }
 
         #---------------------------------------------------------
@@ -869,9 +896,14 @@ class Configuration
         return $this->emailSubject;
     }
 
-    public function getToEmailList()
+    public function getEmailToList()
     {
-        return $this->toEmailList;
+        return $this->emailToList;
+    }
+    
+    public function getExtractedRecordCountCheck()
+    {
+        return $this->extractedRecordCountCheck;
     }
     
     public function getGeneratedInstanceType()
