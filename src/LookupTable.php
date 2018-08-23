@@ -18,7 +18,7 @@ class LookupTable extends Table
     const FIELD_PRIMARY_ID  = 'lookup_id';
     const FIELD_TABLE_NAME  = 'table_name';
     const FIELD_FIELD_NAME  = 'field_name';
-    const FIELD_CATEGORY    = 'category';
+    const FIELD_VALUE       = 'value';
     const FIELD_LABEL       = 'label';
     
     private $map;  // map for efficient retrieval; used internally
@@ -47,7 +47,7 @@ class LookupTable extends Table
         $fieldPrimary   = new Field(self::FIELD_PRIMARY_ID, FieldType::STRING);
         $fieldFieldName = new Field(self::FIELD_TABLE_NAME, FieldType::STRING);
         $fieldTableName = new Field(self::FIELD_FIELD_NAME, FieldType::STRING);
-        $fieldCategory  = new Field(self::FIELD_CATEGORY, FieldType::STRING);
+        $fieldCategory  = new Field(self::FIELD_VALUE, FieldType::STRING);
         $fieldValue     = new Field(self::FIELD_LABEL, FieldType::STRING);
         
         $this->addField($fieldPrimary);
@@ -81,7 +81,7 @@ class LookupTable extends Table
                 $data = array(
                     self::FIELD_TABLE_NAME => $tableName,
                     self::FIELD_FIELD_NAME => $fieldName,
-                    self::FIELD_CATEGORY => $value,
+                    self::FIELD_VALUE => $value,
                     self::FIELD_LABEL => $label
                 );
 
