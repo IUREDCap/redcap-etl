@@ -288,6 +288,7 @@ class Table
                 // Otherwise, get data
                 
                 $isCheckbox = false;
+                $isCompleteField = false;
 
                 // If this is a checkbox field
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
@@ -297,8 +298,10 @@ class Table
                 } else {
                     // Otherwise, just append suffix
                     $variableName = $field->name.$suffix;
+                    if (preg_match('/_complete$/', $field->name)) {
+                        $isCompleteField = true;
+                    }
                 }
-
 
                 # print "TABLE: ".($this->name)." \n";
                 # print "FIELD: ".($field->name)."\n";
@@ -313,8 +316,14 @@ class Table
                         $value = trim($value);
                     }
 
-                    if ($isCheckbox) {
-                        if ($value !== 0 && $value !== '' && $value !== '0') {
+                    #----------------------------------------------------------
+                    # If this is a checkbox or complete field, ignore zeroes
+                    # when determining if data was found in the REDCap record,
+                    # Else, only ignore blank strings
+                    #----------------------------------------------------------
+                    if ($isCheckbox || $isCompleteField) {
+                        if ($value != '' && $value !== 0 && $value !== '0') {
+                            # Zero (int and string) values are also ignored
                             $dataFound = true;
                         }
                     } else {
