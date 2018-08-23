@@ -144,87 +144,11 @@ class MysqlDbConnection extends DbConnection
         return(1);
     }
 
-    public function replaceLookupView($table, $lookup)
-    {
-        #$rc = $this->replaceLookupViewDynamic($table, $lookup);
-        $rc = $this->replaceLookupViewStatic($table, $lookup);
-        ##$query = $this->replaceLookupViewStatic($table, $lookup);
-        ##print "\nQUERY: $query\n\n";
-        return $rc;
-    }
-
-
-    /**
-     * Replaces the view for the specified table that replaces
-     * multiple choice question codes with their corresponding labels.
-     * The labels are generated dynamically from the Lookup table.
-     */
-    public function replaceLookupViewDynamic($table, $lookup)
-    {
-
-        $selects = array();
-
-        // foreach field
-        foreach ($table->getAllFields() as $field) {
-            // If the field does not use lookup table
-            if (false === $field->usesLookup) {
-                array_push($selects, 't.'.$field->dbName);
-            } else {
-                // $field->usesLookup holds name of lookup field, if not false
-                $fname = $field->usesLookup;
-
-                // If the field uses the lookup table and is a checkbox field
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
-                // For checkbox fields, the join needs to be done based on
-                // the category embedded in the name of the checkbox field
-
-                // Separate root from category
-                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
-
-                    $agg = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
-                         "and l.category=".$cat.", label, NULL)) ";
-
-                    $select = 'CASE WHEN t.'.$field->dbName.' = 1 THEN '.$agg.
-                        ' ELSE 0'.
-                    ' END as '.$field->dbName;
-                } // The field uses the lookup table and is not a checkbox field
-                else {
-                    $select = "GROUP_CONCAT(if(l.field_name='".$fname."' ".
-                    "and l.category=t.".$field->dbName.", label, NULL)) ".
-                    "as ".$field->dbName;
-                }
-
-                array_push($selects, $select);
-            }
-        }
-
-        $query = 'CREATE OR REPLACE VIEW '.$table->name.$this->labelViewSuffix.' AS ';
-
-        $select = 'SELECT '. implode(', ', $selects);
-        $from = 'FROM '.$this->tablePrefix.LookupTable::NAME.' l, '.$table->name.' t';
-        $where = "WHERE l.table_name like '".$table->name."'";
-        $groupBy = 'GROUP BY t.'.$table->primary->name;
-
-        $query .= $select.' '.$from.' '.$where.' '.$groupBy;
-
-        // Execute query
-        $result = $this->mysqli->query($query);
-        if ($result === false) {
-            $message = 'MySQL error in query "'.$query.'"'
-                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-
-        return(1);
-    }
-
 
     /**
      * Creates (or replaces) the lookup view for the specified table.
      */
-    public function replaceLookupViewStatic($table, $lookup)
+    public function replaceLookupView($table, $lookup)
     {
         $selects = array();
 

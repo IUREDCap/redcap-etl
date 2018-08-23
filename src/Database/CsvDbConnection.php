@@ -43,62 +43,6 @@ class CsvDbConnection extends DbConnection
         return $file;
     }
 
-    #private function getLookupFile()
-    #{
-    #    $file = $this->directory . $this->tablePrefix . LookupTable::NAME
-    #        . CsvDbConnection::FILE_EXTENSION;
-    #    return $file;
-    #}
-
-    /**
-     * Gets an array representation of the Lookup "table" (CSV file).
-     * Since this method caches the result, it is critical that
-     * it not be called until after the Lookup table has actually
-     * been created.
-     */
-    #private function getLookup()
-    #{
-    #    if (!isset($this->lookup)) {
-    #        $this->lookup = array();
-    #        $file = $this->getLookupFile();
-    #        $fh = fopen($file, 'r');
-    #        while (($row = fgetcsv($fh)) !== false) {
-    #            array_push($this->lookup, $row);
-    #        }
-    #    }
-    #    return $this->lookup;
-    #}
-
-    /********
-    private function getLookupLabel($fieldName, $value)
-    {
-        $label = null;
-        $lookup = $this->getLookup();
-
-        $rootName = null;
-        $category = null;
-        if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $fieldName)) {
-            list($rootName, $category) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $fieldName);
-        }
-
-        # @TODO FIX numeric subscripts!!!!!!!!!!!!!!!!!!!
-        # (Also want to ignore the header row for label lookup.)
-
-        foreach ($lookup as $row) {
-            if (isset($category)) {
-                if (($value === 1 || $value === "1")
-                        && $row[1] === $rootName && $row[3] === $category) {
-                    $label = $row[4];
-                    break;
-                }
-            } elseif ($row[1] === $fieldName && $row[3] === $value) {
-                $label = $row[4];
-                break;
-            }
-        }
-        return $label;
-    }
-    **************/
 
     protected function existsTable($table)
     {
