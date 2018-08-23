@@ -78,7 +78,8 @@ class SchemaGenerator
 
         $this->lookupChoices = $this->dataProject->getLookupChoices();
         $keyType = $this->configuration->getGeneratedKeyType();
-        $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix, $keyType);
+        $lookupTableName = $this->configuration->getLookupTableName();
+        $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix, $keyType, $lookupTableName);
 
         $info = '';
         $warnings = '';

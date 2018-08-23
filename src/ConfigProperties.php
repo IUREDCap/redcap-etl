@@ -14,6 +14,8 @@ class ConfigProperties
     const BATCH_SIZE             = 'batch_size';
     const CA_CERT_FILE           = 'ca_cert_file';
     const CONFIG_API_TOKEN       = 'config_api_token';
+    const CREATE_LOOKUP_TABLE    = 'create_lookup_table';
+
     const DATA_SOURCE_API_TOKEN  = 'data_source_api_token';
     const DB_CONNECTION          = 'db_connection';
 
@@ -33,6 +35,8 @@ class ConfigProperties
     const LABEL_VIEW_SUFFIX        = 'label_view_suffix';
     const LOG_FILE                 = 'log_file';
     const LOG_PROJECT_API_TOKEN    = 'log_project_api_token';
+    const LOOKUP_TABLE_NAME        = 'lookup_table_name';
+
     const POST_PROCESSING_SQL_FILE = 'post_processing_sql_file';
     const RECORD_ID                = 'record_id';
 

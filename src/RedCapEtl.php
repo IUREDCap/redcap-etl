@@ -475,7 +475,9 @@ class RedCapEtl
 
     /**
      * Creates the database tables where the data will be loaded, and
-     * creates some views based on those tables. If there are existing
+     * creates views for the tables that have multiple choice
+     * fields that have labels, instead of values, for those fields.
+     * If there are existing
      * tables, then those tables are dropped first.
      */
     protected function createLoadTables()
@@ -495,7 +497,12 @@ class RedCapEtl
 
             $this->log($msg);
         }
-        return true;
+
+        if ($this->configuration->getCreateLookupTable()) {
+            $lookupTable = $this->schema->getLookupTable();
+            $this->dbcon->replaceTable($lookupTable);
+            $this->loadTableRows($lookupTable);
+        }
     }
 
 

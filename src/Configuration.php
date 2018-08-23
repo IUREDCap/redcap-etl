@@ -22,8 +22,9 @@ class Configuration
     const TRANSFORM_RULES_DEFAULT = '3';
 
     # Default values
-    const DEFAULT_BATCH_SIZE        = 100;
-    const DEFAULT_EMAIL_SUBJECT     = 'REDCap-ETL Error';
+    const DEFAULT_BATCH_SIZE          = 100;
+    const DEFAULT_CREATE_LOOKUP_TABLE = false;
+    const DEFAULT_EMAIL_SUBJECT       = 'REDCap-ETL Error';
 
     const DEFAULT_GENERATED_INSTANCE_TYPE  = 'int';
     const DEFAULT_GENERATED_KEY_TYPE       = 'int';
@@ -33,6 +34,7 @@ class Configuration
     const DEFAULT_GENERATED_SUFFIX_TYPE    = 'varchar(255)';
 
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
+    const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
     const DEFAULT_TABLE_PREFIX      = '';   # i.e., No table prefix
     const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
 
@@ -42,6 +44,7 @@ class Configuration
     private $allowedServers;
     private $batchSize;
     private $caCertFile;
+    private $createLookupTable;
     
     private $dataSourceApiToken;
     private $dbConnection;
@@ -57,6 +60,7 @@ class Configuration
 
     private $labelViewSuffix;
     private $logProjectApiToken;
+    private $lookupTableName;
     
     private $postProcessingSqlFile;
     private $projectId;
@@ -318,6 +322,18 @@ class Configuration
         }
 
 
+        #-------------------------------------------------------------
+        # Lookup table properties
+        #-------------------------------------------------------------
+        $this->createLookupTable = self::DEFAULT_CREATE_LOOKUP_TABLE;
+        if (array_key_exists(ConfigProperties::CREATE_LOOKUP_TABLE, $properties)) {
+            $this->createLookupTable = $properties[ConfigProperties::CREATE_LOOKUP_TABLE];
+        }
+        
+        $this->lookupTableName = self::DEFAULT_LOOKUP_TABLE_NAME;
+        if (array_key_exists(ConfigProperties::LOOKUP_TABLE_NAME, $properties)) {
+            $this->lookupTableName = $properties[ConfigProperties::LOOKUP_TABLE_NAME];
+        }
 
         #------------------------------------------------------
         # If a configuration project API token was defined,
@@ -329,7 +345,7 @@ class Configuration
 
 
         #--------------------------------
-        # Processed allowed servers
+        # Process allowed servers
         #--------------------------------
         if (array_key_exists(ConfigProperties::ALLOWED_SERVERS, $properties)) {
             $this->allowedServers = $properties[ConfigProperties::ALLOWED_SERVERS];
@@ -876,6 +892,11 @@ class Configuration
         return $this->configProject;
     }
 
+    public function getCreateLookupTable()
+    {
+        return $this->createLookupTable;
+    }
+
     public function getDataSourceApiToken()
     {
         return $this->dataSourceApiToken;
@@ -951,6 +972,11 @@ class Configuration
         return $this->logProjectApiToken;
     }
 
+    public function getLookupTableName()
+    {
+        return $this->lookupTableName;
+    }
+    
     public function getPostProcessingSqlFile()
     {
         return $this->postProcessingSqlFile;

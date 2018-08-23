@@ -13,7 +13,7 @@ use IU\REDCapETL\Schema\Table;
  */
 class LookupTable extends Table
 {
-    const NAME              = 'Lookup';
+    const DEFAULT_NAME      = 'Lookup';
     
     const FIELD_PRIMARY_ID  = 'lookup_id';
     const FIELD_TABLE_NAME  = 'table_name';
@@ -26,10 +26,10 @@ class LookupTable extends Table
     private $lookupChoices;
     private $lookupTableIn;  // For efficiently checking if field was already inserted
     
-    public function __construct($lookupChoices, $tablePrefix, $keyType)
+    public function __construct($lookupChoices, $tablePrefix, $keyType, $name = self::DEFAULT_NAME)
     {
         parent::__construct(
-            $tablePrefix . self::NAME,
+            $tablePrefix . $name,
             self::FIELD_PRIMARY_ID,
             $keyType,
             array(RowsType::ROOT),
