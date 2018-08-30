@@ -11,10 +11,12 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
     /** @var string the name of the application */
     private $app;
     
-    private $metadata;
-    private $projectInfo;
+    private $metadata     = null;
+    private $projectInfo  = null;
     private $primaryKey;
     private $fieldNames;
+    
+    private $fieldTypeMap = null;  // map of field name to field type
     
     /**
      * Gets the project metadata, and uses caching so that
@@ -39,6 +41,44 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
         return $this->projectInfo;
     }
 
+    /**
+     * Gets a map from REDCap field name to REDCap field type.
+     *
+     * @return array a map from REDCap field name to REDCap field type.
+     */
+    public function getFieldTypeMap()
+    {
+        if (!isset($this->fieldTypeMap)) {
+            $this->fieldTypeMap = array();
+            $fields = $this->getMetadata();
+            foreach ($fields as $field) {
+                $this->fieldTypeMap[$field['field_name']] = $field['field_type'];
+            }
+        }
+        return $this->fieldTypeMap;
+    }
+    
+    /**
+     * Gets the REDCap field type of the field with the specified field name.
+     *
+     * @return string the REDCap field type, e.g., "calc", "dropdown",
+     *     radio", "text".
+     */
+    public function getFieldType($fieldName)
+    {
+        $fieldType = '';
+        $fieldTypes = $this->getFieldTypeMap();
+        if (array_key_exists($fieldName, $fieldTypes)) {
+            $fieldType = $fieldTypes[$fieldName];
+        }
+        return $fieldType;
+    }
+    
+    /**
+     * Indicates if the project is longitudinal.
+     *
+     * @return boolean true if the project is longitudinal and false otherwise.
+     */
     public function isLongitudinal()
     {
         $isLongitudinal = false;

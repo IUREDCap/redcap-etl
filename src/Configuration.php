@@ -43,7 +43,9 @@ class Configuration
     private $app;
     private $allowedServers;
     private $batchSize;
+    
     private $caCertFile;
+    private $calcFieldIgnorePattern;
     private $createLookupTable;
     
     private $dataSourceApiToken;
@@ -335,6 +337,14 @@ class Configuration
             $this->lookupTableName = $properties[ConfigProperties::LOOKUP_TABLE_NAME];
         }
 
+        #-------------------------------------------------------------
+        # Calc field ignore pattern
+        #-------------------------------------------------------------
+        $this->calcFieldIgnorePattern = '';
+        if (array_key_exists(ConfigProperties::CALC_FIELD_IGNORE_PATTERN, $properties)) {
+            $this->calcFieldIgnorePattern = $properties[ConfigProperties::CALC_FIELD_IGNORE_PATTERN];
+        }
+        
         #------------------------------------------------------
         # If a configuration project API token was defined,
         # process the configuration project
@@ -887,6 +897,11 @@ class Configuration
         return $this->caCertFile;
     }
 
+    public function getCalcFieldIgnorePattern()
+    {
+        return $this->calcFieldIgnorePattern;
+    }
+    
     public function getConfigProject()
     {
         return $this->configProject;

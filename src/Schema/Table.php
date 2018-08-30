@@ -187,7 +187,7 @@ class Table
      *
      * @return bool|int TRUE if row was created, FALSE if ignored
      */
-    public function createRow($data, $foreignKey, $suffix, $rowType)
+    public function createRow($data, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern = '')
     {
         #---------------------------------------------------------------
         # If a row is being created for a repeating instrument, don't
@@ -287,7 +287,8 @@ class Table
             } else {
                 // Otherwise, get data
                 
-                $isCheckbox = false;
+                $isCalcField     = false;
+                $isCheckbox      = false;
                 $isCompleteField = false;
 
                 // If this is a checkbox field
@@ -296,8 +297,13 @@ class Table
                     list($rootName,$cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
                     $variableName = $rootName.$suffix.RedCapEtl::CHECKBOX_SEPARATOR.$cat;
                 } else {
-                    // Otherwise, just append suffix
+                    // Otherwise, just append suffix (if any))
                     $variableName = $field->name.$suffix;
+                                        
+                    if ($field->redcapType === 'calc') {
+                        $isCalcField = true;
+                    }
+
                     if (preg_match('/_complete$/', $field->name)) {
                         $isCompleteField = true;
                     }
@@ -324,6 +330,12 @@ class Table
                     if ($isCheckbox || $isCompleteField) {
                         if ($value != '' && $value !== 0 && $value !== '0') {
                             # Zero (int and string) values are also ignored
+                            $dataFound = true;
+                        }
+                    } elseif ($isCalcField) {
+                        if (!empty($calcFieldIgnorePattern) && preg_match($calcFieldIgnorePattern, $value)) {
+                            ; // ignore this field
+                        } elseif ($value !== '') {
                             $dataFound = true;
                         }
                     } else {

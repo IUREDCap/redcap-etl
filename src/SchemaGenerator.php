@@ -40,7 +40,11 @@ class SchemaGenerator
     /**
      * Constructor.
      *
-     * @param string $rulesText the transformation rules text
+     * @param EtlRedCapProject $dataProject the REDCap project that
+     *     contains the data to extract.
+     * @param Configuration $configuration ETL configuration information.
+     * @param Logger $logger logger for logging ETL process information
+     *     and errors.
      */
     public function __construct($dataProject, $configuration, $logger)
     {
@@ -53,6 +57,9 @@ class SchemaGenerator
 
     /**
      * Generates the database schema from the rules (text).
+     *
+     * @param string $rulesText the transformation rules in text
+     *     format.
      *
      * @return array the first element of the array is the Schema
      *    object for the database, the second is and array where
@@ -88,9 +95,9 @@ class SchemaGenerator
         $schema = new Schema();
 
         // Log how many fields in REDCap could be parsed
-        $msg = "Found ".count($unmappedRedCapFields)." fields in REDCap.";
-        $this->logger->logInfo($msg);
-        $info .= $msg."\n";
+        $message = "Found ".count($unmappedRedCapFields)." fields in REDCap.";
+        $this->logger->logInfo($message);
+        $info .= $message."\n";
 
         $table = null;
         
@@ -164,9 +171,9 @@ class SchemaGenerator
                     if (!RowsType::hasSuffixes($table->rowsType) &&
                             $fname !== 'redcap_data_access_group' &&
                             (empty($fieldNames[$fname]))) {
-                        $msg = "Field not found in REDCap: '".$fname."'";
-                        $this->logger->logInfo($msg);
-                        $warnings .= $msg."\n";
+                        $message = "Field not found in REDCap: '".$fname."'";
+                        $this->logger->logInfo($message);
+                        $warnings .= $message."\n";
                         continue 2; //continue 3;
                     }
 
@@ -215,9 +222,9 @@ class SchemaGenerator
                         // SUFFIXES: Warn that map field is not in REDCap
                         //------------------------------------------------------------
                         if (false === $fieldFound) {
-                            $msg = "Suffix field not found in REDCap: '".$fname."'";
-                            $this->log($msg);
-                            $warnings .= $msg."\n";
+                            $message = "Suffix field not found in REDCap: '".$fname."'";
+                            $this->log($message);
+                            $warnings .= $message."\n";
                             break; // continue 2;
                         }
                     } else {
@@ -271,24 +278,24 @@ class SchemaGenerator
         
         
         if ($parsedRules->getParsedLineCount() < 1) {
-            $msg = "Found no lines in Schema Map";
-            $this->log($msg);
-            $errors .= $msg."\n";
+            $message = "Found no lines in Schema Map";
+            $this->log($message);
+            $errors .= $message."\n";
         }
 
         // Log how many fields in REDCap could be parsed
-        $msg = "Found ".count($unmappedRedCapFields)." unmapped fields in REDCap.";
-        $this->logger->logInfo($msg);
+        $message = "Found ".count($unmappedRedCapFields)." unmapped fields in REDCap.";
+        $this->logger->logInfo($message);
 
         // Set warning if count of remaining redcap fields is above zero
         if (count($unmappedRedCapFields) > 0) {
-            $warnings .= $msg."\n";
+            $warnings .= $message."\n";
 
             // List fields, if count is ten or less
             if (count($unmappedRedCapFields) <= 10) {
-                $msg = "Unmapped fields: ".  implode(', ', array_keys($unmappedRedCapFields));
-                $this->logger->logInfo($msg);
-                $warnings .= $msg;
+                $message = "Unmapped fields: ".  implode(', ', array_keys($unmappedRedCapFields));
+                $this->logger->logInfo($message);
+                $warnings .= $message;
             }
         }
 
@@ -430,6 +437,15 @@ class SchemaGenerator
         return $table;
     }
 
+    /**
+     * Generates the field(s) for a FIELD rule.
+     *
+     * @param Rule $rule the (FIELD) rule to generate the fields for.
+     * @param Table $table the table the rules are being generated for.
+     *
+     * @return array an array of Field objects that represent the
+     *     field(s) needed for this rule.
+     */
     public function generateFields($rule, $table)
     {
         #------------------------------------------------------------
@@ -456,6 +472,8 @@ class SchemaGenerator
                 $lookupFieldName = $fieldName;
             }
 
+            $redcapFieldType = $this->dataProject->getFieldType($fieldName);
+            
             # Process each value of the checkbox
             foreach ($this->lookupChoices[$lookupFieldName] as $value => $label) {
                 # It looks like REDCap uses the lower-case version of the
@@ -468,12 +486,13 @@ class SchemaGenerator
                     $checkBoxDbFieldName = $dbFieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value;
                 }
 
-                $field = new Field($checkBoxFieldName, FieldType::INT, null, $checkBoxDbFieldName);
+                $field = new Field($checkBoxFieldName, FieldType::INT, null, $checkBoxDbFieldName, $redcapFieldType);
                 $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value] = $field;
             }
         } else {  # Non-checkbox field
             // Process a single field
-            $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName);
+            $redcapFieldType = $this->dataProject->getFieldType($fieldName);
+            $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName, $redcapFieldType);
             $fields[$fieldName] = $field;
         }
 

@@ -12,9 +12,11 @@ class ConfigProperties
     #----------------------------------------------------------------
     const ALLOWED_SERVERS        = 'allowed_servers';
     const BATCH_SIZE             = 'batch_size';
-    const CA_CERT_FILE           = 'ca_cert_file';
-    const CONFIG_API_TOKEN       = 'config_api_token';
-    const CREATE_LOOKUP_TABLE    = 'create_lookup_table';
+    
+    const CA_CERT_FILE              = 'ca_cert_file';
+    const CALC_FIELD_IGNORE_PATTERN = 'calc_field_ignore_pattern';
+    const CONFIG_API_TOKEN          = 'config_api_token';
+    const CREATE_LOOKUP_TABLE       = 'create_lookup_table';
 
     const DATA_SOURCE_API_TOKEN  = 'data_source_api_token';
     const DB_CONNECTION          = 'db_connection';

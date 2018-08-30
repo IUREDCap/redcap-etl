@@ -27,7 +27,7 @@ class FieldTest extends TestCase
 
         $value = $field->toString(2);
 
-        $expectedValue = '  '.$name.' : '.$type."\n";
+        $expectedValue = "  {$name}  : {$name} {$type}\n";
 
         $this->assertEquals($expectedValue, $value, 'toString value check');
     }
@@ -42,7 +42,7 @@ class FieldTest extends TestCase
 
         $value = $field->toString(4);
 
-        $expectedValue = '    '.$name.' : '.$type."(".$size.")\n";
+        $expectedValue = "    {$name}  : {$name} {$type}({$size})\n";
 
         $this->assertEquals($expectedValue, $value, 'toString value check');
     }

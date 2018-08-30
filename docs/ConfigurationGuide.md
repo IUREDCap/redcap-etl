@@ -357,6 +357,19 @@ name is "Lookup".</td>
 <tbody>
 
 <tr>
+<td>calc_field_ignore_pattern</td>
+<td> X </td> <td> &nbsp; </td>
+<td>A pattern represented as a PHP regular expression that will be used in
+determining what calculation fields values are considered when
+evaluating REDCap data rows for inclusion in a table. By default, if a calculation field
+is included in a table, then any REDCap data records which have a non-blank value for
+that calculation field will be included in the table. If, however, you specified the
+pattern '/^0$/' for this property, then REDCap-ETL would ignore calculation fields that
+are blank or zero when determining what REDCap data records should be
+included in the table.
+</tr>
+
+<tr>
 <td>extracted_record_count_check</td>
 <td> X </td> <td> &nbsp; </td>
 <td>A true/false property that indicates whether or not a check

@@ -461,7 +461,8 @@ class RedCapEtl
     protected function createRowAndRecurse($table, $records, $foreignKey, $suffix, $rowType)
     {
         // Create Row using 1st Record
-        $primaryKey = $table->createRow($records[0], $foreignKey, $suffix, $rowType);
+        $calcFieldIgnorePattern = $this->configuration->getCalcFieldIgnorePattern();
+        $primaryKey = $table->createRow($records[0], $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
 
         // If primary key generated, recurse for child tables
         if ($primaryKey) {

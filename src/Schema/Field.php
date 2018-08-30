@@ -9,16 +9,31 @@ use IU\REDCapETL\RedCapEtl;
  */
 class Field
 {
-    public $name = '';   # REDCap field name, and default database field name
+    /** @var string REDCap field name, and default database field name */
+    public $name = '';
+    
+    /** @var string the REDCap type of the field, or blank if the field
+                    does not have a corresponding REDCap field, or
+                    if metadata for the REDCap field is not available */
+    public $redcapType = '';
+    
     public $type = '';
     public $size = null;
-    public $dbName = '';   # database field name
+    
+    /** @var string database field name */
+    public $dbName = '';
 
+    /** @var boolean if this field uses the lookup table, i.e., it is
+                     a multiple choice field, and as a results will
+                     have a value to label mapping entry in the
+                     lookup table. */
     public $usesLookup = false;
 
-    public function __construct($name, $type, $size = null, $dbName = '')
+    public function __construct($name, $type, $size = null, $dbName = '', $redcapType = '')
     {
-        $this->name = $name;
+        $this->name       = $name;
+        $this->redcapType = $redcapType;
+        
         $this->type = $type;
         $this->size = $size;
 
@@ -38,10 +53,12 @@ class Field
     {
         $in = str_repeat(' ', $indent);
         $string = '';
+
+        $string .= "{$in}{$this->name} {$this->redcapType} : {$this->dbName} ";
         if (isset($this->size)) {
-            $string .= "{$in}{$this->name} : {$this->type}({$this->size})\n";
+            $string .= "{$this->type}({$this->size})\n";
         } else {
-            $string .= "{$in}{$this->name} : {$this->type}\n";
+            $string .= "{$this->type}\n";
         }
         return $string;
     }
