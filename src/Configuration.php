@@ -396,7 +396,7 @@ class Configuration
         # Get the timezone, if any
         #-----------------------------------------------
         if (array_key_exists(ConfigProperties::TIMEZONE, $properties)) {
-            $this->timeZone = $properties[ConfigProperties::TIMEZONE];
+            $this->timezone = $properties[ConfigProperties::TIMEZONE];
         }
 
 

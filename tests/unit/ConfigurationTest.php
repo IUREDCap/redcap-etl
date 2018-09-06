@@ -22,6 +22,14 @@ class ConfigurationTest extends TestCase
 
         $config = new Configuration($logger, $propertiesFile);
         $this->assertNotNull($config, 'logger not null check');
+
+        $expectedTimezone = 'America/Indiana/Indianapolis';
+        $timezone = $config->getTimezone();
+        $this->assertEquals($expectedTimezone, $timezone, 'Timezone check');
+
+        $expectedTimeLimit= 3600;
+        $timeLimit = $config->getTimeLimit();
+        $this->assertEquals($expectedTimeLimit, $timeLimit, 'Time limit check');
     }
 
     public function testNullPropertiesFile()
