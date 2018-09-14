@@ -16,8 +16,13 @@ class Logger
 {
     private $logFile;
     private $logProject;
-    private $printInfo = true; // whether info that is logged should
-                                      // be printed to standard output
+    private $printInfo; // whether info that is logged should
+                        // be printed to standard output
+    
+    private $logToSystemLogger;  // If true (the default) then REDCap-ETL
+                                 // will attempt to log errors to PHP's
+                                 // system logger no other logging of
+                                 // the errors is successful.
 
     private $app;           // For project logging, the app name to use
     private $projectIdBase; // For project logging, the record ID base
@@ -39,8 +44,27 @@ class Logger
     {
         $this->app = $app;
         $this->projectIndex = 0;
+        
+        $this->printInfo         = true;
+        $this->logToSystemLogger = true;
+
         $this->logFile    = null;
         $this->logProject = null;
+    }
+    
+    /**
+     * Sets all relevant settings so that no logging will occur.
+     */
+    public function turnOff()
+    {
+        $this->printInfo         = false;
+        $this->logToSystemLogger = false;
+        
+        $this->logFile    = null;
+        $this->logProject = null;
+        
+        $this->logFromEmail = null;
+        $this->logToEmail   = null;
     }
 
     /**
@@ -205,7 +229,9 @@ class Logger
         $loggedToEmail   = $this->logToEmail($message);
 
         if ($loggedToFile === false && $loggedToProject === false && $loggedToEmail === false) {
-            $logged = error_log($message, 0);
+            if ($this->logToSystemLogger) {
+                $logged = error_log($message, 0);
+            }
         }
     }
 
@@ -227,7 +253,9 @@ class Logger
         # logging destination failed, log to PHP's sytem logger.
         #--------------------------------------------------------
         if ($loggedToFile === false && $loggedToProject === false && $loggedToEmail === false) {
-            $logged = error_log($error, 0);
+            if ($this->logToSystemLogger) {
+                $logged = error_log($error, 0);
+            }
         }
     }
 
@@ -254,8 +282,10 @@ class Logger
             # system log.
             #-----------------------------------------------------------
             if ($logged === false) {
-                $error = 'Logging to file "'.($this->logFile).'" as user "'.get_current_user().'" failed.';
-                error_log($error);
+                if ($this->logToSystemLogger) {
+                    $error = 'Logging to file "'.($this->logFile).'" as user "'.get_current_user().'" failed.';
+                    error_log($error);
+                }
             }
         }
         return array($logged, $error);
@@ -289,8 +319,11 @@ class Logger
                 $logged = true;
             } catch (\Exception $exception) {
                 $logged = false;
-                $error = 'Logging to project failed: '.($exception->getMessage());
-                error_log($error, 0);
+
+                if ($this->logToSystemLogger) {
+                    $error = 'Logging to project failed: '.($exception->getMessage());
+                    error_log($error, 0);
+                }
             }
         }
 
@@ -324,16 +357,21 @@ class Logger
                 );
 
                 if (count($failedSendTos) > 0) {
-                    error_log('Logging to e-mail failed for the following e-mail addreses: '
-                        .(implode(', ', $failedSendTos)), 0);
+                    if ($this->logToSystemLogger) {
+                        error_log('Logging to e-mail failed for the following e-mail addreses: '
+                            .(implode(', ', $failedSendTos)), 0);
+                    }
                     $logged = false;
                 } else {
                     $logged = true;
                 }
             } catch (Exception $exception) {
                 $logged = false;
-                $error = $exception->getMessage();
-                error_log('Logging to e-mail failed: '.$error, 0);
+                
+                if ($this->logToSystemLogger) {
+                    $error = $exception->getMessage();
+                    error_log('Logging to e-mail failed: '.$error, 0);
+                }
             }
         }
         return $logged;

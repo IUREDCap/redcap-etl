@@ -92,38 +92,40 @@ class Configuration
      * found.
      *
      * @param Logger $logger logger for information and errors
-     * @param string $propertiesFile the name of the properties file to use
-     *     (used as an alternative to the properties array).
+     * @param mixed $properties if this is a string, it is assumed to
+     *     be the name of the properties file to use, if it is an array,
+     *     it is assumed to be a map from property names to values.
+     * @param boolean $useWebScriptLogFile if true indicates that the
+     *     web script log file should be used for logging; false indicates
+     *     the standard logging file should be used.
      */
-    public function __construct($logger, $propertiesFile, $useWebScriptLogFile = false)
+    public function __construct($logger, $properties, $useWebScriptLogFile = false)
     {
         $this->logger = $logger;
-
         $this->app = $this->logger->getApp();
-
-        $this->propertiesFile = $propertiesFile;
+        $this->propertiesFile = null;
 
         #--------------------------------------------------------------------
         # Read the properties file
         #--------------------------------------------------------------------
-        if (!isset($propertiesFile) || trim($propertiesFile) === '') {
+        if (empty($properties)) {
             $message = 'No properties or properties file was specified.';
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
-        } else {
-            $propertiesFile = trim($propertiesFile);
+        } elseif (is_array($properties)) {
+            $this->properties = $properties;
+        } elseif (is_string($properties)) {
+            $this->propertiesFile = trim($properties);
 
             # suppress errors for this, because it should be
             # hnadled by the check for $properties being false
-            @ $properties = parse_ini_file($propertiesFile);
-            if ($properties === false) {
-                $message = 'The properties file \"'.$propertiesFile.'\" could not be read.';
+            @ $this->properties = parse_ini_file($this->propertiesFile);
+            if ($this->properties === false) {
+                $message = 'The properties file \"'.$this->propertiesFile.'\" could not be read.';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
             }
         }
-
-        $this->properties = $properties;
 
 
         #-----------------------------------------------------------------------------
@@ -132,12 +134,12 @@ class Configuration
         #-----------------------------------------------------------------------------
         $this->logFile = null;
         if ($useWebScriptLogFile) {
-            if (array_key_exists(ConfigProperties::WEB_SCRIPT_LOG_FILE, $properties)) {
-                $this->logFile = $properties[ConfigProperties::WEB_SCRIPT_LOG_FILE];
+            if (array_key_exists(ConfigProperties::WEB_SCRIPT_LOG_FILE, $this->properties)) {
+                $this->logFile = $this->properties[ConfigProperties::WEB_SCRIPT_LOG_FILE];
             }
         } else {
-            if (array_key_exists(ConfigProperties::LOG_FILE, $properties)) {
-                $this->logFile = $properties[ConfigProperties::LOG_FILE];
+            if (array_key_exists(ConfigProperties::LOG_FILE, $this->properties)) {
+                $this->logFile = $this->properties[ConfigProperties::LOG_FILE];
             }
         }
         
@@ -153,17 +155,17 @@ class Configuration
         #-----------------------------------------------------------
         $this->emailFromAddress  = null;
         $this->emailToList   = null;
-        if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $properties)) {
-            $this->emailFromAddress = $properties[ConfigProperties::EMAIL_FROM_ADDRESS];
+        if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $this->properties)) {
+            $this->emailFromAddress = $this->properties[ConfigProperties::EMAIL_FROM_ADDRESS];
         }
 
         $this->emailSubject = self::DEFAULT_EMAIL_SUBJECT;
-        if (array_key_exists(ConfigProperties::EMAIL_SUBJECT, $properties)) {
-            $this->emailSubject = $properties[ConfigProperties::EMAIL_SUBJECT];
+        if (array_key_exists(ConfigProperties::EMAIL_SUBJECT, $this->properties)) {
+            $this->emailSubject = $this->properties[ConfigProperties::EMAIL_SUBJECT];
         }
 
-        if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $properties)) {
-            $this->emailToList = $properties[ConfigProperties::EMAIL_TO_LIST];
+        if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
+            $this->emailToList = $this->properties[ConfigProperties::EMAIL_TO_LIST];
         }
 
         #------------------------------------------------------
@@ -180,8 +182,8 @@ class Configuration
         #------------------------------------------------
         # Get the REDCap API URL
         #------------------------------------------------
-        if (array_key_exists(ConfigProperties::REDCAP_API_URL, $properties)) {
-            $this->redcapApiUrl = $properties[ConfigProperties::REDCAP_API_URL];
+        if (array_key_exists(ConfigProperties::REDCAP_API_URL, $this->properties)) {
+            $this->redcapApiUrl = $this->properties[ConfigProperties::REDCAP_API_URL];
         } else {
             $message = 'No "'.ConfigProperties::REDCAP_API_URL.'" property was defined.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -193,8 +195,8 @@ class Configuration
         # Indicates if verification should be done for the SSL
         # connection to REDCap. Setting this to false is not secure.
         #---------------------------------------------------------------
-        if (array_key_exists(ConfigProperties::SSL_VERIFY, $properties)) {
-            $sslVerify = $properties[ConfigProperties::SSL_VERIFY];
+        if (array_key_exists(ConfigProperties::SSL_VERIFY, $this->properties)) {
+            $sslVerify = $this->properties[ConfigProperties::SSL_VERIFY];
             if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0' || $sslVerify === '') {
                 $this->sslVerify = false;
             } elseif (!isset($sslVerify) || $sslVerify === ''
@@ -218,8 +220,8 @@ class Configuration
         # against the number of record IDs passed to REDCap to see if
         # they match.
         #---------------------------------------------------------------
-        if (array_key_exists(ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK, $properties)) {
-            $countCheck = $properties[ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK];
+        if (array_key_exists(ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK, $this->properties)) {
+            $countCheck = $this->properties[ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK];
             if (strcasecmp($countCheck, 'false') === 0 || $countCheck === '0' || $countCheck === '') {
                 $this->extractedRecordCountCheck = false;
             } elseif (!isset($countCheck) || $countCheck === ''
@@ -243,9 +245,9 @@ class Configuration
         # for verifying that the REDCap site that is connected
         # to is the one specified).
         #---------------------------------------------------------
-        if (array_key_exists(ConfigProperties::CA_CERT_FILE, $properties)) {
+        if (array_key_exists(ConfigProperties::CA_CERT_FILE, $this->properties)) {
             $this->caCertFile = null;
-            $caCertFile = $properties[ConfigProperties::CA_CERT_FILE];
+            $caCertFile = $this->properties[ConfigProperties::CA_CERT_FILE];
             if (isset($caCertFile)) {
                 $caCertFile = trim($caCertFile);
                 if ($caCertFile !== '') {
@@ -258,8 +260,8 @@ class Configuration
         # Get the API token for the configuration project
         #--------------------------------------------------
         $configProjectApiToken = null;
-        if (array_key_exists(ConfigProperties::CONFIG_API_TOKEN, $properties)) {
-            $configProjectApiToken = $properties[ConfigProperties::CONFIG_API_TOKEN];
+        if (array_key_exists(ConfigProperties::CONFIG_API_TOKEN, $this->properties)) {
+            $configProjectApiToken = $this->properties[ConfigProperties::CONFIG_API_TOKEN];
         } else {
             $message = 'No configuration project API token property was defined.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -269,8 +271,8 @@ class Configuration
         # Get the post-processing SQL file (if any)
         #---------------------------------------------
         $this->postProcessingSqlFile = null;
-        if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL_FILE, $properties)) {
-            $file = $properties[ConfigProperties::POST_PROCESSING_SQL_FILE];
+        if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL_FILE, $this->properties)) {
+            $file = $this->properties[ConfigProperties::POST_PROCESSING_SQL_FILE];
             if (!empty($file)) {
                 $this->postProcessingSqlFile = $this->processFile($file, $fileShouldExist = false);
             }
@@ -287,39 +289,39 @@ class Configuration
         $this->generatedRecordIdType = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_RECORD_ID_TYPE);
         $this->generatedSuffixType   = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_SUFFIX_TYPE);
         
-        if (array_key_exists(ConfigProperties::GENERATED_INSTANCE_TYPE, $properties)) {
+        if (array_key_exists(ConfigProperties::GENERATED_INSTANCE_TYPE, $this->properties)) {
             $this->generatedInstanceType = FieldTypeSpecifier::create(
-                $properties[ConfigProperties::GENERATED_INSTANCE_TYPE]
+                $this->properties[ConfigProperties::GENERATED_INSTANCE_TYPE]
             );
         }
         
-        if (array_key_exists(ConfigProperties::GENERATED_KEY_TYPE, $properties)) {
+        if (array_key_exists(ConfigProperties::GENERATED_KEY_TYPE, $this->properties)) {
             $this->generatedKeyType = FieldTypeSpecifier::create(
-                $properties[ConfigProperties::GENERATED_KEY_TYPE]
+                $this->properties[ConfigProperties::GENERATED_KEY_TYPE]
             );
         }
      
-        if (array_key_exists(ConfigProperties::GENERATED_LABEL_TYPE, $properties)) {
+        if (array_key_exists(ConfigProperties::GENERATED_LABEL_TYPE, $this->properties)) {
             $this->generatedLabelType = FieldTypeSpecifier::create(
-                $properties[ConfigProperties::GENERATED_LABEL_TYPE]
+                $this->properties[ConfigProperties::GENERATED_LABEL_TYPE]
             );
         }
     
-        if (array_key_exists(ConfigProperties::GENERATED_NAME_TYPE, $properties)) {
+        if (array_key_exists(ConfigProperties::GENERATED_NAME_TYPE, $this->properties)) {
             $this->generatedNameType = FieldTypeSpecifier::create(
-                $properties[ConfigProperties::GENERATED_NAME_TYPE]
+                $this->properties[ConfigProperties::GENERATED_NAME_TYPE]
             );
         }
    
-        if (array_key_exists(ConfigProperties::GENERATED_RECORD_ID_TYPE, $properties)) {
+        if (array_key_exists(ConfigProperties::GENERATED_RECORD_ID_TYPE, $this->properties)) {
             $this->generatedRecordIdType = FieldTypeSpecifier::create(
-                $properties[ConfigProperties::GENERATED_RECORD_ID_TYPE]
+                $this->properties[ConfigProperties::GENERATED_RECORD_ID_TYPE]
             );
         }
    
-        if (array_key_exists(ConfigProperties::GENERATED_SUFFIX_TYPE, $properties)) {
+        if (array_key_exists(ConfigProperties::GENERATED_SUFFIX_TYPE, $this->properties)) {
             $this->generatedSuffixType = FieldTypeSpecifier::create(
-                $properties[ConfigProperties::GENERATED_SUFFIX_TYPE]
+                $this->properties[ConfigProperties::GENERATED_SUFFIX_TYPE]
             );
         }
 
@@ -328,21 +330,21 @@ class Configuration
         # Lookup table properties
         #-------------------------------------------------------------
         $this->createLookupTable = self::DEFAULT_CREATE_LOOKUP_TABLE;
-        if (array_key_exists(ConfigProperties::CREATE_LOOKUP_TABLE, $properties)) {
-            $this->createLookupTable = $properties[ConfigProperties::CREATE_LOOKUP_TABLE];
+        if (array_key_exists(ConfigProperties::CREATE_LOOKUP_TABLE, $this->properties)) {
+            $this->createLookupTable = $this->properties[ConfigProperties::CREATE_LOOKUP_TABLE];
         }
         
         $this->lookupTableName = self::DEFAULT_LOOKUP_TABLE_NAME;
-        if (array_key_exists(ConfigProperties::LOOKUP_TABLE_NAME, $properties)) {
-            $this->lookupTableName = $properties[ConfigProperties::LOOKUP_TABLE_NAME];
+        if (array_key_exists(ConfigProperties::LOOKUP_TABLE_NAME, $this->properties)) {
+            $this->lookupTableName = $this->properties[ConfigProperties::LOOKUP_TABLE_NAME];
         }
 
         #-------------------------------------------------------------
         # Calc field ignore pattern
         #-------------------------------------------------------------
         $this->calcFieldIgnorePattern = '';
-        if (array_key_exists(ConfigProperties::CALC_FIELD_IGNORE_PATTERN, $properties)) {
-            $this->calcFieldIgnorePattern = $properties[ConfigProperties::CALC_FIELD_IGNORE_PATTERN];
+        if (array_key_exists(ConfigProperties::CALC_FIELD_IGNORE_PATTERN, $this->properties)) {
+            $this->calcFieldIgnorePattern = $this->properties[ConfigProperties::CALC_FIELD_IGNORE_PATTERN];
         }
         
         #------------------------------------------------------
@@ -350,15 +352,15 @@ class Configuration
         # process the configuration project
         #------------------------------------------------------
         if (!empty($configProjectApiToken)) {
-            $properties = $this->processConfigurationProject($configProjectApiToken, $properties);
+            $this->properties = $this->processConfigurationProject($configProjectApiToken, $this->properties);
         }
 
 
         #--------------------------------
         # Process allowed servers
         #--------------------------------
-        if (array_key_exists(ConfigProperties::ALLOWED_SERVERS, $properties)) {
-            $this->allowedServers = $properties[ConfigProperties::ALLOWED_SERVERS];
+        if (array_key_exists(ConfigProperties::ALLOWED_SERVERS, $this->properties)) {
+            $this->allowedServers = $this->properties[ConfigProperties::ALLOWED_SERVERS];
         }
 
 
@@ -366,8 +368,8 @@ class Configuration
         # Get the data source project API token
         #----------------------------------------------------------------
         $this->dataSourceApiToken = '';
-        if (array_key_exists(ConfigProperties::DATA_SOURCE_API_TOKEN, $properties)) {
-            $this->dataSourceApiToken = $properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
+        if (array_key_exists(ConfigProperties::DATA_SOURCE_API_TOKEN, $this->properties)) {
+            $this->dataSourceApiToken = $this->properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
         } else {
             $message = 'No data source API token was found in the configuration project.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -377,8 +379,8 @@ class Configuration
         # Get the logging project (where log records are written to) API token (if any)
         #-------------------------------------------------------------------------------
         # $startLog = microtime(true);
-        if (array_key_exists(ConfigProperties::LOG_PROJECT_API_TOKEN, $properties)) {
-            $this->logProjectApiToken = $properties[ConfigProperties::LOG_PROJECT_API_TOKEN];
+        if (array_key_exists(ConfigProperties::LOG_PROJECT_API_TOKEN, $this->properties)) {
+            $this->logProjectApiToken = $this->properties[ConfigProperties::LOG_PROJECT_API_TOKEN];
         } else {
             $this->logProjectApiToken = null;
         }
@@ -386,8 +388,8 @@ class Configuration
         #----------------------------------------------------------
         # Set the time limit; if none is provided, use the default
         #----------------------------------------------------------
-        if (array_key_exists(ConfigProperties::TIME_LIMIT, $properties)) {
-            $this->timeLimit = $properties[ConfigProperties::TIME_LIMIT];
+        if (array_key_exists(ConfigProperties::TIME_LIMIT, $this->properties)) {
+            $this->timeLimit = $this->properties[ConfigProperties::TIME_LIMIT];
         } else {
             $this->timeLimit = self::DEFAULT_TIME_LIMIT;
         }
@@ -395,8 +397,8 @@ class Configuration
         #-----------------------------------------------
         # Get the timezone, if any
         #-----------------------------------------------
-        if (array_key_exists(ConfigProperties::TIMEZONE, $properties)) {
-            $this->timezone = $properties[ConfigProperties::TIMEZONE];
+        if (array_key_exists(ConfigProperties::TIMEZONE, $this->properties)) {
+            $this->timezone = $this->properties[ConfigProperties::TIMEZONE];
         }
 
 
@@ -404,8 +406,8 @@ class Configuration
         # Record whether or not the actual ETL should be run. This is
         # used by the DET handler program, but not the batch program
         #----------------------------------------------------------------------
-        if (array_key_exists(ConfigProperties::TRIGGER_ETL, $properties)) {
-            $this->triggerEtl = $properties[ConfigProperties::TRIGGER_ETL];
+        if (array_key_exists(ConfigProperties::TRIGGER_ETL, $this->properties)) {
+            $this->triggerEtl = $this->properties[ConfigProperties::TRIGGER_ETL];
         }
 
         #-----------------------------------------------------------------------
@@ -414,8 +416,8 @@ class Configuration
         # project should enforce that, but not the configuration file.
         #-----------------------------------------------------------------------
         $this->batchSize = self::DEFAULT_BATCH_SIZE;
-        if (array_key_exists(ConfigProperties::BATCH_SIZE, $properties)) {
-            $batchSize = $properties[ConfigProperties::BATCH_SIZE];
+        if (array_key_exists(ConfigProperties::BATCH_SIZE, $this->properties)) {
+            $batchSize = $this->properties[ConfigProperties::BATCH_SIZE];
             
             $message = "Invalid ".ConfigProperties::BATCH_SIZE." property."
                 . " This property must be an integer greater than 0.";
@@ -435,14 +437,14 @@ class Configuration
         }
         
         
-        $this->processTransformationRules($properties);
+        $this->processTransformationRules($this->properties);
 
         #----------------------------------------------------------------
         # Get the table prefix (if any)
         #----------------------------------------------------------------
         $this->tablePrefix = self::DEFAULT_TABLE_PREFIX;
-        if (array_key_exists(ConfigProperties::TABLE_PREFIX, $properties)) {
-            $tablePrefix = $properties[ConfigProperties::TABLE_PREFIX];
+        if (array_key_exists(ConfigProperties::TABLE_PREFIX, $this->properties)) {
+            $tablePrefix = $this->properties[ConfigProperties::TABLE_PREFIX];
             
             if (!empty($tablePrefix)) {
                 # If the prefix contains something other than letters, numbers or underscore
@@ -460,8 +462,8 @@ class Configuration
         # Get the label view suffix (if any)
         #----------------------------------------------------------------
         $this->labelViewSuffix = self::DEFAULT_LABEL_VIEW_SUFFIX;
-        if (array_key_exists(ConfigProperties::LABEL_VIEW_SUFFIX, $properties)) {
-            $labelViewSuffix = $properties[ConfigProperties::LABEL_VIEW_SUFFIX];
+        if (array_key_exists(ConfigProperties::LABEL_VIEW_SUFFIX, $this->properties)) {
+            $labelViewSuffix = $this->properties[ConfigProperties::LABEL_VIEW_SUFFIX];
             
             if (!empty($labelViewSuffix)) {
                 # If the suffix contains something other than letters, numbers or underscore
@@ -479,8 +481,8 @@ class Configuration
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
         #---------------------------------------------------
-        if (array_key_exists(ConfigProperties::DB_CONNECTION, $properties)) {
-            $this->dbConnection = trim($properties[ConfigProperties::DB_CONNECTION]);
+        if (array_key_exists(ConfigProperties::DB_CONNECTION, $this->properties)) {
+            $this->dbConnection = trim($this->properties[ConfigProperties::DB_CONNECTION]);
             
             if (empty($this->dbConnection)) {
                 $message = 'No database connection was specified in the configuration.';
@@ -680,15 +682,22 @@ class Configuration
                 $realFile = $realDir.'/'.$fileName;
             }
         } else { // Relative path
-            # take path relative to properties file
-            $propertiesFileDir = dirname(realpath($this->propertiesFile));
-            if ($fileShouldExist) {
-                $realFile = realpath($propertiesFileDir.'/'.$file);
+            # take path relative to properties file, if it exists, or
+            # relative to the directory of this file if it does not
+            if (empty($this->propertiesFile)) {
+                $baseDir = realpath(__DIR__);
             } else {
+                $baseDir = dirname(realpath($this->propertiesFile));
+            }
+            
+            if ($fileShouldExist) {
+                $realFile = realpath($baseDir.'/'.$file);
+            } else {
+                # File may not exist (e.g., a log file)
                 $dirName  = dirname($file);
                 $fileName = basename($file);
-                $realDir  = realpath($propertiesFileDir.'/'.$dirName);
-                $realFile = realpath($realDir.'/'.$fileName);
+                $realDir  = realpath($baseDir.'/'.$dirName);
+                $realFile = $realDir.'/'.$fileName;
             }
         }
 
@@ -731,8 +740,12 @@ class Configuration
         if ($this->isAbsolutePath($path)) {
             $realDir  = realpath($path);
         } else { // Relative path
-            $propertiesFileDir = dirname(realpath($this->propertiesFile));
-            $realDir = realpath($propertiesFileDir.'/'.$path);
+            if (empty($this->propertiesFile)) {
+                $baseDir = realpath(__DIR__);
+            } else {
+                $baseDir = dirname(realpath($this->propertiesFile));
+            }
+            $realDir = realpath($baseDir.'/'.$path);
         }
         
         if ($realDir === false) {

@@ -62,7 +62,9 @@ class RedCapEtl
      * Constructor.
      *
      * @param Logger $logger logger for information and errors
-     * @param string $propertiesFile the name of the properties file to use.
+     * @param mixed $properties if this is a string, it is assumed to
+     *     be the name of the properties file to use, if it is an array,
+     *     it is assumed to be a map from property names to values.
      * @param boolean $useWebScriptLogFile indicates if the web script
      *     log file should be used instead of the regular log file. This
      *     allows logging to a different file when running REDCap-ETL
@@ -70,14 +72,14 @@ class RedCapEtl
      */
     public function __construct(
         & $logger,
-        $propertiesFile,
+        $properties,
         $useWebScriptLogFile = false
     ) {
         $this->app = $logger->getApp();
 
         $this->configuration = new Configuration(
             $logger,
-            $propertiesFile,
+            $properties,
             $useWebScriptLogFile
         );
 
