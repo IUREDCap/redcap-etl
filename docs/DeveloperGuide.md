@@ -155,11 +155,12 @@ for the tests:
    
         cp tests/config-init/basic-demography.ini tests/config
         cp tests/config-init/basic-demography-rules.txt tests/config
+        cp tests/config-init/basic-demography.json tests/config
         cp tests/config-init/basic-demography-2.ini tests/config
         cp tests/config-init/repeating-events.ini tests/config
         cp tests/config-init/repeating-events-rules.txt tests/config
 
-2. Edit the .ini files that were copied to the tests/config/
+2. Edit the .ini and .json files that were copied to the tests/config/
    directory, and set the 
    following properties to appropriate values:
    

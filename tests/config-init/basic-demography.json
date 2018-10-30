@@ -1,0 +1,45 @@
+{
+    "redcap_api_url": "",
+    "data_source_api_token": "",
+    "ssl_verify": "true",
+    "ca_cert_file": "",
+
+    "email_from_address": "",
+    "email_subject:": "",
+    "email_to_list:": "",
+
+    "db_connection": "CSV:../output/",
+
+    "config_api_token": "",
+    "log_file": "",
+    "web_script": "",
+    "log_project_api_token": "",
+    "allowed_servers": "localhost",
+    "transform_rules_source": "1",
+    "transform_rules_file": "",
+    "batch_size": "10",
+    "label_view_suffix": "_label_view",
+    "table_prefix": "", 
+
+    "create_lookup_table": "",
+    "lookup_table_name": "basic_lookup",
+
+    "transform_rules_text": [
+        "TABLE,Demography_json,primary_key,ROOT",
+        "FIELD,record_id,int",
+        "FIELD,first_name,varchar(40)",
+        "FIELD,last_name,varchar(40)",
+        "FIELD,address,string",
+        "FIELD,telephone,char(24),phone",
+        "FIELD,email,varchar(80)",
+        "FIELD,dob,string,birthdate",
+        "FIELD,ethnicity,int",
+        "FIELD,race,checkbox",
+        "FIELD,sex,int",
+        "FIELD,height,float",
+        "FIELD,weight,float",
+        "FIELD,bmi,float",
+        "FIELD,comments,string"
+    ]
+
+}
