@@ -36,8 +36,11 @@ $options = getopt('c:');
 # properties file
 if (array_key_exists('c', $options)) {
     $configFile = $options['c'];
+} elseif (count($argv) === 2) {
+    # if there is only one argument, assume it is the config file name
+    $configFile = $argv[1];
 } else {
-    print "Usage: redap_etl.php -c <configuration_file>\n";
+    print "Usage: redap_etl.php [-c] <configuration_file>\n";
     exit(1);
 }
 

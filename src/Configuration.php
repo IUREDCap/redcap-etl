@@ -117,13 +117,35 @@ class Configuration
         } elseif (is_string($properties)) {
             $this->propertiesFile = trim($properties);
 
-            # suppress errors for this, because it should be
-            # hnadled by the check for $properties being false
-            @ $this->properties = parse_ini_file($this->propertiesFile);
-            if ($this->properties === false) {
-                $message = 'The properties file \"'.$this->propertiesFile.'\" could not be read.';
-                $code    = EtlException::INPUT_ERROR;
-                throw new EtlException($message, $code);
+            # If this is a JSON configuration file
+            if (preg_match('/\.json$/', $this->propertiesFile) === 1) {
+                $propertiesFileContents = file_get_contents($this->propertiesFile);
+                if ($propertiesFileContents === false) {
+                    $message = 'The JSON properties file \"'.$this->propertiesFile.'\" could not be read.';
+                    $code    = EtlException::INPUT_ERROR;
+                    throw new EtlException($message, $code);
+                }
+
+                $this->properties = json_decode($propertiesFileContents, true);
+                #print_r($this->properties);
+
+                if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $this->properties)) {
+                    $rulesText = $this->properties[ConfigProperties::TRANSFORM_RULES_TEXT];
+                    if (is_array($rulesText)) {
+                        $rulesText = implode("\n", $rulesText);
+                        $this->properties[ConfigProperties::TRANSFORM_RULES_TEXT] = $rulesText;
+                    }
+                }
+                #print_r($this->properties);
+            } else {
+                # suppress errors for this, because it should be
+                # handled by the check for $properties being false
+                @ $this->properties = parse_ini_file($this->propertiesFile);
+                if ($this->properties === false) {
+                    $message = 'The properties file \"'.$this->propertiesFile.'\" could not be read.';
+                    $code    = EtlException::INPUT_ERROR;
+                    throw new EtlException($message, $code);
+                }
             }
         }
 
@@ -749,7 +771,7 @@ class Configuration
         }
         
         if ($realDir === false) {
-            $message = 'Directory "'.$dir.'" not found.';
+            $message = 'Directory "'.$path.'" not found.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
             
