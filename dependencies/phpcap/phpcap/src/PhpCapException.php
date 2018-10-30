@@ -61,8 +61,6 @@ class PhpCapException extends \Exception
         parent::__construct($message, $code, $previous);
         $this->connectionErrorNumber  = $connectionErrorNumber;
         $this->httpStatusCode = $httpStatusCode;
-        
-        parent::__construct($message, $code, $previous);
     }
     
     

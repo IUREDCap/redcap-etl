@@ -18,12 +18,15 @@
 <li><a href="UserGuide1.html">User Guide 1 - Getting Started</a></li>
 <li><a href="UserGuide2.html">User Guide 2 - API Overview</a></li>
 <li><a href="UserGuide3.html">User Guide 3 - Exporting Records</a></li>
-<li class="active"><a href="UserGuide4.html">User Guide 4 - Extending PHPCap</a></li>
+<li class="active"><a href="UserGuide4.html">User Guide 4 - Importing Data</a></li>
 <ul class="intraPage">
-    <li class="active"><a href="#Extending the RedCapProject class">Extending the RedCapProject class</a></li>
-    <li class="active"><a href="#Extending the ErrorHandler class">Extending the ErrorHandler class</a></li>
-    <li class="active"><a href="#Extending the RedCapApiConnection class">Extending the RedCapApiConnection class</a></li>
+    <li class="active"><a href="#importRecords">importRecords</a></li>
+<ul class="intraPage">
+    <li class="active"><a href="#Batch processing of CSV imports">Batch processing of CSV imports</a></li>
 </ul>
+    <li class="active"><a href="#importFile">importFile</a></li>
+</ul>
+<li><a href="UserGuide5.html">User Guide 5 - Extending PHPCap</a></li>
 <li><a href="CACertificateFile.html">CA Certificate File Info</a></li>
 <li><a href="DeveloperGuide.html">Developer Guide</a></li>
 </ul>
@@ -33,71 +36,68 @@
 <div id="right">
 <div id="rightInner">
 <div id="content">
-<h1>User Guide 4 - Extending PHPCap</h1>
-<p>If you need additional functionality to what is provided by PHPCap, you
-can extend it.</p>
-<h2 id="Extending the RedCapProject class">Extending the RedCapProject class</h2>
-<p>For example, if you wanted to have a method that returns the
-title of the project, you could create a class
-similar to the following that extended PHPCap's RedCapProject class:</p>
-<div class="description"><pre><code class="language-php"><span class="php-keyword1">class</span> MyRedCapProject <span class="php-keyword1">extends</span> IU\PHPCap\RedCapProject
-{
-    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> exportProjectTitle() {
-       <span class="php-var">$projectInfo</span> = <span class="php-var">$this</span>-&gt;exportProjectInfo();
-       <span class="php-var">$projectTitle</span> = <span class="php-var">$projectInfo</span>[<span class="php-quote">'project_title'</span>];
-       <span class="php-keyword1">return</span> <span class="php-var">$projectTitle</span>;
-    }
+<h1>User Guide 4 - Importing Data</h1>
+<p>PHPCap's <strong>RedCapProject</strong> class provides the following methods for importing data:</p>
+<ol>
+<li><strong>importRecords</strong> - method for importing records. </li>
+<li><strong>importFile</strong> - method for importing a file (e.g., a document or image) into an existing REDCap record.</li>
+</ol>
+<h2 id="importRecords">importRecords</h2>
+<p>Detailed documentation for the importRecords method can be found in
+the PHPCap API documentation:
+<a href="https://aarenson.github.io/PHPCap/api/class-IU.PHPCap.RedCapProject.html">https://aarenson.github.io/PHPCap/api/class-IU.PHPCap.RedCapProject.html</a></p>
+<p>Since this method corresponds very closely to the REDCap API Import Records method, the
+REDCap API documentation can also be checked for more information. And the REDCap
+API Playground can be used to get a sense of the functionality provided by this method.</p>
+<p>Here is example PHPCap code that uses the importRecords method to import records from a CSV (Comma-Separated Value) file:</p>
+<div class="description"><pre><code class="language-php"><span class="xlang">&lt;?php</span>
+...
+<span class="php-comment">// import records from a CSV file</span>
+<span class="php-keyword1">try</span> {
+    <span class="php-var">$records</span> = FileUtil::fileToString(<span class="php-quote">'data.csv'</span>);
+    <span class="php-var">$number</span> = <span class="php-var">$project</span>-&gt;importRecords(<span class="php-var">$records</span>, <span class="php-quote">'csv'</span>);
+    <span class="php-keyword1">print</span> <span class="php-quote">&quot;</span><span class="php-var">{$number}</span><span class="php-quote"> records were imported.\n&quot;</span>;
+} <span class="php-keyword1">catch</span> (Exception <span class="php-var">$exception</span>) {
+    <span class="php-keyword1">print</span> <span class="php-quote">&quot;*** Import Error: &quot;</span>.<span class="php-var">$exception</span>-&gt;getMessage().<span class="php-quote">&quot;\n&quot;</span>;
 }</code></pre></div>
-<p>The new class would have all of the methods of RedCapProject as well as the
-new method defined above, and you would then use this new class instead of
-RedCapProject, for example:</p>
-<div class="description"><pre><code class="language-php">...
-<span class="php-var">$project</span> = <span class="php-keyword1">new</span> MyRedCapProject(<span class="php-var">$apiUrl</span>, <span class="php-var">$apiToken</span>);
-<span class="php-var">$projectTitle</span> = <span class="php-var">$project</span>-&gt;exportProjectTitle();
-<span class="php-keyword1">print</span>(<span class="php-quote">&quot;Project Title: </span><span class="php-var">$projectTitle</span><span class="php-quote">\n&quot;</span>);
-
-<span class="php-var">$records</span> = <span class="php-var">$project</span>-&gt;exportRecords();</code></pre></div>
-<p>The RedCapProject class also has a connection property that gives you direct access to
-the REDCap API. So within a method of your class extending RedCapProject, you
-could use the following to send data to, and get the results from, your REDCap API:</p>
-<div class="description"><pre><code class="language-php"><span class="php-comment"># Pass data to the REDCap API, and get back the result</span>
-<span class="php-var">$result</span> = <span class="php-var">$this</span>-&gt;connection-&gt;call(<span class="php-var">$data</span>);</code></pre></div>
-<p>This is useful for accessing methods provided by the REDCap API that
-have not been implemented in PHPCap.</p>
-<p>If you do define your own project class, and want to use it in conjunction with PHPCap's
-RedCap class, you can use the <strong>setProjectConstructorCallback</strong> method of the <strong>RedCap</strong>
-class to get RedCap to use your project class for projects that it returns from its
-methods to create and get projects. For example:</p>
-<div class="description"><pre><code class="language-php">...
-<span class="php-var">$callback</span> = <span class="php-keyword1">function</span> (<span class="php-var">$apiUrl</span>, <span class="php-var">$apiToken</span>, <span class="php-var">$sslVerify</span> = <span class="php-keyword1">false</span>,
-                      <span class="php-var">$caCertificateFile</span> = <span class="php-keyword1">null</span>, <span class="php-var">$errorHandler</span> = <span class="php-keyword1">null</span>,
-                      <span class="php-var">$connection</span> = <span class="php-keyword1">null</span>) {
-        <span class="php-keyword1">return</span> <span class="php-keyword1">new</span> MyRedCapProject(<span class="php-var">$apiUrl</span>, <span class="php-var">$apiToken</span>, <span class="php-var">$sslVerify</span>,
-                                   <span class="php-var">$caCertificateFile</span>, <span class="php-var">$errorHandler</span>, <span class="php-var">$connection</span>);
-    };
-...        
-<span class="php-var">$redCap</span> = <span class="php-keyword1">new</span> RedCap(<span class="php-var">$apiUrl</span>);
-<span class="php-var">$redCap</span>-&gt;setProjectConstructorCallback(<span class="php-var">$callback</span>);</code></pre></div>
-<h2 id="Extending the ErrorHandler class">Extending the ErrorHandler class</h2>
-<p>The ErrorHandler class handles errors that occur in PHPCap,
-and it handles them by throwing a PhpCapException. This
-class can be extended, or you can implement a completely new class
-that implements the ErrorHandlerInterface interface.</p>
-<p>The constructors for the RedCap and RedCapProject classes have an ErrorHandler
-parameter that can be used to set these classes to use your custom error handler class.
-In addition, if a project is created with, or gotten from, a RedCap object where
-a custom error handler has been set, the returned project will be assigned a clone
-of the custom error handler in the RedCap object.</p>
-<h2 id="Extending the RedCapApiConnection class">Extending the RedCapApiConnection class</h2>
-<p>The RedCapApiConnection class is used to represent the PHPCap's underlying
-connection to a REDCap API.
-This class can be extended, or you can implement a completely new connection class
-that implements the RedCapApiConnectionInterface interface.</p>
-<p>The constructors for the RedCap and RedCapProject classes have a connection
-parameter that can be used to set these classes to use your custom connection class.
-In addition, if a project is created with, or gotten from, a RedCap object where
-a custom connection has been set, the returned project will be assigned a clone
-of the custom connection in the RedCap object.</p></div>
+<p>The importRecords method imports CSV records from a string, so if your data is stored
+in a file, you need to read the file into a string first, as is done above.
+The importRecords method returns the number of records that were imported.
+It is also possible to specify that the record IDs of the records that were
+imported be returned instead. See the PHPCap API documentation for more details.</p>
+<h3 id="Batch processing of CSV imports">Batch processing of CSV imports</h3>
+<p>PHPCap currently provides no direct support for batch imports.
+To import a large CSV file in batches, you need to either:</p>
+<ul>
+<li>break up the file into multiple files, and import each one separately</li>
+<li>read the file into a string one batch of records at a time, and import the string after
+each read</li>
+</ul>
+<p>One thing you need to be careful about is that each batch of rows needs to have
+the header row with column names as the first row. If you simply read a large CSV files
+100 rows at a time, the first import would succeed, because it would have the header row,
+but the subsequent imports would fail.</p>
+<h2 id="importFile">importFile</h2>
+<p>The importFile method is used for importing a file, such as a consent form for a patient,
+into an existing REDCap record.</p>
+<p>Detailed documentation for the importRecords method can be found in
+the PHPCap API documentation:
+<a href="https://aarenson.github.io/PHPCap/api/class-IU.PHPCap.RedCapProject.html">https://aarenson.github.io/PHPCap/api/class-IU.PHPCap.RedCapProject.html</a> </p>
+<p>Below is example code for importing a consent form file for a patient into the patient's record:</p>
+<div class="description"><pre><code class="language-php">project-&gt;importFile(<span class="php-quote">'consent1001.pdf'</span>,<span class="php-quote">'1001'</span>,<span class="php-quote">'patient_consent'</span>);</code></pre></div>
+<p>Or, using variables to indicate what the arguments represent:</p>
+<div class="description"><pre><code class="language-php"><span class="php-var">$file</span> = <span class="php-quote">'consent1001.pdf'</span>;
+<span class="php-var">$recordId</span> = <span class="php-quote">'1001'</span>;
+<span class="php-var">$field</span> = <span class="php-quote">'patient_consent'</span>;
+project-&gt;importFile(<span class="php-var">$file</span>, <span class="php-var">$recordId</span>, <span class="php-var">$field</span>);</code></pre></div>
+<p>Both of the above examples are importing the file &quot;consent1001.pdf&quot; into field &quot;patient_consent&quot; in the record with an ID of 1001.</p>
+<p>A similar example for a longitudinal study is as follows:</p>
+<div class="description"><pre><code class="language-php"><span class="php-var">$file</span> = <span class="php-quote">'consent.pdf'</span>;
+<span class="php-var">$recordId</span> = <span class="php-quote">'1001'</span>;
+<span class="php-var">$field</span> = <span class="php-quote">'patient_consent'</span>;
+<span class="php-var">$event</span> = <span class="php-quote">'enrollment_arm_1'</span>;
+project-&gt;importFile(<span class="php-var">$file</span>, <span class="php-var">$recordId</span>, <span class="php-var">$field</span>, <span class="php-var">$event</span>); </code></pre></div>
+<p>In this case, the event needs to be specified also.</p></div>
 <div id="footer">
 PHPCap documentation
 </div>

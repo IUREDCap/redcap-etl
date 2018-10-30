@@ -765,6 +765,42 @@ class RecordsTest extends TestCase
         $this->assertEquals(100, count($result), 'Record count after delete.');
     }
 
+    public function testImportAndDeleteRecordsCsvFormatWithForceAutoNumber()
+    {
+        $records = FileUtil::fileToString(__DIR__.'/../data/basic-demography-import.csv');
+        
+        # import the same records 3 times
+        for ($num = 0; $num <= 3; $num++) {
+            $result = self::$basicDemographyProject->importRecords(
+                $records,
+                $format = 'csv',
+                $type = null,
+                $overwriteBehavior = null,
+                $dateFormat = null,
+                $returnContent = 'auto_ids',
+                $forceAutoNumber = true
+            );
+        }
+
+        $records = self::$basicDemographyProject->exportRecords();
+        
+        # These should be OK, because this project does not support auto-generated records
+        $this->assertEquals(1, count($result), 'Record count.');
+        
+        $recordIds = ['1101,1101'];
+        $deleteRecordIds = [1101];
+        
+        $this->assertEquals($recordIds, $result, 'Import IDs check.');
+        
+        $result = self::$basicDemographyProject->exportRecords();
+        $this->assertEquals(101, count($result), 'Record count after import.');
+        
+        $result = self::$basicDemographyProject->deleteRecords($deleteRecordIds);
+        
+        $result = self::$basicDemographyProject->exportRecords();
+        $this->assertEquals(100, count($result), 'Record count after delete.');
+    }
+    
     public function testImportRecordsCsvFormatWithJsonError()
     {
         $records = FileUtil::fileToString(__DIR__.'/../data/basic-demography-import.csv');
@@ -956,7 +992,55 @@ class RecordsTest extends TestCase
         $this->assertTrue($exceptionCaught, 'Exception caught.');
     }
     
+    public function testImportRecordsWithInvalidForceAutoNumber()
+    {
+        $records = 'record_id,first_name,last_name,address,telephone,email,dob,'
+            .'ethnicity,race,sex,height,weight,comments,demographics_complete'."\n"
+            .'1101,Joe,Schmidt,"72133 Joelle Grove Suite 055 Hayesburgh, AZ 84047-5437",'
+            .'(753) 406-4137,joe.schmidt@mailinator.com,1945-07-15,0,4,1,191,88,,2';
+        $exceptionCaught = false;
+        try {
+            $result = self::$basicDemographyProject->importRecords(
+                $records,
+                $format = 'csv',
+                $type = null,
+                $overwriteBehavior = null,
+                $dateFormat = null,
+                $returnContent = 'ids',
+                $forceAutoNumber = 100   # invalid type
+            );
+        } catch (PhpCapException $exception) {
+            $exceptionCaught = true;
+            $code = $exception->getCode();
+            $this->assertEquals(ErrorHandlerInterface::INVALID_ARGUMENT, $code, 'Exception code check.');
+        }
+        $this->assertTrue($exceptionCaught, 'Exception caught.');
+    }
 
+    public function testImportRecordsWithInvalidAutoIdsReturnContent()
+    {
+        $records = 'record_id,first_name,last_name,address,telephone,email,dob,'
+            .'ethnicity,race,sex,height,weight,comments,demographics_complete'."\n"
+            .'1101,Joe,Schmidt,"72133 Joelle Grove Suite 055 Hayesburgh, AZ 84047-5437",'
+            .'(753) 406-4137,joe.schmidt@mailinator.com,1945-07-15,0,4,1,191,88,,2';
+        $exceptionCaught = false;
+        try {
+            $result = self::$basicDemographyProject->importRecords(
+                $records,
+                $format = 'csv',
+                $type = null,
+                $overwriteBehavior = null,
+                $dateFormat = null,
+                $returnContent = 'auto_ids'  # invalid since forceAutoNumber defaults to false
+            );
+        } catch (PhpCapException $exception) {
+            $exceptionCaught = true;
+            $code = $exception->getCode();
+            $this->assertEquals(ErrorHandlerInterface::INVALID_ARGUMENT, $code, 'Exception code check.');
+        }
+        $this->assertTrue($exceptionCaught, 'Exception caught.');
+    }
+    
     public function testDeleteRecordsWithArm()
     {
         $records = FileUtil::fileToString(__DIR__.'/../data/longitudinal-data-import.csv');

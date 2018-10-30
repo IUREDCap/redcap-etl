@@ -1,85 +1,84 @@
-User Guide 4 - Extending PHPCap
+User Guide 4 - Importing Data
 =============================================
 
-If you need additional functionality to what is provided by PHPCap, you
-can extend it.
+PHPCap's __RedCapProject__ class provides the following methods for importing data:
+1. __importRecords__ - method for importing records. 
+2. __importFile__ - method for importing a file (e.g., a document or image) into an existing REDCap record.
 
-Extending the RedCapProject class
--------------------------------------
-For example, if you wanted to have a method that returns the
-title of the project, you could create a class
-similar to the following that extended PHPCap's RedCapProject class:
+
+importRecords
+---------------------------
+Detailed documentation for the importRecords method can be found in
+the PHPCap API documentation:
+https://aarenson.github.io/PHPCap/api/class-IU.PHPCap.RedCapProject.html
+
+Since this method corresponds very closely to the REDCap API Import Records method, the
+REDCap API documentation can also be checked for more information. And the REDCap
+API Playground can be used to get a sense of the functionality provided by this method.
+
+Here is example PHPCap code that uses the importRecords method to import records from a CSV (Comma-Separated Value) file:
 ```php
-class MyRedCapProject extends IU\PHPCap\RedCapProject
-{
-    public function exportProjectTitle() {
-       $projectInfo = $this->exportProjectInfo();
-       $projectTitle = $projectInfo['project_title'];
-       return $projectTitle;
-    }
+<?php
+...
+// import records from a CSV file
+try {
+    $records = FileUtil::fileToString('data.csv');
+    $number = $project->importRecords($records, 'csv');
+    print "{$number} records were imported.\n";
+} catch (Exception $exception) {
+    print "*** Import Error: ".$exception->getMessage()."\n";
 }
 ```
-The new class would have all of the methods of RedCapProject as well as the
-new method defined above, and you would then use this new class instead of
-RedCapProject, for example:
+
+The importRecords method imports CSV records from a string, so if your data is stored
+in a file, you need to read the file into a string first, as is done above.
+The importRecords method returns the number of records that were imported.
+It is also possible to specify that the record IDs of the records that were
+imported be returned instead. See the PHPCap API documentation for more details.
+
+
+### Batch processing of CSV imports
+
+PHPCap currently provides no direct support for batch imports.
+To import a large CSV file in batches, you need to either:
+* break up the file into multiple files, and import each one separately
+* read the file into a string one batch of records at a time, and import the string after
+  each read
+
+One thing you need to be careful about is that each batch of rows needs to have
+the header row with column names as the first row. If you simply read a large CSV files
+100 rows at a time, the first import would succeed, because it would have the header row,
+but the subsequent imports would fail.
+
+
+importFile
+---------------------------
+The importFile method is used for importing a file, such as a consent form for a patient,
+into an existing REDCap record.
+
+Detailed documentation for the importRecords method can be found in
+the PHPCap API documentation:
+https://aarenson.github.io/PHPCap/api/class-IU.PHPCap.RedCapProject.html 
+
+Below is example code for importing a consent form file for a patient into the patient's record:
 ```php
-...
-$project = new MyRedCapProject($apiUrl, $apiToken);
-$projectTitle = $project->exportProjectTitle();
-print("Project Title: $projectTitle\n");
-
-$records = $project->exportRecords();
+project->importFile('consent1001.pdf','1001','patient_consent');
 ```
-
-The RedCapProject class also has a connection property that gives you direct access to
-the REDCap API. So within a method of your class extending RedCapProject, you
-could use the following to send data to, and get the results from, your REDCap API:
+Or, using variables to indicate what the arguments represent:
 ```php
-# Pass data to the REDCap API, and get back the result
-$result = $this->connection->call($data);
+$file = 'consent1001.pdf';
+$recordId = '1001';
+$field = 'patient_consent';
+project->importFile($file, $recordId, $field);
 ```
-This is useful for accessing methods provided by the REDCap API that
-have not been implemented in PHPCap.
+Both of the above examples are importing the file "consent1001.pdf" into field "patient_consent" in the record with an ID of 1001.
 
-If you do define your own project class, and want to use it in conjunction with PHPCap's
-RedCap class, you can use the __setProjectConstructorCallback__ method of the __RedCap__
-class to get RedCap to use your project class for projects that it returns from its
-methods to create and get projects. For example:
+A similar example for a longitudinal study is as follows:
 ```php
-...
-$callback = function ($apiUrl, $apiToken, $sslVerify = false,
-                      $caCertificateFile = null, $errorHandler = null,
-                      $connection = null) {
-        return new MyRedCapProject($apiUrl, $apiToken, $sslVerify,
-                                   $caCertificateFile, $errorHandler, $connection);
-    };
-...        
-$redCap = new RedCap($apiUrl);
-$redCap->setProjectConstructorCallback($callback);
+$file = 'consent.pdf';
+$recordId = '1001';
+$field = 'patient_consent';
+$event = 'enrollment_arm_1';
+project->importFile($file, $recordId, $field, $event); 
 ```
-
-Extending the ErrorHandler class
-----------------------------------------
-The ErrorHandler class handles errors that occur in PHPCap,
-and it handles them by throwing a PhpCapException. This
-class can be extended, or you can implement a completely new class
-that implements the ErrorHandlerInterface interface.
-
-The constructors for the RedCap and RedCapProject classes have an ErrorHandler
-parameter that can be used to set these classes to use your custom error handler class.
-In addition, if a project is created with, or gotten from, a RedCap object where 
-a custom error handler has been set, the returned project will be assigned a clone
-of the custom error handler in the RedCap object.
-
-Extending the RedCapApiConnection class
-----------------------------------------------
-The RedCapApiConnection class is used to represent the PHPCap's underlying
-connection to a REDCap API.
-This class can be extended, or you can implement a completely new connection class
-that implements the RedCapApiConnectionInterface interface.
-
-The constructors for the RedCap and RedCapProject classes have a connection
-parameter that can be used to set these classes to use your custom connection class.
-In addition, if a project is created with, or gotten from, a RedCap object where 
-a custom connection has been set, the returned project will be assigned a clone
-of the custom connection in the RedCap object.
+In this case, the event needs to be specified also.
