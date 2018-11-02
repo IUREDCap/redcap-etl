@@ -32,10 +32,6 @@ class RulesGenerator
     {
         $rules = '';
 
-        echo "FEEDBACK: ";
-        echo gettype($dataProject);
-        print_r($dataProject);
-
         #----------------------------------------------------
         # Get project information and metadata
         #----------------------------------------------------
