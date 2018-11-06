@@ -18,336 +18,30 @@ class RulesGeneratorTest extends TestCase
 {   
 
 
-    public function testGenerate()
+    public function testBasicGenerate()
     {
-        $projectInfo['project_id'] = 14;
-        $projectInfo['project_title'] = 'ETL_Data';
-        $projectInfo['creation_time'] = '2018-04-16 13:53:19';
-        $projectInfo['production_time'] =
-        $projectInfo['in_production'] = 0;
-        $projectInfo['project_language'] = 'English';
-        $projectInfo['purpose'] = 0;
-        $projectInfo['purpose_other'] =
-        $projectInfo['project_notes'] =
-        $projectInfo['custom_record_label'] =
-        $projectInfo['secondary_unique_field'] =
-        $projectInfo['is_longitudinal'] = 0;
-        $projectInfo['surveys_enabled'] = 0;
-        $projectInfo['scheduling_enabled'] = 0;
-        $projectInfo['record_autonumbering_enabled'] = 1;
-        $projectInfo['randomization_enabled'] = 0;
-        $projectInfo['ddp_enabled'] = 0;
-        $projectInfo['project_irb_number'] =
-        $projectInfo['project_grant_number'] =
-        $projectInfo['project_pi_firstname'] =
-        $projectInfo['project_pi_lastname'] =
-        $projectInfo['display_today_now_button'] = 1;
-        $projectInfo['has_repeating_instruments_or_events'] = 0;
+        $projectInfo = json_decode('{"project_id":"15","project_title":"REDCap-ETL Basic Demography","creation_time":"2018-05-16 12:34:47","production_time":"","in_production":"0","project_language":"English","purpose":"1","purpose_other":"REDCap ETL testing","project_notes":"","custom_record_label":"","secondary_unique_field":"","is_longitudinal":0,"surveys_enabled":"0","scheduling_enabled":"0","record_autonumbering_enabled":"0","randomization_enabled":"0","ddp_enabled":"0","project_irb_number":"","project_grant_number":"","project_pi_firstname":"","project_pi_lastname":"","display_today_now_button":"1","has_repeating_instruments_or_events":0}', true);
 
-        $instruments['demographics'] = 'Basic Demography Form';
+        $instruments = json_decode('{"demographics":"Basic Demography Form"}', true);
        
-        $metadata[0]['field_name'] = 'record_id';
-        $metadata[0]['form_name'] = 'demographics';
-        $metadata[0]['section_header'] =
-        $metadata[0]['field_type'] = 'text';
-        $metadata[0]['field_label'] = 'Study ID';
-        $metadata[0]['select_choices_or_calculations'] =
-        $metadata[0]['field_note'] =
-        $metadata[0]['text_validation_type_or_show_slider_number'] =
-        $metadata[0]['text_validation_min'] =
-        $metadata[0]['text_validation_max'] =
-        $metadata[0]['identifier'] =
-        $metadata[0]['branching_logic'] =
-        $metadata[0]['required_field'] =
-        $metadata[0]['custom_alignment'] =
-        $metadata[0]['question_number'] =
-        $metadata[0]['matrix_group_name'] =
-        $metadata[0]['matrix_ranking'] =
-        $metadata[0]['field_annotation'] =  
-
-        $metadata[1]['field_name'] = 'first_name';
-        $metadata[1]['form_name'] = 'demographics';
-        $metadata[1]['section_header'] = 'Contact Information';
-        $metadata[1]['field_type'] = 'text';
-        $metadata[1]['field_label'] = 'First Name';
-        $metadata[1]['select_choices_or_calculations'] =
-        $metadata[1]['field_note'] =
-        $metadata[1]['text_validation_type_or_show_slider_number'] =
-        $metadata[1]['text_validation_min'] =
-        $metadata[1]['text_validation_max'] =
-        $metadata[1]['identifier'] = 'y';
-        $metadata[1]['branching_logic'] =
-        $metadata[1]['required_field'] =
-        $metadata[1]['custom_alignment'] =
-        $metadata[1]['question_number'] =
-        $metadata[1]['matrix_group_name'] =
-        $metadata[1]['matrix_ranking'] =
-        $metadata[1]['field_annotation'] =
-
-        $metadata[2]['field_name'] = 'last_name';
-        $metadata[2]['form_name'] = 'demographics';
-        $metadata[2]['section_header'] =
-        $metadata[2]['field_type'] = 'text';
-        $metadata[2]['field_label'] = 'Last Name';
-        $metadata[2]['select_choices_or_calculations'] =
-        $metadata[2]['field_note'] =
-        $metadata[2]['text_validation_type_or_show_slider_number'] =
-        $metadata[2]['text_validation_min'] =
-        $metadata[2]['text_validation_max'] =
-        $metadata[2]['identifier'] = 'y';
-        $metadata[2]['branching_logic'] =
-        $metadata[2]['required_field'] =
-        $metadata[2]['custom_alignment'] =
-        $metadata[2]['question_number'] =
-        $metadata[2]['matrix_group_name'] =
-        $metadata[2]['matrix_ranking'] =
-        $metadata[2]['field_annotation'] =
-
-        $metadata[3]['field_name'] = 'address';
-        $metadata[3]['form_name'] = 'demographics';
-        $metadata[3]['section_header'] =
-        $metadata[3]['field_type'] = 'notes';
-        $metadata[3]['field_label'] = 'Street, City, State, ZIP';
-        $metadata[3]['select_choices_or_calculations'] =
-        $metadata[3]['field_note'] =
-        $metadata[3]['text_validation_type_or_show_slider_number'] =
-        $metadata[3]['text_validation_min'] =
-        $metadata[3]['text_validation_max'] =
-        $metadata[3]['identifier'] = 'y';
-        $metadata[3]['branching_logic'] =
-        $metadata[3]['required_field'] =
-        $metadata[3]['custom_alignment'] =
-        $metadata[3]['question_number'] =
-        $metadata[3]['matrix_group_name'] =
-        $metadata[3]['matrix_ranking'] =
-        $metadata[3]['field_annotation'] =
-
-        $metadata[4]['field_name'] = 'telephone';
-        $metadata[4]['form_name'] = 'demographics';
-        $metadata[4]['section_header'] =
-        $metadata[4]['field_type'] = 'text';
-        $metadata[4]['field_label'] = 'Phone number';
-        $metadata[4]['select_choices_or_calculations'] =
-        $metadata[4]['field_note'] = 'Include Area Code';
-        $metadata[4]['text_validation_type_or_show_slider_number'] = 'phone';
-        $metadata[4]['text_validation_min'] =
-        $metadata[4]['text_validation_max'] =
-        $metadata[4]['identifier'] = 'y';
-        $metadata[4]['branching_logic'] =
-        $metadata[4]['required_field'] =
-        $metadata[4]['custom_alignment'] =
-        $metadata[4]['question_number'] =
-        $metadata[4]['matrix_group_name'] =
-        $metadata[4]['matrix_ranking'] =
-        $metadata[4]['field_annotation'] =
-
-        $metadata[5]['field_name'] = 'email';
-        $metadata[5]['form_name'] = 'demographics';
-        $metadata[5]['section_header'] =
-        $metadata[5]['field_type'] = 'text';
-        $metadata[5]['field_label'] = 'E-mail';
-        $metadata[5]['select_choices_or_calculations'] =
-        $metadata[5]['field_note'] =
-        $metadata[5]['text_validation_type_or_show_slider_number'] = 'email';
-        $metadata[5]['text_validation_min'] =
-        $metadata[5]['text_validation_max'] =
-        $metadata[5]['identifier'] = 'y';
-        $metadata[5]['branching_logic'] =
-        $metadata[5]['required_field'] =
-        $metadata[5]['custom_alignment'] =
-        $metadata[5]['question_number'] =
-        $metadata[5]['matrix_group_name'] =
-        $metadata[5]['matrix_ranking'] =
-        $metadata[5]['field_annotation'] =
-
-        $metadata[6]['field_name'] = 'dob';
-        $metadata[6]['form_name'] = 'demographics';
-        $metadata[6]['section_header'] =
-        $metadata[6]['field_type'] = 'text';
-        $metadata[6]['field_label'] = 'Date of birth';
-        $metadata[6]['select_choices_or_calculations'] =
-        $metadata[6]['field_note'] =
-        $metadata[6]['text_validation_type_or_show_slider_number'] = 'date_ymd';
-        $metadata[6]['text_validation_min'] =
-        $metadata[6]['text_validation_max'] =
-        $metadata[6]['identifier'] = 'y';
-        $metadata[6]['branching_logic'] =
-        $metadata[6]['required_field'] =
-        $metadata[6]['custom_alignment'] =
-        $metadata[6]['question_number'] =
-        $metadata[6]['matrix_group_name'] =
-        $metadata[6]['matrix_ranking'] =
-        $metadata[6]['field_annotation'] =
-
-        $metadata[7]['field_name'] = 'age';
-        $metadata[7]['form_name'] = 'demographics';
-        $metadata[7]['section_header'] =
-        $metadata[7]['field_type'] = 'calc';
-        $metadata[7]['field_label'] = 'Age (years)';
-        $metadata[7]['select_choices_or_calculations'] = "rounddown(datediff([dob],'today','y'))";
-        $metadata[7]['field_note'] =
-        $metadata[7]['text_validation_type_or_show_slider_number'] =
-        $metadata[7]['text_validation_min'] =
-        $metadata[7]['text_validation_max'] =
-        $metadata[7]['identifier'] =
-        $metadata[7]['branching_logic'] =
-        $metadata[7]['required_field'] =
-        $metadata[7]['custom_alignment'] =
-        $metadata[7]['question_number'] =
-        $metadata[7]['matrix_group_name'] =
-        $metadata[7]['matrix_ranking'] =
-        $metadata[7]['field_annotation'] =
-
-        $metadata[8]['field_name'] = 'ethnicity';
-        $metadata[8]['form_name'] = 'demographics';
-        $metadata[8]['section_header'] =
-        $metadata[8]['field_type'] = 'radio';
-        $metadata[8]['field_label'] = 'Ethnicity';
-        $metadata[8]['select_choices_or_calculations'] = '0, Hispanic or Latino | 1, NOT Hispanic or Latino | 2, Unknown / Not Reported';
-        $metadata[8]['field_note'] =
-        $metadata[8]['text_validation_type_or_show_slider_number'] =
-        $metadata[8]['text_validation_min'] =
-        $metadata[8]['text_validation_max'] =
-        $metadata[8]['identifier'] =
-        $metadata[8]['branching_logic'] =
-        $metadata[8]['required_field'] =
-        $metadata[8]['custom_alignment'] = 'LH';
-        $metadata[8]['question_number'] =
-        $metadata[8]['matrix_group_name'] =
-        $metadata[8]['matrix_ranking'] =
-        $metadata[8]['field_annotation'] =
-
-        $metadata[9]['field_name'] = 'race';
-        $metadata[9]['form_name'] = 'demographics';
-        $metadata[9]['section_header'] =
-        $metadata[9]['field_type'] = 'dropdown';
-        $metadata[9]['field_label'] = 'Race';
-        $metadata[9]['select_choices_or_calculations'] = '0, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, More Than One Race | 6, Unknown / Not Reported';
-        $metadata[9]['field_note'] =
-        $metadata[9]['text_validation_type_or_show_slider_number'] =
-        $metadata[9]['text_validation_min'] =
-        $metadata[9]['text_validation_max'] =
-        $metadata[9]['identifier'] =
-        $metadata[9]['branching_logic'] =
-        $metadata[9]['required_field'] =
-        $metadata[9]['custom_alignment'] =
-        $metadata[9]['question_number'] =
-        $metadata[9]['matrix_group_name'] =
-        $metadata[9]['matrix_ranking'] =
-        $metadata[9]['field_annotation'] =
-
-        $metadata[10]['field_name'] = 'sex';
-        $metadata[10]['form_name'] = 'demographics';
-        $metadata[10]['section_header'] =
-        $metadata[10]['field_type'] = 'radio';
-        $metadata[10]['field_label'] = 'Sex';
-        $metadata[10]['select_choices_or_calculations'] = '0, Female | 1, Male';
-        $metadata[10]['field_note'] =
-        $metadata[10]['text_validation_type_or_show_slider_number'] =
-        $metadata[10]['text_validation_min'] =
-        $metadata[10]['text_validation_max'] =
-        $metadata[10]['identifier'] =
-        $metadata[10]['branching_logic'] =
-        $metadata[10]['required_field'] =
-        $metadata[10]['custom_alignment'] =
-        $metadata[10]['question_number'] =
-        $metadata[10]['matrix_group_name'] =
-        $metadata[10]['matrix_ranking'] =
-        $metadata[10]['field_annotation'] =
-
-        $metadata[11]['field_name'] = 'height';
-        $metadata[11]['form_name'] = 'demographics';
-        $metadata[11]['section_header'] =
-        $metadata[11]['field_type'] = 'text';
-        $metadata[11]['field_label'] = 'Height (cm)';
-        $metadata[11]['select_choices_or_calculations'] =
-        $metadata[11]['field_note'] =
-        $metadata[11]['text_validation_type_or_show_slider_number'] = 'number';
-        $metadata[11]['text_validation_min'] = 130;
-        $metadata[11]['text_validation_max'] = 215;
-        $metadata[11]['identifier'] =
-        $metadata[11]['branching_logic'] =
-        $metadata[11]['required_field'] =
-        $metadata[11]['custom_alignment'] =
-        $metadata[11]['question_number'] =
-        $metadata[11]['matrix_group_name'] =
-        $metadata[11]['matrix_ranking'] =
-        $metadata[11]['field_annotation'] =
-
-        $metadata[12]['field_name'] = 'weight';
-        $metadata[12]['form_name'] = 'demographics';
-        $metadata[12]['section_header'] =
-        $metadata[12]['field_type'] = 'text';
-        $metadata[12]['field_label'] = 'Weight (kilograms)';
-        $metadata[12]['select_choices_or_calculations'] =
-        $metadata[12]['field_note'] =
-        $metadata[12]['text_validation_type_or_show_slider_number'] = 'integer';
-        $metadata[12]['text_validation_min'] = 35;
-        $metadata[12]['text_validation_max'] = 200;
-        $metadata[12]['identifier'] =
-        $metadata[12]['branching_logic'] =
-        $metadata[12]['required_field'] =
-        $metadata[12]['custom_alignment'] =
-        $metadata[12]['question_number'] =
-        $metadata[12]['matrix_group_name'] =
-        $metadata[12]['matrix_ranking'] =
-        $metadata[12]['field_annotation'] =
-
-        $metadata[13]['field_name'] = 'bmi';
-        $metadata[13]['form_name'] = 'demographics';
-        $metadata[13]['section_header'] =
-        $metadata[13]['field_type'] = 'calc';
-        $metadata[13]['field_label'] = 'BMI';
-        $metadata[13]['select_choices_or_calculations'] = 'round(([weight]*10000)/(([height])^(2)),1)';
-        $metadata[13]['field_note'] =
-        $metadata[13]['text_validation_type_or_show_slider_number'] =
-        $metadata[13]['text_validation_min'] =
-        $metadata[13]['text_validation_max'] =
-        $metadata[13]['identifier'] =
-        $metadata[13]['branching_logic'] =
-        $metadata[13]['required_field'] =
-        $metadata[13]['custom_alignment'] =
-        $metadata[13]['question_number'] =
-        $metadata[13]['matrix_group_name'] =
-        $metadata[13]['matrix_ranking'] =
-        $metadata[13]['field_annotation'] =
-
-        $metadata[14]['field_name'] = 'comments';
-        $metadata[14]['form_name'] = 'demographics';
-        $metadata[14]['section_header'] = 'General Comments';
-        $metadata[14]['field_type'] = 'notes';
-        $metadata[14]['field_label'] = 'Comments';
-        $metadata[14]['select_choices_or_calculations'] =
-        $metadata[14]['field_note'] =
-        $metadata[14]['text_validation_type_or_show_slider_number'] =
-        $metadata[14]['text_validation_min'] =
-        $metadata[14]['text_validation_max'] =
-        $metadata[14]['identifier'] =
-        $metadata[14]['branching_logic'] =
-        $metadata[14]['required_field'] =
-        $metadata[14]['custom_alignment'] =
-        $metadata[14]['question_number'] =
-        $metadata[14]['matrix_group_name'] =
-        $metadata[14]['matrix_ranking'] =
-        $metadata[14]['field_annotation'] =
-
+        $metadata = json_decode('[{"field_name":"record_id","form_name":"demographics","section_header":"","field_type":"text","field_label":"Study ID","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"first_name","form_name":"demographics","section_header":"Contact Information","field_type":"text","field_label":"First Name","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"last_name","form_name":"demographics","section_header":"","field_type":"text","field_label":"Last Name","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"address","form_name":"demographics","section_header":"","field_type":"notes","field_label":"Street, City, State, ZIP","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"telephone","form_name":"demographics","section_header":"","field_type":"text","field_label":"Phone number","select_choices_or_calculations":"","field_note":"Include Area Code","text_validation_type_or_show_slider_number":"phone","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"email","form_name":"demographics","section_header":"","field_type":"text","field_label":"E-mail","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"email","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"dob","form_name":"demographics","section_header":"","field_type":"text","field_label":"Date of birth","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"date_ymd","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"ethnicity","form_name":"demographics","section_header":"","field_type":"radio","field_label":"Ethnicity","select_choices_or_calculations":"0, Hispanic or Latino|1, NOT Hispanic or Latino|2, Unknown \/ Not Reported","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"LH","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"race","form_name":"demographics","section_header":"","field_type":"checkbox","field_label":"Race","select_choices_or_calculations":"0, American Indian\/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"sex","form_name":"demographics","section_header":"","field_type":"radio","field_label":"Sex","select_choices_or_calculations":"0, Female|1, Male","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"height","form_name":"demographics","section_header":"","field_type":"text","field_label":"Height (cm)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"number","text_validation_min":"130","text_validation_max":"215","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"weight","form_name":"demographics","section_header":"","field_type":"text","field_label":"Weight (kilograms)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"35","text_validation_max":"200","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"bmi","form_name":"demographics","section_header":"","field_type":"calc","field_label":"BMI","select_choices_or_calculations":"round(([weight]*10000)\/(([height])^(2)),1)","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"comments","form_name":"demographics","section_header":"General Comments","field_type":"notes","field_label":"Comments","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""}]', true);
 
         $projectXml = '<?xml version="1.0" encoding="UTF-8" ?>
-        <ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="ETL_Data" AsOfDateTime="2018-11-02T14:57:33" CreationDateTime="2018-11-02T14:57:33" SourceSystem="REDCap" SourceSystemVersion="8.1.10">
-        <Study OID="Project.ETLData">
+        <ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="REDCap-ETL Basic Demography" AsOfDateTime="2018-11-06T18:30:45" CreationDateTime="2018-11-06T18:30:45" SourceSystem="REDCap" SourceSystemVersion="8.1.10">
+        <Study OID="Project.REDCapETLBasicDemography">
         <GlobalVariables>
-                <StudyName>ETL_Data</StudyName>
-                <StudyDescription>This file contains the metadata, events, and data for REDCap project "ETL_Data".</StudyDescription>
-                <ProtocolName>ETL_Data</ProtocolName>
-                <redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+                <StudyName>REDCap-ETL Basic Demography</StudyName>
+                <StudyDescription>This file contains the metadata, events, and data for REDCap project "REDCap-ETL Basic Demography".</StudyDescription>
+                <ProtocolName>REDCap-ETL Basic Demography</ProtocolName>
+                <redcap:RecordAutonumberingEnabled>0</redcap:RecordAutonumberingEnabled>
                 <redcap:CustomRecordLabel></redcap:CustomRecordLabel>
                 <redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
                 <redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
-                <redcap:Purpose>0</redcap:Purpose>
-                <redcap:PurposeOther></redcap:PurposeOther>
+                <redcap:Purpose>1</redcap:Purpose>
+                <redcap:PurposeOther>REDCap ETL testing</redcap:PurposeOther>
                 <redcap:ProjectNotes></redcap:ProjectNotes>
         </GlobalVariables>
-        <MetaDataVersion OID="Metadata.ETLData_2018-11-02_1457" Name="ETL_Data" redcap:RecordIdField="record_id">
+        <MetaDataVersion OID="Metadata.REDCapETLBasicDemography_2018-11-06_1830" Name="REDCap-ETL Basic Demography" redcap:RecordIdField="record_id">
                 <FormDef OID="Form.demographics" Name="Basic Demography Form" Repeating="No" redcap:FormName="demographics">
                         <ItemGroupRef ItemGroupOID="demographics.record_id" Mandatory="No"/>
                         <ItemGroupRef ItemGroupOID="demographics.first_name" Mandatory="No"/>
@@ -367,9 +61,13 @@ class RulesGeneratorTest extends TestCase
                         <ItemRef ItemOID="telephone" Mandatory="No" redcap:Variable="telephone"/>
                         <ItemRef ItemOID="email" Mandatory="No" redcap:Variable="email"/>
                         <ItemRef ItemOID="dob" Mandatory="No" redcap:Variable="dob"/>
-                        <ItemRef ItemOID="age" Mandatory="No" redcap:Variable="age"/>
                         <ItemRef ItemOID="ethnicity" Mandatory="No" redcap:Variable="ethnicity"/>
-                        <ItemRef ItemOID="race" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___0" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___3" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___4" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___5" Mandatory="No" redcap:Variable="race"/>
                         <ItemRef ItemOID="sex" Mandatory="No" redcap:Variable="sex"/>
                         <ItemRef ItemOID="height" Mandatory="No" redcap:Variable="height"/>
                         <ItemRef ItemOID="weight" Mandatory="No" redcap:Variable="weight"/>
@@ -402,16 +100,33 @@ class RulesGeneratorTest extends TestCase
                 <ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:Identifier="y">
                         <Question><TranslatedText>Date of birth</TranslatedText></Question>
                 </ItemDef>
-                <ItemDef OID="age" Name="age" DataType="float" Length="999" redcap:Variable="age" redcap:FieldType="calc" redcap:Calculation="rounddown(datediff([dob],&#039;today&#039;,&#039;y&#039;))">
-                        <Question><TranslatedText>Age (years)</TranslatedText></Question>
-                </ItemDef>
                 <ItemDef OID="ethnicity" Name="ethnicity" DataType="text" Length="1" redcap:Variable="ethnicity" redcap:FieldType="radio" redcap:CustomAlignment="LH">
                         <Question><TranslatedText>Ethnicity</TranslatedText></Question>
                         <CodeListRef CodeListOID="ethnicity.choices"/>
                 </ItemDef>
-                <ItemDef OID="race" Name="race" DataType="text" Length="1" redcap:Variable="race" redcap:FieldType="select">
+                <ItemDef OID="race___0" Name="race___0" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
                         <Question><TranslatedText>Race</TranslatedText></Question>
-                        <CodeListRef CodeListOID="race.choices"/>
+                        <CodeListRef CodeListOID="race___0.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___1" Name="race___1" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___1.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___2" Name="race___2" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___2.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___3" Name="race___3" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___3.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___4" Name="race___4" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___4.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___5" Name="race___5" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___5.choices"/>
                 </ItemDef>
                 <ItemDef OID="sex" Name="sex" DataType="text" Length="1" redcap:Variable="sex" redcap:FieldType="radio">
                         <Question><TranslatedText>Sex</TranslatedText></Question>
@@ -454,14 +169,29 @@ class RulesGeneratorTest extends TestCase
                         <CodeListItem CodedValue="1"><Decode><TranslatedText>NOT Hispanic or Latino</TranslatedText></Decode></CodeListItem>
                         <CodeListItem CodedValue="2"><Decode><TranslatedText>Unknown / Not Reported</TranslatedText></Decode></CodeListItem>
                 </CodeList>
-                <CodeList OID="race.choices" Name="race" DataType="text" redcap:Variable="race">
-                        <CodeListItem CodedValue="0"><Decode><TranslatedText>American Indian/Alaska Native</TranslatedText></Decode></CodeListItem>
-                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Asian</TranslatedText></Decode></CodeListItem>
-                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Native Hawaiian or Other Pacific Islander</TranslatedText></Decode></CodeListItem>
-                        <CodeListItem CodedValue="3"><Decode><TranslatedText>Black or African American</TranslatedText></Decode></CodeListItem>
-                        <CodeListItem CodedValue="4"><Decode><TranslatedText>White</TranslatedText></Decode></CodeListItem>
-                        <CodeListItem CodedValue="5"><Decode><TranslatedText>More Than One Race</TranslatedText></Decode></CodeListItem>
-                        <CodeListItem CodedValue="6"><Decode><TranslatedText>Unknown / Not Reported</TranslatedText></Decode></CodeListItem>
+                <CodeList OID="race___0.choices" Name="race___0" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___1.choices" Name="race___1" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___2.choices" Name="race___2" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___3.choices" Name="race___3" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___4.choices" Name="race___4" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___5.choices" Name="race___5" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
                 </CodeList>
                 <CodeList OID="sex.choices" Name="sex" DataType="text" redcap:Variable="sex">
                         <CodeListItem CodedValue="0"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
@@ -475,13 +205,9 @@ class RulesGeneratorTest extends TestCase
         </MetaDataVersion>
         </Study>
         </ODM>';
-    
-        $eventMappings = unserialize('a:10:{i:0;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"initial_arm_1";s:4:"form";s:10:"demography";}i:1;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"initial_arm_1";s:4:"form";s:16:"demographyextras";}i:2;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"event_1_arm_1";s:4:"form";s:5:"visit";}i:3;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"event_1_arm_1";s:4:"form";s:11:"visitsurvey";}i:4;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"event_1_arm_1";s:4:"form";s:12:"visitresults";}i:5;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"event_1_arm_1";s:4:"form";s:8:"followup";}i:6;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"event_2_arm_1";s:4:"form";s:5:"visit";}i:7;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"event_2_arm_1";s:4:"form";s:11:"visitsurvey";}i:8;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"event_2_arm_1";s:4:"form";s:12:"visitresults";}i:9;a:3:{s:7:"arm_num";i:1;s:17:"unique_event_name";s:13:"event_2_arm_1";s:4:"form";s:8:"followup";}}');
-        
-
 
         $dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
-            ->setMethods(['exportProjectInfo', 'exportInstruments', 'exportMetadata', 'exportProjectXml', 'exportInstrumentEventMappings'])
+            ->setMethods(['exportProjectInfo', 'exportInstruments', 'exportMetadata', 'exportProjectXml'])
             ->getMock();
 
 
@@ -506,10 +232,11 @@ class RulesGeneratorTest extends TestCase
         ->method('exportProjectXml')
         ->will($this->returnValue($projectXml));
 
+
         $rulesGenerator = new RulesGenerator();
         $rulesText = $rulesGenerator->generate($dataProject);
 
-        $string = "TABLE,demographics,demographics_id,ROOT" . "\n"
+        $result = "TABLE,demographics,demographics_id,ROOT" . "\n"
         . "FIELD,record_id,string" . "\n"
         . "FIELD,first_name,string" . "\n"
         . "FIELD,last_name,string" . "\n"
@@ -517,18 +244,16 @@ class RulesGeneratorTest extends TestCase
         . "FIELD,telephone,string" . "\n"
         . "FIELD,email,string" . "\n"
         . "FIELD,dob,date" . "\n"
-        . "FIELD,age,string" . "\n"
         . "FIELD,ethnicity,string" . "\n"
-        . "FIELD,race,string" . "\n"
+        . "FIELD,race,checkbox" . "\n"
         . "FIELD,sex,string" . "\n"
         . "FIELD,height,string" . "\n"
         . "FIELD,weight,string" . "\n"
         . "FIELD,bmi,string" . "\n"
-        . "FIELD,comments,string" . "\n" 
+        . "FIELD,comments,string" . "\n"
         . "\n";
 
-        
-        $this->assertSame($rulesText, $string);
+        $this->assertSame($rulesText, $result);
 
 
  
@@ -536,7 +261,7 @@ class RulesGeneratorTest extends TestCase
 
     }
 
-    public function testGenerateLongitudinal()
+    public function testLongitudinalGenerate()
     {
         $projectInfo = unserialize('a:23:{s:10:"project_id";s:2:"16";s:13:"project_title";s:17:"REDCap-ETL Visits";s:13:"creation_time";s:19:"2018-05-16 12:37:48";s:15:"production_time";s:0:"";s:13:"in_production";s:1:"0";s:16:"project_language";s:7:"English";s:7:"purpose";s:1:"0";s:13:"purpose_other";s:0:"";s:13:"project_notes";s:0:"";s:19:"custom_record_label";s:0:"";s:22:"secondary_unique_field";s:0:"";s:15:"is_longitudinal";i:1;s:15:"surveys_enabled";s:1:"0";s:18:"scheduling_enabled";s:1:"0";s:28:"record_autonumbering_enabled";s:1:"1";s:21:"randomization_enabled";s:1:"0";s:11:"ddp_enabled";s:1:"0";s:18:"project_irb_number";s:0:"";s:20:"project_grant_number";s:0:"";s:20:"project_pi_firstname";s:0:"";s:19:"project_pi_lastname";s:0:"";s:24:"display_today_now_button";s:1:"1";s:35:"has_repeating_instruments_or_events";i:0;}');
         $instruments = unserialize('a:6:{s:10:"demography";s:10:"Demography";s:16:"demographyextras";s:16:"DemographyExtras";s:5:"visit";s:5:"Visit";s:11:"visitsurvey";s:11:"VisitSurvey";s:12:"visitresults";s:12:"VisitResults";s:8:"followup";s:8:"Followup";}');
@@ -979,5 +704,563 @@ class RulesGeneratorTest extends TestCase
 
         $this->assertSame($rulesText, $result);
     }
+    public function testGenerate()
+    {
+        $projectInfo = json_decode('{"project_id":"20","project_title":"REDCap-ETL Repeating Events","creation_time":"2018-06-06 15:41:03","production_time":"","in_production":"0","project_language":"English","purpose":"0","purpose_other":"","project_notes":"","custom_record_label":"","secondary_unique_field":"","is_longitudinal":1,"surveys_enabled":"0","scheduling_enabled":"0","record_autonumbering_enabled":"1","randomization_enabled":"0","ddp_enabled":"0","project_irb_number":"","project_grant_number":"","project_pi_firstname":"","project_pi_lastname":"","display_today_now_button":"1","has_repeating_instruments_or_events":1}', true);
 
+        $instruments = json_decode('{"enrollment":"Enrollment","contact_information":"Contact Information","emergency_contacts":"Emergency Contacts","weight":"Weight","cardiovascular":"Cardiovascular"}', true);
+
+        $metadata = json_decode('[{"field_name":"record_id","form_name":"enrollment","section_header":"","field_type":"text","field_label":"Record ID","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"registration_date","form_name":"enrollment","section_header":"","field_type":"text","field_label":"Registration date","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"date_mdy","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"y","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":"@DEFAULT=TODAY"},{"field_name":"first_name","form_name":"enrollment","section_header":"","field_type":"text","field_label":"First name","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"y","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"last_name","form_name":"enrollment","section_header":"","field_type":"text","field_label":"Last name","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"y","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"birthdate","form_name":"enrollment","section_header":"","field_type":"text","field_label":"Birthdate","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"date_mdy","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"y","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"registration_age","form_name":"enrollment","section_header":"","field_type":"calc","field_label":"Age at registration","select_choices_or_calculations":"rounddown(datediff([registration_date],[birthdate],\'y\',\'mdy\'))","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"gender","form_name":"enrollment","section_header":"","field_type":"radio","field_label":"Gender","select_choices_or_calculations":"0, male|1, female","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"y","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"race","form_name":"enrollment","section_header":"","field_type":"checkbox","field_label":"Race","select_choices_or_calculations":"0, American Indian\/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"home_address","form_name":"contact_information","section_header":"","field_type":"text","field_label":"Home address","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"y","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"phone1","form_name":"contact_information","section_header":"","field_type":"text","field_label":"Phone 1","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"phone","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"y","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"phone_type1","form_name":"contact_information","section_header":"","field_type":"dropdown","field_label":"Phone Type 1","select_choices_or_calculations":"0, cell|1, home|2, work|3, other","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"phone2","form_name":"contact_information","section_header":"","field_type":"text","field_label":"Phone 2","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"phone","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"phone_type2","form_name":"contact_information","section_header":"","field_type":"dropdown","field_label":"Phone Type 2","select_choices_or_calculations":"0, cell|1, home|2, work|3, other","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"phone3","form_name":"contact_information","section_header":"","field_type":"text","field_label":"Phone 3","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"phone","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"phone_type3","form_name":"contact_information","section_header":"","field_type":"dropdown","field_label":"Phone Type 3","select_choices_or_calculations":"0, cell|1, home|2, work|3, other","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"email","form_name":"contact_information","section_header":"","field_type":"text","field_label":"E-mail","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"email","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"em_contact1","form_name":"emergency_contacts","section_header":"","field_type":"text","field_label":"Emergency contact 1","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"em_contact_phone1a","form_name":"emergency_contacts","section_header":"","field_type":"text","field_label":"Emergency contact 1 phone a","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"em_contact_phone1b","form_name":"emergency_contacts","section_header":"","field_type":"text","field_label":"Emergency contact 1 phone b","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"em_contact2","form_name":"emergency_contacts","section_header":"","field_type":"text","field_label":"Emergency contact 2","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"em_contact_phone2a","form_name":"emergency_contacts","section_header":"","field_type":"text","field_label":"Emergency contact 2 phone a","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"em_contact_phone2b","form_name":"emergency_contacts","section_header":"","field_type":"text","field_label":"Emergency contact 2 phone b","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"weight_time","form_name":"weight","section_header":"","field_type":"text","field_label":"Weight time","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"datetime_mdy","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"weight_kg","form_name":"weight","section_header":"","field_type":"text","field_label":"Weight (kg)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"number_1dp","text_validation_min":"0","text_validation_max":"500","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"height_m","form_name":"weight","section_header":"","field_type":"text","field_label":"Height (m)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"number_2dp","text_validation_min":"0.00","text_validation_max":"3.00","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"cardiovascular_date","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"Cardiovascular date","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"date_mdy","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"hdl_mg_dl","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"HDL (mg\/dL)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"ldl_mg_dl","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"LDL (mg\/dL)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"0","text_validation_max":"1000","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"triglycerides_mg_dl","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"Triglycerides (mg\/dL)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"diastolic1","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"Blood pressure - diastolic 1","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"diastolic2","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"Blood pressure - diastolic 2","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"diastolic3","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"Blood pressure - diastolic 3","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"systolic1","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"Blood pressure - systolic 1","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"systolic2","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"Blood pressure - systolic 2","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"systolic3","form_name":"cardiovascular","section_header":"","field_type":"text","field_label":"Blood pressure - systolic 3","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""}]', true);
+
+        $projectXml = '<?xml version="1.0" encoding="UTF-8" ?>
+        <ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="REDCap-ETL Repeating Events" AsOfDateTime="2018-11-06T19:50:07" CreationDateTime="2018-11-06T19:50:07" SourceSystem="REDCap" SourceSystemVersion="8.1.10">
+        <Study OID="Project.REDCapETLRepeatingEvents">
+        <GlobalVariables>
+                <StudyName>REDCap-ETL Repeating Events</StudyName>
+                <StudyDescription>This file contains the metadata, events, and data for REDCap project "REDCap-ETL Repeating Events".</StudyDescription>
+                <ProtocolName>REDCap-ETL Repeating Events</ProtocolName>
+                <redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+                <redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+                <redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+                <redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+                <redcap:Purpose>0</redcap:Purpose>
+                <redcap:PurposeOther></redcap:PurposeOther>
+                <redcap:ProjectNotes></redcap:ProjectNotes>
+                <redcap:RepeatingInstrumentsAndEvents>
+                        <redcap:RepeatingEvent redcap:UniqueEventName="visit_arm_1"/>
+                        <redcap:RepeatingEvent redcap:UniqueEventName="visit_arm_2"/>
+                        <redcap:RepeatingEvent redcap:UniqueEventName="visit_arm_3"/>
+                        <redcap:RepeatingInstruments>
+                                <redcap:RepeatingInstrument redcap:UniqueEventName="home_visit_arm_1" redcap:RepeatInstrument="weight" redcap:CustomLabel=""/>
+                                <redcap:RepeatingInstrument redcap:UniqueEventName="home_visit_arm_1" redcap:RepeatInstrument="cardiovascular" redcap:CustomLabel=""/>
+                        </redcap:RepeatingInstruments>
+                        <redcap:RepeatingInstruments>
+                                <redcap:RepeatingInstrument redcap:UniqueEventName="home_visit_arm_2" redcap:RepeatInstrument="weight" redcap:CustomLabel=""/>
+                                <redcap:RepeatingInstrument redcap:UniqueEventName="home_visit_arm_2" redcap:RepeatInstrument="cardiovascular" redcap:CustomLabel=""/>
+                        </redcap:RepeatingInstruments>
+                        <redcap:RepeatingInstruments>
+                                <redcap:RepeatingInstrument redcap:UniqueEventName="home_visit_arm_3" redcap:RepeatInstrument="weight" redcap:CustomLabel=""/>
+                                <redcap:RepeatingInstrument redcap:UniqueEventName="home_visit_arm_3" redcap:RepeatInstrument="cardiovascular" redcap:CustomLabel=""/>
+                        </redcap:RepeatingInstruments>
+                </redcap:RepeatingInstrumentsAndEvents>
+        </GlobalVariables>
+        <MetaDataVersion OID="Metadata.REDCapETLRepeatingEvents_2018-11-06_1950" Name="REDCap-ETL Repeating Events" redcap:RecordIdField="record_id">
+                <Protocol>
+                        <StudyEventRef StudyEventOID="Event.enrollment_arm_1" OrderNumber="1" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.baseline_arm_1" OrderNumber="2" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.visit_arm_1" OrderNumber="3" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.home_visit_arm_1" OrderNumber="4" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.enrollment_arm_2" OrderNumber="5" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.baseline_arm_2" OrderNumber="6" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.visit_arm_2" OrderNumber="7" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.home_visit_arm_2" OrderNumber="8" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.enrollment_arm_3" OrderNumber="9" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.baseline_arm_3" OrderNumber="10" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.visit_arm_3" OrderNumber="11" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.home_visit_arm_3" OrderNumber="12" Mandatory="No"/>
+                </Protocol>
+                <StudyEventDef OID="Event.enrollment_arm_1" Name="Enrollment (Arm 1: control)" Type="Common" Repeating="No" redcap:EventName="Enrollment" redcap:CustomEventLabel="" redcap:UniqueEventName="enrollment_arm_1" redcap:ArmNum="1" redcap:ArmName="control" redcap:DayOffset="1" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.enrollment" OrderNumber="1" Mandatory="No" redcap:FormName="enrollment"/>
+                        <FormRef FormOID="Form.contact_information" OrderNumber="2" Mandatory="No" redcap:FormName="contact_information"/>
+                        <FormRef FormOID="Form.emergency_contacts" OrderNumber="3" Mandatory="No" redcap:FormName="emergency_contacts"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.baseline_arm_1" Name="Baseline (Arm 1: control)" Type="Common" Repeating="No" redcap:EventName="Baseline" redcap:CustomEventLabel="" redcap:UniqueEventName="baseline_arm_1" redcap:ArmNum="1" redcap:ArmName="control" redcap:DayOffset="2" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.visit_arm_1" Name="Visit (Arm 1: control)" Type="Common" Repeating="No" redcap:EventName="Visit" redcap:CustomEventLabel="" redcap:UniqueEventName="visit_arm_1" redcap:ArmNum="1" redcap:ArmName="control" redcap:DayOffset="3" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.home_visit_arm_1" Name="Home Visit (Arm 1: control)" Type="Common" Repeating="No" redcap:EventName="Home Visit" redcap:CustomEventLabel="" redcap:UniqueEventName="home_visit_arm_1" redcap:ArmNum="1" redcap:ArmName="control" redcap:DayOffset="4" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.enrollment_arm_2" Name="Enrollment (Arm 2: wfpb)" Type="Common" Repeating="No" redcap:EventName="Enrollment" redcap:CustomEventLabel="" redcap:UniqueEventName="enrollment_arm_2" redcap:ArmNum="2" redcap:ArmName="wfpb" redcap:DayOffset="1" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.enrollment" OrderNumber="1" Mandatory="No" redcap:FormName="enrollment"/>
+                        <FormRef FormOID="Form.contact_information" OrderNumber="2" Mandatory="No" redcap:FormName="contact_information"/>
+                        <FormRef FormOID="Form.emergency_contacts" OrderNumber="3" Mandatory="No" redcap:FormName="emergency_contacts"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.baseline_arm_2" Name="Baseline (Arm 2: wfpb)" Type="Common" Repeating="No" redcap:EventName="Baseline" redcap:CustomEventLabel="" redcap:UniqueEventName="baseline_arm_2" redcap:ArmNum="2" redcap:ArmName="wfpb" redcap:DayOffset="2" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.visit_arm_2" Name="Visit (Arm 2: wfpb)" Type="Common" Repeating="No" redcap:EventName="Visit" redcap:CustomEventLabel="" redcap:UniqueEventName="visit_arm_2" redcap:ArmNum="2" redcap:ArmName="wfpb" redcap:DayOffset="3" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.home_visit_arm_2" Name="Home Visit (Arm 2: wfpb)" Type="Common" Repeating="No" redcap:EventName="Home Visit" redcap:CustomEventLabel="" redcap:UniqueEventName="home_visit_arm_2" redcap:ArmNum="2" redcap:ArmName="wfpb" redcap:DayOffset="4" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.enrollment_arm_3" Name="Enrollment (Arm 3: lchf)" Type="Common" Repeating="No" redcap:EventName="Enrollment" redcap:CustomEventLabel="" redcap:UniqueEventName="enrollment_arm_3" redcap:ArmNum="3" redcap:ArmName="lchf" redcap:DayOffset="1" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.enrollment" OrderNumber="1" Mandatory="No" redcap:FormName="enrollment"/>
+                        <FormRef FormOID="Form.contact_information" OrderNumber="2" Mandatory="No" redcap:FormName="contact_information"/>
+                        <FormRef FormOID="Form.emergency_contacts" OrderNumber="3" Mandatory="No" redcap:FormName="emergency_contacts"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.baseline_arm_3" Name="Baseline (Arm 3: lchf)" Type="Common" Repeating="No" redcap:EventName="Baseline" redcap:CustomEventLabel="" redcap:UniqueEventName="baseline_arm_3" redcap:ArmNum="3" redcap:ArmName="lchf" redcap:DayOffset="2" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.visit_arm_3" Name="Visit (Arm 3: lchf)" Type="Common" Repeating="No" redcap:EventName="Visit" redcap:CustomEventLabel="" redcap:UniqueEventName="visit_arm_3" redcap:ArmNum="3" redcap:ArmName="lchf" redcap:DayOffset="3" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.home_visit_arm_3" Name="Home Visit (Arm 3: lchf)" Type="Common" Repeating="No" redcap:EventName="Home Visit" redcap:CustomEventLabel="" redcap:UniqueEventName="home_visit_arm_3" redcap:ArmNum="3" redcap:ArmName="lchf" redcap:DayOffset="4" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.weight" OrderNumber="1" Mandatory="No" redcap:FormName="weight"/>
+                        <FormRef FormOID="Form.cardiovascular" OrderNumber="2" Mandatory="No" redcap:FormName="cardiovascular"/>
+                </StudyEventDef>
+                <FormDef OID="Form.enrollment" Name="Enrollment" Repeating="No" redcap:FormName="enrollment">
+                        <ItemGroupRef ItemGroupOID="enrollment.record_id" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="enrollment.enrollment_complete" Mandatory="No"/>
+                </FormDef>
+                <FormDef OID="Form.contact_information" Name="Contact Information" Repeating="No" redcap:FormName="contact_information">
+                        <ItemGroupRef ItemGroupOID="contact_information.home_address" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="contact_information.contact_information_complete" Mandatory="No"/>
+                </FormDef>
+                <FormDef OID="Form.emergency_contacts" Name="Emergency Contacts" Repeating="No" redcap:FormName="emergency_contacts">
+                        <ItemGroupRef ItemGroupOID="emergency_contacts.em_contact1" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="emergency_contacts.emergency_contacts_complete" Mandatory="No"/>
+                </FormDef>
+                <FormDef OID="Form.weight" Name="Weight" Repeating="No" redcap:FormName="weight">
+                        <ItemGroupRef ItemGroupOID="weight.weight_time" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="weight.weight_complete" Mandatory="No"/>
+                </FormDef>
+                <FormDef OID="Form.cardiovascular" Name="Cardiovascular" Repeating="No" redcap:FormName="cardiovascular">
+                        <ItemGroupRef ItemGroupOID="cardiovascular.cardiovascular_date" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="cardiovascular.cardiovascular_complete" Mandatory="No"/>
+                </FormDef>
+                <ItemGroupDef OID="enrollment.record_id" Name="Enrollment" Repeating="No">
+                        <ItemRef ItemOID="record_id" Mandatory="No" redcap:Variable="record_id"/>
+                        <ItemRef ItemOID="registration_date" Mandatory="Yes" redcap:Variable="registration_date"/>
+                        <ItemRef ItemOID="first_name" Mandatory="Yes" redcap:Variable="first_name"/>
+                        <ItemRef ItemOID="last_name" Mandatory="Yes" redcap:Variable="last_name"/>
+                        <ItemRef ItemOID="birthdate" Mandatory="Yes" redcap:Variable="birthdate"/>
+                        <ItemRef ItemOID="registration_age" Mandatory="No" redcap:Variable="registration_age"/>
+                        <ItemRef ItemOID="gender" Mandatory="Yes" redcap:Variable="gender"/>
+                        <ItemRef ItemOID="race___0" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___3" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___4" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="race___5" Mandatory="No" redcap:Variable="race"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="enrollment.enrollment_complete" Name="Form Status" Repeating="No">
+                        <ItemRef ItemOID="enrollment_complete" Mandatory="No" redcap:Variable="enrollment_complete"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="contact_information.home_address" Name="Contact Information" Repeating="No">
+                        <ItemRef ItemOID="home_address" Mandatory="Yes" redcap:Variable="home_address"/>
+                        <ItemRef ItemOID="phone1" Mandatory="Yes" redcap:Variable="phone1"/>
+                        <ItemRef ItemOID="phone_type1" Mandatory="No" redcap:Variable="phone_type1"/>
+                        <ItemRef ItemOID="phone2" Mandatory="No" redcap:Variable="phone2"/>
+                        <ItemRef ItemOID="phone_type2" Mandatory="No" redcap:Variable="phone_type2"/>
+                        <ItemRef ItemOID="phone3" Mandatory="No" redcap:Variable="phone3"/>
+                        <ItemRef ItemOID="phone_type3" Mandatory="No" redcap:Variable="phone_type3"/>
+                        <ItemRef ItemOID="email" Mandatory="No" redcap:Variable="email"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="contact_information.contact_information_complete" Name="Form Status" Repeating="No">
+                        <ItemRef ItemOID="contact_information_complete" Mandatory="No" redcap:Variable="contact_information_complete"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="emergency_contacts.em_contact1" Name="Emergency Contacts" Repeating="No">
+                        <ItemRef ItemOID="em_contact1" Mandatory="No" redcap:Variable="em_contact1"/>
+                        <ItemRef ItemOID="em_contact_phone1a" Mandatory="No" redcap:Variable="em_contact_phone1a"/>
+                        <ItemRef ItemOID="em_contact_phone1b" Mandatory="No" redcap:Variable="em_contact_phone1b"/>
+                        <ItemRef ItemOID="em_contact2" Mandatory="No" redcap:Variable="em_contact2"/>
+                        <ItemRef ItemOID="em_contact_phone2a" Mandatory="No" redcap:Variable="em_contact_phone2a"/>
+                        <ItemRef ItemOID="em_contact_phone2b" Mandatory="No" redcap:Variable="em_contact_phone2b"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="emergency_contacts.emergency_contacts_complete" Name="Form Status" Repeating="No">
+                        <ItemRef ItemOID="emergency_contacts_complete" Mandatory="No" redcap:Variable="emergency_contacts_complete"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="weight.weight_time" Name="Weight" Repeating="No">
+                        <ItemRef ItemOID="weight_time" Mandatory="No" redcap:Variable="weight_time"/>
+                        <ItemRef ItemOID="weight_kg" Mandatory="No" redcap:Variable="weight_kg"/>
+                        <ItemRef ItemOID="height_m" Mandatory="No" redcap:Variable="height_m"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="weight.weight_complete" Name="Form Status" Repeating="No">
+                        <ItemRef ItemOID="weight_complete" Mandatory="No" redcap:Variable="weight_complete"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="cardiovascular.cardiovascular_date" Name="Cardiovascular" Repeating="No">
+                        <ItemRef ItemOID="cardiovascular_date" Mandatory="No" redcap:Variable="cardiovascular_date"/>
+                        <ItemRef ItemOID="hdl_mg_dl" Mandatory="No" redcap:Variable="hdl_mg_dl"/>
+                        <ItemRef ItemOID="ldl_mg_dl" Mandatory="No" redcap:Variable="ldl_mg_dl"/>
+                        <ItemRef ItemOID="triglycerides_mg_dl" Mandatory="No" redcap:Variable="triglycerides_mg_dl"/>
+                        <ItemRef ItemOID="diastolic1" Mandatory="No" redcap:Variable="diastolic1"/>
+                        <ItemRef ItemOID="diastolic2" Mandatory="No" redcap:Variable="diastolic2"/>
+                        <ItemRef ItemOID="diastolic3" Mandatory="No" redcap:Variable="diastolic3"/>
+                        <ItemRef ItemOID="systolic1" Mandatory="No" redcap:Variable="systolic1"/>
+                        <ItemRef ItemOID="systolic2" Mandatory="No" redcap:Variable="systolic2"/>
+                        <ItemRef ItemOID="systolic3" Mandatory="No" redcap:Variable="systolic3"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="cardiovascular.cardiovascular_complete" Name="Form Status" Repeating="No">
+                        <ItemRef ItemOID="cardiovascular_complete" Mandatory="No" redcap:Variable="cardiovascular_complete"/>
+                </ItemGroupDef>
+                <ItemDef OID="record_id" Name="record_id" DataType="text" Length="999" redcap:Variable="record_id" redcap:FieldType="text">
+                        <Question><TranslatedText>Record ID</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="registration_date" Name="registration_date" DataType="date" Length="999" redcap:Variable="registration_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=TODAY">
+                        <Question><TranslatedText>Registration date</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="first_name" Name="first_name" DataType="text" Length="999" redcap:Variable="first_name" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+                        <Question><TranslatedText>First name</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="last_name" Name="last_name" DataType="text" Length="999" redcap:Variable="last_name" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+                        <Question><TranslatedText>Last name</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="birthdate" Name="birthdate" DataType="date" Length="999" redcap:Variable="birthdate" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:Identifier="y" redcap:RequiredField="y">
+                        <Question><TranslatedText>Birthdate</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="registration_age" Name="registration_age" DataType="float" Length="999" redcap:Variable="registration_age" redcap:FieldType="calc" redcap:Calculation="rounddown(datediff([registration_date],[birthdate],&#039;y&#039;,&#039;mdy&#039;))">
+                        <Question><TranslatedText>Age at registration</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="gender" Name="gender" DataType="text" Length="1" redcap:Variable="gender" redcap:FieldType="radio" redcap:RequiredField="y">
+                        <Question><TranslatedText>Gender</TranslatedText></Question>
+                        <CodeListRef CodeListOID="gender.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___0" Name="race___0" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___0.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___1" Name="race___1" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___1.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___2" Name="race___2" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___2.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___3" Name="race___3" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___3.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___4" Name="race___4" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___4.choices"/>
+                </ItemDef>
+                <ItemDef OID="race___5" Name="race___5" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race___5.choices"/>
+                </ItemDef>
+                <ItemDef OID="enrollment_complete" Name="enrollment_complete" DataType="text" Length="1" redcap:Variable="enrollment_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+                        <Question><TranslatedText>Complete?</TranslatedText></Question>
+                        <CodeListRef CodeListOID="enrollment_complete.choices"/>
+                </ItemDef>
+                <ItemDef OID="home_address" Name="home_address" DataType="text" Length="999" redcap:Variable="home_address" redcap:FieldType="text" redcap:RequiredField="y">
+                        <Question><TranslatedText>Home address</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="phone1" Name="phone1" DataType="text" Length="999" redcap:Variable="phone1" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:RequiredField="y">
+                        <Question><TranslatedText>Phone 1</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="phone_type1" Name="phone_type1" DataType="text" Length="1" redcap:Variable="phone_type1" redcap:FieldType="select">
+                        <Question><TranslatedText>Phone Type 1</TranslatedText></Question>
+                        <CodeListRef CodeListOID="phone_type1.choices"/>
+                </ItemDef>
+                <ItemDef OID="phone2" Name="phone2" DataType="text" Length="999" redcap:Variable="phone2" redcap:FieldType="text" redcap:TextValidationType="phone">
+                        <Question><TranslatedText>Phone 2</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="phone_type2" Name="phone_type2" DataType="text" Length="1" redcap:Variable="phone_type2" redcap:FieldType="select">
+                        <Question><TranslatedText>Phone Type 2</TranslatedText></Question>
+                        <CodeListRef CodeListOID="phone_type2.choices"/>
+                </ItemDef>
+                <ItemDef OID="phone3" Name="phone3" DataType="text" Length="999" redcap:Variable="phone3" redcap:FieldType="text" redcap:TextValidationType="phone">
+                        <Question><TranslatedText>Phone 3</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="phone_type3" Name="phone_type3" DataType="text" Length="1" redcap:Variable="phone_type3" redcap:FieldType="select">
+                        <Question><TranslatedText>Phone Type 3</TranslatedText></Question>
+                        <CodeListRef CodeListOID="phone_type3.choices"/>
+                </ItemDef>
+                <ItemDef OID="email" Name="email" DataType="text" Length="999" redcap:Variable="email" redcap:FieldType="text" redcap:TextValidationType="email">
+                        <Question><TranslatedText>E-mail</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="contact_information_complete" Name="contact_information_complete" DataType="text" Length="1" redcap:Variable="contact_information_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+                        <Question><TranslatedText>Complete?</TranslatedText></Question>
+                        <CodeListRef CodeListOID="contact_information_complete.choices"/>
+                </ItemDef>
+                <ItemDef OID="em_contact1" Name="em_contact1" DataType="text" Length="999" redcap:Variable="em_contact1" redcap:FieldType="text">
+                        <Question><TranslatedText>Emergency contact 1</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="em_contact_phone1a" Name="em_contact_phone1a" DataType="text" Length="999" redcap:Variable="em_contact_phone1a" redcap:FieldType="text">
+                        <Question><TranslatedText>Emergency contact 1 phone a</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="em_contact_phone1b" Name="em_contact_phone1b" DataType="text" Length="999" redcap:Variable="em_contact_phone1b" redcap:FieldType="text">
+                        <Question><TranslatedText>Emergency contact 1 phone b</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="em_contact2" Name="em_contact2" DataType="text" Length="999" redcap:Variable="em_contact2" redcap:FieldType="text">
+                        <Question><TranslatedText>Emergency contact 2</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="em_contact_phone2a" Name="em_contact_phone2a" DataType="text" Length="999" redcap:Variable="em_contact_phone2a" redcap:FieldType="text">
+                        <Question><TranslatedText>Emergency contact 2 phone a</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="em_contact_phone2b" Name="em_contact_phone2b" DataType="text" Length="999" redcap:Variable="em_contact_phone2b" redcap:FieldType="text">
+                        <Question><TranslatedText>Emergency contact 2 phone b</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="emergency_contacts_complete" Name="emergency_contacts_complete" DataType="text" Length="1" redcap:Variable="emergency_contacts_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+                        <Question><TranslatedText>Complete?</TranslatedText></Question>
+                        <CodeListRef CodeListOID="emergency_contacts_complete.choices"/>
+                </ItemDef>
+                <ItemDef OID="weight_time" Name="weight_time" DataType="partialDatetime" Length="999" redcap:Variable="weight_time" redcap:FieldType="text" redcap:TextValidationType="datetime_mdy">
+                        <Question><TranslatedText>Weight time</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="weight_kg" Name="weight_kg" DataType="float" Length="999" redcap:Variable="weight_kg" redcap:FieldType="text" redcap:TextValidationType="number_1dp">
+                        <Question><TranslatedText>Weight (kg)</TranslatedText></Question>
+                        <RangeCheck Comparator="GE" SoftHard="Soft">
+                                <CheckValue>0</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 500). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                        <RangeCheck Comparator="LE" SoftHard="Soft">
+                                <CheckValue>500</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 500). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                </ItemDef>
+                <ItemDef OID="height_m" Name="height_m" DataType="float" Length="999" redcap:Variable="height_m" redcap:FieldType="text" redcap:TextValidationType="number_2dp">
+                        <Question><TranslatedText>Height (m)</TranslatedText></Question>
+                        <RangeCheck Comparator="GE" SoftHard="Soft">
+                                <CheckValue>0.00</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0.00 - 3.00). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                        <RangeCheck Comparator="LE" SoftHard="Soft">
+                                <CheckValue>3.00</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0.00 - 3.00). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                </ItemDef>
+                <ItemDef OID="weight_complete" Name="weight_complete" DataType="text" Length="1" redcap:Variable="weight_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+                        <Question><TranslatedText>Complete?</TranslatedText></Question>
+                        <CodeListRef CodeListOID="weight_complete.choices"/>
+                </ItemDef>
+                <ItemDef OID="cardiovascular_date" Name="cardiovascular_date" DataType="date" Length="999" redcap:Variable="cardiovascular_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy">
+                        <Question><TranslatedText>Cardiovascular date</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="hdl_mg_dl" Name="hdl_mg_dl" DataType="integer" Length="999" redcap:Variable="hdl_mg_dl" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>HDL (mg/dL)</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="ldl_mg_dl" Name="ldl_mg_dl" DataType="integer" Length="999" redcap:Variable="ldl_mg_dl" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>LDL (mg/dL)</TranslatedText></Question>
+                        <RangeCheck Comparator="GE" SoftHard="Soft">
+                                <CheckValue>0</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 1000). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                        <RangeCheck Comparator="LE" SoftHard="Soft">
+                                <CheckValue>1000</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 1000). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                </ItemDef>
+                <ItemDef OID="triglycerides_mg_dl" Name="triglycerides_mg_dl" DataType="integer" Length="999" redcap:Variable="triglycerides_mg_dl" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Triglycerides (mg/dL)</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="diastolic1" Name="diastolic1" DataType="integer" Length="999" redcap:Variable="diastolic1" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Blood pressure - diastolic 1</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="diastolic2" Name="diastolic2" DataType="integer" Length="999" redcap:Variable="diastolic2" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Blood pressure - diastolic 2</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="diastolic3" Name="diastolic3" DataType="integer" Length="999" redcap:Variable="diastolic3" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Blood pressure - diastolic 3</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="systolic1" Name="systolic1" DataType="integer" Length="999" redcap:Variable="systolic1" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Blood pressure - systolic 1</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="systolic2" Name="systolic2" DataType="integer" Length="999" redcap:Variable="systolic2" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Blood pressure - systolic 2</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="systolic3" Name="systolic3" DataType="integer" Length="999" redcap:Variable="systolic3" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Blood pressure - systolic 3</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="cardiovascular_complete" Name="cardiovascular_complete" DataType="text" Length="1" redcap:Variable="cardiovascular_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+                        <Question><TranslatedText>Complete?</TranslatedText></Question>
+                        <CodeListRef CodeListOID="cardiovascular_complete.choices"/>
+                </ItemDef>
+                <CodeList OID="gender.choices" Name="gender" DataType="text" redcap:Variable="gender">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>male</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>female</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___0.choices" Name="race___0" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___1.choices" Name="race___1" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___2.choices" Name="race___2" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___3.choices" Name="race___3" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___4.choices" Name="race___4" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race___5.choices" Name="race___5" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0, American Indian/Alaska Native|1, Asian|2, Native Hawaiian or Other Pacific Islander|3, Black or African American|4, White|5, Other">
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="enrollment_complete.choices" Name="enrollment_complete" DataType="text" redcap:Variable="enrollment_complete">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="phone_type1.choices" Name="phone_type1" DataType="text" redcap:Variable="phone_type1">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>cell</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>home</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>work</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="3"><Decode><TranslatedText>other</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="phone_type2.choices" Name="phone_type2" DataType="text" redcap:Variable="phone_type2">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>cell</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>home</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>work</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="3"><Decode><TranslatedText>other</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="phone_type3.choices" Name="phone_type3" DataType="text" redcap:Variable="phone_type3">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>cell</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>home</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>work</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="3"><Decode><TranslatedText>other</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="contact_information_complete.choices" Name="contact_information_complete" DataType="text" redcap:Variable="contact_information_complete">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="emergency_contacts_complete.choices" Name="emergency_contacts_complete" DataType="text" redcap:Variable="emergency_contacts_complete">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="weight_complete.choices" Name="weight_complete" DataType="text" redcap:Variable="weight_complete">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="cardiovascular_complete.choices" Name="cardiovascular_complete" DataType="text" redcap:Variable="cardiovascular_complete">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+        </MetaDataVersion>
+        </Study>
+        </ODM>';
+
+        $eventMappings = json_decode('[{"arm_num":1,"unique_event_name":"enrollment_arm_1","form":"enrollment"},{"arm_num":1,"unique_event_name":"enrollment_arm_1","form":"contact_information"},{"arm_num":1,"unique_event_name":"enrollment_arm_1","form":"emergency_contacts"},{"arm_num":1,"unique_event_name":"baseline_arm_1","form":"weight"},{"arm_num":1,"unique_event_name":"baseline_arm_1","form":"cardiovascular"},{"arm_num":1,"unique_event_name":"visit_arm_1","form":"weight"},{"arm_num":1,"unique_event_name":"visit_arm_1","form":"cardiovascular"},{"arm_num":1,"unique_event_name":"home_visit_arm_1","form":"weight"},{"arm_num":1,"unique_event_name":"home_visit_arm_1","form":"cardiovascular"},{"arm_num":2,"unique_event_name":"enrollment_arm_2","form":"enrollment"},{"arm_num":2,"unique_event_name":"enrollment_arm_2","form":"contact_information"},{"arm_num":2,"unique_event_name":"enrollment_arm_2","form":"emergency_contacts"},{"arm_num":2,"unique_event_name":"baseline_arm_2","form":"weight"},{"arm_num":2,"unique_event_name":"baseline_arm_2","form":"cardiovascular"},{"arm_num":2,"unique_event_name":"visit_arm_2","form":"weight"},{"arm_num":2,"unique_event_name":"visit_arm_2","form":"cardiovascular"},{"arm_num":2,"unique_event_name":"home_visit_arm_2","form":"weight"},{"arm_num":2,"unique_event_name":"home_visit_arm_2","form":"cardiovascular"},{"arm_num":3,"unique_event_name":"enrollment_arm_3","form":"enrollment"},{"arm_num":3,"unique_event_name":"enrollment_arm_3","form":"contact_information"},{"arm_num":3,"unique_event_name":"enrollment_arm_3","form":"emergency_contacts"},{"arm_num":3,"unique_event_name":"baseline_arm_3","form":"weight"},{"arm_num":3,"unique_event_name":"baseline_arm_3","form":"cardiovascular"},{"arm_num":3,"unique_event_name":"visit_arm_3","form":"weight"},{"arm_num":3,"unique_event_name":"visit_arm_3","form":"cardiovascular"},{"arm_num":3,"unique_event_name":"home_visit_arm_3","form":"weight"},{"arm_num":3,"unique_event_name":"home_visit_arm_3","form":"cardiovascular"}]', true);
+
+        $dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
+            ->setMethods(['exportProjectInfo', 'exportInstruments', 'exportMetadata', 'exportProjectXml', 'exportInstrumentEventMappings'])
+            ->getMock();
+
+
+        // exportProjectInfo() - stub method returning mock data
+        $dataProject->expects($this->any())
+            ->method('exportProjectInfo')
+            ->will($this->returnValue($projectInfo));
+
+        // exportInstruments() - stub method returning mock data
+        $dataProject->expects($this->any())
+            ->method('exportInstruments')
+            ->will($this->returnValue($instruments));
+
+        // exportMetadata() - stub method returning mock data
+        $dataProject->expects($this->any())
+        ->method('exportMetadata')
+        ->will($this->returnValue($metadata));
+
+        // exportProjectXml() - stub method returning mock data
+
+        $dataProject->expects($this->any())
+        ->method('exportProjectXml')
+        ->will($this->returnValue($projectXml));
+    
+        $dataProject->expects($this->any())
+        ->method('exportInstrumentEventMappings')
+        ->will($this->returnValue($eventMappings));
+
+        $rulesGenerator = new RulesGenerator();
+        $rulesText = $rulesGenerator->generate($dataProject);
+
+        $result = "TABLE,root,root_id,ROOT" . "\n"
+        . "\n"
+        . "TABLE,enrollment,root,EVENTS" . "\n"
+        . "FIELD,record_id,string" . "\n"
+        . "FIELD,registration_date,date" . "\n"
+        . "FIELD,first_name,string" . "\n"
+        . "FIELD,last_name,string" . "\n"
+        . "FIELD,birthdate,date" . "\n"
+        . "FIELD,registration_age,string" . "\n"
+        . "FIELD,gender,string" . "\n"
+        . "FIELD,race,checkbox" . "\n"
+        . "\n"
+        . "TABLE,contact_information,root,EVENTS" . "\n"
+        . "FIELD,home_address,string" . "\n"
+        . "FIELD,phone1,string" . "\n"
+        . "FIELD,phone_type1,string" . "\n"
+        . "FIELD,phone2,string" . "\n"
+        . "FIELD,phone_type2,string" . "\n"
+        . "FIELD,phone3,string" . "\n"
+        . "FIELD,phone_type3,string" . "\n"
+        . "FIELD,email,string" . "\n"
+        . "\n"
+        . "TABLE,emergency_contacts,root,EVENTS" . "\n"
+        . "FIELD,em_contact1,string" . "\n"
+        . "FIELD,em_contact_phone1a,string" . "\n"
+        . "FIELD,em_contact_phone1b,string" . "\n"
+        . "FIELD,em_contact2,string" . "\n"
+        . "FIELD,em_contact_phone2a,string" . "\n"
+        . "FIELD,em_contact_phone2b,string" . "\n"
+        . "\n"
+        . "TABLE,weight,root,EVENTS" . "\n"
+        . "FIELD,weight_time,datetime" . "\n"
+        . "FIELD,weight_kg,string" . "\n"
+        . "FIELD,height_m,string" . "\n"
+        . "\n"
+        . "TABLE,weight_repeating_events,root,REPEATING_EVENTS" . "\n"
+        . "FIELD,weight_time,datetime" . "\n"
+        . "FIELD,weight_kg,string" . "\n"
+        . "FIELD,height_m,string" . "\n"
+        . "\n"
+        . "TABLE,weight_repeating_instruments,root,REPEATING_INSTRUMENTS" . "\n"
+        . "FIELD,weight_time,datetime" . "\n"
+        . "FIELD,weight_kg,string" . "\n"
+        . "FIELD,height_m,string" . "\n"
+        . "\n"
+        . "TABLE,cardiovascular,root,EVENTS" . "\n"
+        . "FIELD,cardiovascular_date,date" . "\n"
+        . "FIELD,hdl_mg_dl,string" . "\n"
+        . "FIELD,ldl_mg_dl,string" . "\n"
+        . "FIELD,triglycerides_mg_dl,string" . "\n"
+        . "FIELD,diastolic1,string" . "\n"
+        . "FIELD,diastolic2,string" . "\n"
+        . "FIELD,diastolic3,string" . "\n"
+        . "FIELD,systolic1,string" . "\n"
+        . "FIELD,systolic2,string" . "\n"
+        . "FIELD,systolic3,string" . "\n"
+        . "\n"
+        . "TABLE,cardiovascular_repeating_events,root,REPEATING_EVENTS" . "\n"
+        . "FIELD,cardiovascular_date,date" . "\n"
+        . "FIELD,hdl_mg_dl,string" . "\n"
+        . "FIELD,ldl_mg_dl,string" . "\n"
+        . "FIELD,triglycerides_mg_dl,string" . "\n"
+        . "FIELD,diastolic1,string" . "\n"
+        . "FIELD,diastolic2,string" . "\n"
+        . "FIELD,diastolic3,string" . "\n"
+        . "FIELD,systolic1,string" . "\n"
+        . "FIELD,systolic2,string" . "\n"
+        . "FIELD,systolic3,string" . "\n"
+        . "\n"
+        . "TABLE,cardiovascular_repeating_instruments,root,REPEATING_INSTRUMENTS" . "\n"
+        . "FIELD,cardiovascular_date,date" . "\n"
+        . "FIELD,hdl_mg_dl,string" . "\n"
+        . "FIELD,ldl_mg_dl,string" . "\n"
+        . "FIELD,triglycerides_mg_dl,string" . "\n"
+        . "FIELD,diastolic1,string" . "\n"
+        . "FIELD,diastolic2,string" . "\n"
+        . "FIELD,diastolic3,string" . "\n"
+        . "FIELD,systolic1,string" . "\n"
+        . "FIELD,systolic2,string" . "\n"
+        . "FIELD,systolic3,string" . "\n"
+        . "\n";
+
+        $this->assertSame($rulesText, $result);
+    }
 }
