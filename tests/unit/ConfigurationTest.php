@@ -14,7 +14,7 @@ class ConfigurationTest extends TestCase
     public function setUp()
     {
     }
-    
+
     public function testConfig()
     {
         $propertiesFile = __DIR__.'/../data/config-test.ini';
@@ -23,13 +23,24 @@ class ConfigurationTest extends TestCase
         $config = new Configuration($logger, $propertiesFile);
         $this->assertNotNull($config, 'logger not null check');
 
-        $expectedTimezone = 'America/Indiana/Indianapolis';
-        $timezone = $config->getTimezone();
-        $this->assertEquals($expectedTimezone, $timezone, 'Timezone check');
+        $expectedDataSourceApiToken = '1111111122222222333333334444444';
+        $dataSourceApiToken = $config->getDataSourceApiToken();
+        $this->assertEquals($expectedDataSourceApiToken, $dataSourceApiToken, 'DataSourceApiToken check');
+
+        $expectedTransformRulesSource = '3';
+        $transformRulesSource = $config->getTransformRulesSource();
+        $this->assertEquals($expectedTransformRulesSource, $transformRulesSource, 'TransformRulesSource check');
+
+        $expectedBatchSize = '10';
+        $batchSize = $config->getBatchSize();
+        $this->assertEquals($expectedBatchSize, $batchSize, 'BatchSize check');
 
         $expectedTimeLimit= 3600;
         $timeLimit = $config->getTimeLimit();
         $this->assertEquals($expectedTimeLimit, $timeLimit, 'Time limit check');
+        $expectedTimezone = 'America/Indiana/Indianapolis';
+        $timezone = $config->getTimezone();
+        $this->assertEquals($expectedTimezone, $timezone, 'Timezone check');
     }
 
     public function testNullPropertiesFile()
