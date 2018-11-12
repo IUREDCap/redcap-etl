@@ -30,9 +30,9 @@ class ConfigPropertiesTest extends TestCase
         $invalidProperty = 'nonsense string';
 
         $isValid = ConfigProperties::isValidInConfigProject($invalidProperty);
-        $this->assertFalse($isValid, 'Inalid in file property test');
+        $this->assertFalse($isValid, 'Invalid property in config project test');
 
         $isValid = ConfigProperties::isValidInConfigProject($validProperty);
-        $this->assertTrue($isValid, 'Valid in file property test');
+        $this->assertTrue($isValid, 'Valid property in config project test');
     }
 }
