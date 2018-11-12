@@ -14,7 +14,7 @@ class ConfigPropertiesTest extends TestCase
     public function setUp()
     {
     }
-    
+
     public function testIsValid()
     {
         $isValid = ConfigProperties::isValid('Not a valid property');
@@ -22,5 +22,17 @@ class ConfigPropertiesTest extends TestCase
 
         $isValid = ConfigProperties::isValid(ConfigProperties::BATCH_SIZE);
         $this->assertTrue($isValid, 'Valid property test');
+    }
+
+    public function testIsValidConfigProject()
+    {
+        $validProperty = ConfigProperties::ALLOWED_SERVERS;
+        $invalidProperty = 'nonsense string';
+
+        $isValid = ConfigProperties::isValidInConfigProject($invalidProperty);
+        $this->assertFalse($isValid, 'Inalid in file property test');
+
+        $isValid = ConfigProperties::isValidInConfigProject($validProperty);
+        $this->assertTrue($isValid, 'Valid in file property test');
     }
 }
