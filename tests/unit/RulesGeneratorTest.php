@@ -704,7 +704,7 @@ class RulesGeneratorTest extends TestCase
 
         $this->assertSame($rulesText, $result);
     }
-    public function testGenerate()
+    public function testRepeatingGenerate()
     {
         $projectInfo = json_decode('{"project_id":"20","project_title":"REDCap-ETL Repeating Events","creation_time":"2018-06-06 15:41:03","production_time":"","in_production":"0","project_language":"English","purpose":"0","purpose_other":"","project_notes":"","custom_record_label":"","secondary_unique_field":"","is_longitudinal":1,"surveys_enabled":"0","scheduling_enabled":"0","record_autonumbering_enabled":"1","randomization_enabled":"0","ddp_enabled":"0","project_irb_number":"","project_grant_number":"","project_pi_firstname":"","project_pi_lastname":"","display_today_now_button":"1","has_repeating_instruments_or_events":1}', true);
 
@@ -1259,6 +1259,324 @@ class RulesGeneratorTest extends TestCase
         . "FIELD,systolic1,string" . "\n"
         . "FIELD,systolic2,string" . "\n"
         . "FIELD,systolic3,string" . "\n"
+        . "\n";
+
+        $this->assertSame($rulesText, $result);
+    }
+
+    public function testLongitudinalAndRepeatGenerate()
+    {
+        $projectInfo = json_decode('{"project_id":"14","project_title":"ETL_Data","creation_time":"2018-04-16 13:53:19","production_time":"","in_production":"0","project_language":"English","purpose":"0","purpose_other":"","project_notes":"","custom_record_label":"","secondary_unique_field":"","is_longitudinal":1,"surveys_enabled":"0","scheduling_enabled":"0","record_autonumbering_enabled":"1","randomization_enabled":"0","ddp_enabled":"0","project_irb_number":"","project_grant_number":"","project_pi_firstname":"","project_pi_lastname":"","display_today_now_button":"1","has_repeating_instruments_or_events":1}', true);
+
+        $instruments = json_decode('{"demographics":"Basic Demography Form","sleep_study":"Sleep study"}', true);
+
+        $metadata = json_decode('[{"field_name":"record_id","form_name":"demographics","section_header":"","field_type":"text","field_label":"Study ID","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"first_name","form_name":"demographics","section_header":"Contact Information","field_type":"text","field_label":"First Name","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"last_name","form_name":"demographics","section_header":"","field_type":"text","field_label":"Last Name","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"address","form_name":"demographics","section_header":"","field_type":"notes","field_label":"Street, City, State, ZIP","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"telephone","form_name":"demographics","section_header":"","field_type":"text","field_label":"Phone number","select_choices_or_calculations":"","field_note":"Include Area Code","text_validation_type_or_show_slider_number":"phone","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"email","form_name":"demographics","section_header":"","field_type":"text","field_label":"E-mail","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"email","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"dob","form_name":"demographics","section_header":"","field_type":"text","field_label":"Date of birth","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"date_ymd","text_validation_min":"","text_validation_max":"","identifier":"y","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"age","form_name":"demographics","section_header":"","field_type":"calc","field_label":"Age (years)","select_choices_or_calculations":"rounddown(datediff([dob],\'today\',\'y\'))","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"ethnicity","form_name":"demographics","section_header":"","field_type":"radio","field_label":"Ethnicity","select_choices_or_calculations":"0, Hispanic or Latino | 1, NOT Hispanic or Latino | 2, Unknown \/ Not Reported","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"LH","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"race","form_name":"demographics","section_header":"","field_type":"dropdown","field_label":"Race","select_choices_or_calculations":"0, American Indian\/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4, White | 5, More Than One Race | 6, Unknown \/ Not Reported","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"sex","form_name":"demographics","section_header":"","field_type":"radio","field_label":"Sex","select_choices_or_calculations":"0, Female | 1, Male","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"height","form_name":"demographics","section_header":"","field_type":"text","field_label":"Height (cm)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"number","text_validation_min":"130","text_validation_max":"215","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"weight","form_name":"demographics","section_header":"","field_type":"text","field_label":"Weight (kilograms)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"35","text_validation_max":"200","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"bmi","form_name":"demographics","section_header":"","field_type":"calc","field_label":"BMI","select_choices_or_calculations":"round(([weight]*10000)\/(([height])^(2)),1)","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"comments","form_name":"demographics","section_header":"General Comments","field_type":"notes","field_label":"Comments","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"xxxxxxxxxxxxx","form_name":"demographics","section_header":"","field_type":"text","field_label":"Age","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"number","text_validation_min":"1","text_validation_max":"99","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"favorite_number","form_name":"demographics","section_header":"","field_type":"text","field_label":"Favorite number","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"1","text_validation_max":"999","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"brfss_2009_s4_1","form_name":"sleep_study","section_header":"The next question is about getting enough rest or sleep.","field_type":"radio","field_label":"4.1\tDuring the past 30 days, for about how many days have you felt you did not get enough rest or sleep?","select_choices_or_calculations":"00, Choose to enter number of days | 88, None | 77, Don\'t know \/ Not sure | 99, Refused","field_note":"","text_validation_type_or_show_slider_number":"","text_validation_min":"","text_validation_max":"","identifier":"","branching_logic":"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""},{"field_name":"brfss_2009_s4_1a","form_name":"sleep_study","section_header":"","field_type":"text","field_label":"Number of days (01-30)","select_choices_or_calculations":"","field_note":"","text_validation_type_or_show_slider_number":"integer","text_validation_min":"01","text_validation_max":"30","identifier":"","branching_logic":"[brfss_2009_s4_1]=\"00\"","required_field":"","custom_alignment":"","question_number":"","matrix_group_name":"","matrix_ranking":"","field_annotation":""}]', true);
+
+        $projectXml = '<?xml version="1.0" encoding="UTF-8" ?>
+        <ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="ETL_Data" AsOfDateTime="2018-11-08T15:48:22" CreationDateTime="2018-11-08T15:48:22" SourceSystem="REDCap" SourceSystemVersion="8.1.10">
+        <Study OID="Project.ETLData">
+        <GlobalVariables>
+                <StudyName>ETL_Data</StudyName>
+                <StudyDescription>This file contains the metadata, events, and data for REDCap project "ETL_Data".</StudyDescription>
+                <ProtocolName>ETL_Data</ProtocolName>
+                <redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+                <redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+                <redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+                <redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+                <redcap:Purpose>0</redcap:Purpose>
+                <redcap:PurposeOther></redcap:PurposeOther>
+                <redcap:ProjectNotes></redcap:ProjectNotes>
+                <redcap:RepeatingInstrumentsAndEvents>
+                        <redcap:RepeatingEvent redcap:UniqueEventName="event_2_arm_1"/>
+                        <redcap:RepeatingInstruments>
+                                <redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="demographics" redcap:CustomLabel=""/>
+                        </redcap:RepeatingInstruments>
+                </redcap:RepeatingInstrumentsAndEvents>
+        </GlobalVariables>
+        <MetaDataVersion OID="Metadata.ETLData_2018-11-08_1548" Name="ETL_Data" redcap:RecordIdField="record_id">
+                <Protocol>
+                        <StudyEventRef StudyEventOID="Event.event_1_arm_1" OrderNumber="1" Mandatory="No"/>
+                        <StudyEventRef StudyEventOID="Event.event_2_arm_1" OrderNumber="2" Mandatory="No"/>
+                </Protocol>
+                <StudyEventDef OID="Event.event_1_arm_1" Name="Event 1" Type="Common" Repeating="No" redcap:EventName="Event 1" redcap:CustomEventLabel="" redcap:UniqueEventName="event_1_arm_1" redcap:ArmNum="1" redcap:ArmName="Arm 1" redcap:DayOffset="1" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.demographics" OrderNumber="1" Mandatory="No" redcap:FormName="demographics"/>
+                </StudyEventDef>
+                <StudyEventDef OID="Event.event_2_arm_1" Name="Event 2" Type="Common" Repeating="No" redcap:EventName="Event 2" redcap:CustomEventLabel="" redcap:UniqueEventName="event_2_arm_1" redcap:ArmNum="1" redcap:ArmName="Arm 1" redcap:DayOffset="2" redcap:OffsetMin="0" redcap:OffsetMax="0">
+                        <FormRef FormOID="Form.demographics" OrderNumber="1" Mandatory="No" redcap:FormName="demographics"/>
+                </StudyEventDef>
+                <FormDef OID="Form.demographics" Name="Basic Demography Form" Repeating="No" redcap:FormName="demographics">
+                        <ItemGroupRef ItemGroupOID="demographics.record_id" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="demographics.first_name" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="demographics.last_name" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="demographics.comments" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="demographics.xxxxxxxxxxxxx" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="demographics.demographics_complete" Mandatory="No"/>
+                </FormDef>
+                <FormDef OID="Form.sleep_study" Name="Sleep study" Repeating="No" redcap:FormName="sleep_study">
+                        <ItemGroupRef ItemGroupOID="sleep_study.brfss_2009_s4_1" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="sleep_study.brfss_2009_s4_1a" Mandatory="No"/>
+                        <ItemGroupRef ItemGroupOID="sleep_study.sleep_study_complete" Mandatory="No"/>
+                </FormDef>
+                <ItemGroupDef OID="demographics.record_id" Name="Basic Demography Form" Repeating="No">
+                        <ItemRef ItemOID="record_id" Mandatory="No" redcap:Variable="record_id"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="demographics.first_name" Name="Contact Information" Repeating="No">
+                        <ItemRef ItemOID="first_name" Mandatory="No" redcap:Variable="first_name"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="demographics.last_name" Name="Basic Demography Form" Repeating="No">
+                        <ItemRef ItemOID="last_name" Mandatory="No" redcap:Variable="last_name"/>
+                        <ItemRef ItemOID="address" Mandatory="No" redcap:Variable="address"/>
+                        <ItemRef ItemOID="telephone" Mandatory="No" redcap:Variable="telephone"/>
+                        <ItemRef ItemOID="email" Mandatory="No" redcap:Variable="email"/>
+                        <ItemRef ItemOID="dob" Mandatory="No" redcap:Variable="dob"/>
+                        <ItemRef ItemOID="age" Mandatory="No" redcap:Variable="age"/>
+                        <ItemRef ItemOID="ethnicity" Mandatory="No" redcap:Variable="ethnicity"/>
+                        <ItemRef ItemOID="race" Mandatory="No" redcap:Variable="race"/>
+                        <ItemRef ItemOID="sex" Mandatory="No" redcap:Variable="sex"/>
+                        <ItemRef ItemOID="height" Mandatory="No" redcap:Variable="height"/>
+                        <ItemRef ItemOID="weight" Mandatory="No" redcap:Variable="weight"/>
+                        <ItemRef ItemOID="bmi" Mandatory="No" redcap:Variable="bmi"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="demographics.comments" Name="General Comments" Repeating="No">
+                        <ItemRef ItemOID="comments" Mandatory="No" redcap:Variable="comments"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="demographics.xxxxxxxxxxxxx" Name="Basic Demography Form" Repeating="No">
+                        <ItemRef ItemOID="xxxxxxxxxxxxx" Mandatory="No" redcap:Variable="xxxxxxxxxxxxx"/>
+                        <ItemRef ItemOID="favorite_number" Mandatory="No" redcap:Variable="favorite_number"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="demographics.demographics_complete" Name="Form Status" Repeating="No">
+                        <ItemRef ItemOID="demographics_complete" Mandatory="No" redcap:Variable="demographics_complete"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="sleep_study.brfss_2009_s4_1" Name="The next question is about getting enough rest or sleep." Repeating="No">
+                        <ItemRef ItemOID="brfss_2009_s4_1" Mandatory="No" redcap:Variable="brfss_2009_s4_1"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="sleep_study.brfss_2009_s4_1a" Name="Sleep study" Repeating="No">
+                        <ItemRef ItemOID="brfss_2009_s4_1a" Mandatory="No" redcap:Variable="brfss_2009_s4_1a"/>
+                </ItemGroupDef>
+                <ItemGroupDef OID="sleep_study.sleep_study_complete" Name="Form Status" Repeating="No">
+                        <ItemRef ItemOID="sleep_study_complete" Mandatory="No" redcap:Variable="sleep_study_complete"/>
+                </ItemGroupDef>
+                <ItemDef OID="record_id" Name="record_id" DataType="text" Length="999" redcap:Variable="record_id" redcap:FieldType="text">
+                        <Question><TranslatedText>Study ID</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="first_name" Name="first_name" DataType="text" Length="999" redcap:Variable="first_name" redcap:FieldType="text" redcap:SectionHeader="Contact Information" redcap:Identifier="y">
+                        <Question><TranslatedText>First Name</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="last_name" Name="last_name" DataType="text" Length="999" redcap:Variable="last_name" redcap:FieldType="text" redcap:Identifier="y">
+                        <Question><TranslatedText>Last Name</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="address" Name="address" DataType="text" Length="999" redcap:Variable="address" redcap:FieldType="textarea" redcap:Identifier="y">
+                        <Question><TranslatedText>Street, City, State, ZIP</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="telephone" Name="telephone" DataType="text" Length="999" redcap:Variable="telephone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:FieldNote="Include Area Code" redcap:Identifier="y">
+                        <Question><TranslatedText>Phone number</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="email" Name="email" DataType="text" Length="999" redcap:Variable="email" redcap:FieldType="text" redcap:TextValidationType="email" redcap:Identifier="y">
+                        <Question><TranslatedText>E-mail</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:Identifier="y">
+                        <Question><TranslatedText>Date of birth</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="age" Name="age" DataType="float" Length="999" redcap:Variable="age" redcap:FieldType="calc" redcap:Calculation="rounddown(datediff([dob],&#039;today&#039;,&#039;y&#039;))">
+                        <Question><TranslatedText>Age (years)</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="ethnicity" Name="ethnicity" DataType="text" Length="1" redcap:Variable="ethnicity" redcap:FieldType="radio" redcap:CustomAlignment="LH">
+                        <Question><TranslatedText>Ethnicity</TranslatedText></Question>
+                        <CodeListRef CodeListOID="ethnicity.choices"/>
+                </ItemDef>
+                <ItemDef OID="race" Name="race" DataType="text" Length="1" redcap:Variable="race" redcap:FieldType="select">
+                        <Question><TranslatedText>Race</TranslatedText></Question>
+                        <CodeListRef CodeListOID="race.choices"/>
+                </ItemDef>
+                <ItemDef OID="sex" Name="sex" DataType="text" Length="1" redcap:Variable="sex" redcap:FieldType="radio">
+                        <Question><TranslatedText>Sex</TranslatedText></Question>
+                        <CodeListRef CodeListOID="sex.choices"/>
+                </ItemDef>
+                <ItemDef OID="height" Name="height" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="height" redcap:FieldType="text" redcap:TextValidationType="float">
+                        <Question><TranslatedText>Height (cm)</TranslatedText></Question>
+                        <RangeCheck Comparator="GE" SoftHard="Soft">
+                                <CheckValue>130</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (130 - 215). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                        <RangeCheck Comparator="LE" SoftHard="Soft">
+                                <CheckValue>215</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (130 - 215). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                </ItemDef>
+                <ItemDef OID="weight" Name="weight" DataType="integer" Length="999" redcap:Variable="weight" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Weight (kilograms)</TranslatedText></Question>
+                        <RangeCheck Comparator="GE" SoftHard="Soft">
+                                <CheckValue>35</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (35 - 200). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                        <RangeCheck Comparator="LE" SoftHard="Soft">
+                                <CheckValue>200</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (35 - 200). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                </ItemDef>
+                <ItemDef OID="bmi" Name="bmi" DataType="float" Length="999" redcap:Variable="bmi" redcap:FieldType="calc" redcap:Calculation="round(([weight]*10000)/(([height])^(2)),1)">
+                        <Question><TranslatedText>BMI</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="comments" Name="comments" DataType="text" Length="999" redcap:Variable="comments" redcap:FieldType="textarea" redcap:SectionHeader="General Comments">
+                        <Question><TranslatedText>Comments</TranslatedText></Question>
+                </ItemDef>
+                <ItemDef OID="xxxxxxxxxxxxx" Name="xxxxxxxxxxxxx" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="xxxxxxxxxxxxx" redcap:FieldType="text" redcap:TextValidationType="float">
+                        <Question><TranslatedText>Age</TranslatedText></Question>
+                        <RangeCheck Comparator="GE" SoftHard="Soft">
+                                <CheckValue>1</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (1 - 99). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                        <RangeCheck Comparator="LE" SoftHard="Soft">
+                                <CheckValue>99</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (1 - 99). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                </ItemDef>
+                <ItemDef OID="favorite_number" Name="favorite_number" DataType="integer" Length="999" redcap:Variable="favorite_number" redcap:FieldType="text" redcap:TextValidationType="int">
+                        <Question><TranslatedText>Favorite number</TranslatedText></Question>
+                        <RangeCheck Comparator="GE" SoftHard="Soft">
+                                <CheckValue>1</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (1 - 999). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                        <RangeCheck Comparator="LE" SoftHard="Soft">
+                                <CheckValue>999</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (1 - 999). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                </ItemDef>
+                <ItemDef OID="demographics_complete" Name="demographics_complete" DataType="text" Length="1" redcap:Variable="demographics_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+                        <Question><TranslatedText>Complete?</TranslatedText></Question>
+                        <CodeListRef CodeListOID="demographics_complete.choices"/>
+                </ItemDef>
+                <ItemDef OID="brfss_2009_s4_1" Name="brfss_2009_s4_1" DataType="text" Length="2" redcap:Variable="brfss_2009_s4_1" redcap:FieldType="radio" redcap:SectionHeader="The next question is about getting enough rest or sleep.">
+                        <Question><TranslatedText>4.1   During the past 30 days, for about how many days have you felt you did not get enough rest or sleep?</TranslatedText></Question>
+                        <CodeListRef CodeListOID="brfss_2009_s4_1.choices"/>
+                </ItemDef>
+                <ItemDef OID="brfss_2009_s4_1a" Name="brfss_2009_s4_1a" DataType="integer" Length="999" redcap:Variable="brfss_2009_s4_1a" redcap:FieldType="text" redcap:TextValidationType="int" redcap:BranchingLogic="[brfss_2009_s4_1]=&quot;00&quot;">
+                        <Question><TranslatedText>Number of days (01-30)</TranslatedText></Question>
+                        <RangeCheck Comparator="GE" SoftHard="Soft">
+                                <CheckValue>01</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (01 - 30). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                        <RangeCheck Comparator="LE" SoftHard="Soft">
+                                <CheckValue>30</CheckValue>
+                                <ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (01 - 30). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+                        </RangeCheck>
+                </ItemDef>
+                <ItemDef OID="sleep_study_complete" Name="sleep_study_complete" DataType="text" Length="1" redcap:Variable="sleep_study_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+                        <Question><TranslatedText>Complete?</TranslatedText></Question>
+                        <CodeListRef CodeListOID="sleep_study_complete.choices"/>
+                </ItemDef>
+                <CodeList OID="ethnicity.choices" Name="ethnicity" DataType="text" redcap:Variable="ethnicity">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Hispanic or Latino</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>NOT Hispanic or Latino</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Unknown / Not Reported</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="race.choices" Name="race" DataType="text" redcap:Variable="race">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>American Indian/Alaska Native</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Asian</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Native Hawaiian or Other Pacific Islander</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="3"><Decode><TranslatedText>Black or African American</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="4"><Decode><TranslatedText>White</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="5"><Decode><TranslatedText>More Than One Race</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="6"><Decode><TranslatedText>Unknown / Not Reported</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="sex.choices" Name="sex" DataType="text" redcap:Variable="sex">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="demographics_complete.choices" Name="demographics_complete" DataType="text" redcap:Variable="demographics_complete">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="brfss_2009_s4_1.choices" Name="brfss_2009_s4_1" DataType="text" redcap:Variable="brfss_2009_s4_1">
+                        <CodeListItem CodedValue="00"><Decode><TranslatedText>Choose to enter number of days</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="88"><Decode><TranslatedText>None</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="77"><Decode><TranslatedText>Don&#039;t know / Not sure</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="99"><Decode><TranslatedText>Refused</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+                <CodeList OID="sleep_study_complete.choices" Name="sleep_study_complete" DataType="text" redcap:Variable="sleep_study_complete">
+                        <CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+                        <CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+                </CodeList>
+        </MetaDataVersion>
+        </Study>
+        </ODM>';
+
+        $eventMappings = json_decode('[{"arm_num":1,"unique_event_name":"event_1_arm_1","form":"demographics"},{"arm_num":1,"unique_event_name":"event_2_arm_1","form":"demographics"}]', true);
+
+        $dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
+            ->setMethods(['exportProjectInfo', 'exportInstruments', 'exportMetadata', 'exportProjectXml', 'exportInstrumentEventMappings'])
+            ->getMock();
+
+
+        // exportProjectInfo() - stub method returning mock data
+        $dataProject->expects($this->any())
+            ->method('exportProjectInfo')
+            ->will($this->returnValue($projectInfo));
+
+        // exportInstruments() - stub method returning mock data
+        $dataProject->expects($this->any())
+            ->method('exportInstruments')
+            ->will($this->returnValue($instruments));
+
+        // exportMetadata() - stub method returning mock data
+        $dataProject->expects($this->any())
+        ->method('exportMetadata')
+        ->will($this->returnValue($metadata));
+
+        // exportProjectXml() - stub method returning mock data
+
+        $dataProject->expects($this->any())
+        ->method('exportProjectXml')
+        ->will($this->returnValue($projectXml));
+    
+        $dataProject->expects($this->any())
+        ->method('exportInstrumentEventMappings')
+        ->will($this->returnValue($eventMappings));
+
+        $rulesGenerator = new RulesGenerator();
+        $rulesText = $rulesGenerator->generate($dataProject);
+
+        $result = "TABLE,root,root_id,ROOT" . "\n"
+        . "\n"
+        . "TABLE,demographics_repeating_events,root,REPEATING_EVENTS" . "\n"
+        . "FIELD,record_id,string" . "\n"
+        . "FIELD,first_name,string" . "\n"
+        . "FIELD,last_name,string" . "\n"
+        . "FIELD,address,string" . "\n"
+        . "FIELD,telephone,string" . "\n"
+        . "FIELD,email,string" . "\n"
+        . "FIELD,dob,date" . "\n"
+        . "FIELD,age,string" . "\n"
+        . "FIELD,ethnicity,string" . "\n"
+        . "FIELD,race,string" . "\n"
+        . "FIELD,sex,string" . "\n"
+        . "FIELD,height,string" . "\n"
+        . "FIELD,weight,string" . "\n"
+        . "FIELD,bmi,string" . "\n"
+        . "FIELD,comments,string" . "\n"
+        . "FIELD,xxxxxxxxxxxxx,string" . "\n"
+        . "FIELD,favorite_number,string" . "\n"
+        . "\n"
+        . "TABLE,demographics_repeating_instruments,root,REPEATING_INSTRUMENTS" . "\n"
+        . "FIELD,record_id,string" . "\n"
+        . "FIELD,first_name,string" . "\n"
+        . "FIELD,last_name,string" . "\n"
+        . "FIELD,address,string" . "\n"
+        . "FIELD,telephone,string" . "\n"
+        . "FIELD,email,string" . "\n"
+        . "FIELD,dob,date" . "\n"
+        . "FIELD,age,string" . "\n"
+        . "FIELD,ethnicity,string" . "\n"
+        . "FIELD,race,string" . "\n"
+        . "FIELD,sex,string" . "\n"
+        . "FIELD,height,string" . "\n"
+        . "FIELD,weight,string" . "\n"
+        . "FIELD,bmi,string" . "\n"
+        . "FIELD,comments,string" . "\n"
+        . "FIELD,xxxxxxxxxxxxx,string" . "\n"
+        . "FIELD,favorite_number,string" . "\n"
         . "\n";
 
         $this->assertSame($rulesText, $result);

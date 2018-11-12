@@ -36,12 +36,18 @@ class RulesGenerator
         # Get project information and metadata
         #----------------------------------------------------
         $projectInfo = $dataProject->exportProjectInfo();
+        // echo "PROJECT INFO: ";
+        // echo json_encode($projectInfo);
         $this->isLongitudinal = $projectInfo['is_longitudinal'];
-                
         $this->instruments = $dataProject->exportInstruments();
+        // echo "INSTRUMENT INFO: ";
+        // echo json_encode($this->instruments);
         $this->metadata    = $dataProject->exportMetadata();
-        
+        // echo "METADATA INFO: ";
+        // echo json_encode($this->metadata);
         $projectXml  = $dataProject->exportProjectXml($metadataOnly = true);
+        // echo "PROJECTXML INFO: ";
+        // echo $projectXml;
         $this->projectXmlDom = new \DomDocument();
         $this->projectXmlDom->loadXML($projectXml);
 
@@ -49,10 +55,14 @@ class RulesGenerator
 
         if ($this->isLongitudinal) {
             $this->eventMappings = $dataProject->exportInstrumentEventMappings();
+            // echo "EVENT MAPPINGS: ";
+            // echo json_encode($this->eventMappings);
             $rules = $this->generateLongitudinalProjectRules();
         } else {
             $rules = $this->generateClassicProjectRules();
         }
+
+        // print_r($rules);
         return $rules;
     }
     
