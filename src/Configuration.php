@@ -35,6 +35,9 @@ class Configuration
 
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
     const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
+    
+    const DEFAULT_SEND_EMAIL_SUMMARY = false;
+    
     const DEFAULT_TABLE_PREFIX      = '';   # i.e., No table prefix
     const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
 
@@ -69,9 +72,12 @@ class Configuration
     private $redcapApiUrl;
     
     private $sslVerify;
+    private $sendEmailSummary;
+    
     private $tablePrefix;
     private $timeLimit;
     private $timezone;
+    
     private $transformationRules;
     private $transformRulesSource;
     private $triggerEtl;
@@ -186,6 +192,16 @@ class Configuration
 
         if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
             $this->emailToList = $this->properties[ConfigProperties::EMAIL_TO_LIST];
+        }
+        
+        # E-mail summary notification
+        $this->sendEmailSummary = self::DEFAULT_SEND_EMAIL_SUMMARY;
+        if (array_key_exists(ConfigProperties::SEND_EMAIL_SUMMARY, $this->properties)) {
+            $send = $this->properties[ConfigProperties::SEND_EMAIL_SUMMARY];
+            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
+                $this->sendEmailSummary  = true;
+                $this->logger->setSendEmailSummary(true);
+            }
         }
 
         #------------------------------------------------------

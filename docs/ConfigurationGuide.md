@@ -223,8 +223,16 @@ an error occurs while running the ETL process.
 <tr>
 <td>email_to_list</td>
 <td> X </td> <td> X </td>
-
 <td>The to address list for e-mail notifications sent by REDCap-ETL</td>
+</tr>
+
+<tr>
+<td>send_email_summary</td>
+<td> X </td> <td> </td>
+<td>True/false value that indicates if an e-mail summary of the
+log messages should be sent to the "email_to_list".
+The default value is false.
+</td>
 </tr>
 
 </tbody>

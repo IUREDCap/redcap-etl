@@ -320,7 +320,10 @@ top-level REDCap-ETL directory:
 To view the API documentation, open the following file with a web browser:
 
     ./docs/api/index.html
-    
+
+Note that the version of apigen used does not appear to work 
+with PHP 7.2.
+
 
 Coding Standards Compliance
 ------------------------------------

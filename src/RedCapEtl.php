@@ -607,13 +607,12 @@ class RedCapEtl
             $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
             $this->log("Starting processing.");
 
-            //-------------------------------------------------------------------------
-            // Parse Transformation Rules
-            //-------------------------------------------------------------------------
-            // NOTE: The $result is not used in batch mode. It is used
-            //       by the DET handler to give feedback within REDCap.
-
-
+            #-------------------------------------------------------------------------
+            # Parse Transformation Rules
+            #
+            # NOTE: The $result is not used in batch mode. It is used
+            #       by the DET handler to give feedback within REDCap.
+            #-------------------------------------------------------------------------
             list($parseStatus, $result) = $this->processTransformationRules();
 
             if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
@@ -629,9 +628,15 @@ class RedCapEtl
                 }
 
                 $this->log("Processing complete.");
+                $this->logger->processEmailSummary();
             }
-        } catch (EtlException $exception) {
-            $this->log('Processing failed.');
+        } catch (\Exception $exception) {
+            try {
+                $this->log('Processing failed.');
+                $this->logger->processEmailSummary();
+            } catch (\Exception $logException) {
+                ; // Don't do anything; want original exception to be thrown
+            }
             throw $exception;  // re-throw the exception
         }
 
@@ -646,60 +651,70 @@ class RedCapEtl
      */
     public function runForDet()
     {
-        $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-        $this->logger->logInfo('Executing web script '.$this->logger->getApp());
+        try {
+            $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
+            $this->logger->logInfo('Executing web script '.$this->logger->getApp());
 
-        $detHandler = $this->getDetHandler();
-        list($projectId,$recordId, $instrument) = $detHandler->getDetParams();
+            $detHandler = $this->getDetHandler();
+            list($projectId,$recordId, $instrument) = $detHandler->getDetParams();
 
-        #-----------------------------------------------------------------------
-        # Data Entry Trigger: Check for allowed project/servers
-        #-----------------------------------------------------------------------
-        $detHandler->checkDetId($projectId);
-        $detHandler->checkAllowedServers();
+            #-----------------------------------------------------------------------
+            # Data Entry Trigger: Check for allowed project/servers
+            #-----------------------------------------------------------------------
+            $detHandler->checkDetId($projectId);
+            $detHandler->checkAllowedServers();
 
-        if ($instrument !== self::DET_INSTRUMENT_NAME) {
-            # An instrument/form other than the DET instrument/form was
-            # modified, so don't do anything
-            ;
-        } else {
-            list($parseStatus, $result) = $this->processTransformationRules();
-                    
-            if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
-                # If the parsing of the transformation rules failed.
-                $msg = "Transformation rules not fully parsed. Processing stopped.";
-                $this->log($msg);
-                $result .= $msg."\n";
+            if ($instrument !== self::DET_INSTRUMENT_NAME) {
+                # An instrument/form other than the DET instrument/form was
+                # modified, so don't do anything
+                ;
             } else {
-                $result .= "Transformation rules are valid.\n";
-
-                if ($this->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
-                    // ETL not requested
-                    $msg = "Web-invoked process stopped after parsing, per default.";
+                list($parseStatus, $result) = $this->processTransformationRules();
+                    
+                if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
+                    # If the parsing of the transformation rules failed.
+                    $msg = "Transformation rules not fully parsed. Processing stopped.";
                     $this->log($msg);
                     $result .= $msg."\n";
                 } else {
-                    // ETL requested
-                    $result .= "ETL proceeding. Please see log for results\n";
+                    $result .= "Transformation rules are valid.\n";
 
-                    $this->createLoadTables();
+                    if ($this->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
+                        // ETL not requested
+                        $msg = "Web-invoked process stopped after parsing, per default.";
+                        $this->log($msg);
+                        $result .= $msg."\n";
+                    } else {
+                        // ETL requested
+                        $result .= "ETL proceeding. Please see log for results\n";
 
-                    $numberOfRecordIds = $this->extractTransformLoad();
+                        $this->createLoadTables();
 
-                    $sqlFile = $this->configuration->getPostProcessingSqlFile();
-                    if (!empty($sqlFile)) {
-                        $this->dbcon->processQueryFile($sqlFile);
+                        $numberOfRecordIds = $this->extractTransformLoad();
+
+                        $sqlFile = $this->configuration->getPostProcessingSqlFile();
+                        if (!empty($sqlFile)) {
+                            $this->dbcon->processQueryFile($sqlFile);
+                        }
                     }
-                }
-            } // processTransformationRules valid
+                } // processTransformationRules valid
 
-            // Provide a timestamp for the results
-            $result = date('g:i:s a d-M-Y T') . "\n" . $result;
+                // Provide a timestamp for the results
+                $result = date('g:i:s a d-M-Y T') . "\n" . $result;
 
-            #-----------------------------------------------------------
-            # Upload the results, and set ETL trigger back to default
-            #-----------------------------------------------------------
-            $this->uploadResultAndReset($result, $recordId);
+                #-----------------------------------------------------------
+                # Upload the results, and set ETL trigger back to default
+                #-----------------------------------------------------------
+                $this->uploadResultAndReset($result, $recordId);
+                $this->logger->processEmailSummary();
+            }
+        } catch (\Exception $exception) {
+            try {
+                $this->logger->processEmailSummary();
+            } catch (\Exception $logException) {
+                ; // Don't do anything; want original exception to be thrown
+            }
+            throw $exception;  // re-throw the exception
         }
 
         return $numberOfRecordIds;
