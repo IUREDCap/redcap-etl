@@ -158,9 +158,9 @@ class RulesGenerator
         $validationType = $field['text_validation_type_or_show_slider_number'];
         $fieldType      = $field['field_type'];
 
-        if ($fieldType === FieldType::CHECKBOX) {
+        if ($fieldType === 'checkbox') {
             $type = FieldType::CHECKBOX;
-        } elseif ($validationType === FieldType::INT) {
+        } elseif ($validationType === 'integer') {
             # The value may be too large for the database int type,
             # so use a string here
             $type = FieldType::STRING;
