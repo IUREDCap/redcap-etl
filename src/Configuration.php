@@ -43,11 +43,11 @@ class Configuration
     private $app;
     private $allowedServers;
     private $batchSize;
-    
+
     private $caCertFile;
     private $calcFieldIgnorePattern;
     private $createLookupTable;
-    
+
     private $dataSourceApiToken;
     private $dbConnection;
 
@@ -63,11 +63,11 @@ class Configuration
     private $labelViewSuffix;
     private $logProjectApiToken;
     private $lookupTableName;
-    
+
     private $postProcessingSqlFile;
     private $projectId;
     private $redcapApiUrl;
-    
+
     private $sslVerify;
     private $tablePrefix;
     private $timeLimit;
@@ -162,14 +162,14 @@ class Configuration
                 $this->logFile = $this->properties[ConfigProperties::LOG_FILE];
             }
         }
-        
-        
+
+
         if (!empty($this->logFile)) {
             $this->logFile = $this->processFile($this->logFile, $fileShouldExist = false);
             $this->logger->setLogFile($this->logFile);
         }
 
-       
+
         #-----------------------------------------------------------
         # Error e-mail notification information
         #-----------------------------------------------------------
@@ -308,37 +308,37 @@ class Configuration
         $this->generatedNameType     = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_NAME_TYPE);
         $this->generatedRecordIdType = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_RECORD_ID_TYPE);
         $this->generatedSuffixType   = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_SUFFIX_TYPE);
-        
+
         if (array_key_exists(ConfigProperties::GENERATED_INSTANCE_TYPE, $this->properties)) {
             $this->generatedInstanceType = FieldTypeSpecifier::create(
                 $this->properties[ConfigProperties::GENERATED_INSTANCE_TYPE]
             );
         }
-        
+
         if (array_key_exists(ConfigProperties::GENERATED_KEY_TYPE, $this->properties)) {
             $this->generatedKeyType = FieldTypeSpecifier::create(
                 $this->properties[ConfigProperties::GENERATED_KEY_TYPE]
             );
         }
-     
+
         if (array_key_exists(ConfigProperties::GENERATED_LABEL_TYPE, $this->properties)) {
             $this->generatedLabelType = FieldTypeSpecifier::create(
                 $this->properties[ConfigProperties::GENERATED_LABEL_TYPE]
             );
         }
-    
+
         if (array_key_exists(ConfigProperties::GENERATED_NAME_TYPE, $this->properties)) {
             $this->generatedNameType = FieldTypeSpecifier::create(
                 $this->properties[ConfigProperties::GENERATED_NAME_TYPE]
             );
         }
-   
+
         if (array_key_exists(ConfigProperties::GENERATED_RECORD_ID_TYPE, $this->properties)) {
             $this->generatedRecordIdType = FieldTypeSpecifier::create(
                 $this->properties[ConfigProperties::GENERATED_RECORD_ID_TYPE]
             );
         }
-   
+
         if (array_key_exists(ConfigProperties::GENERATED_SUFFIX_TYPE, $this->properties)) {
             $this->generatedSuffixType = FieldTypeSpecifier::create(
                 $this->properties[ConfigProperties::GENERATED_SUFFIX_TYPE]
@@ -353,7 +353,7 @@ class Configuration
         if (array_key_exists(ConfigProperties::CREATE_LOOKUP_TABLE, $this->properties)) {
             $this->createLookupTable = $this->properties[ConfigProperties::CREATE_LOOKUP_TABLE];
         }
-        
+
         $this->lookupTableName = self::DEFAULT_LOOKUP_TABLE_NAME;
         if (array_key_exists(ConfigProperties::LOOKUP_TABLE_NAME, $this->properties)) {
             $this->lookupTableName = $this->properties[ConfigProperties::LOOKUP_TABLE_NAME];
@@ -366,7 +366,7 @@ class Configuration
         if (array_key_exists(ConfigProperties::CALC_FIELD_IGNORE_PATTERN, $this->properties)) {
             $this->calcFieldIgnorePattern = $this->properties[ConfigProperties::CALC_FIELD_IGNORE_PATTERN];
         }
-        
+
         #------------------------------------------------------
         # If a configuration project API token was defined,
         # process the configuration project
@@ -394,7 +394,7 @@ class Configuration
             $message = 'No data source API token was found in the configuration project.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
-        
+
         #-------------------------------------------------------------------------------
         # Get the logging project (where log records are written to) API token (if any)
         #-------------------------------------------------------------------------------
@@ -438,10 +438,10 @@ class Configuration
         $this->batchSize = self::DEFAULT_BATCH_SIZE;
         if (array_key_exists(ConfigProperties::BATCH_SIZE, $this->properties)) {
             $batchSize = $this->properties[ConfigProperties::BATCH_SIZE];
-            
+
             $message = "Invalid ".ConfigProperties::BATCH_SIZE." property."
                 . " This property must be an integer greater than 0.";
-                    
+
             if (is_int($batchSize)) {
                 if ($batchSize < 1) {
                     throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -455,8 +455,8 @@ class Configuration
             }
             $this->batchSize = $batchSize;
         }
-        
-        
+
+
         $this->processTransformationRules($this->properties);
 
         #----------------------------------------------------------------
@@ -465,7 +465,7 @@ class Configuration
         $this->tablePrefix = self::DEFAULT_TABLE_PREFIX;
         if (array_key_exists(ConfigProperties::TABLE_PREFIX, $this->properties)) {
             $tablePrefix = $this->properties[ConfigProperties::TABLE_PREFIX];
-            
+
             if (!empty($tablePrefix)) {
                 # If the prefix contains something other than letters, numbers or underscore
                 if (preg_match("/[^a-zA-Z0-9_]+/", $tablePrefix) === 1) {
@@ -484,7 +484,7 @@ class Configuration
         $this->labelViewSuffix = self::DEFAULT_LABEL_VIEW_SUFFIX;
         if (array_key_exists(ConfigProperties::LABEL_VIEW_SUFFIX, $this->properties)) {
             $labelViewSuffix = $this->properties[ConfigProperties::LABEL_VIEW_SUFFIX];
-            
+
             if (!empty($labelViewSuffix)) {
                 # If the suffix contains something other than letters, numbers or underscore
                 if (preg_match("/[^a-zA-Z0-9_]+/", $labelViewSuffix) === 1) {
@@ -503,12 +503,12 @@ class Configuration
         #---------------------------------------------------
         if (array_key_exists(ConfigProperties::DB_CONNECTION, $this->properties)) {
             $this->dbConnection = trim($this->properties[ConfigProperties::DB_CONNECTION]);
-            
+
             if (empty($this->dbConnection)) {
                 $message = 'No database connection was specified in the configuration.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
-            
+
             # If this property was defined in a file and uses the CSV database
             # type and a relative path was used, replace the relative path with
             # an absolute path
@@ -523,7 +523,7 @@ class Configuration
             $message = 'No database connection was specified in the configuration.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
-    
+
         return true;
     }
 
@@ -585,7 +585,7 @@ class Configuration
                 if ($value != null) {
                     $value = trim($value);
                 }
-                
+
                 if (array_key_exists($key, $properties)) {
                     if (!empty($value)) {
                         $properties[$key] = $value;
@@ -691,7 +691,7 @@ class Configuration
         } else {
             $file = trim($file);
         }
- 
+
         if ($this->isAbsolutePath($file)) {
             if ($fileShouldExist) {
                 $realFile = realpath($file);
@@ -709,7 +709,7 @@ class Configuration
             } else {
                 $baseDir = dirname(realpath($this->propertiesFile));
             }
-            
+
             if ($fileShouldExist) {
                 $realFile = realpath($baseDir.'/'.$file);
             } else {
@@ -735,7 +735,7 @@ class Configuration
 
         return $realFile;
     }
-    
+
     /**
      * Processes the specified directory path and returns its canonicalized
      * absolute path name.
@@ -756,7 +756,7 @@ class Configuration
         } else {
             $path = trim($path);
         }
-        
+
         if ($this->isAbsolutePath($path)) {
             $realDir  = realpath($path);
         } else { // Relative path
@@ -767,12 +767,12 @@ class Configuration
             }
             $realDir = realpath($baseDir.'/'.$path);
         }
-        
+
         if ($realDir === false) {
             $message = 'Directory "'.$path.'" not found.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
-            
+
         return $realDir;
     }
 
@@ -873,14 +873,14 @@ class Configuration
         }
         return $isFromFile;
     }
-    
+
     public function getPropertyInfo($property)
     {
         $info = '';
         if (ConfigProperties::isValid($property)) {
             if (array_key_exists($property, $this->properties)) {
                 $info = $properties[$property];
-                
+
                 if ($this->isFromFile($property)) {
                     if (emtpy($this->propertiesFile)) {
                         $info .= ' - defined in array argument';
@@ -896,7 +896,7 @@ class Configuration
         } else {
             $info = 'invalid property';
         }
-        
+
         return $info;
     }
 
@@ -934,7 +934,7 @@ class Configuration
     {
         return $this->calcFieldIgnorePattern;
     }
-    
+
     public function getConfigProject()
     {
         return $this->configProject;
@@ -969,32 +969,32 @@ class Configuration
     {
         return $this->emailToList;
     }
-    
+
     public function getExtractedRecordCountCheck()
     {
         return $this->extractedRecordCountCheck;
     }
-    
+
     public function getGeneratedInstanceType()
     {
         return $this->generatedInstanceType;
     }
-    
+
     public function getGeneratedKeyType()
     {
         return $this->generatedKeyType;
     }
-    
+
     public function getGeneratedLabelType()
     {
         return $this->generatedLabelType;
     }
-    
+
     public function getGeneratedNameType()
     {
         return $this->generatedNameType;
     }
-    
+
     public function getGeneratedRecordIdType()
     {
         return $this->generatedRecordIdType;
@@ -1004,7 +1004,7 @@ class Configuration
     {
         return $this->generatedSuffixType;
     }
-    
+
     public function getLabelViewSuffix()
     {
         return $this->labelViewSuffix;
@@ -1024,15 +1024,20 @@ class Configuration
     {
         return $this->lookupTableName;
     }
-    
+
     public function getPostProcessingSqlFile()
     {
         return $this->postProcessingSqlFile;
     }
-    
+
     public function getProjectId()
     {
         return $this->projectId;
+    }
+
+    public function setProjectId($projectId)
+    {
+        $this->projectId = $projectId;
     }
 
     public function getRecordId()
@@ -1043,7 +1048,7 @@ class Configuration
         }
         return $recordId;
     }
-    
+
     public function getRedCapApiUrl()
     {
         return $this->redcapApiUrl;
@@ -1074,6 +1079,11 @@ class Configuration
         return $this->transformationRules;
     }
 
+    public function setTransformationRules($rules)
+    {
+        $this->transformationRules = $rules;
+    }
+
     public function getTransformRulesSource()
     {
         return $this->transformRulesSource;
@@ -1082,5 +1092,10 @@ class Configuration
     public function getTriggerEtl()
     {
         return $this->triggerEtl;
+    }
+
+    public function setTriggerEtl($triggerEtl)
+    {
+        $this->triggerEtl = $triggerEtl;
     }
 }

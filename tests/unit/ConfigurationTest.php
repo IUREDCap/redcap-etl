@@ -31,6 +31,12 @@ class ConfigurationTest extends TestCase
         $transformRulesSource = $config->getTransformRulesSource();
         $this->assertEquals($expectedTransformRulesSource, $transformRulesSource, 'TransformRulesSource check');
 
+        $expectedTransformationRules = 'TEST RULES';
+        $config->setTransformationRules($expectedTransformationRules);
+        $transformationRules = $config->getTransformationRules();
+        $this->assertEquals($expectedTransformationRules, $transformationRules,
+                            'TransformationRules check');
+
         $expectedBatchSize = '10';
         $batchSize = $config->getBatchSize();
         $this->assertEquals($expectedBatchSize, $batchSize, 'BatchSize check');
@@ -118,17 +124,72 @@ class ConfigurationTest extends TestCase
                             $generatedSuffixType->getSize(),
                             'GeneratedSuffixType size check');
 
+        $expectedLabelViewSuffix = 'testlabelviewsuffix';
+        $labelViewSuffix = $config->getLabelViewSuffix();
+        $this->assertEquals($expectedLabelViewSuffix,
+                            $labelViewSuffix,
+                            'LabelViewSuffix check');
+
+        $expectedLogFile = '/tmp/logfile';
+        $logFile = $config->getLogFile();
+        $this->assertEquals($expectedLogFile, $logFile, 'LogFile check');
+
+        $expectedLogProjectApiToken = '111222333';
+        $logProjectApiToken = $config->getLogProjectApiToken();
+        $this->assertEquals($expectedLogProjectApiToken, $logProjectApiToken,
+                            'LogProjectApiToken check');
+
         $expectedCreateLookupTable = true;
         $createLookupTable = $config->getCreateLookupTable();
         $this->assertEquals($expectedCreateLookupTable,
                             $createLookupTable, 'CreateLookupTable check');
 
+        $expectedLookupTableName = 'test_name';
+        $lookupTableName = $config->getLookupTableName();
+        $this->assertEquals($expectedLookupTableName,
+                            $lookupTableName, 'LookupTableName check');
+
+        $expectedPostProcessingSqlFile = '/tmp/postsql';
+        $postProcessingSqlFile = $config->getPostProcessingSqlFile();
+        $this->assertEquals($expectedPostProcessingSqlFile,
+                            $postProcessingSqlFile,
+                            'PostProcessingSqlFile check');
+
+        $expectedProjectId = 7;
+        $config->setProjectId($expectedProjectId);
+        $projectId = $config->getProjectId();
+        $this->assertEquals($expectedProjectId,$projectId,'ProjectId check');
+
+        $expectedREDCapApiUrl = 'https://redcap.someplace.edu/api/';
+        $redcapApiUrl = $config->getREDCapApiUrl();
+        $this->assertEquals($expectedREDCapApiUrl,
+                            $redcapApiUrl,
+                            'REDCapApiUrl check');
+
+        $expectedSslVerify = true;
+        $sslVerify = $config->getSslVerify();
+        $this->assertEquals($expectedSslVerify, $sslVerify, 'SslVerify check');
+
+        $expectedTablePrefix = '';
+        $tablePrefix = $config->getTablePrefix();
+        $this->assertEquals($expectedTablePrefix,
+                            $tablePrefix, 'TablePrefix check');
+
         $expectedTimeLimit= 3600;
         $timeLimit = $config->getTimeLimit();
-        $this->assertEquals($expectedTimeLimit, $timeLimit, 'Time limit check');
+        $this->assertEquals($expectedTimeLimit, $timeLimit,
+                            'Time limit check');
+
         $expectedTimezone = 'America/Indiana/Indianapolis';
         $timezone = $config->getTimezone();
         $this->assertEquals($expectedTimezone, $timezone, 'Timezone check');
+
+        $expectedTriggerEtl = true;
+        $config->setTriggerEtl($expectedTriggerEtl);
+        $triggerEtl = $config->getTriggerEtl();
+        $this->assertEquals($expectedTriggerEtl, $triggerEtl, 'TriggerEtl check');
+
+
     }
 
     public function testNullPropertiesFile()
