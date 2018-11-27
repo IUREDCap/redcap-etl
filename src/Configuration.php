@@ -35,6 +35,9 @@ class Configuration
 
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
     const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
+    
+    const DEFAULT_SEND_EMAIL_SUMMARY = false;
+    
     const DEFAULT_TABLE_PREFIX      = '';   # i.e., No table prefix
     const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
 
@@ -69,9 +72,12 @@ class Configuration
     private $redcapApiUrl;
     
     private $sslVerify;
+    private $sendEmailSummary;
+    
     private $tablePrefix;
     private $timeLimit;
     private $timezone;
+    
     private $transformationRules;
     private $transformRulesSource;
     private $triggerEtl;
@@ -127,7 +133,6 @@ class Configuration
                 }
 
                 $this->properties = json_decode($propertiesFileContents, true);
-                #print_r($this->properties);
 
                 if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $this->properties)) {
                     $rulesText = $this->properties[ConfigProperties::TRANSFORM_RULES_TEXT];
@@ -136,7 +141,6 @@ class Configuration
                         $this->properties[ConfigProperties::TRANSFORM_RULES_TEXT] = $rulesText;
                     }
                 }
-                #print_r($this->properties);
             } else {
                 # suppress errors for this, because it should be
                 # handled by the check for $properties being false
@@ -189,6 +193,16 @@ class Configuration
         if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
             $this->emailToList = $this->properties[ConfigProperties::EMAIL_TO_LIST];
         }
+        
+        # E-mail summary notification
+        $this->sendEmailSummary = self::DEFAULT_SEND_EMAIL_SUMMARY;
+        if (array_key_exists(ConfigProperties::SEND_EMAIL_SUMMARY, $this->properties)) {
+            $send = $this->properties[ConfigProperties::SEND_EMAIL_SUMMARY];
+            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
+                $this->sendEmailSummary  = true;
+                $this->logger->setSendEmailSummary(true);
+            }
+        }
 
         #------------------------------------------------------
         # Set email logging information
@@ -225,9 +239,9 @@ class Configuration
                     || strcasecmp($sslVerify, 'true') === 0 || $sslVerify === '1') {
                 $this->sslVerify = true;
             } else {
-                $message = 'Unrecognized value \"'.$sslVerify.'\" for '
+                $message = 'Unrecognized value "'.$sslVerify.'" for '
                     .ConfigProperties::SSL_VERIFY
-                    .' property; a true a false value should be specified.';
+                    .' property; a true or false value should be specified.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
         } else {
@@ -252,7 +266,7 @@ class Configuration
             } else {
                 $message = 'Unrecognized value \"'.$countCheck.'\" for '
                     .ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK
-                    .' property; a true a false value should be specified.';
+                    .' property; a true or false value should be specified.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
         } else {
