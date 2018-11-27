@@ -36,24 +36,24 @@ class RulesGenerator
         # Get project information and metadata
         #----------------------------------------------------
         $projectInfo = $dataProject->exportProjectInfo();
-        echo "{ \"projectInfo\": ";
-        echo json_encode($projectInfo, JSON_PRETTY_PRINT);
+        // echo "{ \"projectInfo\": ";
+        // echo json_encode($projectInfo, JSON_PRETTY_PRINT);
         $this->isLongitudinal = $projectInfo['is_longitudinal'];
         $this->instruments = $dataProject->exportInstruments();
-        echo ", \"instruments\": ";
-        echo json_encode($this->instruments, JSON_PRETTY_PRINT);
+        // echo ", \"instruments\": ";
+        // echo json_encode($this->instruments, JSON_PRETTY_PRINT);
         $this->metadata    = $dataProject->exportMetadata();
-        echo ", \"metadata\": ";
-        echo json_encode($this->metadata, JSON_PRETTY_PRINT);
-        echo "}";
-        echo "\n";
-        echo "\n";
+        // echo ", \"metadata\": ";
+        // echo json_encode($this->metadata, JSON_PRETTY_PRINT);
+        // echo "}";
+        // echo "\n";
+        // echo "\n";
         $projectXml  = $dataProject->exportProjectXml($metadataOnly = true);
-        echo "\n";
-        echo "\n";
-        echo $projectXml;
-        echo "\n";
-        echo "\n";
+        // echo "\n";
+        // echo "\n";
+        // echo $projectXml;
+        // echo "\n";
+        // echo "\n";
         $this->projectXmlDom = new \DomDocument();
         $this->projectXmlDom->loadXML($projectXml);
 
@@ -61,17 +61,17 @@ class RulesGenerator
 
         if ($this->isLongitudinal) {
             $this->eventMappings = $dataProject->exportInstrumentEventMappings();
-            echo "\n";
-            echo "\n \"instrumentEventMappings\": ";
-            echo json_encode($this->eventMappings, JSON_PRETTY_PRINT);
-            echo "\n";
-            echo "\n";
+            // echo "\n";
+            // echo "\n \"instrumentEventMappings\": ";
+            // echo json_encode($this->eventMappings, JSON_PRETTY_PRINT);
+            // echo "\n";
+            // echo "\n";
             $rules = $this->generateLongitudinalProjectRules();
         } else {
             $rules = $this->generateClassicProjectRules();
         }
 
-        print_r($rules);
+        // print_r($rules);
         return $rules;
     }
     

@@ -18,9 +18,9 @@ class RulesGeneratorTest extends TestCase
 {
     public function testBasicGenerate()
     {
-        $jsonFile  = __DIR__.'/../data/basic-demography.json';
-        $xmlFile   = __DIR__.'/../data/basic-demography.xml';
-        $rulesFile = __DIR__.'/../data/basic-demography-rules.txt';
+        $jsonFile  = __DIR__.'/../data/projects/basic-demography.json';
+        $xmlFile   = __DIR__.'/../data/projects/basic-demography.xml';
+        $rulesFile = __DIR__.'/../data/projects/basic-demography-rules.txt';
 
         $projectData = new ProjectData($jsonFile, $xmlFile, $rulesFile);
 
@@ -67,9 +67,9 @@ class RulesGeneratorTest extends TestCase
 
     public function testLongitudinalGenerate()
     {
-        $jsonFile  = __DIR__.'/../data/visits.json';
-        $xmlFile   = __DIR__.'/../data/visits.xml';
-        $rulesFile = __DIR__.'/../data/visits-rules.txt';
+        $jsonFile  = __DIR__.'/../data/projects/visits.json';
+        $xmlFile   = __DIR__.'/../data/projects/visits.xml';
+        $rulesFile = __DIR__.'/../data/projects/visits-rules.txt';
 
         $projectData = new ProjectData($jsonFile, $xmlFile, $rulesFile);
 
@@ -128,9 +128,9 @@ class RulesGeneratorTest extends TestCase
 
     public function testGenerate()
     {
-        $jsonFile  = __DIR__.'/../data/repeating-events.json';
-        $xmlFile   = __DIR__.'/../data/repeating-events.xml';
-        $rulesFile = __DIR__.'/../data/repeating-events-rules.txt';
+        $jsonFile  = __DIR__.'/../data/projects/repeating-events.json';
+        $xmlFile   = __DIR__.'/../data/projects/repeating-events.xml';
+        $rulesFile = __DIR__.'/../data/projects/repeating-events-rules.txt';
 
         $projectData = new ProjectData($jsonFile, $xmlFile, $rulesFile);
 
@@ -189,9 +189,9 @@ class RulesGeneratorTest extends TestCase
 
     public function testGenerateRepeatingEventAndInst()
     {
-        $jsonFile  = __DIR__.'/../data/repeating-event-inst.json';
-        $xmlFile   = __DIR__.'/../data/repeating-event-inst.xml';
-        $rulesFile = __DIR__.'/../data/repeating-event-inst.txt';
+        $jsonFile  = __DIR__.'/../data/projects/repeating-event-inst.json';
+        $xmlFile   = __DIR__.'/../data/projects/repeating-event-inst.xml';
+        $rulesFile = __DIR__.'/../data/projects/repeating-event-inst.txt';
 
         $projectData = new ProjectData($jsonFile, $xmlFile, $rulesFile);
 
@@ -250,9 +250,9 @@ class RulesGeneratorTest extends TestCase
 
     public function testGenerateNonRepeating()
     {
-        $jsonFile  = __DIR__.'/../data/non-repeating.json';
-        $xmlFile   = __DIR__.'/../data/non-repeating.xml';
-        $rulesFile = __DIR__.'/../data/non-repeating.txt';
+        $jsonFile  = __DIR__.'/../data/projects/non-repeating.json';
+        $xmlFile   = __DIR__.'/../data/projects/non-repeating.xml';
+        $rulesFile = __DIR__.'/../data/projects/non-repeating.txt';
 
         $projectData = new ProjectData($jsonFile, $xmlFile, $rulesFile);
 
