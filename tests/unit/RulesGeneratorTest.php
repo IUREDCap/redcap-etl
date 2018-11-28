@@ -246,7 +246,7 @@ class RulesGeneratorTest extends TestCase
         $rulesText = $rulesGenerator->generate($dataProject);
 
         $this->assertSame($expectedResult, $rulesText);
-    }    
+    }
 
     public function testGenerateNonRepeating()
     {
