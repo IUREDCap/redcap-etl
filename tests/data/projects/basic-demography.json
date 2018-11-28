@@ -308,5 +308,28 @@
             "matrix_ranking": "",
             "field_annotation": ""
         }
-    ]
+    ],
+    "recordIdFieldName": "record_id", 
+    "fieldNames": {
+        "record_id": 1,
+        "first_name": 1,
+        "last_name": 1,
+        "address": 1,
+        "telephone": 1,
+        "email": 1,
+        "dob": 1,
+        "ethnicity": 1,
+        "race___0": 1,
+        "race___1": 1,
+        "race___2": 1,
+        "race___3": 1,
+        "race___4": 1,
+        "race___5": 1,
+        "sex": 1,
+        "height": 1,
+        "weight": 1,
+        "bmi": 1,
+        "comments": 1,
+        "demographics_complete": 1
+    }
 }

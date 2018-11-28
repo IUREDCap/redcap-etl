@@ -29,6 +29,7 @@
       <file>tests/unit/Schema/TableTest.php</file>
 
       <file>tests/unit/RulesGeneratorTest.php</file>
+      <file>tests/unit/SchemaGeneratorTest.php</file>
     </testsuite>
 
     <!--

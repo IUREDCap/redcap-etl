@@ -60,6 +60,18 @@ class ProjectData
         } else {
             $this->instrumentEventMappings = '';
         }
+
+        if (array_key_exists('recordIdFieldName', $data)) {
+            $this->recordIdFieldName = $data['recordIdFieldName'];
+        } else {
+            $this->recordIdFieldName = '';
+        }
+
+        if (array_key_exists('fieldNames', $data)) {
+            $this->fieldNames = $data['fieldNames'];
+        } else {
+            $this->fieldNames = '';
+        }
     }
 
 

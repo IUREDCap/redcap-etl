@@ -69,7 +69,11 @@ class SchemaGenerator
     public function generateSchema($rulesText)
     {
         $recordIdFieldName = $this->dataProject->getRecordIdFieldName();
+            echo "{ \"recordIdFieldName\": ";
+            echo json_encode($recordIdFieldName, JSON_PRETTY_PRINT);
         $fieldNames        = $this->dataProject->getFieldNames();
+            echo ", \"fieldNames\": ";
+            echo json_encode($fieldNames, JSON_PRETTY_PRINT);
 
         #------------------------------------------------------------------------------
         # Set up $unmappedRedCapFields to keep track of the user-created REDCap fields
