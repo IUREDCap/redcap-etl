@@ -68,12 +68,14 @@ class SchemaGenerator
      */
     public function generateSchema($rulesText)
     {
+            // echo "rulesText";
+            // print_r($rulesText);
         $recordIdFieldName = $this->dataProject->getRecordIdFieldName();
-            echo "{ \"recordIdFieldName\": ";
-            echo json_encode($recordIdFieldName, JSON_PRETTY_PRINT);
+            // echo "{ \"recordIdFieldName\": ";
+            // echo json_encode($recordIdFieldName, JSON_PRETTY_PRINT);
         $fieldNames        = $this->dataProject->getFieldNames();
-            echo ", \"fieldNames\": ";
-            echo json_encode($fieldNames, JSON_PRETTY_PRINT);
+            // echo ", \"fieldNames\": ";
+            // echo json_encode($fieldNames, JSON_PRETTY_PRINT);
 
         #------------------------------------------------------------------------------
         # Set up $unmappedRedCapFields to keep track of the user-created REDCap fields
@@ -88,6 +90,8 @@ class SchemaGenerator
         }
 
         $this->lookupChoices = $this->dataProject->getLookupChoices();
+            // echo " \"lookupChoices\": ";
+            // echo json_encode($this->lookupChoices, JSON_PRETTY_PRINT);
         $keyType = $this->configuration->getGeneratedKeyType();
         $lookupTableName = $this->configuration->getLookupTableName();
         $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix, $keyType, $lookupTableName);
@@ -131,7 +135,8 @@ class SchemaGenerator
 
                 # Table creation will create the primary key
                 $table = $this->generateTable($rule, $parentTable, $this->tablePrefix, $recordIdFieldName);
-
+                    echo "table: ";
+                    print_r($table);
                 $schema->addTable($table);
 
                 #----------------------------------------------------------------------------
@@ -313,6 +318,13 @@ class SchemaGenerator
         }
 
         $schema->setLookupTable($this->lookupTable);
+
+            // echo " \"schema\": ";
+            // // echo json_encode(array($schema, $messages), JSON_PRETTY_PRINT);
+            // // echo gettype($schema);
+            // // echo gettype($messages);
+            // print_r(array($schema, $messages));
+            echo serialize(array($schema, $messages));
         return array($schema, $messages);
     }
 

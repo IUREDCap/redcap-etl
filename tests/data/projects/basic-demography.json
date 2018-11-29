@@ -331,5 +331,31 @@
         "bmi": 1,
         "comments": 1,
         "demographics_complete": 1
-    }
+    },
+    "lookupChoices": {
+        "ethnicity": [
+            "Hispanic or Latino",
+            "NOT Hispanic or Latino",
+            "Unknown \/ Not Reported"
+        ],
+        "race": [
+            "American Indian\/Alaska Native",
+            "Asian",
+            "Native Hawaiian or Other Pacific Islander",
+            "Black or African American",
+            "White",
+            "Other"
+        ],
+        "sex": [
+            "Female",
+            "Male"
+        ]
+    },
+    "schema": [
+        {},
+        [
+            "valid",
+            "Found 19 fields in REDCap.\n"
+        ]
+    ]
 }

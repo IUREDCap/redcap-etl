@@ -72,6 +72,18 @@ class ProjectData
         } else {
             $this->fieldNames = '';
         }
+
+        if (array_key_exists('lookupChoices', $data)) {
+            $this->lookupChoices = $data['lookupChoices'];
+        } else {
+            $this->lookupChoices = '';
+        }
+
+        if (array_key_exists('schema', $data)) {
+            $this->schema = $data['schema'];
+        } else {
+            $this->schema = '';
+        }
     }
 
 
@@ -103,5 +115,23 @@ class ProjectData
     public function getRulesText()
     {
         return $this->rulesText;
+    }
+
+    public function getRecordIdFieldName()
+    {
+        return $this->recordIdFieldName;
+    }
+
+    public function getFieldNames()
+    {
+        return $this->fieldNames;
+    }
+    public function getLookupChoices()
+    {
+        return $this->lookupChoices;
+    }
+    public function getSchema()
+    {
+        return $this->schema;
     }
 }
