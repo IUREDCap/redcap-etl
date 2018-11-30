@@ -21,15 +21,29 @@ class ConfigurationTest extends TestCase
         $logger = new Logger('test-app');
 
         $config = new Configuration($logger, $propertiesFile);
-        $this->assertNotNull($config, 'logger not null check');
+        $this->assertNotNull($config, 'config not null check');
+
+        $retrievedLogger = $config->getLogger();
+        $this->assertEquals($logger, $retrievedLogger, 'Logger check');
+
+        $expectedAllowedServers = 'foo.com';
+        $allowedServers = $config->getAllowedServers();
+        $this->assertEquals($expectedAllowedServers, $allowedServers,
+                            'AllowedServers check');
+
+        $this->assertEquals($logger->getApp(),
+                            $config->getApp(), 'GetApp check');
 
         $expectedDataSourceApiToken = '1111111122222222333333334444444';
         $dataSourceApiToken = $config->getDataSourceApiToken();
-        $this->assertEquals($expectedDataSourceApiToken, $dataSourceApiToken, 'DataSourceApiToken check');
+        $this->assertEquals($expectedDataSourceApiToken, $dataSourceApiToken,
+                            'DataSourceApiToken check');
 
         $expectedTransformRulesSource = '3';
         $transformRulesSource = $config->getTransformRulesSource();
-        $this->assertEquals($expectedTransformRulesSource, $transformRulesSource, 'TransformRulesSource check');
+        $this->assertEquals($expectedTransformRulesSource,
+                            $transformRulesSource,
+                            'TransformRulesSource check');
 
         $expectedTransformationRules = 'TEST RULES';
         $config->setTransformationRules($expectedTransformationRules);
@@ -38,6 +52,7 @@ class ConfigurationTest extends TestCase
                             'TransformationRules check');
 
         $expectedBatchSize = '10';
+        $config->setBatchSize($expectedBatchSize);
         $batchSize = $config->getBatchSize();
         $this->assertEquals($expectedBatchSize, $batchSize, 'BatchSize check');
 
@@ -187,9 +202,8 @@ class ConfigurationTest extends TestCase
         $expectedTriggerEtl = true;
         $config->setTriggerEtl($expectedTriggerEtl);
         $triggerEtl = $config->getTriggerEtl();
-        $this->assertEquals($expectedTriggerEtl, $triggerEtl, 'TriggerEtl check');
-
-
+        $this->assertEquals($expectedTriggerEtl, $triggerEtl,
+                            'TriggerEtl check');
     }
 
     public function testNullPropertiesFile()
@@ -226,5 +240,73 @@ class ConfigurationTest extends TestCase
 
         $expectedCode = EtlException::INPUT_ERROR;
         $this->assertEquals($expectedCode, $exception->getCode(), 'Exception code check');
+    }
+
+    public function testProperties()
+    {
+
+        // Invalid property
+        // Property not defined
+        // Property defined in file
+
+        $propertiesFile = __DIR__.'/../data/config-test.ini';
+        $logger = new Logger('test-app');
+        $config = new Configuration($logger, $propertiesFile);
+
+        $property = 'invalid-property';
+        $expectedInfo = 'invalid property';
+        $info = $config->getPropertyInfo($property);
+        $this->assertEquals($expectedInfo, $info,
+                           'GetProperyInfo invalid test');
+
+        $property = 'allowed_servers';
+        $expectedInfo = 'undefined';
+        $info = $config->getPropertyInfo($property);
+        $this->assertEquals($expectedInfo, $info,
+                           'GetProperyInfo undefined test');
+
+        $property = 'transform_rules_source';
+        $expectedInfo = '3 - defined in file: '.
+            __DIR__.'/../data/config-test.ini';
+        $info = $config->getPropertyInfo($property);
+        $this->assertEquals($expectedInfo, $info,
+                           'GetProperyInfo in file test');
+
+        $isFromFile = $config->isFromFile($property);
+        $this->assertTrue($isFromFile, 'IsFromFile from file test');
+
+        $expectedGetProperty = '3';
+        $getProperty = $config->getProperty($property);
+        $this->assertEquals($expectedGetProperty, $getProperty,
+                            'GetProperty check');
+
+
+        // Property defined in array
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $configMock = $reflection->newInstanceWithoutConstructor();
+
+        $expectedProperties = array(
+            'redcap_api_url' => 'https://redcap.someplace.edu/api/',
+            'transform_rules_source' => '2');
+        $configMock->setProperties($expectedProperties);
+        $properties = $configMock->getProperties();
+        $this->assertEquals($expectedProperties, $properties,
+                            'Get Properties check');
+
+        $property = 'transform_rules_source';
+        $expectedInfo = '2 - defined in array argument';
+        $info = $configMock->getPropertyInfo($property);
+        $this->assertEquals($expectedInfo, $info,
+                           'GetProperyInfo in array test');
+
+        // Property defined in configuration project
+        $configMock->setConfiguration($expectedProperties);
+        $expectedInfo = '2 - defined in configuration project';
+        $info = $configMock->getPropertyInfo($property);
+        $this->assertEquals($expectedInfo, $info,
+                           'GetProperyInfo in config test');
+
+        $isFromFile = $configMock->isFromFile($property);
+        $this->assertFalse($isFromFile, 'IsFromFile from elsewhere test');
     }
 }

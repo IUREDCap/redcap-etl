@@ -843,6 +843,16 @@ class Configuration
         return $this->properties;
     }
 
+    public function setProperties($properties)
+    {
+        $this->properties = $properties;
+    }
+
+    public function setConfiguration($properties)
+    {
+        $this->configuration = $properties;
+    }
+
     /**
      * Gets the specified property.
      */
@@ -879,10 +889,10 @@ class Configuration
         $info = '';
         if (ConfigProperties::isValid($property)) {
             if (array_key_exists($property, $this->properties)) {
-                $info = $properties[$property];
+                $info = $this->properties[$property];
 
                 if ($this->isFromFile($property)) {
-                    if (emtpy($this->propertiesFile)) {
+                    if (empty($this->propertiesFile)) {
                         $info .= ' - defined in array argument';
                     } else {
                         $info .= ' - defined in file: '.$this->propertiesFile;
