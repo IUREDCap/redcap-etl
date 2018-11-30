@@ -24,6 +24,11 @@ class Configuration
     # Default values
     const DEFAULT_BATCH_SIZE          = 100;
     const DEFAULT_CREATE_LOOKUP_TABLE = false;
+
+    const DEFAULT_DB_LOGGING        = true;
+    const DEFAULT_DB_LOG_FILE       = 'etl_log';
+    const DEFAULT_DB_LOG_ENTRY_FILE = 'etl_log_entry';
+
     const DEFAULT_EMAIL_SUBJECT       = 'REDCap-ETL Error';
 
     const DEFAULT_GENERATED_INSTANCE_TYPE  = 'int';
@@ -53,6 +58,10 @@ class Configuration
     
     private $dataSourceApiToken;
     private $dbConnection;
+
+    private $dbLogging;
+    private $dbLogFile;
+    private $dbLogFileEntry;
 
     private $extractedRecordCountCheck;
 
@@ -175,7 +184,15 @@ class Configuration
             $this->logger->setLogFile($this->logFile);
         }
 
-       
+ 
+        #-------------------------------------------------------------------
+        # Database logging
+        #-------------------------------------------------------------------
+
+        if (array_key_exists(ConfigProperties::DB_LOGGING, $this->properties)) {
+        }
+
+
         #-----------------------------------------------------------
         # Error e-mail notification information
         #-----------------------------------------------------------

@@ -199,6 +199,9 @@ class RedCapEtl
             $this->configuration->getTablePrefix(),
             $this->configuration->getLabelViewSuffix()
         );
+        
+        # Set database connection for logger to allow database logging
+        $this->logger->setDbConnection($this->dbcon);
     }
 
 

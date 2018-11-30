@@ -21,6 +21,10 @@ class ConfigProperties
     const DATA_SOURCE_API_TOKEN  = 'data_source_api_token';
     const DB_CONNECTION          = 'db_connection';
 
+    const DB_LOGGING             = 'db_logging';
+    const DB_LOG_FILE            = 'db_log_file';
+    const DB_LOG_ENTRY_FILE      = 'db_log_entry_file';
+
     const EMAIL_FROM_ADDRESS     = 'email_from_address';
     const EMAIL_SUBJECT          = 'email_subject';
     const EMAIL_TO_LIST          = 'email_to_list';

@@ -2,6 +2,8 @@
 
 namespace IU\REDCapETL;
 
+use Database\DbConnection;
+
 /**
  * Class for logging.
  *
@@ -45,6 +47,9 @@ class Logger
 
     /** @var array Array of log messages (in effect an in-memory log). */
     private $logArray;
+    
+    /** @var DbConnection database connection (used for database logging) */
+    private $dbConnection;
 
 
 
@@ -72,6 +77,8 @@ class Logger
         $this->logEmailSubject = '';
         
         $this->sendEmailSummary = false;
+        
+        $this->dbConnection;
     }
     
     /**
@@ -537,6 +544,11 @@ class Logger
         if (!empty($this->logFromEmail) && !empty($this->logToEmail) && $this->sendEmailSummary) {
             $this->emailLogArray();
         }
+    }
+    
+    public function setDbConnection($dbConnection)
+    {
+        $this->dbConnection = $dbConnection;
     }
 
     /**
