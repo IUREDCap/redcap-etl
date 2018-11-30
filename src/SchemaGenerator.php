@@ -92,7 +92,11 @@ class SchemaGenerator
         $this->lookupChoices = $this->dataProject->getLookupChoices();
             // echo " \"lookupChoices\": ";
             // echo json_encode($this->lookupChoices, JSON_PRETTY_PRINT);
+            //  print_r($this->configuration);
         $keyType = $this->configuration->getGeneratedKeyType();
+            echo "\n \n";
+            echo gettype($keyType);
+            echo json_encode($keyType, JSON_PRETTY_PRINT);
         $lookupTableName = $this->configuration->getLookupTableName();
         $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix, $keyType, $lookupTableName);
 
@@ -135,8 +139,8 @@ class SchemaGenerator
 
                 # Table creation will create the primary key
                 $table = $this->generateTable($rule, $parentTable, $this->tablePrefix, $recordIdFieldName);
-                    echo "table: ";
-                    print_r($table);
+                    // echo "table: ";
+                    // print_r($table);
                 $schema->addTable($table);
 
                 #----------------------------------------------------------------------------
@@ -324,7 +328,21 @@ class SchemaGenerator
             // // echo gettype($schema);
             // // echo gettype($messages);
             // print_r(array($schema, $messages));
-            echo serialize(array($schema, $messages));
+            // echo json_encode($schema);
+            // echo json_encode(array($schema, $messages));
+
+            // $schemaClone = clone $schema;
+
+            $schemaString = $schema->toString();
+
+
+ 
+            echo "\n \n";
+            // $new_object = unserialize(serialize(array($schema, $messages)));
+            // echo serialize($new_object);
+            // echo "\"$schemaString\"";
+            echo "\n \n";
+            
         return array($schema, $messages);
     }
 
