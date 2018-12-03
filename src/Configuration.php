@@ -761,7 +761,7 @@ class Configuration
             $realDir  = realpath($path);
         } else { // Relative path
             if (empty($this->propertiesFile)) {
-                $baseDir = realpath(__DIR__);
+                $baseDir = dirname(realpath(__DIR__));
             } else {
                 $baseDir = dirname(realpath($this->propertiesFile));
             }
@@ -837,6 +837,10 @@ class Configuration
         return $isAbsolute;
     }
 
+    private function setPropertiesFile($file)
+    {
+        $this->propertiesFile = $file;
+    }
 
     public function getProperties()
     {
@@ -950,6 +954,11 @@ class Configuration
         return $this->configProject;
     }
 
+    public function setConfigProject($configProject)
+    {
+        $this->configProject = $configProject;
+    }
+
     public function getCreateLookupTable()
     {
         return $this->createLookupTable;
@@ -963,6 +972,11 @@ class Configuration
     public function getDbConnection()
     {
         return $this->dbConnection;
+    }
+
+    public function setDbConnection($dbConnection)
+    {
+        $this->dbConnection = $dbConnection;
     }
 
     public function getEmailFromAddress()
@@ -1050,14 +1064,17 @@ class Configuration
         $this->projectId = $projectId;
     }
 
-    public function getRecordId()
-    {
-        $recordId = null;
-        if (array_key_exists(ConfigProperties::RECORD_ID)) {
-            $recordId = $this->properties[ConfigProperties::RECORD_ID];
-        }
-        return $recordId;
-    }
+    // NOTE: Commenting this function out because it isn't used in the
+    //       code and doesn't make sense -- array_key_exists is called with
+    //       only one argument, but requires two. -- ADA, 3-Dec-2018
+//    public function getRecordId()
+//    {
+//        $recordId = null;
+//        if (array_key_exists(ConfigProperties::RECORD_ID)) {
+//            $recordId = $this->properties[ConfigProperties::RECORD_ID];
+//        }
+//        return $recordId;
+//    }
 
     public function getRedCapApiUrl()
     {

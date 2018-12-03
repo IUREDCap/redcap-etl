@@ -309,4 +309,177 @@ class ConfigurationTest extends TestCase
         $isFromFile = $configMock->isFromFile($property);
         $this->assertFalse($isFromFile, 'IsFromFile from elsewhere test');
     }
+
+    public function testConfigWithoutConstructor()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $configMock = $reflection->newInstanceWithoutConstructor();
+
+        $reflection = new \ReflectionClass('IU\PHPCap\RedCapProject');
+        $expectedConfigProject = $reflection->newInstanceWithoutConstructor();
+        $configMock->SetConfigProject($expectedConfigProject);
+        $configProject = $configMock->GetConfigProject();
+        $this->assertEquals($expectedConfigProject, $configProject,
+                            'GetConfigProject check');
+    }
+
+    public function testProcessDirectory()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $configMock = $reflection->newInstanceWithoutConstructor();
+
+        // Null argument
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage =
+            'Null path specified as argument to processDirectory';
+        try {
+            $configMock->processDirectory(null);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessDirectory null Exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessDirectory null exception code check');
+        $this->assertEquals(substr($expectedMessage,15,0),
+                            substr($exception->getMessage(),15,0),
+                            'ProcessDirectory null exception message check');
+
+        // Non-string argument
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Non-string path specified as argument';
+        try {
+            $configMock->processDirectory(array('foo'));
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessDirectory non-string Exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessDirectory non-string exception code check');
+        $this->assertEquals(substr($expectedMessage,15,0),
+                            substr($exception->getMessage(),15,0),
+                            'ProcessDirectory non-string exception message check');
+
+        // Absolute path argument
+        $expectedRealDir = '/tmp';
+        $realDir = $configMock->processDirectory($expectedRealDir);
+
+        $this->assertEquals($expectedRealDir, $realDir,
+                            'ProcessDirectory absolute');
+
+        // Relative path argument, no properties file
+        // NOTE: Because PHPUnit runs the test from the 'tests/unit'
+        //       directory, the __DIR__ variable will include tests/unit
+        //       already.
+        $path = 'tests/unit/Database';
+        $expectedRealDir = __DIR__.'/Database';
+        $realDir = $configMock->processDirectory($path);
+
+        $this->assertEquals($expectedRealDir, $realDir,
+                            'ProcessDirectory relative, no properties');
+
+        // Relative path argument, no properties file, dir not found
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Directory';
+        try {
+            $configMock->processDirectory('foo');
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessDirectory relative not found Exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessDirectory relative not found exception code check');
+        $this->assertEquals(substr($expectedMessage,9,0),
+                            substr($exception->getMessage(),9,0),
+                            'ProcessDirectory relative not found exception message check');
+
+        // Relative path argument, using properties file
+        // NOTE: Because PHPUnit runs the test from the 'tests/unit'
+        //       directory, the __DIR__ variable will include tests/unit
+        //       already. Additionally, because we've specified the
+        //       properties file using __DIR_, too, then REDCapEtl will check
+        //       for relative paths to the same directory as the properties
+        //       file, effectively adding 'test/unit' to the relative path.
+        $method = $reflection->getMethod('setPropertiesFile');
+        $method->setAccessible(true);
+        $method->invokeArgs($configMock, array(__DIR__.'/ConfigurationTest.php'));
+
+        $path = 'Database';
+        $expectedRealDir = __DIR__.'/Database';
+        $realDir = $configMock->processDirectory($path);
+        $this->assertEquals($expectedRealDir, $realDir,
+                            'ProcessDirectory relative, properties file');
+
+    }
+
+    public function testIsValidEmail()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $configMock = $reflection->newInstanceWithoutConstructor();
+
+        $validEmail = 'foo@bar.com';
+        $invalidEmail = 'foo-bar-bang';
+
+        $isValidEmail = $configMock->isValidEmail($validEmail);
+        $this->assertTrue($isValidEmail, 'IsValidEmail true check');
+
+        $isValidEmail = $configMock->isValidEmail($invalidEmail);
+        $this->assertFalse($isValidEmail, 'IsValidEmail false check');
+    }
+
+    public function testDbConnection()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $configMock = $reflection->newInstanceWithoutConstructor();
+
+        $expectedMySqlConnectionInfo = array('foo','bar','bang');
+        $expectedDbConnection =
+            implode(':',
+                    array_merge(array('MySQL'),
+                                $expectedMySqlConnectionInfo));
+        $configMock->SetDbConnection($expectedDbConnection);
+
+        $dbConnection = $configMock->GetDbConnection();
+        $this->assertEquals($expectedDbConnection,
+                            $dbConnection, 'GetDbConnection check');
+
+        $mySqlConnectionInfo = $configMock->getMySqlConnectionInfo();
+        $this->assertEquals($expectedMySqlConnectionInfo,
+                            $mySqlConnectionInfo,
+                            'GetMySqlConnectionInfo check');
+    }
+
+    // NOTE: The following unit test allows for a direct test of a private
+    //       function, 'isAbsolutePath'.
+    // NOTE: This  unit test is probably unnecessary, as the
+    //       private method 'isAbsolutePath' could probably have been tested
+    //       as part of the test of some other, public method.
+    // NOTE: I don't know how to get full code coverage on code that
+    //       can't be reached fully from any one single OS.
+    public function testIsAbsolutePath()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $configMock = $reflection->newInstanceWithoutConstructor();
+        $method = $reflection->getMethod('isAbsolutePath');
+        $method->setAccessible(true);
+
+        $absolutePath = '/foo/bar/bang';
+        $relativePath = 'foo/bar/bang';
+
+        $isAbsolutePath = $method->invokeArgs($configMock,
+                                              array($absolutePath));
+        $this->assertTrue($isAbsolutePath, 'IsAbsolutePath true check');
+
+        $isAbsolutePath = $method->invokeArgs($configMock,
+                                              array($relativePath));
+        $this->assertFalse($isAbsolutePath, 'IsAbsolutePath false check');
+    }
 }
