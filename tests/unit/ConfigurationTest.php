@@ -323,6 +323,275 @@ class ConfigurationTest extends TestCase
                             'GetConfigProject check');
     }
 
+    public function testProcessTransformationRules()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $method = $reflection->getMethod('processTransformationRules');
+        $method->setAccessible(true);
+        $configMock = $reflection->newInstanceWithoutConstructor();
+
+        // Source: _TEXT
+        // Property TRANSFORM_RULES_TEXT exists
+        $expectedRules = 'non-empty';
+        $properties = array(
+            ConfigProperties::TRANSFORM_RULES_SOURCE =>
+            Configuration::TRANSFORM_RULES_TEXT,
+            ConfigProperties::TRANSFORM_RULES_TEXT =>
+            $expectedRules);
+        $method->invokeArgs($configMock, array($properties));
+        $rules = $configMock->getTransformationRules();
+        $this->assertEquals($expectedRules, $rules,
+                            'ProcessTransformationRules property check');
+
+        // Source: _TEXT
+        // Property TRANSFORM_RULES_TEXT is empty
+        $expectedRules = '';
+        $properties = array(
+            ConfigProperties::TRANSFORM_RULES_SOURCE =>
+            Configuration::TRANSFORM_RULES_TEXT,
+            ConfigProperties::TRANSFORM_RULES_TEXT =>
+            $expectedRules);
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::FILE_ERROR;
+        $expectedMessage = 'No transformation rules were entered.';
+        try {
+            $method->invokeArgs($configMock, array($properties));
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessTransformationRules TEXT empty exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessTransformationRules TEXT empty exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'ProcessTransformationRules TEXT empty exception message check');
+
+        // Source: _TEXT
+        // Property TRANSFORM_RULES_TEXT is missing
+        $properties = array(
+            ConfigProperties::TRANSFORM_RULES_SOURCE =>
+            Configuration::TRANSFORM_RULES_TEXT);
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'No transformation rules text was defined.';
+        try {
+            $method->invokeArgs($configMock, array($properties));
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessTransformationRules TEXT no property exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessTransformationRules TEXT no property exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'ProcessTransformationRules TEXT no property exception message check');
+
+        // Source: _FILE
+        // Local File. A local file is assumed if the filename is only
+        //             in the properties, not in the Configuration project
+        $expectedRules = "RULES PLACEHOLDER\n";
+        $file = __DIR__.'/../data/rules-test.txt';
+
+        $properties = array(
+            ConfigProperties::TRANSFORM_RULES_SOURCE =>
+            Configuration::TRANSFORM_RULES_FILE,
+            ConfigProperties::TRANSFORM_RULES_FILE => $file);
+        $method->invokeArgs($configMock, array($properties));
+        $rules = $configMock->getTransformationRules();
+        $this->assertEquals($expectedRules, $rules,
+                            'ProcessTransformationRules local file check');
+
+
+        // Source: _FILE
+        // File in Config project
+        // Need to provide 'configurations' array and set it to both
+        // the configurations value and the properties value to imply that
+        // file of rules is coming from the Configuration project.
+        // Need to create a mock of the Configuration project.
+        // Assumes that the record_id of the Configuration project
+        // is passed in.
+        $expectedRules = 'foo';
+        $fileField = 'config_file';
+
+        $configurationProperties =
+            array(ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
+        $configMock->setConfiguration($configurationProperties);
+        $configMock->setProperties($configurationProperties);
+
+        $configProjectMock = $this->createMock('IU\PHPCap\RedCapProject');
+        $configProjectMock->method('exportFile')->willReturn($expectedRules);
+        $configMock->setConfigProject($configProjectMock);
+
+        $properties = array(
+            'record_id' => 99999,
+            ConfigProperties::TRANSFORM_RULES_SOURCE =>
+            Configuration::TRANSFORM_RULES_FILE,
+            ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
+        $method->invokeArgs($configMock, array($properties));
+        $rules = $configMock->getTransformationRules();
+        $this->assertEquals($expectedRules, $rules,
+                            'ProcessTransformationRules config file check');
+
+        // Source: _FILE
+        // File in Config project, but empty
+        $fileField = 'config_file';
+
+        $configurationProperties =
+            array(ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
+        $configMock->setConfiguration($configurationProperties);
+        $configMock->setProperties($configurationProperties);
+
+        $configProjectMock = $this->createMock('IU\PHPCap\RedCapProject');
+        $configProjectMock->method('exportFile')->willReturn('');
+        $configMock->setConfigProject($configProjectMock);
+
+        $properties = array(
+            'record_id' => 99999,
+            ConfigProperties::TRANSFORM_RULES_SOURCE =>
+            Configuration::TRANSFORM_RULES_FILE,
+            ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::FILE_ERROR;
+        $expectedMessage = 'No transformation rules file was found.';
+        try {
+            $method->invokeArgs($configMock, array($properties));
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessTransformationRules config file empty exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessTransformationRules config file empty exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'ProcessTransformationRules config file empty exception message check');
+
+        // Source: _DEFAULT
+        $expectedRules = '';
+
+        $properties = array(
+            ConfigProperties::TRANSFORM_RULES_SOURCE =>
+            Configuration::TRANSFORM_RULES_DEFAULT
+        );
+        $method->invokeArgs($configMock, array($properties));
+        $rules = $configMock->getTransformationRules();
+        $this->assertEquals($expectedRules, $rules,
+                            'ProcessTransformationRules DEFAULT check');
+
+        // Source: Unknown
+        $properties = array(
+            ConfigProperties::TRANSFORM_RULES_SOURCE => 'foo'
+            );
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Unrecognized transformation rules rouce.';
+        try {
+            $method->invokeArgs($configMock, array($properties));
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessTransformationRules UNKNOWN exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessTransformationRules UNKNOWN exception code check');
+        $this->assertEquals(substr($expectedMessage,0,15),
+                            substr($exception->getMessage(),0,15),
+                            'ProcessTransformationRules UNKNOWN exception message check');
+
+    }
+
+    public function testProcessFile()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $configMock = $reflection->newInstanceWithoutConstructor();
+
+        // File is null
+        // Relative path
+        // Properties file is empty
+        // fileShouldExist is true
+        // Result: Absolute path includes directory of Configuration.php
+        //         file with an empty string added to it, so just the dir.
+        // NOTE: __DIR__ returns the abs path of the dir of _this_ code file.
+        $file = null;
+        $expectedFile = realpath(__DIR__.'/../../src/');
+        $realFile = $configMock->processFile($file, true);
+        $this->assertEquals($expectedFile, $realFile,
+                            'ProcessFile null check');
+
+
+        // Non-existing directory
+        // Relative path
+        // Properties file is not empty
+        // fileShouldExist is false
+        // Result: Should throw exception because directory doesn't exist
+        $method = $reflection->getMethod('setPropertiesFile');
+        $method->setAccessible(true);
+        $method->invokeArgs($configMock,
+                            array(__DIR__.'/ConfigurationTest.php'));
+
+        $file = 'foo/bar.log';
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Directory for file ';
+        try {
+            $configMock->processFile($file, false);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessFile bad dir exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessFile bad dir exception code check');
+        $this->assertEquals(substr($expectedMessage,0,15),
+                            substr($exception->getMessage(),0,15),
+                            'ProcessFile bad dir exception message check');
+
+
+        // File doesn't exist
+        // Absolute path
+        // Properties file is irrelevant
+        // fileShouldExist is true
+        // Result: Should throw exception because file doesn't exist
+        $file = '/foo/bar.log';
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'File "/foo/bar.log" ';
+        try {
+            $configMock->processFile($file, true);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'ProcessFile bad file exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'ProcessFile bad file exception code check');
+        $this->assertEquals(substr($expectedMessage,0,15),
+                            substr($exception->getMessage(),0,15),
+                            'ProcessFile bad file exception message check');
+
+
+        // File doesn't exist, but directory does
+        // Absolute path
+        // Properties file is irrelevant
+        // fileShouldExist is false
+        $expectedFile = realpath(__DIR__.'/../../src/').'foo.log';
+        $realFile = $configMock->processFile($expectedFile, false);
+        $this->assertEquals($expectedFile, $realFile,
+                            'ProcessFile abs !exist check');
+
+    }
+
     public function testProcessDirectory()
     {
         $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
@@ -343,8 +612,8 @@ class ConfigurationTest extends TestCase
                           'ProcessDirectory null Exception caught');
         $this->assertEquals($expectedCode, $exception->getCode(),
                             'ProcessDirectory null exception code check');
-        $this->assertEquals(substr($expectedMessage,15,0),
-                            substr($exception->getMessage(),15,0),
+        $this->assertEquals(substr($expectedMessage,0,15),
+                            substr($exception->getMessage(),0,15),
                             'ProcessDirectory null exception message check');
 
         // Non-string argument
@@ -361,8 +630,8 @@ class ConfigurationTest extends TestCase
                           'ProcessDirectory non-string Exception caught');
         $this->assertEquals($expectedCode, $exception->getCode(),
                             'ProcessDirectory non-string exception code check');
-        $this->assertEquals(substr($expectedMessage,15,0),
-                            substr($exception->getMessage(),15,0),
+        $this->assertEquals(substr($expectedMessage,0,15),
+                            substr($exception->getMessage(),0,15),
                             'ProcessDirectory non-string exception message check');
 
         // Absolute path argument
