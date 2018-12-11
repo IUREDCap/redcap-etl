@@ -25,15 +25,36 @@ class MysqlDbConnection extends DbConnection
         // Initialize error string
         $this->errorString = '';
 
-        // Get parameters from dbString
-        list($host,$username,$password,$database) = explode(':', $dbString);
-        ###list($host,$database,$username,$password) = explode(':',$dbString,4);
+        #--------------------------------------------------------------
+        # Get the database connection values
+        #--------------------------------------------------------------
+        $dbValues = explode(':', $dbString);
+        $port = '';
+        if (count($dbValues) == 4) {
+            list($host,$username,$password,$database) = explode(':', $dbString);
+        } elseif (count($dbValues) == 5) {
+            list($host,$username,$password,$database,$port) = explode(':', $dbString);
+            $port = intval($port);
+        } else {
+            $message = 'The database connection is not correctly formatted: ';
+            if (count($dbValues) < 4) {
+                $message = 'not enough values.';
+            } else {
+                $message = 'too many values.';
+            }
+            $code = EtlException::DATABASE_ERROR;
+            throw new \Exception($message, $code);
+        }
 
         // Get MySQL connection
         // NOTE: Could add error checking
         // mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         // Setting the above causes the program to stop for any uncaugt errors
-        $this->mysqli = new \mysqli($host, $username, $password, $database);
+        if (empty($port)) {
+            $this->mysqli = new \mysqli($host, $username, $password, $database);
+        } else {
+            $this->mysqli = new \mysqli($host, $username, $password, $database, $port);
+        }
 
         if ($this->mysqli->connect_errno) {
             $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;

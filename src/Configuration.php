@@ -127,7 +127,7 @@ class Configuration
             if (preg_match('/\.json$/', $this->propertiesFile) === 1) {
                 $propertiesFileContents = file_get_contents($this->propertiesFile);
                 if ($propertiesFileContents === false) {
-                    $message = 'The JSON properties file \"'.$this->propertiesFile.'\" could not be read.';
+                    $message = 'The JSON properties file "'.$this->propertiesFile.'" could not be read.';
                     $code    = EtlException::INPUT_ERROR;
                     throw new EtlException($message, $code);
                 }
@@ -146,7 +146,13 @@ class Configuration
                 # handled by the check for $properties being false
                 @ $this->properties = parse_ini_file($this->propertiesFile);
                 if ($this->properties === false) {
-                    $message = 'The properties file \"'.$this->propertiesFile.'\" could not be read.';
+                    $error = error_get_last();
+                    $parseError = '';
+                    if (isset($error) && is_array($error) && array_key_exists('message', $error)) {
+                        $parseError = ': '.preg_replace('/\s+$/', '', $error['message']);
+                    }
+                    $message = 'The properties file "'.$this->propertiesFile.'" could not be read'.$parseError.'.';
+
                     $code    = EtlException::INPUT_ERROR;
                     throw new EtlException($message, $code);
                 }
