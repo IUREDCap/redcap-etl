@@ -104,6 +104,10 @@ class MysqlDbConnection extends DbConnection
                     $fieldDef .= 'INT';
                     break;
 
+                case FieldType::AUTO_INCREMENT:
+                    $fieldDef .= 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+                    break;
+                    
                 case FieldType::FLOAT:
                     $fieldDef .= 'FLOAT';
                     break;
@@ -251,13 +255,16 @@ class MysqlDbConnection extends DbConnection
 
         // Add field values, in order, to bind parameters
         foreach ($row->table->getAllFields() as $field) {
-            // Replace empty string with null
-            $toBind = $row->data[$field->name];
-            if ($toBind === '') {
-                $toBind = null;
-            }
+            if ($field->type != FieldType::AUTO_INCREMENT) {
+                // Replace empty string with null
+                $toBind = $row->data[$field->name];
+                
+                if ($toBind === '') {
+                    $toBind = null;
+                }
 
-            array_push($params, $toBind);
+                array_push($params, $toBind);
+            }
         }
 
         // Get references to each parameter -- necessary because
@@ -301,6 +308,10 @@ class MysqlDbConnection extends DbConnection
             $bindPositions = array();
             $bindTypes = '';
             foreach ($table->getAllFields() as $field) {
+                if ($field->type == FieldType::AUTO_INCREMENT) {
+                    continue;
+                }
+                
                 array_push($fieldNames, $field->dbName);
                 array_push($bindPositions, '?');
 

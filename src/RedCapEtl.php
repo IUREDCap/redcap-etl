@@ -187,7 +187,7 @@ class RedCapEtl
         # Initialize the schema
         #-----------------------------------------
         $this->schema = new Schema();
-
+                
 
         #---------------------------------------------------
         # Create a database connection for the database
@@ -199,9 +199,25 @@ class RedCapEtl
             $this->configuration->getTablePrefix(),
             $this->configuration->getLabelViewSuffix()
         );
+
+        #-------------------------------------------------
+        # Set up database logging
+        #-------------------------------------------------
+        if ($this->configuration->getDbLogging()) {
+            $this->logger->setDbConnection($this->dbcon);
+            $this->logger->setDbLogging(true);
         
-        # Set database connection for logger to allow database logging
-        $this->logger->setDbConnection($this->dbcon);
+            $name = $this->configuration->getDbLogTable();
+            $tablePrefix = $this->configuration->getTablePrefix();
+            $dbLogTable = new EtlLogTable($tablePrefix, $name);
+
+            $this->logger->setDbLogTable($dbLogTable);
+            $this->dbcon->replaceTable($dbLogTable);
+                
+            $this->schema->setDbLogTable($dbLogTable);
+            
+            $this->logger->logToDatabase();
+        }
     }
 
 

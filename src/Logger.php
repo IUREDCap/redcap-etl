@@ -47,12 +47,12 @@ class Logger
 
     /** @var array Array of log messages (in effect an in-memory log). */
     private $logArray;
-    
-    /** @var DbConnection database connection (used for database logging) */
+
     private $dbConnection;
-
-
-
+    private $dbLogging;
+    private $dbLogTable;
+    private $dbEventLogTable;
+    
     /**
      * Creates a logger.
      *
@@ -77,8 +77,6 @@ class Logger
         $this->logEmailSubject = '';
         
         $this->sendEmailSummary = false;
-        
-        $this->dbConnection;
     }
     
     /**
@@ -94,6 +92,12 @@ class Logger
         
         $this->logFromEmail = null;
         $this->logToEmail   = null;
+        
+        # database logging
+        $this->dbConnection    = null;
+        $this->dbLogging       = false;
+        $this->dbLogTable      = null;
+        $this->dbEventLogTable = null;
     }
 
     /**
@@ -300,6 +304,14 @@ class Logger
         array_push($this->logArray, $message);
     }
 
+    public function logToDatabase()
+    {
+        if ($this->dbLogging === true && !empty($this->dbLogTable)) {
+            $row = $this->dbLogTable->getLogRow();
+            $this->dbConnection->storeRow($row);
+        }
+    }
+    
     /**
      * Logs the specified message to the log file, if one was configured.
      *
@@ -546,11 +558,46 @@ class Logger
         }
     }
     
+    public function getDbConnection()
+    {
+        return $this->dbConnection;
+    }
+    
     public function setDbConnection($dbConnection)
     {
         $this->dbConnection = $dbConnection;
     }
-
+        
+    public function getDbLogging()
+    {
+        return $this->dbLogging;
+    }
+    
+    public function setDbLogging($dbLogging)
+    {
+        $this->dbLogging = $dbLogging;
+    }
+    
+    public function getDbLogTable()
+    {
+        return $this->dbLogTable;
+    }
+    
+    public function setDbLogTable($dbLogTable)
+    {
+        $this->dbLogTable = $dbLogTable;
+    }
+    
+    public function getDbEventLogTable()
+    {
+        return $this->dbEventLogTable;
+    }
+    
+    public function setDbEventLogTable($dbEventLogTable)
+    {
+        $this->dbEventLogTable = $dbEventLogTable;
+    }
+    
     /**
      * Gets the name of the application that is running the ETL process.
      */

@@ -4,6 +4,8 @@ namespace IU\REDCapETL;
 
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\FieldTypeSpecifier;
+use IU\REDCapETL\Schema\Row;
 use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Table;
 
@@ -18,12 +20,12 @@ class EtlLogTable extends Table
     
     const FIELD_REDCAP_ETL_VERSION = 'redcap_etl_version';
     
-    public function __construct($lookupChoices, $tablePrefix, $keyType, $name)
+    public function __construct($tablePrefix, $name)
     {
         parent::__construct(
             $tablePrefix . $name,
             self::FIELD_PRIMARY_ID,
-            $keyType,
+            new FieldTypeSpecifier(FieldType::AUTO_INCREMENT),
             array(RowsType::ROOT),
             array()
         );
@@ -31,11 +33,13 @@ class EtlLogTable extends Table
         #-----------------------------------------------
         # Create and add fields for the lookup table
         #-----------------------------------------------
-        $fieldPrimary   = new Field(self::FIELD_PRIMARY_ID, FieldType::INT);
-        $fieldTime      = new Field(self::FIELD_TIME, FieldType::DATETIME);
+        $fieldPrimary = new Field(self::FIELD_PRIMARY_ID, FieldType::AUTO_INCREMENT);
+        $fieldTime    = new Field(self::FIELD_TIME, FieldType::DATETIME);
+        $fieldRedcapEtlVersion = new Field(self::FIELD_REDCAP_ETL_VERSION, FieldType::STRING);
         
         $this->addField($fieldPrimary);
         $this->addField($fieldTime);
+        $this->addField($fieldRedcapEtlVersion);
     }
     
     /**

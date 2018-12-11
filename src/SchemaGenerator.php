@@ -309,6 +309,7 @@ class SchemaGenerator
         }
 
         $schema->setLookupTable($this->lookupTable);
+        
         return array($schema, $messages);
     }
 

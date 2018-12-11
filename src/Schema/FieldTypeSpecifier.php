@@ -24,7 +24,7 @@ class FieldTypeSpecifier
      *
      * @see FieldType
      */
-    public function __construct($type, $size)
+    public function __construct($type, $size = null)
     {
         $this->type = $type;
         $this->size = $size;

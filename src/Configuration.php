@@ -25,11 +25,11 @@ class Configuration
     const DEFAULT_BATCH_SIZE          = 100;
     const DEFAULT_CREATE_LOOKUP_TABLE = false;
 
-    const DEFAULT_DB_LOGGING        = true;
-    const DEFAULT_DB_LOG_FILE       = 'etl_log';
-    const DEFAULT_DB_LOG_ENTRY_FILE = 'etl_log_entry';
+    const DEFAULT_DB_LOGGING         = true;
+    const DEFAULT_DB_LOG_TABLE       = 'etl_log';
+    const DEFAULT_DB_EVENT_LOG_TABLE = 'etl_event_log';
 
-    const DEFAULT_EMAIL_SUBJECT       = 'REDCap-ETL Error';
+    const DEFAULT_EMAIL_SUBJECT      = 'REDCap-ETL Error';
 
     const DEFAULT_GENERATED_INSTANCE_TYPE  = 'int';
     const DEFAULT_GENERATED_KEY_TYPE       = 'int';
@@ -60,8 +60,8 @@ class Configuration
     private $dbConnection;
 
     private $dbLogging;
-    private $dbLogFile;
-    private $dbLogFileEntry;
+    private $dbLogTable;
+    private $dbEventLogTable;
 
     private $extractedRecordCountCheck;
 
@@ -136,7 +136,7 @@ class Configuration
             if (preg_match('/\.json$/', $this->propertiesFile) === 1) {
                 $propertiesFileContents = file_get_contents($this->propertiesFile);
                 if ($propertiesFileContents === false) {
-                    $message = 'The JSON properties file \"'.$this->propertiesFile.'\" could not be read.';
+                    $message = 'The JSON properties file "'.$this->propertiesFile.'" could not be read.';
                     $code    = EtlException::INPUT_ERROR;
                     throw new EtlException($message, $code);
                 }
@@ -155,7 +155,12 @@ class Configuration
                 # handled by the check for $properties being false
                 @ $this->properties = parse_ini_file($this->propertiesFile);
                 if ($this->properties === false) {
-                    $message = 'The properties file \"'.$this->propertiesFile.'\" could not be read.';
+                    $error = error_get_last();
+                    $parseError = '';
+                    if (isset($error) && is_array($error) && array_key_exists('message', $error)) {
+                        $parseError = ': '.preg_replace('/\s+$/', '', $error['message']);
+                    }
+                    $message = 'The properties file "'.$this->propertiesFile.'" could not be read'.$parseError.'.';
                     $code    = EtlException::INPUT_ERROR;
                     throw new EtlException($message, $code);
                 }
@@ -188,10 +193,20 @@ class Configuration
         #-------------------------------------------------------------------
         # Database logging
         #-------------------------------------------------------------------
-
+        $this->dbLogging = self::DEFAULT_DB_LOGGING;
         if (array_key_exists(ConfigProperties::DB_LOGGING, $this->properties)) {
+            $this->dbLogging = $this->properties[ConfigProperties::DB_LOGGING];
+        }
+        
+        $this->dbLogTable = self::DEFAULT_DB_LOG_TABLE;
+        if (array_key_exists(ConfigProperties::DB_LOG_TABLE, $this->properties)) {
+            $this->dbLogTable = $this->properties[ConfigProperties::DB_LOG_TABLE];
         }
 
+        $this->dbEventLogTable = self::DEFAULT_DB_EVENT_LOG_TABLE;
+        if (array_key_exists(ConfigProperties::DB_EVENT_LOG_TABLE, $this->properties)) {
+            $this->dbEventLogTable = $this->properties[ConfigProperties::DB_EVENT_LOG_TABLE];
+        }
 
         #-----------------------------------------------------------
         # Error e-mail notification information
@@ -988,6 +1003,21 @@ class Configuration
         return $this->dbConnection;
     }
 
+    public function getDbLogging()
+    {
+        return $this->dbLogging;
+    }
+    
+    public function getDbLogTable()
+    {
+        return $this->dbLogTable;
+    }
+    
+    public function getDbEventLogTable()
+    {
+        return $this->dbEventLogTable;
+    }
+    
     public function getEmailFromAddress()
     {
         return $this->emailFromAddress;
