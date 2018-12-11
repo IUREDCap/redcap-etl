@@ -2,7 +2,7 @@
 
 namespace IU\REDCapETL;
 
-use Database\DbConnection;
+use IU\RedCapEtl\Database\CsvDbConnection;
 
 /**
  * Class for logging.
@@ -307,8 +307,10 @@ class Logger
     public function logToDatabase()
     {
         if ($this->dbLogging === true && !empty($this->dbLogTable)) {
-            $row = $this->dbLogTable->getLogRow();
-            $this->dbConnection->storeRow($row);
+            if (!($this->dbConnection instanceof CsvDbConnection)) {
+                $row = $this->dbLogTable->getLogRow();
+                $this->dbConnection->storeRow($row);
+            }
         }
     }
     

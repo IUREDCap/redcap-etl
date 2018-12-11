@@ -195,7 +195,12 @@ class Configuration
         #-------------------------------------------------------------------
         $this->dbLogging = self::DEFAULT_DB_LOGGING;
         if (array_key_exists(ConfigProperties::DB_LOGGING, $this->properties)) {
-            $this->dbLogging = $this->properties[ConfigProperties::DB_LOGGING];
+            $dbLogging = $this->properties[ConfigProperties::DB_LOGGING];
+            if ($dbLogging === true || strcasecmp($dbLogging, 'true') === 0 || $dbLogging === '1') {
+                $this->dbLogging = true;
+            } elseif ($dbLogging === false || strcasecmp($dbLogging, 'false') === 0 || $dbLogging === '0') {
+                $this->dbLogging = false;
+            }
         }
         
         $this->dbLogTable = self::DEFAULT_DB_LOG_TABLE;
