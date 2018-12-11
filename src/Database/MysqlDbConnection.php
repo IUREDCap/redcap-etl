@@ -79,10 +79,14 @@ class MysqlDbConnection extends DbConnection
      *
      * @param Table $table the table to be created.
      */
-    protected function createTable($table)
+    public function createTable($table, $ifNotExists = false)
     {
         // Start query
-        $query = 'CREATE TABLE '.$table->name.' (';
+        if ($ifNotExists == false) {
+            $query = 'CREATE TABLE '.$table->name.' (';
+        } else {
+            $query = 'CREATE TABLE IF NOT EXISTS '.$table->name.' (';
+        }
 
         // foreach field
         $fieldDefs = array();

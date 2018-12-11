@@ -56,7 +56,7 @@ class CsvDbConnection extends DbConnection
         return(1);
     }
 
-    protected function createTable($table)
+    public function createTable($table, $ifNotExists = false)
     {
         $file = $this->getTableFile($table);
         $fh = fopen($file, 'w');

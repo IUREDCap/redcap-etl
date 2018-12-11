@@ -212,7 +212,7 @@ class RedCapEtl
             $dbLogTable = new EtlLogTable($tablePrefix, $name);
 
             $this->logger->setDbLogTable($dbLogTable);
-            $this->dbcon->replaceTable($dbLogTable);
+            $this->dbcon->createTable($dbLogTable, true);
                 
             $this->schema->setDbLogTable($dbLogTable);
             
