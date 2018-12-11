@@ -35,6 +35,9 @@ class Configuration
 
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
     const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
+    
+    const DEFAULT_SEND_EMAIL_SUMMARY = false;
+    
     const DEFAULT_TABLE_PREFIX      = '';   # i.e., No table prefix
     const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
 
@@ -69,9 +72,12 @@ class Configuration
     private $redcapApiUrl;
 
     private $sslVerify;
+    private $sendEmailSummary;
+    
     private $tablePrefix;
     private $timeLimit;
     private $timezone;
+    
     private $transformationRules;
     private $transformRulesSource;
     private $triggerEtl;
@@ -121,7 +127,7 @@ class Configuration
             if (preg_match('/\.json$/', $this->propertiesFile) === 1) {
                 $propertiesFileContents = file_get_contents($this->propertiesFile);
                 if ($propertiesFileContents === false) {
-                    $message = 'The JSON properties file \"'.$this->propertiesFile.'\" could not be read.';
+                    $message = 'The JSON properties file "'.$this->propertiesFile.'" could not be read.';
                     $code    = EtlException::INPUT_ERROR;
                     throw new EtlException($message, $code);
                 }
@@ -140,7 +146,13 @@ class Configuration
                 # handled by the check for $properties being false
                 @ $this->properties = parse_ini_file($this->propertiesFile);
                 if ($this->properties === false) {
-                    $message = 'The properties file \"'.$this->propertiesFile.'\" could not be read.';
+                    $error = error_get_last();
+                    $parseError = '';
+                    if (isset($error) && is_array($error) && array_key_exists('message', $error)) {
+                        $parseError = ': '.preg_replace('/\s+$/', '', $error['message']);
+                    }
+                    $message = 'The properties file "'.$this->propertiesFile.'" could not be read'.$parseError.'.';
+
                     $code    = EtlException::INPUT_ERROR;
                     throw new EtlException($message, $code);
                 }
@@ -186,6 +198,16 @@ class Configuration
 
         if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
             $this->emailToList = $this->properties[ConfigProperties::EMAIL_TO_LIST];
+        }
+        
+        # E-mail summary notification
+        $this->sendEmailSummary = self::DEFAULT_SEND_EMAIL_SUMMARY;
+        if (array_key_exists(ConfigProperties::SEND_EMAIL_SUMMARY, $this->properties)) {
+            $send = $this->properties[ConfigProperties::SEND_EMAIL_SUMMARY];
+            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
+                $this->sendEmailSummary  = true;
+                $this->logger->setSendEmailSummary(true);
+            }
         }
 
         #------------------------------------------------------

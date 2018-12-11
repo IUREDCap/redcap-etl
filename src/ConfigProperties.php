@@ -43,7 +43,9 @@ class ConfigProperties
     const RECORD_ID                = 'record_id';
 
     const REDCAP_API_URL         = 'redcap_api_url';
+    const SEND_EMAIL_SUMMARY     = 'send_email_summary';
     const SSL_VERIFY             = 'ssl_verify';
+    
     const TABLE_PREFIX           = 'table_prefix';
     const TIME_LIMIT             = 'time_limit';
     const TIMEZONE               = 'timezone';

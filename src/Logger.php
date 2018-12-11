@@ -14,24 +14,38 @@ namespace IU\REDCapETL;
  */
 class Logger
 {
+    /** @var string the name of the log file (if any) */
     private $logFile;
-    private $logProject;
-    private $printInfo; // whether info that is logged should
-                        // be printed to standard output
-    
-    private $logToSystemLogger;  // If true (the default) then REDCap-ETL
-                                 // will attempt to log errors to PHP's
-                                 // system logger no other logging of
-                                 // the errors is successful.
 
-    private $app;           // For project logging, the app name to use
-    private $projectIdBase; // For project logging, the record ID base
+    private $logProject;
+
+    /** @var boolean Whether info that is logged should be printed to standard output */
+    private $printInfo;
+    
+    /** @var boolean If true (the default) then REDCap-ETL  will attempt to log errors to PHP's
+        system logger if no other logging of the errors is successful. */
+    private $logToSystemLogger;
+
+    /** @var string For project logging, the app name to use. */
+    private $app;
+
+    /** @var string For project logging, the record ID base. */
+    private $projectIdBase;
     private $projectIndex;
     private $projectDate;
 
+    /** @var string The from e-mail address for e-mail log messages. */
     private $logFromEmail;
     private $logToEmail;
     private $logEmailSubject;
+    
+    /** @var indicates if an e-mail logging summary should be sent to
+        log to e-mail list; defaults to false. */
+    private $sendEmailSummary;
+
+    /** @var array Array of log messages (in effect an in-memory log). */
+    private $logArray;
+
 
 
     /**
@@ -48,8 +62,16 @@ class Logger
         $this->printInfo         = true;
         $this->logToSystemLogger = true;
 
+        $this->logArray = array();
+
         $this->logFile    = null;
         $this->logProject = null;
+                
+        $this->logFromEmail = null;
+        $this->logToEmail   = null;
+        $this->logEmailSubject = '';
+        
+        $this->sendEmailSummary = false;
     }
     
     /**
@@ -175,6 +197,8 @@ class Logger
         $logged = false;
         $logFileOk = true;
 
+        $this->logToArray($info);
+        
         list($loggedToFile, $fileError) = $this->logToFile($info);
 
         list($loggedToProject, $projectError) = $this->logToProject($info);
@@ -182,7 +206,7 @@ class Logger
         if ($this->printInfo === true) {
             print $info."\n";
         }
-
+        
         #---------------------------------------
         # Log logging errors
         #---------------------------------------
@@ -218,6 +242,8 @@ class Logger
             }
         }
 
+        $this->logToArray($message);
+
         list($loggedToProject, $projectError) = $this->logToProject($message);
 
         #--------------------------------------------------
@@ -243,8 +269,11 @@ class Logger
      */
     public function logError($error)
     {
+        $this->logToArray($error);
+
         list($loggedToFile, $fileError) = $this->logToFile($error);
         list($loggedToProject, $projectError) = $this->logToProject($error);
+
         $loggedToEmail   = $this->logToEmail($error);
 
         #--------------------------------------------------------
@@ -257,6 +286,11 @@ class Logger
                 $logged = error_log($error, 0);
             }
         }
+    }
+
+    public function logToArray($message)
+    {
+        array_push($this->logArray, $message);
     }
 
     /**
@@ -471,7 +505,39 @@ class Logger
         return $faliedSendTos;
     }
 
+    public function emailLogArray()
+    {
+        $message = implode("\r\n", $this->logArray);
+        $failedSendTos = $this->sendMail(
+            $this->logToEmail,
+            $attachments = array(),
+            $message,
+            $this->logEmailSubject,
+            $this->logFromEmail
+        );
+    }
+
+    public function getLogArray()
+    {
+        return $this->logArray;
+    }
     
+    public function getSendEmailSummary()
+    {
+        return $this->sendEmailSummary;
+    }
+    
+    public function setSendEmailSummary($sendEmailSummary)
+    {
+        $this->sendEmailSummary = $sendEmailSummary;
+    }
+    
+    public function processEmailSummary()
+    {
+        if (!empty($this->logFromEmail) && !empty($this->logToEmail) && $this->sendEmailSummary) {
+            $this->emailLogArray();
+        }
+    }
 
     /**
      * Gets the name of the application that is running the ETL process.

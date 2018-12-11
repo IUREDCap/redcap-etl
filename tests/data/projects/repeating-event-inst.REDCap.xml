@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="ETL_Data" AsOfDateTime="2018-11-27T20:09:06" CreationDateTime="2018-11-27T20:09:06" SourceSystem="REDCap" SourceSystemVersion="8.5.19">
+<ClinicalData StudyOID="Project.ETLData" MetaDataVersionOID="Metadata.ETLData_2018-11-27_2009">
+	<SubjectData SubjectKey="1" redcap:RecordIdField="record_id">
+		<StudyEventData StudyEventOID="Event.event_1_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="event_1_arm_1">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Ryan"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Long"/>
+					<ItemData ItemOID="address" Value="535 W Michigan St, Indianapolis, IN 46202"/>
+					<ItemData ItemOID="telephone" Value="(555) 555-5555"/>
+					<ItemData ItemOID="email" Value="ryanlong@iu.edu"/>
+					<ItemData ItemOID="dob" Value="2018-04-16"/>
+					<ItemData ItemOID="age" Value="0"/>
+					<ItemData ItemOID="ethnicity" Value="2"/>
+					<ItemData ItemOID="race" Value="4"/>
+					<ItemData ItemOID="sex" Value="1"/>
+					<ItemData ItemOID="height" Value="140"/>
+					<ItemData ItemOID="weight" Value="111"/>
+					<ItemData ItemOID="bmi" Value="56.6"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.comments" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="comments" Value="bleh"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.age_variable" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="age_variable" Value="28.0000"/>
+					<ItemData ItemOID="fav_number_variable" Value="56"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+	</SubjectData>
+</ClinicalData>
+</ODM>

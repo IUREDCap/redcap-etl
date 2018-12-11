@@ -50,13 +50,14 @@ Currently, the supported database connection types are
 ### MySQL
 For MySQL, the format of the database connection string is:
 
-        MySQL:<host>:<username>:<password>:<database>
+        MySQL:<host>:<username>:<password>:<database>[:<port>]
 
 Example MySQL database connection strings:
 
         MySQL:localhost:etl_user:etl_password:etl_test_db
 
-        MySQL:someplace.edu:admin:admin_password_123:etl_prod_db
+        MySQL:someplace.edu:admin:admin_password_123:etl_prod_db:3306
+
 
 ### CSV
 For CSV, the database connection string format is:
@@ -223,8 +224,16 @@ an error occurs while running the ETL process.
 <tr>
 <td>email_to_list</td>
 <td> X </td> <td> X </td>
-
 <td>The to address list for e-mail notifications sent by REDCap-ETL</td>
+</tr>
+
+<tr>
+<td>send_email_summary</td>
+<td> X </td> <td> </td>
+<td>True/false value that indicates if an e-mail summary of the
+log messages should be sent to the "email_to_list".
+The default value is false.
+</td>
 </tr>
 
 </tbody>
