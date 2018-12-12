@@ -48,10 +48,24 @@ class Logger
     /** @var array Array of log messages (in effect an in-memory log). */
     private $logArray;
 
+    /** @var DbConnection the database connection; used for database logging. */
     private $dbConnection;
+    
+    /** @var boolean indicates if database logging should be done. */
     private $dbLogging;
+    
+    /** @var EtlLogTable the main database logging table. */
     private $dbLogTable;
+    
+    /** @var EtlEventLogTable the database event logging table. */
     private $dbEventLogTable;
+    
+    /** @var integer the ID for the row in the main database logging table. */
+    private $dbLogTableId;
+    
+    /** @var Configuration the configuration for the ETL run; this will not be set
+                           until the configuration information has been processed. */
+    private $configuration;
     
     /**
      * Creates a logger.
@@ -77,6 +91,8 @@ class Logger
         $this->logEmailSubject = '';
         
         $this->sendEmailSummary = false;
+        
+        $this->configuration = null;
     }
     
     /**
@@ -218,6 +234,8 @@ class Logger
             print $info."\n";
         }
         
+        $this->logEventToDatabase($info);
+        
         #---------------------------------------
         # Log logging errors
         #---------------------------------------
@@ -257,6 +275,8 @@ class Logger
 
         list($loggedToProject, $projectError) = $this->logToProject($message);
 
+        $loggedToDb = $this->logEventToDatabase($message);
+        
         #--------------------------------------------------
         # Add the stack trace for file logging and e-mail
         #--------------------------------------------------
@@ -265,7 +285,8 @@ class Logger
         list($loggedToFile, $fileError) = $this->logToFile($message);
         $loggedToEmail   = $this->logToEmail($message);
 
-        if ($loggedToFile === false && $loggedToProject === false && $loggedToEmail === false) {
+        if ($loggedToFile === false && $loggedToProject === false
+            && $loggedToEmail === false && $loggedToDb === false) {
             if ($this->logToSystemLogger) {
                 $logged = error_log($message, 0);
             }
@@ -287,33 +308,74 @@ class Logger
 
         $loggedToEmail   = $this->logToEmail($error);
 
+        $loggedToDb = $this->logEventToDatabase($error);
+        
         #--------------------------------------------------------
         # If the error didn't get logged, either becaues no
         # logging destinations were specified, or the specified
         # logging destination failed, log to PHP's sytem logger.
         #--------------------------------------------------------
-        if ($loggedToFile === false && $loggedToProject === false && $loggedToEmail === false) {
+        if ($loggedToFile === false && $loggedToProject === false
+            && $loggedToEmail === false && $loggedToDb === false) {
             if ($this->logToSystemLogger) {
                 $logged = error_log($error, 0);
             }
         }
     }
 
-    public function logToArray($message)
+    private function logToArray($message)
     {
         array_push($this->logArray, $message);
     }
 
+    /**
+     * Logs main entry to database (one per ETL run) that is used
+     * as the parent record for the log message records for the
+     * ETL run. This method should be called only once per ETL run,
+     * and should be called before any messages are logged.
+     */
     public function logToDatabase()
     {
         if ($this->dbLogging === true && !empty($this->dbLogTable)) {
             if (!($this->dbConnection instanceof CsvDbConnection)) {
-                $row = $this->dbLogTable->getLogRow();
-                $this->dbConnection->storeRow($row);
+                $tablePrefix = '';
+                if (isset($this->configuration)) {
+                    $tablePrefix = $this->configuration->getTablePrefix();
+                    if (!isset($tablePrefix)) {
+                        $tablePrefix = '';
+                    }
+                }
+                $batchSize = $this->configuration->getBatchSize();
+                $row = $this->dbLogTable->createLogDataRow($this->app, $tablePrefix, $batchSize);
+                $id = $this->dbConnection->insertRow($row);
+                # Save inserted ID for use as foreign key in
+                # log events table
+                $this->dbLogTableId = $id;
             }
         }
     }
-    
+
+    /**
+     * Log an event to the database.
+     *
+     * @param string $message the message describing the event (or
+     *     information) to log to the database.
+     */
+    public function logEventToDatabase($message)
+    {
+        $logged = false;
+        if ($this->dbLogging === true && !empty($this->dbEventLogTable)) {
+            if (!($this->dbConnection instanceof CsvDbConnection)) {
+                $logId = $this->dbLogTableId;
+                $row = $this->dbEventLogTable->createEventLogDataRow($logId, $message);
+                $this->dbConnection->insertRow($row);
+                $logged = true;
+            }
+        }
+        return $logged;
+    }
+
+
     /**
      * Logs the specified message to the log file, if one was configured.
      *
@@ -598,6 +660,16 @@ class Logger
     public function setDbEventLogTable($dbEventLogTable)
     {
         $this->dbEventLogTable = $dbEventLogTable;
+    }
+    
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+    
+    public function setConfiguration($configuration)
+    {
+        $this->configuration = $configuration;
     }
     
     /**

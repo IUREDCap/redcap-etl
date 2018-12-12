@@ -15,8 +15,12 @@ use IU\REDCapETL\Schema\Table;
  */
 class EtlLogTable extends Table
 {
-    const FIELD_PRIMARY_ID  = 'log_id';
-    const FIELD_TIME        = 'start_time';
+    const FIELD_PRIMARY_ID   = 'log_id';
+    const FIELD_TIME         = 'start_time';
+    
+    #const FIELD_APP          = 'app';
+    const FIELD_TABLE_PREFIX = 'table_prefix';
+    const FIELD_BATCH_SIZE   = 'batch_size';
     
     const FIELD_REDCAP_ETL_VERSION = 'redcap_etl_version';
     
@@ -34,24 +38,37 @@ class EtlLogTable extends Table
         # Create and add fields for the lookup table
         #-----------------------------------------------
         $fieldPrimary = new Field(self::FIELD_PRIMARY_ID, FieldType::AUTO_INCREMENT);
-        $fieldTime    = new Field(self::FIELD_TIME, FieldType::DATETIME);
-        $fieldRedcapEtlVersion = new Field(self::FIELD_REDCAP_ETL_VERSION, FieldType::STRING);
+        $fieldTime    = new Field(self::FIELD_TIME, FieldType::DATETIME, 6);
+        
+        #$fieldApp         = new Field(self::FIELD_APP, FieldType::VARCHAR, 60);
+        $fieldTablePrefix = new Field(self::FIELD_TABLE_PREFIX, FieldType::VARCHAR, 60);
+        $fieldBatchSize   = new Field(self::FIELD_BATCH_SIZE, FieldType::INT);
+        
+        $fieldRedcapEtlVersion = new Field(self::FIELD_REDCAP_ETL_VERSION, FieldType::CHAR, 10);
         
         $this->addField($fieldPrimary);
         $this->addField($fieldTime);
+        #$this->addField($fieldApp);
+        $this->addField($fieldTablePrefix);
+        $this->addField($fieldBatchSize);
         $this->addField($fieldRedcapEtlVersion);
     }
     
     /**
      * Gets a row for saving in the database version of this table.
      */
-    public function getLogRow()
+    public function createLogDataRow($app, $tablePrefix, $batchSize)
     {
-        $startTime = date('Y-m-d H:i:s');
+        list($microseconds, $seconds) = explode(" ", microtime());
+        $startTime = date("Y-m-d H:i:s", $seconds).substr($microseconds, 1, 7);
+        
         $redCapEtlVersion = Version::RELEASE_NUMBER;
         
         $row = new Row($this);
         $row->addValue(self::FIELD_TIME, $startTime);
+        #$row->addValue(self::FIELD_APP, $app);
+        $row->addValue(self::FIELD_TABLE_PREFIX, $tablePrefix);
+        $row->addValue(self::FIELD_BATCH_SIZE, $batchSize);
         $row->addValue(self::FIELD_REDCAP_ETL_VERSION, $redCapEtlVersion);
         
         return $row;

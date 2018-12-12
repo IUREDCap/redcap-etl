@@ -134,7 +134,7 @@ class CsvDbConnection extends DbConnection
     /**
      * Insert the specified row into its table.
      */
-    protected function insertRow($row)
+    public function insertRow($row)
     {
         $table = $row->table;
         $usesLookup = $table->usesLookup;

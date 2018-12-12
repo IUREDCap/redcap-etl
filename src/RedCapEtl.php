@@ -84,6 +84,7 @@ class RedCapEtl
         );
 
         $this->logger = $this->configuration->getLogger();
+        $this->logger->setConfiguration($this->configuration);
         
         $this->configProject = $this->configuration->getConfigProject();
 
@@ -206,17 +207,34 @@ class RedCapEtl
         if ($this->configuration->getDbLogging()) {
             $this->logger->setDbConnection($this->dbcon);
             $this->logger->setDbLogging(true);
+            
+            # Add information to logger that is used by database logging
+            
         
+            #----------------------------------------
+            # (Main) database log table
+            #----------------------------------------
             $name = $this->configuration->getDbLogTable();
             $tablePrefix = $this->configuration->getTablePrefix();
             $dbLogTable = new EtlLogTable($tablePrefix, $name);
-
             $this->logger->setDbLogTable($dbLogTable);
+            
             $this->dbcon->createTable($dbLogTable, true);
                 
             $this->schema->setDbLogTable($dbLogTable);
             
             $this->logger->logToDatabase();
+            
+            #------------------------------
+            # Database event log table
+            #------------------------------
+            $name = $this->configuration->getDbEventLogTable();
+            $dbEventLogTable = new EtlEventLogTable($tablePrefix, $name);
+            $this->logger->setDbEventLogTable($dbEventLogTable);
+            
+            $this->dbcon->createTable($dbEventLogTable, true);
+            
+            $this->schema->setDbEventLogTable($dbEventLogTable);
         }
     }
 

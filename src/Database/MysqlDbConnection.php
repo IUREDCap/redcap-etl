@@ -82,10 +82,10 @@ class MysqlDbConnection extends DbConnection
     public function createTable($table, $ifNotExists = false)
     {
         // Start query
-        if ($ifNotExists == false) {
-            $query = 'CREATE TABLE '.$table->name.' (';
-        } else {
+        if ($ifNotExists) {
             $query = 'CREATE TABLE IF NOT EXISTS '.$table->name.' (';
+        } else {
+            $query = 'CREATE TABLE '.$table->name.' (';
         }
 
         // foreach field
@@ -102,6 +102,12 @@ class MysqlDbConnection extends DbConnection
                     
                 case FieldType::DATETIME:
                     $fieldDef .= 'DATETIME';
+                    if (isset($field->size)) {
+                        $size = intval($field->size);
+                        if ($size > 0 || $size <= 6) {
+                            $fieldDef .= '('.$size.')';
+                        }
+                    }
                     break;
 
                 case FieldType::INT:
@@ -243,8 +249,14 @@ class MysqlDbConnection extends DbConnection
 
     /**
      * Insert the specified row into the database.
+     *
+     * @parm Row $row the row of data to insert into the table (the row
+     *     has a reference to the table that it should be inserted into).
+     *
+     * @return integer if the table has an auto-increment ID, then the value
+     *     of the ID for the record that was inserted.
      */
-    protected function insertRow($row)
+    public function insertRow($row)
     {
 
         // How to handle unknow # of vars in bind_param. See answer by abd.agha
@@ -257,7 +269,10 @@ class MysqlDbConnection extends DbConnection
         // Start bind parameters list with bind_types and escaped table name
         $params = array($bindTypes);
 
-        // Add field values, in order, to bind parameters
+        #---------------------------------------------------
+        # Add field values, in order, to bind parameters,
+        # but omit auto-increments fields.
+        #---------------------------------------------------
         foreach ($row->table->getAllFields() as $field) {
             if ($field->type != FieldType::AUTO_INCREMENT) {
                 // Replace empty string with null
@@ -282,19 +297,21 @@ class MysqlDbConnection extends DbConnection
         call_user_func_array(array($stmt, 'bind_param'), $paramRefs);
 
         // Execute query
-        $rc = $stmt->execute();   //NOTE add error checking?
+        $rc = $stmt->execute();
 
+        $insertId = 0;
+        
         // If there's an error executing the statement
         if ($rc === false) {
             $this->errorString = $stmt->error;
-            $message = 'MySQL error'
-                .' ['.$stmt->errno.']: '.$stmt->error;
+            $message = 'MySQL error '.' ['.$stmt->errno.']: '.$stmt->error;
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
+        } else {
+            $insertId = $this->mysqli->insert_id;
         }
-
     
-        return(1);
+        return($insertId);
     }
 
 

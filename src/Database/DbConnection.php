@@ -71,7 +71,7 @@ abstract class DbConnection
 
     abstract protected function updateRow($row);
 
-    abstract protected function insertRow($row);
+    abstract public function insertRow($row);
 
     abstract protected function insertRows($table);
     
