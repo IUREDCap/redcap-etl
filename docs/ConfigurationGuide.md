@@ -195,6 +195,52 @@ is loaded.</td>
 </tbody>
 </table>
 
+### Database Logging Properties
+
+REDCap-ETL logs to the load database by default. It creates and logs to 2 tables:
+
+1. **etl_log** - contains one row for each ETL process run, where each row contains
+    the start time, table prefix used (if any), batch size, and REDCap-ETL
+    version number. 
+2. **etl_event_log** - contains the individual event messages for each
+    ETL process run.
+
+The 2 tables can be joined on their **log_id** attributes.
+
+Unlike the other tables REDCap-ETL generates,
+the database logging tables are not deleted between runs, so these tables
+accumulate the results of all ETL runs.
+
+<table>
+<thead>
+<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
+</thead>
+<tbody>
+
+<tr>
+<td>db_logging</td>
+<td> X </td> <td> </td>
+<td>A true/false property indicating if REDCap-ETL should log to the database.
+The default value for this property is true.</td>
+</tr>
+
+<tr>
+<td>db_log_table</td>
+<td> X </td> <td> </td>
+<td>The name of the main database logging table.
+This name defaults to **etl_log**.</td>
+</tr>
+
+<tr>
+<td>db_event_log_table</td>
+<td> X </td> <td> </td>
+<td>The name of the database logging event table.
+This name defaults to **etl_event_log**.</td>
+</tr>
+
+</tbody>
+</table>
+
 
 ### E-mail Properties
 
