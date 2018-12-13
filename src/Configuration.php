@@ -29,7 +29,9 @@ class Configuration
     const DEFAULT_DB_LOG_TABLE       = 'etl_log';
     const DEFAULT_DB_EVENT_LOG_TABLE = 'etl_event_log';
 
-    const DEFAULT_EMAIL_SUBJECT      = 'REDCap-ETL Error';
+    const DEFAULT_EMAIL_ERRORS   = true;
+    const DEFAULT_EMAIL_SUMMARY  = false;
+    const DEFAULT_EMAIL_SUBJECT  = 'REDCap-ETL Error';
 
     const DEFAULT_GENERATED_INSTANCE_TYPE  = 'int';
     const DEFAULT_GENERATED_KEY_TYPE       = 'int';
@@ -41,7 +43,7 @@ class Configuration
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
     const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
     
-    const DEFAULT_SEND_EMAIL_SUMMARY = false;
+    const DEFAULT_PRINT_LOGGING = true;
     
     const DEFAULT_TABLE_PREFIX      = '';   # i.e., No table prefix
     const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
@@ -78,10 +80,10 @@ class Configuration
     
     private $postProcessingSqlFile;
     private $projectId;
+    private $printLogging;
     private $redcapApiUrl;
     
     private $sslVerify;
-    private $sendEmailSummary;
     
     private $tablePrefix;
     private $timeLimit;
@@ -96,6 +98,8 @@ class Configuration
     private $configuration;
     private $configProject;
 
+    private $emailErrors;
+    private $emailSummary;
     private $emailFromAddres;
     private $emailSubject;
     private $emailToList;
@@ -114,7 +118,7 @@ class Configuration
      *     web script log file should be used for logging; false indicates
      *     the standard logging file should be used.
      */
-    public function __construct($logger, $properties, $useWebScriptLogFile = false)
+    public function __construct(& $logger, $properties, $useWebScriptLogFile = false)
     {
         $this->logger = $logger;
         $this->app = $this->logger->getApp();
@@ -167,7 +171,20 @@ class Configuration
             }
         }
 
-
+        #-------------------------------------------
+        # Print logging
+        #-------------------------------------------
+        $this->printLogging = self::DEFAULT_PRINT_LOGGING;
+        if (array_key_exists(ConfigProperties::PRINT_LOGGING, $this->properties)) {
+            $printLogging = $this->properties[ConfigProperties::PRINT_LOGGING];
+            if ($printLogging === true || strcasecmp($printLogging, 'true') === 0 || $printLogging === '1') {
+                $this->printLogging = true;
+            } elseif ($printLogging === false || strcasecmp($printLogging, 'false') === 0 || $printLogging === '0') {
+                $this->printLogging = false;
+            }
+        }
+        $this->logger->setPrintLogging($this->printLogging);
+        
         #-----------------------------------------------------------------------------
         # Get the log file and set it in the logger, so that messages
         # will start to log to the file
@@ -183,12 +200,10 @@ class Configuration
             }
         }
         
-        
         if (!empty($this->logFile)) {
             $this->logFile = $this->processFile($this->logFile, $fileShouldExist = false);
             $this->logger->setLogFile($this->logFile);
         }
-
  
         #-------------------------------------------------------------------
         # Database logging
@@ -214,8 +229,29 @@ class Configuration
         }
 
         #-----------------------------------------------------------
-        # Error e-mail notification information
+        # Error notification information
         #-----------------------------------------------------------
+        $this->emailErrors = self::DEFAULT_EMAIL_ERRORS;
+        if (array_key_exists(ConfigProperties::EMAIL_ERRORS, $this->properties)) {
+            $emailErrors = $this->properties[ConfigProperties::EMAIL_ERRORS];
+            if ($emailErrors === true || strcasecmp($emailErrors, 'true') === 0 || $emailErrors === '1') {
+                $this->emailErrors = true;
+            } elseif ($emailErrors === false || strcasecmp($emailErrors, 'false') === 0 || $emailErrors === '0') {
+                $this->emailErrors = false;
+            }
+        }
+        $this->logger->setEmailErrors($this->emailErrors);
+
+        # E-mail summary notification
+        $this->emailSummary = self::DEFAULT_EMAIL_SUMMARY;
+        if (array_key_exists(ConfigProperties::EMAIL_SUMMARY, $this->properties)) {
+            $send = $this->properties[ConfigProperties::EMAIL_SUMMARY];
+            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
+                $this->emailSummary  = true;
+            }
+        }
+        $this->logger->setEmailSummary($this->emailSummary);
+        
         $this->emailFromAddress  = null;
         $this->emailToList   = null;
         if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $this->properties)) {
@@ -231,16 +267,6 @@ class Configuration
             $this->emailToList = $this->properties[ConfigProperties::EMAIL_TO_LIST];
         }
         
-        # E-mail summary notification
-        $this->sendEmailSummary = self::DEFAULT_SEND_EMAIL_SUMMARY;
-        if (array_key_exists(ConfigProperties::SEND_EMAIL_SUMMARY, $this->properties)) {
-            $send = $this->properties[ConfigProperties::SEND_EMAIL_SUMMARY];
-            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
-                $this->sendEmailSummary  = true;
-                $this->logger->setSendEmailSummary(true);
-            }
-        }
-
         #------------------------------------------------------
         # Set email logging information
         #------------------------------------------------------
@@ -1023,6 +1049,16 @@ class Configuration
         return $this->dbEventLogTable;
     }
     
+    public function getEmailErrors()
+    {
+        return $this->emailErrors;
+    }
+    
+    public function getEmailSummary()
+    {
+        return $this->emailSummary;
+    }
+    
     public function getEmailFromAddress()
     {
         return $this->emailFromAddress;
@@ -1103,6 +1139,11 @@ class Configuration
         return $this->projectId;
     }
 
+    public function getPrintLogging()
+    {
+         return $this->printLogging;
+    }
+    
     public function getRecordId()
     {
         $recordId = null;

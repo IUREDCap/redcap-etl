@@ -559,7 +559,8 @@ class MysqlDbConnection extends DbConnection
         if ($queries === false) {
             $error = 'Could not access query file "'.$queryFile.'": '
                 .error_get_last();
-            throw new EtlException($error);
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($error, $code);
         } else {
             $this->processQueries($queries);
         }
@@ -578,7 +579,8 @@ class MysqlDbConnection extends DbConnection
         if ($result === false) {
             $mysqlError = $this->mysqli->error;
             $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
-            throw new EtlException($error);
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($error, $code);
         } else {
             #print("Query {$queryNumber} info: ".$this->mysqli->info."\n");
             while ($this->mysqli->more_results()) {
@@ -587,7 +589,8 @@ class MysqlDbConnection extends DbConnection
                 if ($result === false) {
                     $mysqlError = $this->mysqli->error;
                     $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
-                    throw new EtlException($error);
+                    $code = EtlException::DATABASE_ERROR;
+                    throw new EtlException($error, $code);
                 }
                 # print ("Query {$queryNumber} info: ".$this->mysqli->info."\n");
             }

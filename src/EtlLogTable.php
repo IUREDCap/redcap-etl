@@ -19,7 +19,10 @@ class EtlLogTable extends Table
     const FIELD_TIME         = 'start_time';
     
     #const FIELD_APP          = 'app';
-    const FIELD_TABLE_PREFIX = 'table_prefix';
+    
+    # Don't need prefix, because log table name will get prefix
+    #const FIELD_TABLE_PREFIX = 'table_prefix';
+    
     const FIELD_BATCH_SIZE   = 'batch_size';
     
     const FIELD_REDCAP_ETL_VERSION = 'redcap_etl_version';
@@ -41,7 +44,7 @@ class EtlLogTable extends Table
         $fieldTime    = new Field(self::FIELD_TIME, FieldType::DATETIME, 6);
         
         #$fieldApp         = new Field(self::FIELD_APP, FieldType::VARCHAR, 60);
-        $fieldTablePrefix = new Field(self::FIELD_TABLE_PREFIX, FieldType::VARCHAR, 60);
+        #$fieldTablePrefix = new Field(self::FIELD_TABLE_PREFIX, FieldType::VARCHAR, 60);
         $fieldBatchSize   = new Field(self::FIELD_BATCH_SIZE, FieldType::INT);
         
         $fieldRedcapEtlVersion = new Field(self::FIELD_REDCAP_ETL_VERSION, FieldType::CHAR, 10);
@@ -49,7 +52,7 @@ class EtlLogTable extends Table
         $this->addField($fieldPrimary);
         $this->addField($fieldTime);
         #$this->addField($fieldApp);
-        $this->addField($fieldTablePrefix);
+        #$this->addField($fieldTablePrefix);
         $this->addField($fieldBatchSize);
         $this->addField($fieldRedcapEtlVersion);
     }
@@ -67,7 +70,7 @@ class EtlLogTable extends Table
         $row = new Row($this);
         $row->addValue(self::FIELD_TIME, $startTime);
         #$row->addValue(self::FIELD_APP, $app);
-        $row->addValue(self::FIELD_TABLE_PREFIX, $tablePrefix);
+        #$row->addValue(self::FIELD_TABLE_PREFIX, $tablePrefix);
         $row->addValue(self::FIELD_BATCH_SIZE, $batchSize);
         $row->addValue(self::FIELD_REDCAP_ETL_VERSION, $redCapEtlVersion);
         

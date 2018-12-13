@@ -83,7 +83,7 @@ class RedCapEtl
             $useWebScriptLogFile
         );
 
-        $this->logger = $this->configuration->getLogger();
+        $this->logger = $logger;
         $this->logger->setConfiguration($this->configuration);
         
         $this->configProject = $this->configuration->getConfigProject();
@@ -640,41 +640,31 @@ class RedCapEtl
      */
     public function run()
     {
-        try {
-            $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-            $this->log("Starting processing.");
+        $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
+        $this->log("Starting processing.");
 
-            #-------------------------------------------------------------------------
-            # Parse Transformation Rules
-            #
-            # NOTE: The $result is not used in batch mode. It is used
-            #       by the DET handler to give feedback within REDCap.
-            #-------------------------------------------------------------------------
-            list($parseStatus, $result) = $this->processTransformationRules();
+        #-------------------------------------------------------------------------
+        # Parse Transformation Rules
+        #
+        # NOTE: The $result is not used in batch mode. It is used
+        #       by the DET handler to give feedback within REDCap.
+        #-------------------------------------------------------------------------
+        list($parseStatus, $result) = $this->processTransformationRules();
 
-            if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
-                $message = "Transformation rules not parsed. Processing stopped.";
-                throw new EtlException($message, EtlException::INPUT_ERROR);
-            } else {
-                $this->createLoadTables();
-                $numberOfRecordIds = $this->extractTransformLoad();
+        if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
+            $message = "Transformation rules not parsed. Processing stopped.";
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        } else {
+            $this->createLoadTables();
+            $numberOfRecordIds = $this->extractTransformLoad();
                 
-                $sqlFile = $this->configuration->getPostProcessingSqlFile();
-                if (!empty($sqlFile)) {
-                    $this->dbcon->processQueryFile($sqlFile);
-                }
+            $sqlFile = $this->configuration->getPostProcessingSqlFile();
+            if (!empty($sqlFile)) {
+                $this->dbcon->processQueryFile($sqlFile);
+            }
 
-                $this->log("Processing complete.");
-                $this->logger->processEmailSummary();
-            }
-        } catch (\Exception $exception) {
-            try {
-                $this->log('Processing failed.');
-                $this->logger->processEmailSummary();
-            } catch (\Exception $logException) {
-                ; // Don't do anything; want original exception to be thrown
-            }
-            throw $exception;  // re-throw the exception
+            $this->log("Processing complete.");
+            $this->logger->processEmailSummary();
         }
 
         return $numberOfRecordIds;

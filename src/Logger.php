@@ -21,8 +21,8 @@ class Logger
 
     private $logProject;
 
-    /** @var boolean Whether info that is logged should be printed to standard output */
-    private $printInfo;
+    /** @var boolean Whether messages logged should be printed to standard output */
+    private $printLogging;
     
     /** @var boolean If true (the default) then REDCap-ETL  will attempt to log errors to PHP's
         system logger if no other logging of the errors is successful. */
@@ -36,14 +36,20 @@ class Logger
     private $projectIndex;
     private $projectDate;
 
+
+    private $emailErrors;
+    
+    /** @var boolean indicates if an e-mail logging summary should be sent to
+                     log to e-mail list; defaults to false. */
+    private $emailSummary;
+    
     /** @var string The from e-mail address for e-mail log messages. */
     private $logFromEmail;
+    
     private $logToEmail;
     private $logEmailSubject;
     
-    /** @var indicates if an e-mail logging summary should be sent to
-        log to e-mail list; defaults to false. */
-    private $sendEmailSummary;
+
 
     /** @var array Array of log messages (in effect an in-memory log). */
     private $logArray;
@@ -78,19 +84,20 @@ class Logger
         $this->app = $app;
         $this->projectIndex = 0;
         
-        $this->printInfo         = true;
+        $this->printLogging      = true;
         $this->logToSystemLogger = true;
 
         $this->logArray = array();
 
         $this->logFile    = null;
         $this->logProject = null;
-                
+
         $this->logFromEmail = null;
         $this->logToEmail   = null;
         $this->logEmailSubject = '';
-        
-        $this->sendEmailSummary = false;
+
+        $this->emailErrors  = true;
+        $this->emailSummary = false;
         
         $this->configuration = null;
     }
@@ -100,12 +107,14 @@ class Logger
      */
     public function turnOff()
     {
-        $this->printInfo         = false;
+        $this->printLogging      = false;
         $this->logToSystemLogger = false;
         
         $this->logFile    = null;
         $this->logProject = null;
         
+        $this->emailErrors  = false;
+        $this->emailSummary = false;
         $this->logFromEmail = null;
         $this->logToEmail   = null;
         
@@ -131,6 +140,16 @@ class Logger
         return $this->logFile;
     }
 
+    public function getEmailErrors()
+    {
+        return $this->emailErrors;
+    }
+    
+    public function setEmailErrors($emailErrors)
+    {
+        $this->emailErrors = $emailErrors;
+    }
+    
     /**
      * Set the e-mail values for logging to e-mail.
      *
@@ -198,18 +217,6 @@ class Logger
         $this->projectDate   = date('g:i:s a d-M-Y T');
     }
 
-    /**
-     * Sets whether or not info messages that are logged
-     * are printed to stanadrd output or not.
-     *
-     * @param boolean $printInfo true indicates that informational logging messages
-     *     should be printed, and false indicates that the should not.
-     */
-    public function setPrintInfo($printInfo)
-    {
-        $this->printInfo = $printInfo;
-    }
-
 
     /**
      * Log the specified information to the log file (if specified)
@@ -221,20 +228,24 @@ class Logger
      */
     public function logInfo($info)
     {
-        $logged = false;
-        $logFileOk = true;
-
+        static $fileLoggingError = false;
+        
         $this->logToArray($info);
-        
-        list($loggedToFile, $fileError) = $this->logToFile($info);
+        $this->logWithPrint($info);
 
-        list($loggedToProject, $projectError) = $this->logToProject($info);
-
-        if ($this->printInfo === true) {
-            print $info."\n";
+        try {
+            $loggedToFile = $this->logToFile($info);
+        } catch (\Exception $exception) {
+            $this->logException($exception);
         }
-        
-        $this->logEventToDatabase($info);
+
+        try {
+            $this->logEventToDatabase($info);
+        } catch (\Exception $exception) {
+            $this->logException($exception);
+        }
+            
+        list($loggedToProject, $projectError) = $this->logToProject($info);
         
         #---------------------------------------
         # Log logging errors
@@ -246,8 +257,45 @@ class Logger
         if (isset($projectError)) {
             $this->logError($projectError);
         }
+    }
+    
+    /**
+     * Logs a logging error (ignoring any errors
+     * that occur in trying to log the log error).
+     * The hope is that there is at least one
+     * logging method that works.
+     */
+    private function logLoggingError($message)
+    {
+        try {
+            $this->logToArray($message);
+        } catch (\Exception $exception) {
+            ; // ignore logging errors
+        }
+        
+        try {
+            $this->logWithPrint($message);
+        } catch (\Exception $exception) {
+            ; // ignore logging errors
+        }
+        
+        try {
+            $this->logToFile($message);
+        } catch (\Exception $exception) {
+            ; // ignore logging errors
+        }
+        
+        try {
+            $this->logToProject($info);
+        } catch (\Exception $exception) {
+            ; // ignore logging errors
+        }
 
-        return $logged;
+        try {
+            $this->logEventToDatabase($message);
+        } catch (\Exception $exception) {
+            ; // ignore logging errors
+        }
     }
 
 
@@ -259,6 +307,7 @@ class Logger
     public function logException($exception)
     {
         $message = $exception->getMessage();
+        $message = preg_replace('/\s+$/', '', $message);
 
         #--------------------------------------------------------------------
         # if this was an error caused by PHPCap, then include information
@@ -272,9 +321,10 @@ class Logger
         }
 
         $this->logToArray($message);
-
+        $this->logWithPrint($message);
+        
         list($loggedToProject, $projectError) = $this->logToProject($message);
-
+        
         $loggedToDb = $this->logEventToDatabase($message);
         
         #--------------------------------------------------
@@ -285,12 +335,14 @@ class Logger
         list($loggedToFile, $fileError) = $this->logToFile($message);
         $loggedToEmail   = $this->logToEmail($message);
 
+        /********
         if ($loggedToFile === false && $loggedToProject === false
             && $loggedToEmail === false && $loggedToDb === false) {
             if ($this->logToSystemLogger) {
                 $logged = error_log($message, 0);
             }
         }
+        *******/
     }
 
 
@@ -303,6 +355,8 @@ class Logger
     {
         $this->logToArray($error);
 
+        $this->logWithPrint($error);
+        
         list($loggedToFile, $fileError) = $this->logToFile($error);
         list($loggedToProject, $projectError) = $this->logToProject($error);
 
@@ -323,9 +377,19 @@ class Logger
         }
     }
 
+    /**
+     * Log to internal memory (specifially an array).
+     */
     private function logToArray($message)
     {
         array_push($this->logArray, $message);
+    }
+    
+    private function logWithPrint($message)
+    {
+        if ($this->printLogging === true) {
+            print $message."\n";
+        }
     }
 
     /**
@@ -380,32 +444,23 @@ class Logger
      * Logs the specified message to the log file, if one was configured.
      *
      * @param string $message the message to log.
-     * @return array first element is true if the logging operation succeeded, or false otherwise.
-     *               second element is unset if no error occurred, and a string with the error
-     *               message if an error did occur.
      */
     public function logToFile($message)
     {
-        $error  = null;
         $logged = false;
-
+        
         if (!empty($this->logFile)) {
             $timestamp = date('Y-m-d H:i:s');
             $message = $timestamp.': '.$message."\n";
 
             $logged = error_log($message, 3, $this->logFile);
-            #-----------------------------------------------------------
-            # If logging to the specified file failed, log to PHP's
-            # system log.
-            #-----------------------------------------------------------
             if ($logged === false) {
-                if ($this->logToSystemLogger) {
-                    $error = 'Logging to file "'.($this->logFile).'" as user "'.get_current_user().'" failed.';
-                    error_log($error);
-                }
+                $message = 'Logging to file "'.($this->logFile).'" as user "'.get_current_user().'" failed.';
+                $code = EtlException::LOGGING_ERROR;
+                throw new EtlException($message, $code);
             }
         }
-        return array($logged, $error);
+        return $logged;
     }
 
     /**
@@ -605,19 +660,29 @@ class Logger
         return $this->logArray;
     }
     
-    public function getSendEmailSummary()
+    public function getPrintLogging()
     {
-        return $this->sendEmailSummary;
+        return $this->printLogging;
     }
     
-    public function setSendEmailSummary($sendEmailSummary)
+    public function setPrintLogging($printLogging)
     {
-        $this->sendEmailSummary = $sendEmailSummary;
+        $this->printLogging = $printLogging;
+    }
+    
+    public function getEmailSummary()
+    {
+        return $this->emailSummary;
+    }
+    
+    public function setEmailSummary($emailSummary)
+    {
+        $this->emailSummary = $emailSummary;
     }
     
     public function processEmailSummary()
     {
-        if (!empty($this->logFromEmail) && !empty($this->logToEmail) && $this->sendEmailSummary) {
+        if (!empty($this->logFromEmail) && !empty($this->logToEmail) && $this->emailSummary) {
             $this->emailLogArray();
         }
     }

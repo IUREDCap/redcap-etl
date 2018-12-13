@@ -38,7 +38,7 @@ class LoggerTest extends TestCase
 
         $logger = new Logger($this->project->getApp());
         $logger->setLogProject($this->project);
-        $logger->setPrintInfo(false);
+        $logger->setPrintLogging(false);
 
         $logFile = __DIR__.'/../logs/logger-test-log.txt';
         $logger->setLogFile($logFile);
@@ -81,7 +81,7 @@ class LoggerTest extends TestCase
     public function testLogEmail()
     {
         $logger = new Logger($this->project->getApp());
-        $logger->setPrintInfo(false);
+        $logger->setPrintLogging(false);
 
         $from    = 'redcap-etl@iu.edu';
         $to      = 'admin1@iu.edu,admin2@iu.edu';
@@ -146,11 +146,12 @@ class LoggerTest extends TestCase
         SystemFunctions::setOverrideMail(false);
     }
     
+    /*
     public function testLogError()
     {
         $logger = new Logger($this->project->getApp());
-        $logger->setPrintInfo(false);
-        
+        $logger->setPrintLogging(false);
+
         SystemFunctions::setOverrideErrorLog(true);
         $message = 'This is an error log test.';
         $logger->logError($message);
@@ -162,11 +163,12 @@ class LoggerTest extends TestCase
         );
         SystemFunctions::setOverrideErrorLog(false);
     }
+    */
     
     public function testLogException()
     {
         $logger = new Logger($this->project->getApp());
-        $logger->setPrintInfo(false);
+        $logger->setPrintLogging(false);
         
         $logFile = __DIR__.'/../logs/test-log-exception.txt';
         if (file_exists($logFile)) {
@@ -203,8 +205,9 @@ class LoggerTest extends TestCase
         if (file_exists($logFile)) {
             unlink($logFile);
         }
-        ini_set("log_errors", 1);
-        ini_set("error_log", $logFile);
+        #ini_set("log_errors", 1);
+        #ini_set("error_log", $logFile);
+        $logger->setLogFile($logFile);
                 
         $logger->logException($exception);
                 
@@ -214,9 +217,12 @@ class LoggerTest extends TestCase
         $logEntry = fgets($fh);
         fclose($fh);
         
+        list($date, $time, $fileMessage) = explode(' ', $logEntry, 3);
+        $fileMessage = preg_replace('/\s+$/', '', $fileMessage);
+
         # Remove the timestamp and trailing newline
-        list($timestamp, $fileMessage) = explode('] ', $logEntry);
-        $fileMessage = trim($fileMessage);
+        #list($timestamp, $fileMessage) = explode('] ', $logEntry);
+        #$fileMessage = trim($fileMessage);
 
         $this->assertEquals(
             $message,
@@ -228,7 +234,7 @@ class LoggerTest extends TestCase
     public function testLogPhpCapException()
     {
         $logger = new Logger($this->project->getApp());
-        $logger->setPrintInfo(false);
+        $logger->setPrintLogging(false);
         
         $logFile = __DIR__.'/../logs/test-log-phpcap-exception.txt';
         if (file_exists($logFile)) {
