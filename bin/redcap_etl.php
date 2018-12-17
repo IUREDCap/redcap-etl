@@ -49,6 +49,6 @@ try {
     $redCapEtl->run();
 } catch (\Exception $exception) {
     $logger->logException($exception);
-    $logger->logInfo('Processing failed.');
+    $logger->log('Processing failed.');
     $logger->processEmailSummary();
 }

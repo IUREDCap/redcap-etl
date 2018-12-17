@@ -221,7 +221,8 @@ accumulate the results of all ETL runs.
 <td>db_logging</td>
 <td> X </td> <td> </td>
 <td>A true/false property indicating if REDCap-ETL should log to the database.
-The default value for this property is true.</td>
+The default value for this property is true. Database logging is not
+supported for CSV (comma-seperation value) file output.</td>
 </tr>
 
 <tr>
@@ -244,14 +245,33 @@ This name defaults to **etl_event_log**.</td>
 
 ### E-mail Properties
 
-Properties for e-mail error notifications that are sent by REDCap-ETL when
-an error occurs while running the ETL process.
+Properties for e-mail error notifications and processing summaries
+that can be sent by REDCap-ETL.
 
 <table>
 <thead>
 <tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
 </thead>
 <tbody>
+
+<tr>
+<td>email_errors</td>
+<td> X </td> <td> </td>
+<td>True/false value that indicates if an e-mail should be sent
+when errors occur to the "email_to_list".
+The default value is true.
+</td>
+</tr>
+
+<tr>
+<td>email_summary</td>
+<td> X </td> <td> </td>
+<td>True/false value that indicates if an e-mail summary of the
+log messages should be sent to the "email_to_list".
+The default value is false, and no summary will be sent
+if the ETL process encounters an error.
+</td>
+</tr>
 
 <tr>
 <td>email_from_address</td>
@@ -272,14 +292,6 @@ an error occurs while running the ETL process.
 <td>The to address list for e-mail notifications sent by REDCap-ETL</td>
 </tr>
 
-<tr>
-<td>send_email_summary</td>
-<td> X </td> <td> </td>
-<td>True/false value that indicates if an e-mail summary of the
-log messages should be sent to the "email_to_list".
-The default value is false.
-</td>
-</tr>
 
 </tbody>
 </table>

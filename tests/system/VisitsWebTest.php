@@ -19,10 +19,12 @@ class VisitsWebTest extends TestCase
         # For accessing the values after the ETL process has run
         # to see if they're correct
         #------------------------------------------------------------
-        $logger = new Logger('visits_test');
+        $logger = new Logger('visits_web_test');
+        $logger->setOn(false);
 
         $useWebScriptLogFile = true;
         $redCapEtl = new RedCapEtl($logger, self::CONFIG_FILE, $useWebScriptLogFile);
+                
         $redCapEtl->setTriggerEtl();
         $configuration = $redCapEtl->getConfiguration();
 

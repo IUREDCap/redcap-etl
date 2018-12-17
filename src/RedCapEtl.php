@@ -400,10 +400,10 @@ class RedCapEtl
         }
 
         $endEtlTime = microtime(true);
-        $this->logInfoToFile('Extract time:   '.$extractTime.' seconds');
-        $this->logInfoToFile('Transform time: '.$transformTime.' seconds');
-        $this->logInfoToFile('Load time:      '.$loadTime.' seconds');
-        $this->logInfoToFile('ETL total time: '.($endEtlTime - $startEtlTime).' seconds');
+        $this->logToFile('Extract time:   '.$extractTime.' seconds');
+        $this->logToFile('Transform time: '.$transformTime.' seconds');
+        $this->logToFile('Load time:      '.$loadTime.' seconds');
+        $this->logToFile('ETL total time: '.($endEtlTime - $startEtlTime).' seconds');
 
         $this->reportRows();
 
@@ -680,7 +680,7 @@ class RedCapEtl
     {
         try {
             $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-            $this->logger->logInfo('Executing web script '.$this->logger->getApp());
+            $this->logger->log('Executing web script '.$this->logger->getApp());
 
             $detHandler = $this->getDetHandler();
             list($projectId,$recordId, $instrument) = $detHandler->getDetParams();
@@ -778,10 +778,10 @@ class RedCapEtl
     
     public function log($message)
     {
-        $this->logger->logInfo($message);
+        $this->logger->log($message);
     }
 
-    public function logInfoToFile($message)
+    public function logToFile($message)
     {
         $this->logger->logToFile($message, $this->logFile);
     }
