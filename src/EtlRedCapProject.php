@@ -38,6 +38,7 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
         if (!isset($this->projectInfo)) {
             $this->projectInfo = $this->exportProjectInfo();
         }
+        // print_r($this->projectInfo);
         return $this->projectInfo;
     }
 

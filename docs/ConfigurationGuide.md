@@ -50,13 +50,14 @@ Currently, the supported database connection types are
 ### MySQL
 For MySQL, the format of the database connection string is:
 
-        MySQL:<host>:<username>:<password>:<database>
+        MySQL:<host>:<username>:<password>:<database>[:<port>]
 
 Example MySQL database connection strings:
 
         MySQL:localhost:etl_user:etl_password:etl_test_db
 
-        MySQL:someplace.edu:admin:admin_password_123:etl_prod_db
+        MySQL:someplace.edu:admin:admin_password_123:etl_prod_db:3306
+
 
 ### CSV
 For CSV, the database connection string format is:
