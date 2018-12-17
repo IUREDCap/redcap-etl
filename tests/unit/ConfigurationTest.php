@@ -15,6 +15,52 @@ class ConfigurationTest extends TestCase
     {
     }
 
+    // Some parts of this function can't easily be tested by a unit
+    // test, so are handled in integration testing
+    public function testProcessConfigurationProject()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $configMock = $reflection->newInstanceWithoutConstructor();
+        $method = $reflection->getMethod('processConfigurationProject');
+        $method->setAccessible(true);
+
+        // Unable to create RedCap object
+        $exceptionCaught = false;
+        try {
+            $method->invokeArgs($configMock,array(null,null));
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught');
+
+        $expectedCode = EtlException::PHPCAP_ERROR;
+        $this->assertEquals($expectedCode, $exception->getCode(), 'ProcessConfigurationProject no redcap object code');
+
+        $expectedMessage = 'Unable to set up RedCap object.';
+        $this->assertEquals($expectedMessage, $exception->getMessage(), 'ProcessConfigurationProject no redcap object message');
+
+        // Unable to get the Configuration project
+        $configMock->setRedCapApiUrl('fake url');
+        $badAPIToken = '1234567890';
+
+        $exceptionCaught = false;
+        try {
+            $method->invokeArgs($configMock,array($badAPIToken,null));
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught');
+
+        $expectedCode = EtlException::PHPCAP_ERROR;
+        $this->assertEquals($expectedCode, $exception->getCode(), 'ProcessConfigurationProject bad config token code');
+
+        $expectedMessage = 'Could not get Configuration data';
+        $this->assertEquals($expectedMessage, $exception->getMessage(), 'ProcessConfigurationProject bad config token message');
+
+    }
+
     public function testConfig()
     {
         $propertiesFile = __DIR__.'/../data/config-testconfiguration.ini';
