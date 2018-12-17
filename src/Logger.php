@@ -71,6 +71,13 @@ class Logger
                            until the configuration information has been processed. */
     private $configuration;
     
+    # Logging error flags that are used to only print the first error
+    # for a specific type of logging errors
+    private $printLoggingErrorLogged;
+    private $fileLoggingErrorLogged;
+    private $dbLoggingErrorLogged;
+    private $projectLoggingErrorLogged;
+        
     /**
      * Creates a logger.
      *
@@ -86,7 +93,7 @@ class Logger
         
         $this->printLogging = true;
 
-        $this->logArray = array();
+        $this->logArray      = array();
 
         $this->logFile    = null;
         $this->logProject = null;
@@ -99,6 +106,11 @@ class Logger
         $this->emailSummary = false;
         
         $this->configuration = null;
+        
+        $this->printLoggingErrorLogged   = false;
+        $this->fileLoggingErrorLogged    = false;
+        $this->dbLoggingErrorLogged      = false;
+        $this->projectLoggingErrorLogged = false;
     }
     
     public function setOn($isOn)
@@ -201,57 +213,75 @@ class Logger
 
 
     /**
-     * Log the specified information to the log file (if specified)
-     * and the REDCap logging project (if specified), or to PHP's
-     * system log if no log file or project was specified, of if
-     * writing to all specified logs fails.
+     * Log the specified information to all logging sources that
+     * have been enabled.
      *
-     * @param string $info the information to log.
+     * @param string $message the message to log.
      */
     public function log($message)
     {
-        static $fileLoggingError = false;
+        static $printLoggingErrorLogged   = false;
+        static $fileLoggingErrorLogged    = false;
+        static $dbLoggingErrorLogged      = false;
+        static $projectLoggingErrorLogged = false;
         
         $this->logToArray($message);
-        $this->logWithPrint($message);
-
+        
+        try {
+            $this->logWithPrint($message);
+        } catch (\Exception $exception) {
+            # Only log the first print logging error
+            if (!$this->printLoggingErrorLogged) {
+                $this->logLoggingError($exception);
+            } else {
+                $this->printLoggingErrorLogged = true;
+            }
+        }
+        
         try {
             $this->logToFile($message);
         } catch (\Exception $exception) {
-            $this->logException($exception);
+            # Only log the first file logging error
+            if (!$this->fileLoggingErrorLogged) {
+                $this->logLoggingError($exception);
+            } else {
+                $this->fileLoggingErrorLogged = true;
+            }
         }
 
         try {
             $this->logEventToDatabase($message);
         } catch (\Exception $exception) {
-            $this->logException($exception);
+            # Only log the first database logging error
+            if (!$this->dbLoggingErrorLogged) {
+                $this->logLoggingError($exception);
+            } else {
+                 $this->dbLoggingErrorLogged = true;
+            }
         }
             
         try {
             $this->logToProject($message);
         } catch (\Exception $exception) {
-            $this->logException($exception);
-        }
-        
-        #---------------------------------------
-        # Log logging errors
-        #---------------------------------------
-        if (isset($fileError)) {
-            $this->logError($fileError);
-        }
-
-        if (isset($projectError)) {
-            $this->logError($projectError);
+            # Only log the first database logging error
+            if (!$this->projectLoggingErrorLogged) {
+                $this->logLoggingError($exception);
+            } else {
+                $this->projectLoggingErrorLogged = true;
+            }
         }
     }
-    
+
+
     /**
      * Logs a logging error (ignoring any errors that occur in trying to
-     * log the log error). The hope is that there is at least one
-     * logging method that works.
+     * log the log error). The hope is that there are multiple logging
+     * methods enabled, and at least one of them works.
      */
-    private function logLoggingError($message)
+    private function logLoggingError($exception)
     {
+        $message = 'LOGGING ERROR: '.$exception->getMessage();
+        
         try {
             $this->logToArray($message);
         } catch (\Exception $exception) {
@@ -307,39 +337,23 @@ class Logger
 
         $this->logToArray($message);
         $this->logWithPrint($message);
-        
-        list($loggedToProject, $projectError) = $this->logToProject($message);
-        
-        $loggedToDb = $this->logEventToDatabase($message);
+        $this->logToProject($message);
+        $this->logEventToDatabase($message);
         
         #--------------------------------------------------
         # Add the stack trace for file logging and e-mail
         #--------------------------------------------------
-        $message .= PHP_EOL.$exception->getTraceAsString();
+        $stackTrace = $exception->getTraceAsString();
+        $message .= PHP_EOL.$stackTrace;
 
-        list($loggedToFile, $fileError) = $this->logToFile($message);
-        $loggedToEmail   = $this->logToEmail($message);
-    }
-
-
-    /**
-     * Log the specified error (sends to e-mail list, if specified).
-     *
-     * @param string $error the error message to log.
-     */
-    public function logError($error)
-    {
-        $this->logToArray($error);
-
-        $this->logWithPrint($error);
+        $this->logToFile($message);
         
-        list($loggedToFile, $fileError) = $this->logToFile($error);
-        list($loggedToProject, $projectError) = $this->logToProject($error);
-
-        $loggedToEmail   = $this->logToEmail($error);
-
-        $loggedToDb = $this->logEventToDatabase($error);
+        # The expcetion message should already get included in the
+        # e-mail summary from the logging array, so just send the
+        # stack trace
+        $this->logEmailSummary($stackTrace);
     }
+
 
     /**
      * Log to internal memory (specifially an array).
@@ -348,7 +362,7 @@ class Logger
     {
         array_push($this->logArray, $message);
     }
-    
+        
     private function logWithPrint($message)
     {
         if ($this->printLogging === true && $this->isOn) {
@@ -366,19 +380,27 @@ class Logger
     {
         if ($this->dbLogging === true && !empty($this->dbLogTable) && $this->isOn) {
             if (!($this->dbConnection instanceof CsvDbConnection)) {
-                $tablePrefix = '';
-                if (isset($this->configuration)) {
-                    $tablePrefix = $this->configuration->getTablePrefix();
-                    if (!isset($tablePrefix)) {
-                        $tablePrefix = '';
+                try {
+                    $tablePrefix = '';
+                    if (isset($this->configuration)) {
+                        $tablePrefix = $this->configuration->getTablePrefix();
+                        if (!isset($tablePrefix)) {
+                            $tablePrefix = '';
+                        }
+                    }
+                    $batchSize = $this->configuration->getBatchSize();
+                    $row = $this->dbLogTable->createLogDataRow($this->app, $tablePrefix, $batchSize);
+                    $id = $this->dbConnection->insertRow($row);
+                    # Save inserted ID for use as foreign key in
+                    # log events table
+                    $this->dbLogTableId = $id;
+                } catch (\Exception $exception) {
+                    if (!$this->dbLoggingErrorLogged) {
+                        $this->logLoggingError($exception);
+                    } else {
+                        $this->dbLoggingErrorLogged = true;
                     }
                 }
-                $batchSize = $this->configuration->getBatchSize();
-                $row = $this->dbLogTable->createLogDataRow($this->app, $tablePrefix, $batchSize);
-                $id = $this->dbConnection->insertRow($row);
-                # Save inserted ID for use as foreign key in
-                # log events table
-                $this->dbLogTableId = $id;
             }
         }
     }
@@ -464,39 +486,45 @@ class Logger
 
 
     /**
-     * Logs the specified error to e-mail, if e-mail logging has been set up.
+     * Logs events that have occurred so far to e-mail if settings indicate to do so.
+     * This method would generally be called at the completion of an ETL process.
+     * If no exception is passed, then a successful completion is assumed.
      *
-     * @param string $error the error message to log to e-mail.
+     * @param string $exception the exception that occurred if any.
      */
-    public function logToEmail($error)
+    public function logEmailSummary($errorMessage = null)
     {
         $logged = false;
+        $eol = "\n";
 
+        $message = implode($eol, $this->logArray);
+        
         if (!empty($this->logFromEmail) && !empty($this->logToEmail) && $this->isOn) {
-            try {
-                $failedSendTos = $this->sendMail(
-                    $this->logToEmail,
-                    $attachments = array(),
-                    $message = $error,
-                    $this->logEmailSubject,
-                    $this->logFromEmail
-                );
-
-                if (count($failedSendTos) > 0) {
-                    $message = 'Logging to e-mail failed for the following e-mail addreses: '
-                            .(implode(', ', $failedSendTos));
-                    $this->logLoggingError($message);
-                    $logged = false;
-                } else {
-                    $logged = true;
+            if (($this->emailErrors && isset($errorMessage)) || ($this->emailSummary && empty($errorMessage))) {
+                if (isset($errorMessage)) {
+                    $message .= $eol.$errorMessage.$eol.'Processing failed'.$eol;
                 }
-            } catch (Exception $exception) {
-                $logged = false;
                 
-                if ($this->logToSystemLogger) {
-                    $error = $exception->getMessage();
-                    $message = 'Logging to e-mail failed: '.$error;
-                    $this->logLoggingError($message);
+                try {
+                    $failedSendTos = $this->sendMail(
+                        $this->logToEmail,
+                        $attachments = array(),
+                        $message,
+                        $this->logEmailSubject,
+                        $this->logFromEmail
+                    );
+
+                    if (count($failedSendTos) > 0) {
+                        $message = 'Logging to e-mail failed for the following e-mail addreses: '
+                                .(implode(', ', $failedSendTos));
+                        $this->logLoggingError($message);
+                        $logged = false;
+                    } else {
+                        $logged = true;
+                    }
+                } catch (Exception $exception) {
+                    $this->logLoggingError($exception);
+                    $logged = false;
                 }
             }
         }
@@ -608,6 +636,15 @@ class Logger
             $this->logFromEmail
         );
     }
+    
+    public function hasLoggingError()
+    {
+        return $this->printLoggingErrorLogged
+            || $this->fileLoggingErrorLogged
+            || $this->dbLoggingErrorLogged
+            || $this->projectLoggingErrorLogged
+            ;
+    }
 
     public function getLogArray()
     {
@@ -632,13 +669,6 @@ class Logger
     public function setEmailSummary($emailSummary)
     {
         $this->emailSummary = $emailSummary;
-    }
-    
-    public function processEmailSummary()
-    {
-        if (!empty($this->logFromEmail) && !empty($this->logToEmail) && $this->emailSummary) {
-            $this->emailLogArray();
-        }
     }
     
     public function getDbConnection()

@@ -25,8 +25,8 @@ class ConfigProperties
     const DB_LOG_TABLE           = 'db_log_table';
     const DB_EVENT_LOG_TABLE     = 'db_event_log_table';
 
-    const EMAIL_ERRORS           = 'email_logging';   # true/false indicating if errors should be logged by e-mail
-    const EMAIL_SUMMARY          = 'email_summary';   # true/false indicating if email summary should be sent
+    const EMAIL_ERRORS           = 'email_errors';   # true/false indicating if errors should be logged by e-mail
+    const EMAIL_SUMMARY          = 'email_summary';  # true/false indicating if email summary should be sent
     const EMAIL_FROM_ADDRESS     = 'email_from_address';
     const EMAIL_SUBJECT          = 'email_subject';
     const EMAIL_TO_LIST          = 'email_to_list';

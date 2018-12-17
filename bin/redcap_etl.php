@@ -50,5 +50,4 @@ try {
 } catch (\Exception $exception) {
     $logger->logException($exception);
     $logger->log('Processing failed.');
-    $logger->processEmailSummary();
 }

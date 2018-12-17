@@ -117,17 +117,17 @@ class LoggerTest extends TestCase
         #-------------------------------------------
         SystemFunctions::setOverrideMail(true);
         $errorMessage = 'Test error';
-        $logger->logToEmail($errorMessage);
+        $logger->logEmailSummary($errorMessage);
         $mailArguments = SystemFunctions::getMailArguments();
         list($to, $mailSubject, $message, $additionalHeaders, $addtionalParameters) = array_pop($mailArguments);
         $this->assertEquals($newTo, $to, 'To e-mail send check');
-        $this->assertEquals($message, $errorMessage, 'Message send check');
+        $this->assertRegexp('/'.$errorMessage.'/', $message, 'Message send check');
         $this->assertEquals($subject, $mailSubject, 'Message send check');
 
         # Test array of to e-mails
         $newTo = array('admin1@iu.edu', 'admin2@iu.edu', 'admin3@iu.edu');
         $logger->setLogToEmail($newTo);
-        $logger->logToEmail($errorMessage);
+        $logger->logEmailSummary($errorMessage);
         $mailArguments = SystemFunctions::getMailArguments();
         for ($i = count($newTo) - 1; $i >= 0; $i--) {
             list($to, $mailSubject, $message, $additionalHeaders, $addtionalParameters) = array_pop($mailArguments);
@@ -137,35 +137,16 @@ class LoggerTest extends TestCase
         # Test multiple to e-mails
         $multTo = 'admin1@iu.edu,admin2@iu.edu,admin3@iu.edu';
         $logger->setLogToEmail($multTo);
-        $logger->logToEmail($errorMessage);
+        $logger->logEmailSummary($errorMessage);
         $mailArguments = SystemFunctions::getMailArguments();
         for ($i = count($newTo) - 1; $i >= 0; $i--) {
             list($to, $mailSubject, $message, $additionalHeaders, $addtionalParameters) = array_pop($mailArguments);
             $this->assertEquals($newTo[$i], $to, 'Multiple to e-mails send check '.$i);
         }
 
-
         SystemFunctions::setOverrideMail(false);
     }
     
-    /*
-    public function testLogError()
-    {
-        $logger = new Logger($this->project->getApp());
-        $logger->setPrintLogging(false);
-
-        SystemFunctions::setOverrideErrorLog(true);
-        $message = 'This is an error log test.';
-        $logger->logError($message);
-        $lastErrorLogMessage = SystemFunctions::getLastErrorLogMessage();
-        $this->assertEquals(
-            $message,
-            $lastErrorLogMessage,
-            'Log error check'
-        );
-        SystemFunctions::setOverrideErrorLog(false);
-    }
-    */
     
     public function testLogException()
     {

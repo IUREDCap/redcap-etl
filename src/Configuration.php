@@ -229,7 +229,7 @@ class Configuration
         }
 
         #-----------------------------------------------------------
-        # Error notification information
+        # Email logging
         #-----------------------------------------------------------
         $this->emailErrors = self::DEFAULT_EMAIL_ERRORS;
         if (array_key_exists(ConfigProperties::EMAIL_ERRORS, $this->properties)) {
@@ -267,9 +267,7 @@ class Configuration
             $this->emailToList = $this->properties[ConfigProperties::EMAIL_TO_LIST];
         }
         
-        #------------------------------------------------------
         # Set email logging information
-        #------------------------------------------------------
         if (!empty($this->emailFromAddress) && !empty($this->emailToList)) {
             $this->logger->setLogEmail(
                 $this->emailFromAddress,

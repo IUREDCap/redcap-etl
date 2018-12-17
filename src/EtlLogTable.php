@@ -20,20 +20,20 @@ class EtlLogTable extends Table
     
     const FIELD_APP          = 'app';
     
-    # Don't need prefix, because log table name will get prefix
-    #const FIELD_TABLE_PREFIX = 'table_prefix';
+    const FIELD_TABLE_PREFIX = 'table_prefix';
     
     const FIELD_BATCH_SIZE   = 'batch_size';
     
     const FIELD_REDCAP_ETL_VERSION = 'redcap_etl_version';
+    const FIELD_PHP_VERSION        = 'php_version';
 
     const FIELD_TIMEZONE   = 'timezone';
     const FIELD_UTC_OFFSET = 'utc_offset';
         
-    public function __construct($tablePrefix, $name)
+    public function __construct($name)
     {
         parent::__construct(
-            $tablePrefix . $name,
+            $name,
             self::FIELD_PRIMARY_ID,
             new FieldTypeSpecifier(FieldType::AUTO_INCREMENT),
             array(RowsType::ROOT),
@@ -47,10 +47,11 @@ class EtlLogTable extends Table
         $fieldTime    = new Field(self::FIELD_TIME, FieldType::DATETIME, 6);
  
         $fieldApp         = new Field(self::FIELD_APP, FieldType::VARCHAR, 60);
-        #$fieldTablePrefix = new Field(self::FIELD_TABLE_PREFIX, FieldType::VARCHAR, 60);
+        $fieldTablePrefix = new Field(self::FIELD_TABLE_PREFIX, FieldType::VARCHAR, 60);
         $fieldBatchSize   = new Field(self::FIELD_BATCH_SIZE, FieldType::INT);
         
         $fieldRedcapEtlVersion = new Field(self::FIELD_REDCAP_ETL_VERSION, FieldType::CHAR, 10);
+        $fieldPhpVersion       = new Field(self::FIELD_PHP_VERSION, FieldType::VARCHAR, 40);
         
         $fieldTimezone  = new Field(self::FIELD_TIMEZONE, FieldType::VARCHAR, 40);
         $fieldUtcOffset = new Field(self::FIELD_UTC_OFFSET, FieldType::INT);
@@ -59,9 +60,10 @@ class EtlLogTable extends Table
         $this->addField($fieldPrimary);
         $this->addField($fieldTime);
         $this->addField($fieldApp);
-        #$this->addField($fieldTablePrefix);
+        $this->addField($fieldTablePrefix);
         $this->addField($fieldBatchSize);
         $this->addField($fieldRedcapEtlVersion);
+        $this->addField($fieldPhpVersion);
         $this->addField($fieldTimezone);
         $this->addField($fieldUtcOffset);
     }
@@ -79,15 +81,18 @@ class EtlLogTable extends Table
         $utcOffsetSeconds = date('Z'); # seconds offset from UTC (Coordinated Universal Time)
                 
         $redCapEtlVersion = Version::RELEASE_NUMBER;
+        $phpVersion       = PHP_VERSION;
         
         $row = new Row($this);
         $row->addValue(self::FIELD_TIME, $startTime);
 
         $row->addValue(self::FIELD_APP, $app);
-        #$row->addValue(self::FIELD_TABLE_PREFIX, $tablePrefix);
+        $row->addValue(self::FIELD_TABLE_PREFIX, $tablePrefix);
         $row->addValue(self::FIELD_BATCH_SIZE, $batchSize);
-        $row->addValue(self::FIELD_REDCAP_ETL_VERSION, $redCapEtlVersion);
         
+        $row->addValue(self::FIELD_REDCAP_ETL_VERSION, $redCapEtlVersion);
+        $row->addValue(self::FIELD_PHP_VERSION, $phpVersion);
+                
         $row->addValue(self::FIELD_TIMEZONE, $timezone);
         $row->addValue(self::FIELD_UTC_OFFSET, $utcOffsetSeconds);
         

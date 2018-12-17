@@ -19,10 +19,10 @@ class EtlEventLogTable extends Table
     const FIELD_TIME        = 'time';
     const FIELD_MESSAGE     = 'message';
     
-    public function __construct($tablePrefix, $name)
+    public function __construct($name)
     {
         parent::__construct(
-            $tablePrefix . $name,
+            $name,
             self::FIELD_PRIMARY_ID,
             new FieldTypeSpecifier(FieldType::AUTO_INCREMENT),
             array(RowsType::ROOT),
