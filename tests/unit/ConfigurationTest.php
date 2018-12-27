@@ -18,6 +18,8 @@ class ConfigurationTest extends TestCase
     public function testConstructor()
     {
 
+        $propertiesTemplate = array('transform_rules_source' => '3');
+
         // Bad .json file
         $logger = new Logger('test-app');
 
@@ -43,6 +45,301 @@ class ConfigurationTest extends TestCase
                             'Constructor Bad .json exception message check');
         SystemFunctions::setOverrideFileGetContents(false);
 
+
+        // No API URL
+        $properties = $propertiesTemplate;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'No "redcap_api_url" property was defined.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor No redcap_api_url property exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor No redcap_api_url property exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor No redcap_api_url property exception message check');
+
+        $propertiesTemplate['redcap_api_url'] = 'https://foo.edu';
+
+
+        // ssl_verify set to unrecognized value
+        $badSSLVerify = 'foo';
+        $properties = $propertiesTemplate;
+        $properties['ssl_verify'] = $badSSLVerify;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Unrecognized value "'.$badSSLVerify.
+            '" for ssl_verify property; a true or false value should be specified.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor Bad ssl_verify property exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor Bad ssl_verify property exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor Bad ssl_verify property exception message check');
+
+        // extracted_record_count_check unrecognized value
+        $badExtractedRecordCountCheck = 'foo';
+        $properties = $propertiesTemplate;
+        $properties['extracted_record_count_check'] =
+            $badExtractedRecordCountCheck;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Unrecognized value "'.$badExtractedRecordCountCheck.
+            '" for extracted_record_count_check property; a true or false value should be specified.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor Bad extracted_records_count_check property exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor Bad extracted_records_count_check property exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor Bad extracted_records_count_check property exception message check');
+
+        // No config API token property
+        $properties = $propertiesTemplate;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'No configuration project API token property was defined.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor No config_api_token property exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor No config_api_token property exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor No config_api_token property exception message check');
+
+        $propertiesTemplate['config_api_token'] = '';
+
+
+        // No data API token property
+        $properties = $propertiesTemplate;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'No data source API token was found in the configuration project.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor No data_source_api_token property exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor No data_source_api_token property exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor No data_source_api_token property exception message check');
+
+        $propertiesTemplate['data_source_api_token'] = 3;
+
+
+        // Batch size property < 1
+        $badBatchSize = -1;
+        $properties = $propertiesTemplate;
+        $properties['batch_size'] = $badBatchSize;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Invalid batch_size property. This property must be an integer greater than 0.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor batch_size < 0 exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor batch_size < 0 exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor No batch_size < 0 exception message check');
+
+
+        // Batch size not int or string
+        $badBatchSize = NULL;
+        $properties = $propertiesTemplate;
+        $properties['batch_size'] = $badBatchSize;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Invalid batch_size property. This property must be an integer greater than 0.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor batch_size is not int or string exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor batch_size is not int or string exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor No batch_size is not int or string exception message check');
+
+
+        // Bad table_prefix char
+        $badTablePrefix = '+!-';
+        $properties = $propertiesTemplate;
+        $properties['table_prefix'] = $badTablePrefix;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Invalid table_prefix property. This property may only contain letters, numbers, and underscores.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor Bad table_prefix char exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor Bad table_prefix char exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor Bad table_prefix char exception message check');
+
+
+        // Bad label_view_suffix char
+        $badLabelViewSuffix = '+!-';
+        $properties = $propertiesTemplate;
+        $properties['label_view_suffix'] = $badLabelViewSuffix;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Invalid label_view_suffix property. This property may only contain letters, numbers, and underscores.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor Bad label_view_suffix char exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor Bad label_view_suffix char exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor Bad label_view_suffix char exception message check');
+
+
+        // No db_connection property
+        $properties = $propertiesTemplate;
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'No database connection was specified in the configuration.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor No db_connection property exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor No db_connection property exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor No db_connection property exception message check');
+
+
+        // db_connection property empty
+        $properties = $propertiesTemplate;
+        $properties['db_connection'] = '';
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'No database connection was specified in the configuration.';
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor db_connection property is empty exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor db_connection property is empty exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor db_connection property is empty exception message check');
+
+        $propertiesTemplate['db_connection'] = 'CSV:/tmp';
+
+        // For various assertions that don't require an error to be caught
+        $properties = $propertiesTemplate;
+
+        $useWebScriptLogFile = true;
+        $webScriptLogFile = 'web-script-log-file';
+        $expectedWebScriptLogFile =
+            realpath(__DIR__.'/../../src').'/'.$webScriptLogFile;
+        $properties['web_script_log_file'] = $webScriptLogFile;
+
+        $expectedSendEmailSummary = true;
+        $properties['send_email_summary'] = $expectedSendEmailSummary;
+
+        $sslVerify = 'true';
+        $expectedSslVerify = true;
+        $properties['ssl_verify'] = $sslVerify;
+
+        $extractedRecordCountcheck = 'true';
+        $expectedExtractedRecordCountCheck = true;
+        $properties['extracted_record_count_check'] =
+            $extractedRecordCountcheck;
+
+        $expectedLogProjectApiToken = null;
+
+        $expectedTablePrefix = 'tableprefix';
+        $properties['table_prefix'] = $expectedTablePrefix;
+
+        $config =
+            new Configuration($logger, $properties, $useWebScriptLogFile);
+
+        $webScriptLogFile = $config->getLogFile();
+        $this->assertEquals($expectedWebScriptLogFile, $webScriptLogFile,
+                            'Constructor web_script_log_file set');
+
+        $sendEmailSummary = $config->getSendEmailSummary();
+        $this->assertEquals($expectedSendEmailSummary, $sendEmailSummary,
+                            'Constructor send_email_summary set');
+
+        $sslVerify = $config->getSslVerify();
+        $this->assertEquals($expectedSslVerify, $sslVerify,
+                            'Constructor ssl_verify set');
+
+        $extractedRecordCountcheck = $config->getExtractedRecordCountCheck();
+        $this->assertEquals($expectedExtractedRecordCountCheck,
+                            $extractedRecordCountcheck,
+                            'Constructor extracted_record_count_check set');
+
+        $logProjectApiToken = $config->getLogProjectApiToken();
+        $this->assertEquals($expectedLogProjectApiToken, $logProjectApiToken,
+                            'Constructor log_project_api_token not set');
+
+        $tablePrefix = $config->getTablePrefix();
+        $this->assertEquals($expectedTablePrefix, $tablePrefix,
+                            'Constructor table_prefix set');
     }
 
     // Some parts of this function can't easily be tested by a unit

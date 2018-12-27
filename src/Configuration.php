@@ -264,13 +264,14 @@ class Configuration
         #---------------------------------------------------------------
         if (array_key_exists(ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK, $this->properties)) {
             $countCheck = $this->properties[ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK];
+
             if (strcasecmp($countCheck, 'false') === 0 || $countCheck === '0' || $countCheck === '') {
                 $this->extractedRecordCountCheck = false;
-            } elseif (!isset($countCheck) || $countCheck === ''
+            } elseif (!isset($countCheck)
                     || strcasecmp($countCheck, 'true') === 0 || $countCheck === '1') {
                 $this->extractedRecordCountCheck = true;
             } else {
-                $message = 'Unrecognized value \"'.$countCheck.'\" for '
+                $message = 'Unrecognized value "'.$countCheck.'" for '
                     .ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK
                     .' property; a true or false value should be specified.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -1111,6 +1112,11 @@ class Configuration
     public function getSslVerify()
     {
         return $this->sslVerify;
+    }
+
+    public function getSendEmailSummary()
+    {
+        return $this->sendEmailSummary;
     }
 
     public function getTablePrefix()
