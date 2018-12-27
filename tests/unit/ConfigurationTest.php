@@ -15,6 +15,36 @@ class ConfigurationTest extends TestCase
     {
     }
 
+    public function testConstructor()
+    {
+
+        // Bad .json file
+        $logger = new Logger('test-app');
+
+        $propertiesFile = 'fake.json';
+        SystemFunctions::setOverrideFileGetContents(true);
+        SystemFunctions::setFileGetContentsResult(false);
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'The JSON properties file "'.$propertiesFile.
+            '" could not be read.';
+        try {
+            $config = new Configuration($logger, $propertiesFile);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught,
+                          'Constructor Bad .json exception caught');
+        $this->assertEquals($expectedCode, $exception->getCode(),
+                            'Constructor Bad .json exception code check');
+        $this->assertEquals($expectedMessage,$exception->getMessage(),
+                            'Constructor Bad .json exception message check');
+        SystemFunctions::setOverrideFileGetContents(false);
+
+    }
+
     // Some parts of this function can't easily be tested by a unit
     // test, so are handled in integration testing
     public function testProcessConfigurationProject()

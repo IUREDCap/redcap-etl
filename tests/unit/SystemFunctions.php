@@ -6,9 +6,12 @@ class SystemFunctions
 {
     private static $overrideErrorLog  = false;
     private static $lastErrorLogMessage = null;
+
+    private static $overrideFileGetContents = false;
+    private static $fileGetContentsResult = null;
+
     private static $mailArguments = array();
     private static $mailFails = false;
-
     private static $overrideMail = false;
 
     public static function errorLog($message, $messageType)
@@ -31,6 +34,25 @@ class SystemFunctions
         return self::$lastErrorLogMessage;
     }
 
+    public static function setFileGetContentsResult($returnVal)
+    {
+        self::$fileGetContentsResult = $returnVal;
+    }
+
+    public static function file_get_contents($filename)
+    {
+        return self::$fileGetContentsResult;
+    }
+
+    public static function getOverrideFileGetContents()
+    {
+        return self::$overrideFileGetContents;
+    }
+
+    public static function setOverrideFileGetContents($override)
+    {
+        self::$overrideFileGetContents = $override;
+    }
 
     public static function getOverrideMail()
     {
@@ -71,16 +93,30 @@ class SystemFunctions
 # Overridden system functions
 #------------------------------------------------------------------------------
 
-function error_log($message, $messageType = 0)
+function error_log($message, $messageType = 0, $messageFile = NULL)
 {
     if (SystemFunctions::getOverrideErrorLog() === true) {
         $result = SystemFunctions::errorLog($message, $messageType);
     } else {
-        $result = \error_log($message, $messageType);
+        $result = \error_log($message, $messageType, $messageFile);
     }
     return $result;
 }
 
+// ADA: Using full set of parameters led to unexpected errors. May need to
+//      debug these if any calls to file_get_contents use more than the first
+//      parameter.
+//function file_get_contents($filename, $use_include_path = FALSE, $context = NULL, $offset = 0, $maxlen = NULL)
+function file_get_contents($filename)
+{
+    if (SystemFunctions::getOverrideFileGetContents() === true) {
+        $result = SystemFunctions::file_get_contents($filename);
+    } else {
+        $result = \file_get_contents($filename);
+        //$result = \file_get_contents($filename, $use_include_path, $context, $offset, $maxlen);
+    }
+    return $result;
+}
 
 function mail($to, $subject, $message, $additionalHeaders, $addtionalParameters)
 {

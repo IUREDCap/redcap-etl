@@ -269,6 +269,8 @@ Notes:
 * Make sure that the `web_script_url` property in the 
   tests/config/visits.ini configuration file is set to a value
   that corresponds to the directory where the web script is installed 
+* The owner of your web server process must be able to read from
+  your REDCap-ETL installation directory.
 * If you don't have permission to write to the web directory, you
   may need to run the command as
   
