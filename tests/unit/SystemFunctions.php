@@ -39,7 +39,7 @@ class SystemFunctions
         self::$fileGetContentsResult = $returnVal;
     }
 
-    public static function file_get_contents($filename)
+    public static function fileGetContents($filename)
     {
         return self::$fileGetContentsResult;
     }
@@ -110,7 +110,7 @@ function error_log($message, $messageType = 0, $messageFile = null)
 function file_get_contents($filename)
 {
     if (SystemFunctions::getOverrideFileGetContents() === true) {
-        $result = SystemFunctions::file_get_contents($filename);
+        $result = SystemFunctions::fileGetContents($filename);
     } else {
         $result = \file_get_contents($filename);
         //$result = \file_get_contents($filename, $use_include_path, $context, $offset, $maxlen);

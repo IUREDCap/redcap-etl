@@ -272,7 +272,8 @@ class ConfigurationTest extends TestCase
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'Invalid table_prefix property. This property may only contain letters, numbers, and underscores.';
+        $expectedMessage =
+            'Invalid table_prefix property. This property may only contain letters, numbers, and underscores.';
         try {
             $config = new Configuration($logger, $properties);
         } catch (EtlException $exception) {
@@ -302,7 +303,8 @@ class ConfigurationTest extends TestCase
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'Invalid label_view_suffix property. This property may only contain letters, numbers, and underscores.';
+        $expectedMessage =
+            'Invalid label_view_suffix property. This property may only contain letters, numbers, and underscores.';
         try {
             $config = new Configuration($logger, $properties);
         } catch (EtlException $exception) {
@@ -478,7 +480,11 @@ class ConfigurationTest extends TestCase
         $this->assertEquals($expectedCode, $exception->getCode(), 'ProcessConfigurationProject no redcap object code');
 
         $expectedMessage = 'Unable to set up RedCap object.';
-        $this->assertEquals($expectedMessage, $exception->getMessage(), 'ProcessConfigurationProject no redcap object message');
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'ProcessConfigurationProject no redcap object message'
+        );
 
         // Unable to get the Configuration project
         $configMock->setRedCapApiUrl('fake url');
@@ -497,7 +503,11 @@ class ConfigurationTest extends TestCase
         $this->assertEquals($expectedCode, $exception->getCode(), 'ProcessConfigurationProject bad config token code');
 
         $expectedMessage = 'Could not get Configuration data';
-        $this->assertEquals($expectedMessage, $exception->getMessage(), 'ProcessConfigurationProject bad config token message');
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'ProcessConfigurationProject bad config token message'
+        );
     }
 
     public function testConfig()
