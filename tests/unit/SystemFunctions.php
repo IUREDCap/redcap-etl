@@ -93,7 +93,7 @@ class SystemFunctions
 # Overridden system functions
 #------------------------------------------------------------------------------
 
-function error_log($message, $messageType = 0, $messageFile = NULL)
+function error_log($message, $messageType = 0, $messageFile = null)
 {
     if (SystemFunctions::getOverrideErrorLog() === true) {
         $result = SystemFunctions::errorLog($message, $messageType);

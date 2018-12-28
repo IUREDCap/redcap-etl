@@ -37,12 +37,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor Bad .json exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor Bad .json exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor Bad .json exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor Bad .json exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor Bad .json exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor Bad .json exception message check'
+        );
         SystemFunctions::setOverrideFileGetContents(false);
 
 
@@ -58,12 +66,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor No redcap_api_url property exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor No redcap_api_url property exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor No redcap_api_url property exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor No redcap_api_url property exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor No redcap_api_url property exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor No redcap_api_url property exception message check'
+        );
 
         $propertiesTemplate['redcap_api_url'] = 'https://foo.edu';
 
@@ -83,12 +99,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor Bad ssl_verify property exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor Bad ssl_verify property exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor Bad ssl_verify property exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor Bad ssl_verify property exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor Bad ssl_verify property exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor Bad ssl_verify property exception message check'
+        );
 
         // extracted_record_count_check unrecognized value
         $badExtractedRecordCountCheck = 'foo';
@@ -106,12 +130,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor Bad extracted_records_count_check property exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor Bad extracted_records_count_check property exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor Bad extracted_records_count_check property exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor Bad extracted_records_count_check property exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor Bad extracted_records_count_check property exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor Bad extracted_records_count_check property exception message check'
+        );
 
         // No config API token property
         $properties = $propertiesTemplate;
@@ -125,12 +157,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor No config_api_token property exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor No config_api_token property exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor No config_api_token property exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor No config_api_token property exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor No config_api_token property exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor No config_api_token property exception message check'
+        );
 
         $propertiesTemplate['config_api_token'] = '';
 
@@ -147,12 +187,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor No data_source_api_token property exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor No data_source_api_token property exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor No data_source_api_token property exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor No data_source_api_token property exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor No data_source_api_token property exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor No data_source_api_token property exception message check'
+        );
 
         $propertiesTemplate['data_source_api_token'] = 3;
 
@@ -171,16 +219,24 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor batch_size < 0 exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor batch_size < 0 exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor No batch_size < 0 exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor batch_size < 0 exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor batch_size < 0 exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor No batch_size < 0 exception message check'
+        );
 
 
         // Batch size not int or string
-        $badBatchSize = NULL;
+        $badBatchSize = null;
         $properties = $propertiesTemplate;
         $properties['batch_size'] = $badBatchSize;
 
@@ -193,12 +249,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor batch_size is not int or string exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor batch_size is not int or string exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor No batch_size is not int or string exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor batch_size is not int or string exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor batch_size is not int or string exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor No batch_size is not int or string exception message check'
+        );
 
 
         // Bad table_prefix char
@@ -215,12 +279,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor Bad table_prefix char exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor Bad table_prefix char exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor Bad table_prefix char exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor Bad table_prefix char exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor Bad table_prefix char exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor Bad table_prefix char exception message check'
+        );
 
 
         // Bad label_view_suffix char
@@ -237,12 +309,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor Bad label_view_suffix char exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor Bad label_view_suffix char exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor Bad label_view_suffix char exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor Bad label_view_suffix char exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor Bad label_view_suffix char exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor Bad label_view_suffix char exception message check'
+        );
 
 
         // No db_connection property
@@ -257,12 +337,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor No db_connection property exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor No db_connection property exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor No db_connection property exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor No db_connection property exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor No db_connection property exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor No db_connection property exception message check'
+        );
 
 
         // db_connection property empty
@@ -278,12 +366,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'Constructor db_connection property is empty exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'Constructor db_connection property is empty exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'Constructor db_connection property is empty exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor db_connection property is empty exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'Constructor db_connection property is empty exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'Constructor db_connection property is empty exception message check'
+        );
 
         $propertiesTemplate['db_connection'] = 'CSV:/tmp';
 
@@ -317,29 +413,46 @@ class ConfigurationTest extends TestCase
             new Configuration($logger, $properties, $useWebScriptLogFile);
 
         $webScriptLogFile = $config->getLogFile();
-        $this->assertEquals($expectedWebScriptLogFile, $webScriptLogFile,
-                            'Constructor web_script_log_file set');
+        $this->assertEquals(
+            $expectedWebScriptLogFile,
+            $webScriptLogFile,
+            'Constructor web_script_log_file set'
+        );
 
         $sendEmailSummary = $config->getSendEmailSummary();
-        $this->assertEquals($expectedSendEmailSummary, $sendEmailSummary,
-                            'Constructor send_email_summary set');
+        $this->assertEquals(
+            $expectedSendEmailSummary,
+            $sendEmailSummary,
+            'Constructor send_email_summary set'
+        );
 
         $sslVerify = $config->getSslVerify();
-        $this->assertEquals($expectedSslVerify, $sslVerify,
-                            'Constructor ssl_verify set');
+        $this->assertEquals(
+            $expectedSslVerify,
+            $sslVerify,
+            'Constructor ssl_verify set'
+        );
 
         $extractedRecordCountcheck = $config->getExtractedRecordCountCheck();
-        $this->assertEquals($expectedExtractedRecordCountCheck,
-                            $extractedRecordCountcheck,
-                            'Constructor extracted_record_count_check set');
+        $this->assertEquals(
+            $expectedExtractedRecordCountCheck,
+            $extractedRecordCountcheck,
+            'Constructor extracted_record_count_check set'
+        );
 
         $logProjectApiToken = $config->getLogProjectApiToken();
-        $this->assertEquals($expectedLogProjectApiToken, $logProjectApiToken,
-                            'Constructor log_project_api_token not set');
+        $this->assertEquals(
+            $expectedLogProjectApiToken,
+            $logProjectApiToken,
+            'Constructor log_project_api_token not set'
+        );
 
         $tablePrefix = $config->getTablePrefix();
-        $this->assertEquals($expectedTablePrefix, $tablePrefix,
-                            'Constructor table_prefix set');
+        $this->assertEquals(
+            $expectedTablePrefix,
+            $tablePrefix,
+            'Constructor table_prefix set'
+        );
     }
 
     // Some parts of this function can't easily be tested by a unit
@@ -354,7 +467,7 @@ class ConfigurationTest extends TestCase
         // Unable to create RedCap object
         $exceptionCaught = false;
         try {
-            $method->invokeArgs($configMock,array(null,null));
+            $method->invokeArgs($configMock, array(null,null));
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -373,7 +486,7 @@ class ConfigurationTest extends TestCase
 
         $exceptionCaught = false;
         try {
-            $method->invokeArgs($configMock,array($badAPIToken,null));
+            $method->invokeArgs($configMock, array($badAPIToken,null));
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -385,7 +498,6 @@ class ConfigurationTest extends TestCase
 
         $expectedMessage = 'Could not get Configuration data';
         $this->assertEquals($expectedMessage, $exception->getMessage(), 'ProcessConfigurationProject bad config token message');
-
     }
 
     public function testConfig()
@@ -401,28 +513,42 @@ class ConfigurationTest extends TestCase
 
         $expectedAllowedServers = 'foo.com';
         $allowedServers = $config->getAllowedServers();
-        $this->assertEquals($expectedAllowedServers, $allowedServers,
-                            'AllowedServers check');
+        $this->assertEquals(
+            $expectedAllowedServers,
+            $allowedServers,
+            'AllowedServers check'
+        );
 
-        $this->assertEquals($logger->getApp(),
-                            $config->getApp(), 'GetApp check');
+        $this->assertEquals(
+            $logger->getApp(),
+            $config->getApp(),
+            'GetApp check'
+        );
 
         $expectedDataSourceApiToken = '1111111122222222333333334444444';
         $dataSourceApiToken = $config->getDataSourceApiToken();
-        $this->assertEquals($expectedDataSourceApiToken, $dataSourceApiToken,
-                            'DataSourceApiToken check');
+        $this->assertEquals(
+            $expectedDataSourceApiToken,
+            $dataSourceApiToken,
+            'DataSourceApiToken check'
+        );
 
         $expectedTransformRulesSource = '3';
         $transformRulesSource = $config->getTransformRulesSource();
-        $this->assertEquals($expectedTransformRulesSource,
-                            $transformRulesSource,
-                            'TransformRulesSource check');
+        $this->assertEquals(
+            $expectedTransformRulesSource,
+            $transformRulesSource,
+            'TransformRulesSource check'
+        );
 
         $expectedTransformationRules = 'TEST RULES';
         $config->setTransformationRules($expectedTransformationRules);
         $transformationRules = $config->getTransformationRules();
-        $this->assertEquals($expectedTransformationRules, $transformationRules,
-                            'TransformationRules check');
+        $this->assertEquals(
+            $expectedTransformationRules,
+            $transformationRules,
+            'TransformationRules check'
+        );
 
         $expectedBatchSize = '10';
         $config->setBatchSize($expectedBatchSize);
@@ -431,92 +557,134 @@ class ConfigurationTest extends TestCase
 
         $expectedCaCertFile = 'test_cacert_file_path';
         $caCertFile = $config->getCaCertFile();
-        $this->assertEquals($expectedCaCertFile, $caCertFile,
-                            'CaCertFile check');
+        $this->assertEquals(
+            $expectedCaCertFile,
+            $caCertFile,
+            'CaCertFile check'
+        );
 
         $expectedCalcFieldIgnorePattern = '/^0$/';
         $calcFieldIgnorePattern = $config->getCalcFieldIgnorePattern();
-        $this->assertEquals($expectedCalcFieldIgnorePattern,
-                            $calcFieldIgnorePattern,
-                            'CalcFieldIgnorePattern check');
+        $this->assertEquals(
+            $expectedCalcFieldIgnorePattern,
+            $calcFieldIgnorePattern,
+            'CalcFieldIgnorePattern check'
+        );
 
         $expectedEmailFromAddress = 'foo@bar.com';
         $emailFromAddress = $config->getEmailFromAddress();
-        $this->assertEquals($expectedEmailFromAddress, $emailFromAddress,
-                            'EmailFromAddress check');
+        $this->assertEquals(
+            $expectedEmailFromAddress,
+            $emailFromAddress,
+            'EmailFromAddress check'
+        );
 
         $expectedEmailSubject = 'email subject';
         $emailSubject = $config->getEmailSubject();
-        $this->assertEquals($expectedEmailSubject, $emailSubject,
-                            'EmailSubject check');
+        $this->assertEquals(
+            $expectedEmailSubject,
+            $emailSubject,
+            'EmailSubject check'
+        );
 
         $expectedEmailToList = 'bang@bucks.net,what@my.com';
         $emailToList = $config->getEmailToList();
-        $this->assertEquals($expectedEmailToList, $emailToList,
-                            'EmailToList check');
+        $this->assertEquals(
+            $expectedEmailToList,
+            $emailToList,
+            'EmailToList check'
+        );
 
         $expectedExtractedRecordCountCheck = false;
         $extractedRecordCountCheck = $config->getExtractedRecordCountCheck();
-        $this->assertEquals($expectedExtractedRecordCountCheck,
-                            $extractedRecordCountCheck,
-                            'ExtractedRecordCountCheck check');
+        $this->assertEquals(
+            $expectedExtractedRecordCountCheck,
+            $extractedRecordCountCheck,
+            'ExtractedRecordCountCheck check'
+        );
 
         $expectedFieldType = Schema\FieldType::VARCHAR;
         $expectedFieldSize = 123;
 
         $generatedInstanceType = $config->getGeneratedInstanceType();
-        $this->assertEquals($expectedFieldType,
-                            $generatedInstanceType->getType(),
-                            'GeneratedInstanceType type check');
-        $this->assertEquals($expectedFieldSize,
-                            $generatedInstanceType->getSize(),
-                            'GeneratedInstanceType size check');
+        $this->assertEquals(
+            $expectedFieldType,
+            $generatedInstanceType->getType(),
+            'GeneratedInstanceType type check'
+        );
+        $this->assertEquals(
+            $expectedFieldSize,
+            $generatedInstanceType->getSize(),
+            'GeneratedInstanceType size check'
+        );
 
         $generatedKeyType = $config->getGeneratedKeyType();
-        $this->assertEquals($expectedFieldType,
-                            $generatedKeyType->getType(),
-                            'GeneratedKeyType type check');
-        $this->assertEquals($expectedFieldSize,
-                            $generatedKeyType->getSize(),
-                            'GeneratedKeyType size check');
+        $this->assertEquals(
+            $expectedFieldType,
+            $generatedKeyType->getType(),
+            'GeneratedKeyType type check'
+        );
+        $this->assertEquals(
+            $expectedFieldSize,
+            $generatedKeyType->getSize(),
+            'GeneratedKeyType size check'
+        );
 
         $generatedLabelType = $config->getGeneratedLabelType();
-        $this->assertEquals($expectedFieldType,
-                            $generatedLabelType->getType(),
-                            'GeneratedLabelType type check');
-        $this->assertEquals($expectedFieldSize,
-                            $generatedLabelType->getSize(),
-                            'GeneratedLabelType size check');
+        $this->assertEquals(
+            $expectedFieldType,
+            $generatedLabelType->getType(),
+            'GeneratedLabelType type check'
+        );
+        $this->assertEquals(
+            $expectedFieldSize,
+            $generatedLabelType->getSize(),
+            'GeneratedLabelType size check'
+        );
 
         $generatedNameType = $config->getGeneratedNameType();
-        $this->assertEquals($expectedFieldType,
-                            $generatedNameType->getType(),
-                            'GeneratedNameType type check');
-        $this->assertEquals($expectedFieldSize,
-                            $generatedNameType->getSize(),
-                            'GeneratedNameType size check');
+        $this->assertEquals(
+            $expectedFieldType,
+            $generatedNameType->getType(),
+            'GeneratedNameType type check'
+        );
+        $this->assertEquals(
+            $expectedFieldSize,
+            $generatedNameType->getSize(),
+            'GeneratedNameType size check'
+        );
 
         $generatedRecordIdType = $config->getGeneratedRecordIdType();
-        $this->assertEquals($expectedFieldType,
-                            $generatedRecordIdType->getType(),
-                            'GeneratedRecordIdType type check');
-        $this->assertEquals($expectedFieldSize,
-                            $generatedRecordIdType->getSize(),
-                            'GeneratedRecordIdType size check');
+        $this->assertEquals(
+            $expectedFieldType,
+            $generatedRecordIdType->getType(),
+            'GeneratedRecordIdType type check'
+        );
+        $this->assertEquals(
+            $expectedFieldSize,
+            $generatedRecordIdType->getSize(),
+            'GeneratedRecordIdType size check'
+        );
 
         $generatedSuffixType = $config->getGeneratedSuffixType();
-        $this->assertEquals($expectedFieldType,
-                            $generatedSuffixType->getType(),
-                            'GeneratedSuffixType type check');
-        $this->assertEquals($expectedFieldSize,
-                            $generatedSuffixType->getSize(),
-                            'GeneratedSuffixType size check');
+        $this->assertEquals(
+            $expectedFieldType,
+            $generatedSuffixType->getType(),
+            'GeneratedSuffixType type check'
+        );
+        $this->assertEquals(
+            $expectedFieldSize,
+            $generatedSuffixType->getSize(),
+            'GeneratedSuffixType size check'
+        );
 
         $expectedLabelViewSuffix = 'testlabelviewsuffix';
         $labelViewSuffix = $config->getLabelViewSuffix();
-        $this->assertEquals($expectedLabelViewSuffix,
-                            $labelViewSuffix,
-                            'LabelViewSuffix check');
+        $this->assertEquals(
+            $expectedLabelViewSuffix,
+            $labelViewSuffix,
+            'LabelViewSuffix check'
+        );
 
         $expectedLogFile = '/tmp/logfile';
         $logFile = $config->getLogFile();
@@ -524,35 +692,48 @@ class ConfigurationTest extends TestCase
 
         $expectedLogProjectApiToken = '111222333';
         $logProjectApiToken = $config->getLogProjectApiToken();
-        $this->assertEquals($expectedLogProjectApiToken, $logProjectApiToken,
-                            'LogProjectApiToken check');
+        $this->assertEquals(
+            $expectedLogProjectApiToken,
+            $logProjectApiToken,
+            'LogProjectApiToken check'
+        );
 
         $expectedCreateLookupTable = true;
         $createLookupTable = $config->getCreateLookupTable();
-        $this->assertEquals($expectedCreateLookupTable,
-                            $createLookupTable, 'CreateLookupTable check');
+        $this->assertEquals(
+            $expectedCreateLookupTable,
+            $createLookupTable,
+            'CreateLookupTable check'
+        );
 
         $expectedLookupTableName = 'test_name';
         $lookupTableName = $config->getLookupTableName();
-        $this->assertEquals($expectedLookupTableName,
-                            $lookupTableName, 'LookupTableName check');
+        $this->assertEquals(
+            $expectedLookupTableName,
+            $lookupTableName,
+            'LookupTableName check'
+        );
 
         $expectedPostProcessingSqlFile = '/tmp/postsql';
         $postProcessingSqlFile = $config->getPostProcessingSqlFile();
-        $this->assertEquals($expectedPostProcessingSqlFile,
-                            $postProcessingSqlFile,
-                            'PostProcessingSqlFile check');
+        $this->assertEquals(
+            $expectedPostProcessingSqlFile,
+            $postProcessingSqlFile,
+            'PostProcessingSqlFile check'
+        );
 
         $expectedProjectId = 7;
         $config->setProjectId($expectedProjectId);
         $projectId = $config->getProjectId();
-        $this->assertEquals($expectedProjectId,$projectId,'ProjectId check');
+        $this->assertEquals($expectedProjectId, $projectId, 'ProjectId check');
 
         $expectedREDCapApiUrl = 'https://redcap.someplace.edu/api/';
         $redcapApiUrl = $config->getREDCapApiUrl();
-        $this->assertEquals($expectedREDCapApiUrl,
-                            $redcapApiUrl,
-                            'REDCapApiUrl check');
+        $this->assertEquals(
+            $expectedREDCapApiUrl,
+            $redcapApiUrl,
+            'REDCapApiUrl check'
+        );
 
         $expectedSslVerify = true;
         $sslVerify = $config->getSslVerify();
@@ -560,13 +741,19 @@ class ConfigurationTest extends TestCase
 
         $expectedTablePrefix = '';
         $tablePrefix = $config->getTablePrefix();
-        $this->assertEquals($expectedTablePrefix,
-                            $tablePrefix, 'TablePrefix check');
+        $this->assertEquals(
+            $expectedTablePrefix,
+            $tablePrefix,
+            'TablePrefix check'
+        );
 
         $expectedTimeLimit= 3600;
         $timeLimit = $config->getTimeLimit();
-        $this->assertEquals($expectedTimeLimit, $timeLimit,
-                            'Time limit check');
+        $this->assertEquals(
+            $expectedTimeLimit,
+            $timeLimit,
+            'Time limit check'
+        );
 
         $expectedTimezone = 'America/Indiana/Indianapolis';
         $timezone = $config->getTimezone();
@@ -575,8 +762,11 @@ class ConfigurationTest extends TestCase
         $expectedTriggerEtl = true;
         $config->setTriggerEtl($expectedTriggerEtl);
         $triggerEtl = $config->getTriggerEtl();
-        $this->assertEquals($expectedTriggerEtl, $triggerEtl,
-                            'TriggerEtl check');
+        $this->assertEquals(
+            $expectedTriggerEtl,
+            $triggerEtl,
+            'TriggerEtl check'
+        );
     }
 
     public function testNullPropertiesFile()
@@ -629,29 +819,41 @@ class ConfigurationTest extends TestCase
         $property = 'invalid-property';
         $expectedInfo = 'invalid property';
         $info = $config->getPropertyInfo($property);
-        $this->assertEquals($expectedInfo, $info,
-                           'GetProperyInfo invalid test');
+        $this->assertEquals(
+            $expectedInfo,
+            $info,
+            'GetProperyInfo invalid test'
+        );
 
         $property = 'allowed_servers';
         $expectedInfo = 'undefined';
         $info = $config->getPropertyInfo($property);
-        $this->assertEquals($expectedInfo, $info,
-                           'GetProperyInfo undefined test');
+        $this->assertEquals(
+            $expectedInfo,
+            $info,
+            'GetProperyInfo undefined test'
+        );
 
         $property = 'transform_rules_source';
         $expectedInfo = '3 - defined in file: '.
             __DIR__.'/../data/config-test.ini';
         $info = $config->getPropertyInfo($property);
-        $this->assertEquals($expectedInfo, $info,
-                           'GetProperyInfo in file test');
+        $this->assertEquals(
+            $expectedInfo,
+            $info,
+            'GetProperyInfo in file test'
+        );
 
         $isFromFile = $config->isFromFile($property);
         $this->assertTrue($isFromFile, 'IsFromFile from file test');
 
         $expectedGetProperty = '3';
         $getProperty = $config->getProperty($property);
-        $this->assertEquals($expectedGetProperty, $getProperty,
-                            'GetProperty check');
+        $this->assertEquals(
+            $expectedGetProperty,
+            $getProperty,
+            'GetProperty check'
+        );
 
 
         // Property defined in array
@@ -663,21 +865,30 @@ class ConfigurationTest extends TestCase
             'transform_rules_source' => '2');
         $configMock->setProperties($expectedProperties);
         $properties = $configMock->getProperties();
-        $this->assertEquals($expectedProperties, $properties,
-                            'Get Properties check');
+        $this->assertEquals(
+            $expectedProperties,
+            $properties,
+            'Get Properties check'
+        );
 
         $property = 'transform_rules_source';
         $expectedInfo = '2 - defined in array argument';
         $info = $configMock->getPropertyInfo($property);
-        $this->assertEquals($expectedInfo, $info,
-                           'GetProperyInfo in array test');
+        $this->assertEquals(
+            $expectedInfo,
+            $info,
+            'GetProperyInfo in array test'
+        );
 
         // Property defined in configuration project
         $configMock->setConfiguration($expectedProperties);
         $expectedInfo = '2 - defined in configuration project';
         $info = $configMock->getPropertyInfo($property);
-        $this->assertEquals($expectedInfo, $info,
-                           'GetProperyInfo in config test');
+        $this->assertEquals(
+            $expectedInfo,
+            $info,
+            'GetProperyInfo in config test'
+        );
 
         $isFromFile = $configMock->isFromFile($property);
         $this->assertFalse($isFromFile, 'IsFromFile from elsewhere test');
@@ -692,8 +903,11 @@ class ConfigurationTest extends TestCase
         $expectedConfigProject = $reflection->newInstanceWithoutConstructor();
         $configMock->SetConfigProject($expectedConfigProject);
         $configProject = $configMock->GetConfigProject();
-        $this->assertEquals($expectedConfigProject, $configProject,
-                            'GetConfigProject check');
+        $this->assertEquals(
+            $expectedConfigProject,
+            $configProject,
+            'GetConfigProject check'
+        );
     }
 
     public function testProcessTransformationRules()
@@ -713,8 +927,11 @@ class ConfigurationTest extends TestCase
             $expectedRules);
         $method->invokeArgs($configMock, array($properties));
         $rules = $configMock->getTransformationRules();
-        $this->assertEquals($expectedRules, $rules,
-                            'ProcessTransformationRules property check');
+        $this->assertEquals(
+            $expectedRules,
+            $rules,
+            'ProcessTransformationRules property check'
+        );
 
         // Source: _TEXT
         // Property TRANSFORM_RULES_TEXT is empty
@@ -734,12 +951,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessTransformationRules TEXT empty exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessTransformationRules TEXT empty exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'ProcessTransformationRules TEXT empty exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessTransformationRules TEXT empty exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessTransformationRules TEXT empty exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'ProcessTransformationRules TEXT empty exception message check'
+        );
 
         // Source: _TEXT
         // Property TRANSFORM_RULES_TEXT is missing
@@ -756,12 +981,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessTransformationRules TEXT no property exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessTransformationRules TEXT no property exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'ProcessTransformationRules TEXT no property exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessTransformationRules TEXT no property exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessTransformationRules TEXT no property exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'ProcessTransformationRules TEXT no property exception message check'
+        );
 
         // Source: _FILE
         // Local File. A local file is assumed if the filename is only
@@ -775,8 +1008,11 @@ class ConfigurationTest extends TestCase
             ConfigProperties::TRANSFORM_RULES_FILE => $file);
         $method->invokeArgs($configMock, array($properties));
         $rules = $configMock->getTransformationRules();
-        $this->assertEquals($expectedRules, $rules,
-                            'ProcessTransformationRules local file check');
+        $this->assertEquals(
+            $expectedRules,
+            $rules,
+            'ProcessTransformationRules local file check'
+        );
 
 
         // Source: _FILE
@@ -806,8 +1042,11 @@ class ConfigurationTest extends TestCase
             ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
         $method->invokeArgs($configMock, array($properties));
         $rules = $configMock->getTransformationRules();
-        $this->assertEquals($expectedRules, $rules,
-                            'ProcessTransformationRules config file check');
+        $this->assertEquals(
+            $expectedRules,
+            $rules,
+            'ProcessTransformationRules config file check'
+        );
 
         // Source: _FILE
         // File in Config project, but empty
@@ -837,12 +1076,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessTransformationRules config file empty exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessTransformationRules config file empty exception code check');
-        $this->assertEquals($expectedMessage,$exception->getMessage(),
-                            'ProcessTransformationRules config file empty exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessTransformationRules config file empty exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessTransformationRules config file empty exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'ProcessTransformationRules config file empty exception message check'
+        );
 
         // Source: _DEFAULT
         $expectedRules = '';
@@ -853,8 +1100,11 @@ class ConfigurationTest extends TestCase
         );
         $method->invokeArgs($configMock, array($properties));
         $rules = $configMock->getTransformationRules();
-        $this->assertEquals($expectedRules, $rules,
-                            'ProcessTransformationRules DEFAULT check');
+        $this->assertEquals(
+            $expectedRules,
+            $rules,
+            'ProcessTransformationRules DEFAULT check'
+        );
 
         // Source: Unknown
         $properties = array(
@@ -870,14 +1120,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessTransformationRules UNKNOWN exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessTransformationRules UNKNOWN exception code check');
-        $this->assertEquals(substr($expectedMessage,0,15),
-                            substr($exception->getMessage(),0,15),
-                            'ProcessTransformationRules UNKNOWN exception message check');
-
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessTransformationRules UNKNOWN exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessTransformationRules UNKNOWN exception code check'
+        );
+        $this->assertEquals(
+            substr($expectedMessage, 0, 15),
+            substr($exception->getMessage(), 0, 15),
+            'ProcessTransformationRules UNKNOWN exception message check'
+        );
     }
 
     public function testProcessFile()
@@ -895,8 +1151,11 @@ class ConfigurationTest extends TestCase
         $file = null;
         $expectedFile = realpath(__DIR__.'/../../src/');
         $realFile = $configMock->processFile($file, true);
-        $this->assertEquals($expectedFile, $realFile,
-                            'ProcessFile null check');
+        $this->assertEquals(
+            $expectedFile,
+            $realFile,
+            'ProcessFile null check'
+        );
 
 
         // Non-existing directory
@@ -906,8 +1165,10 @@ class ConfigurationTest extends TestCase
         // Result: Should throw exception because directory doesn't exist
         $method = $reflection->getMethod('setPropertiesFile');
         $method->setAccessible(true);
-        $method->invokeArgs($configMock,
-                            array(__DIR__.'/ConfigurationTest.php'));
+        $method->invokeArgs(
+            $configMock,
+            array(__DIR__.'/ConfigurationTest.php')
+        );
 
         $file = 'foo/bar.log';
 
@@ -920,13 +1181,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessFile bad dir exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessFile bad dir exception code check');
-        $this->assertEquals(substr($expectedMessage,0,15),
-                            substr($exception->getMessage(),0,15),
-                            'ProcessFile bad dir exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessFile bad dir exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessFile bad dir exception code check'
+        );
+        $this->assertEquals(
+            substr($expectedMessage, 0, 15),
+            substr($exception->getMessage(), 0, 15),
+            'ProcessFile bad dir exception message check'
+        );
 
 
         // File doesn't exist
@@ -945,13 +1213,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessFile bad file exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessFile bad file exception code check');
-        $this->assertEquals(substr($expectedMessage,0,15),
-                            substr($exception->getMessage(),0,15),
-                            'ProcessFile bad file exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessFile bad file exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessFile bad file exception code check'
+        );
+        $this->assertEquals(
+            substr($expectedMessage, 0, 15),
+            substr($exception->getMessage(), 0, 15),
+            'ProcessFile bad file exception message check'
+        );
 
 
         // File doesn't exist, but directory does
@@ -960,9 +1235,11 @@ class ConfigurationTest extends TestCase
         // fileShouldExist is false
         $expectedFile = realpath(__DIR__.'/../../src/').'foo.log';
         $realFile = $configMock->processFile($expectedFile, false);
-        $this->assertEquals($expectedFile, $realFile,
-                            'ProcessFile abs !exist check');
-
+        $this->assertEquals(
+            $expectedFile,
+            $realFile,
+            'ProcessFile abs !exist check'
+        );
     }
 
     public function testProcessDirectory()
@@ -981,13 +1258,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessDirectory null Exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessDirectory null exception code check');
-        $this->assertEquals(substr($expectedMessage,0,15),
-                            substr($exception->getMessage(),0,15),
-                            'ProcessDirectory null exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessDirectory null Exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessDirectory null exception code check'
+        );
+        $this->assertEquals(
+            substr($expectedMessage, 0, 15),
+            substr($exception->getMessage(), 0, 15),
+            'ProcessDirectory null exception message check'
+        );
 
         // Non-string argument
         $exceptionCaught = false;
@@ -999,20 +1283,30 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessDirectory non-string Exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessDirectory non-string exception code check');
-        $this->assertEquals(substr($expectedMessage,0,15),
-                            substr($exception->getMessage(),0,15),
-                            'ProcessDirectory non-string exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessDirectory non-string Exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessDirectory non-string exception code check'
+        );
+        $this->assertEquals(
+            substr($expectedMessage, 0, 15),
+            substr($exception->getMessage(), 0, 15),
+            'ProcessDirectory non-string exception message check'
+        );
 
         // Absolute path argument
         $expectedRealDir = '/tmp';
         $realDir = $configMock->processDirectory($expectedRealDir);
 
-        $this->assertEquals($expectedRealDir, $realDir,
-                            'ProcessDirectory absolute');
+        $this->assertEquals(
+            $expectedRealDir,
+            $realDir,
+            'ProcessDirectory absolute'
+        );
 
         // Relative path argument, no properties file
         // NOTE: Because PHPUnit runs the test from the 'tests/unit'
@@ -1022,8 +1316,11 @@ class ConfigurationTest extends TestCase
         $expectedRealDir = __DIR__.'/Database';
         $realDir = $configMock->processDirectory($path);
 
-        $this->assertEquals($expectedRealDir, $realDir,
-                            'ProcessDirectory relative, no properties');
+        $this->assertEquals(
+            $expectedRealDir,
+            $realDir,
+            'ProcessDirectory relative, no properties'
+        );
 
         // Relative path argument, no properties file, dir not found
         $exceptionCaught = false;
@@ -1035,13 +1332,20 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught,
-                          'ProcessDirectory relative not found Exception caught');
-        $this->assertEquals($expectedCode, $exception->getCode(),
-                            'ProcessDirectory relative not found exception code check');
-        $this->assertEquals(substr($expectedMessage,9,0),
-                            substr($exception->getMessage(),9,0),
-                            'ProcessDirectory relative not found exception message check');
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessDirectory relative not found Exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessDirectory relative not found exception code check'
+        );
+        $this->assertEquals(
+            substr($expectedMessage, 9, 0),
+            substr($exception->getMessage(), 9, 0),
+            'ProcessDirectory relative not found exception message check'
+        );
 
         // Relative path argument, using properties file
         // NOTE: Because PHPUnit runs the test from the 'tests/unit'
@@ -1057,9 +1361,11 @@ class ConfigurationTest extends TestCase
         $path = 'Database';
         $expectedRealDir = __DIR__.'/Database';
         $realDir = $configMock->processDirectory($path);
-        $this->assertEquals($expectedRealDir, $realDir,
-                            'ProcessDirectory relative, properties file');
-
+        $this->assertEquals(
+            $expectedRealDir,
+            $realDir,
+            'ProcessDirectory relative, properties file'
+        );
     }
 
     public function testIsValidEmail()
@@ -1084,19 +1390,28 @@ class ConfigurationTest extends TestCase
 
         $expectedMySqlConnectionInfo = array('foo','bar','bang');
         $expectedDbConnection =
-            implode(':',
-                    array_merge(array('MySQL'),
-                                $expectedMySqlConnectionInfo));
+            implode(
+                ':',
+                array_merge(
+                    array('MySQL'),
+                    $expectedMySqlConnectionInfo
+                )
+            );
         $configMock->SetDbConnection($expectedDbConnection);
 
         $dbConnection = $configMock->GetDbConnection();
-        $this->assertEquals($expectedDbConnection,
-                            $dbConnection, 'GetDbConnection check');
+        $this->assertEquals(
+            $expectedDbConnection,
+            $dbConnection,
+            'GetDbConnection check'
+        );
 
         $mySqlConnectionInfo = $configMock->getMySqlConnectionInfo();
-        $this->assertEquals($expectedMySqlConnectionInfo,
-                            $mySqlConnectionInfo,
-                            'GetMySqlConnectionInfo check');
+        $this->assertEquals(
+            $expectedMySqlConnectionInfo,
+            $mySqlConnectionInfo,
+            'GetMySqlConnectionInfo check'
+        );
     }
 
     // NOTE: The following unit test allows for a direct test of a private
@@ -1116,12 +1431,16 @@ class ConfigurationTest extends TestCase
         $absolutePath = '/foo/bar/bang';
         $relativePath = 'foo/bar/bang';
 
-        $isAbsolutePath = $method->invokeArgs($configMock,
-                                              array($absolutePath));
+        $isAbsolutePath = $method->invokeArgs(
+            $configMock,
+            array($absolutePath)
+        );
         $this->assertTrue($isAbsolutePath, 'IsAbsolutePath true check');
 
-        $isAbsolutePath = $method->invokeArgs($configMock,
-                                              array($relativePath));
+        $isAbsolutePath = $method->invokeArgs(
+            $configMock,
+            array($relativePath)
+        );
         $this->assertFalse($isAbsolutePath, 'IsAbsolutePath false check');
     }
 }
