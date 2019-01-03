@@ -21,6 +21,10 @@ composer.phar
 # api documentation directory
 /docs/api
 
+# log files (except README)
+/logs/*
+!/logs/README.md
+
 # tests configuration file
 /tests/config.ini
 
