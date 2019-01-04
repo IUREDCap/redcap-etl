@@ -150,7 +150,7 @@ class RedCapEtl
         # Create a REDCap DET (Data Entry Trigger) Handler,
         # in case it's needed.
         #------------------------------------------------------
-        $projectId = $this->configuration->getProjectId();
+        $projectId = $this->configuration->getConfigProjectId();
         $this->detHandler = new RedCapDetHandler(
             $projectId,
             $this->configuration->getAllowedServers(),

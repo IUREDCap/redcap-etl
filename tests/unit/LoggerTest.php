@@ -171,7 +171,7 @@ class LoggerTest extends TestCase
         fclose($fh);
         
         # Remove the timestamp and trailing newline
-        list($timestamp, $fileMessage) = explode(': ', $logEntry);
+        list($date, $time, $logId, $fileMessage) = explode(' ', $logEntry, 4);
         $fileMessage = trim($fileMessage);
 
         $this->assertEquals(
@@ -200,7 +200,7 @@ class LoggerTest extends TestCase
         $logEntry = fgets($fh);
         fclose($fh);
         
-        list($date, $time, $fileMessage) = explode(' ', $logEntry, 3);
+        list($date, $time, $logId, $fileMessage) = explode(' ', $logEntry, 4);
         $fileMessage = preg_replace('/\s+$/', '', $fileMessage);
 
         # Remove the timestamp and trailing newline
@@ -243,7 +243,7 @@ class LoggerTest extends TestCase
         fclose($fh);
         
         # Remove the timestamp and trailing newline
-        list($timestamp, $fileMessage) = explode(': ', $logEntry, 2);
+        list($date, $time, $logId, $fileMessage) = explode(' ', $logEntry, 4);
         $fileMessage = trim($fileMessage);
 
         $this->assertEquals(

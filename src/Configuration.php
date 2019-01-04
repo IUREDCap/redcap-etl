@@ -56,8 +56,15 @@ class Configuration
     
     private $caCertFile;
     private $calcFieldIgnorePattern;
-    private $createLookupTable;
     
+    private $configName;
+    private $configOwner;
+    private $configProjectId;
+    
+    private $createLookupTable;
+
+    private $cronJob;
+        
     private $dataSourceApiToken;
     private $dbConnection;
 
@@ -285,7 +292,36 @@ class Configuration
             $message = 'No "'.ConfigProperties::REDCAP_API_URL.'" property was defined.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
-
+        
+        #--------------------------------------------------------
+        # Get configuration information used for file logging
+        #--------------------------------------------------------
+        if (array_key_exists(ConfigProperties::PROJECT_ID, $this->properties)) {
+            $this->projectId = $this->properties[ConfigProperties::PROJECT_ID];
+        }
+        
+        if (array_key_exists(ConfigProperties::CONFIG_OWNER, $this->properties)) {
+            $this->configOwner = $this->properties[ConfigProperties::CONFIG_OWNER];
+        }
+        
+        if (array_key_exists(ConfigProperties::CONFIG_NAME, $this->properties)) {
+            $this->configName = $this->properties[ConfigProperties::CONFIG_NAME];
+        }
+        
+        $this->cronJob = ''; # By default, make this blank
+        if (array_key_exists(ConfigProperties::CRON_JOB, $this->properties)) {
+            $cronJob = $this->properties[ConfigProperties::CRON_JOB];
+            print "CRON '{$cronJob}' - cron job type: ".gettype($cronJob)."\n";
+            
+            if ((is_bool($cronJob) && $cronJob) || strcasecmp($cronJob, 'true') === 0 || $cronJob === '1') {
+                $this->cronJob = 'true';
+            } elseif ((is_bool($cronJob) && !$cronJob) || strcasecmp($cronJob, 'false') === 0 || $cronJob === '0'
+                    || trim($cronJob) === '') {
+                $this->cronJob = 'false';
+            }
+        }
+        
+        
         #---------------------------------------------------------------
         # Get SSL verify flag
         #
@@ -294,10 +330,10 @@ class Configuration
         #---------------------------------------------------------------
         if (array_key_exists(ConfigProperties::SSL_VERIFY, $this->properties)) {
             $sslVerify = $this->properties[ConfigProperties::SSL_VERIFY];
-            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0' || $sslVerify === '') {
+            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0' || $sslVerify === 0) {
                 $this->sslVerify = false;
             } elseif (!isset($sslVerify) || $sslVerify === ''
-                    || strcasecmp($sslVerify, 'true') === 0 || $sslVerify === '1') {
+                    || strcasecmp($sslVerify, 'true') === 0 || $sslVerify === '1' || $sslVerify === 1) {
                 $this->sslVerify = true;
             } else {
                 $message = 'Unrecognized value "'.$sslVerify.'" for '
@@ -692,7 +728,7 @@ class Configuration
         # Get project id
         #------------------------------------------------------
         try {
-            $this->projectId = $this->configProject->exportProjectInfo()['project_id'];
+            $this->configProjectId = $this->configProject->exportProjectInfo()['project_id'];
         } catch (PhpCapException $exception) {
             $message = "Unable to retrieve project_id.";
             throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
@@ -1012,9 +1048,24 @@ class Configuration
         return $this->calcFieldIgnorePattern;
     }
     
+    public function getConfigName()
+    {
+        return $this->configName;
+    }
+    
+    public function getConfigOwner()
+    {
+        return $this->configOwner;
+    }
+        
     public function getConfigProject()
     {
         return $this->configProject;
+    }
+    
+    public function getConfigProjectId()
+    {
+        return $this->configProjectId;
     }
 
     public function getCreateLookupTable()
@@ -1022,6 +1073,11 @@ class Configuration
         return $this->createLookupTable;
     }
 
+    public function getCronJob()
+    {
+        return $this->cronJob;
+    }
+    
     public function getDataSourceApiToken()
     {
         return $this->dataSourceApiToken;

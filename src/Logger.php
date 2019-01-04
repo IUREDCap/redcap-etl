@@ -16,6 +16,8 @@ use IU\RedCapEtl\Database\CsvDbConnection;
  */
 class Logger
 {
+    private $logId;
+    
     private $isOn;
     
     /** @var string the name of the log file (if any) */
@@ -86,6 +88,8 @@ class Logger
      */
     public function __construct($app)
     {
+        $this->logId = uniqid('', true);
+        
         $this->app = $app;
         $this->projectIndex = 0;
         
@@ -433,19 +437,54 @@ class Logger
      */
     public function logToFile($message)
     {
+        static $firstMessage = true;
         $logged = false;
         
         if (!empty($this->logFile) && $this->isOn) {
-            $timestamp = date('Y-m-d H:i:s');
-            $message = $timestamp.': '.$message."\n";
-
-            $logged = error_log($message, 3, $this->logFile);
+            $configInfo = '';
+            if (!empty($this->configuration)) {
+                $redcapApiUrl = $this->configuration->getRedCapApiUrl();
+                $projectId    = $this->configuration->getProjectId();
+                $cronJob      = $this->configuration->getCronJob();
+                $configOwner  = $this->configuration->getConfigOwner();
+                $configName   = $this->configuration->getConfigName();
+                $configInfo = "url={$redcapApiUrl} pid={$projectId} cron={$cronJob}"
+                     ." user={$configOwner} config={$configName} ";
+            }
+            
+            #list($microseconds, $seconds) = explode(" ", microtime());
+            #$timestamp = date("Y-m-d H:i:s", $seconds).substr($microseconds, 1, 7);
+            #$message = $timestamp.': '.'['.$this->logId.'] '.$message."\n";
+            #$logged = error_log($message, 3, $this->logFile);
+            
+            $logged = $this->formatAndLogFileMessage($message);
             if ($logged === false) {
                 $message = 'Logging to file "'.($this->logFile).'" as user "'.get_current_user().'" failed.';
                 $code = EtlException::LOGGING_ERROR;
                 throw new EtlException($message, $code);
             }
+            
+                        
+            if ($firstMessage) {
+                $firstMessage = false;
+
+                $this->formatAndLogFileMessage($configInfo);
+                
+                $timezone         = date('e');
+                $utcOffsetSeconds = date('Z'); # seconds offset from UTC (Coordinated Universal Time)
+                $initMessage = 'timezone='.$timezone.' '.'utc-offset='.$utcOffsetSeconds;
+                $this->formatAndLogFileMessage($initMessage);
+            }
         }
+        return $logged;
+    }
+    
+    private function formatAndLogFileMessage($message)
+    {
+        list($microseconds, $seconds) = explode(" ", microtime());
+        $timestamp = date("Y-m-d H:i:s", $seconds).substr($microseconds, 1, 7);
+        $formattedMessage = $timestamp.': '.'['.$this->logId.'] '.$message."\n";
+        $logged = error_log($formattedMessage, 3, $this->logFile);
         return $logged;
     }
 

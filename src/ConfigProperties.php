@@ -16,8 +16,13 @@ class ConfigProperties
     const CA_CERT_FILE              = 'ca_cert_file';
     const CALC_FIELD_IGNORE_PATTERN = 'calc_field_ignore_pattern';
     const CONFIG_API_TOKEN          = 'config_api_token';
-    const CREATE_LOOKUP_TABLE       = 'create_lookup_table';
-
+    const CONFIG_NAME               = 'config_name';  # Name of configuration, if from the external module
+    const CONFIG_OWNER              = 'config_owner'; # REDCap user who created the configuration,
+                                                      #  if from the external module
+    const CREATE_LOOKUP_TABLE       = 'create_lookup_table';  # true/false indicating if a lookup table
+                                                              # should be created
+    const CRON_JOB                  = 'cron_job'; # true/false indicating if configuration file being run as cron job
+    
     const DATA_SOURCE_API_TOKEN  = 'data_source_api_token';
     const DB_CONNECTION          = 'db_connection';
 
@@ -47,6 +52,7 @@ class ConfigProperties
 
     const POST_PROCESSING_SQL_FILE = 'post_processing_sql_file';
     const PRINT_LOGGING            = 'print_logging';   # true/false indicates if log messages should be printed
+    const PROJECT_ID               = 'project_id';  # optional ID of REDCap project from which data are being extracted
     const RECORD_ID                = 'record_id';
 
     const REDCAP_API_URL         = 'redcap_api_url';
