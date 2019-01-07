@@ -311,7 +311,6 @@ class Configuration
         $this->cronJob = ''; # By default, make this blank
         if (array_key_exists(ConfigProperties::CRON_JOB, $this->properties)) {
             $cronJob = $this->properties[ConfigProperties::CRON_JOB];
-            print "CRON '{$cronJob}' - cron job type: ".gettype($cronJob)."\n";
             
             if ((is_bool($cronJob) && $cronJob) || strcasecmp($cronJob, 'true') === 0 || $cronJob === '1') {
                 $this->cronJob = 'true';
