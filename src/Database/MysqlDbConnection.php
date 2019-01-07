@@ -100,10 +100,14 @@ class MysqlDbConnection extends DbConnection
      *
      * @param Table $table the table to be created.
      */
-    protected function createTable($table)
+    public function createTable($table, $ifNotExists = false)
     {
         // Start query
-        $query = 'CREATE TABLE '.$table->name.' (';
+        if ($ifNotExists) {
+            $query = 'CREATE TABLE IF NOT EXISTS '.$table->name.' (';
+        } else {
+            $query = 'CREATE TABLE '.$table->name.' (';
+        }
 
         // foreach field
         $fieldDefs = array();
@@ -119,12 +123,22 @@ class MysqlDbConnection extends DbConnection
                     
                 case FieldType::DATETIME:
                     $fieldDef .= 'DATETIME';
+                    if (isset($field->size)) {
+                        $size = intval($field->size);
+                        if ($size > 0 || $size <= 6) {
+                            $fieldDef .= '('.$size.')';
+                        }
+                    }
                     break;
 
                 case FieldType::INT:
                     $fieldDef .= 'INT';
                     break;
 
+                case FieldType::AUTO_INCREMENT:
+                    $fieldDef .= 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+                    break;
+                    
                 case FieldType::FLOAT:
                     $fieldDef .= 'FLOAT';
                     break;
@@ -256,8 +270,14 @@ class MysqlDbConnection extends DbConnection
 
     /**
      * Insert the specified row into the database.
+     *
+     * @parm Row $row the row of data to insert into the table (the row
+     *     has a reference to the table that it should be inserted into).
+     *
+     * @return integer if the table has an auto-increment ID, then the value
+     *     of the ID for the record that was inserted.
      */
-    protected function insertRow($row)
+    public function insertRow($row)
     {
 
         // How to handle unknow # of vars in bind_param. See answer by abd.agha
@@ -270,15 +290,21 @@ class MysqlDbConnection extends DbConnection
         // Start bind parameters list with bind_types and escaped table name
         $params = array($bindTypes);
 
-        // Add field values, in order, to bind parameters
+        #---------------------------------------------------
+        # Add field values, in order, to bind parameters,
+        # but omit auto-increments fields.
+        #---------------------------------------------------
         foreach ($row->table->getAllFields() as $field) {
-            // Replace empty string with null
-            $toBind = $row->data[$field->name];
-            if ($toBind === '') {
-                $toBind = null;
-            }
+            if ($field->type != FieldType::AUTO_INCREMENT) {
+                // Replace empty string with null
+                $toBind = $row->data[$field->name];
+                
+                if ($toBind === '') {
+                    $toBind = null;
+                }
 
-            array_push($params, $toBind);
+                array_push($params, $toBind);
+            }
         }
 
         // Get references to each parameter -- necessary because
@@ -292,19 +318,21 @@ class MysqlDbConnection extends DbConnection
         call_user_func_array(array($stmt, 'bind_param'), $paramRefs);
 
         // Execute query
-        $rc = $stmt->execute();   //NOTE add error checking?
+        $rc = $stmt->execute();
 
+        $insertId = 0;
+        
         // If there's an error executing the statement
         if ($rc === false) {
             $this->errorString = $stmt->error;
-            $message = 'MySQL error'
-                .' ['.$stmt->errno.']: '.$stmt->error;
+            $message = 'MySQL error '.' ['.$stmt->errno.']: '.$stmt->error;
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
+        } else {
+            $insertId = $this->mysqli->insert_id;
         }
-
     
-        return(1);
+        return($insertId);
     }
 
 
@@ -322,6 +350,10 @@ class MysqlDbConnection extends DbConnection
             $bindPositions = array();
             $bindTypes = '';
             foreach ($table->getAllFields() as $field) {
+                if ($field->type == FieldType::AUTO_INCREMENT) {
+                    continue;
+                }
+                
                 array_push($fieldNames, $field->dbName);
                 array_push($bindPositions, '?');
 
@@ -548,7 +580,8 @@ class MysqlDbConnection extends DbConnection
         if ($queries === false) {
             $error = 'Could not access query file "'.$queryFile.'": '
                 .error_get_last();
-            throw new EtlException($error);
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($error, $code);
         } else {
             $this->processQueries($queries);
         }
@@ -567,7 +600,8 @@ class MysqlDbConnection extends DbConnection
         if ($result === false) {
             $mysqlError = $this->mysqli->error;
             $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
-            throw new EtlException($error);
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($error, $code);
         } else {
             #print("Query {$queryNumber} info: ".$this->mysqli->info."\n");
             while ($this->mysqli->more_results()) {
@@ -576,7 +610,8 @@ class MysqlDbConnection extends DbConnection
                 if ($result === false) {
                     $mysqlError = $this->mysqli->error;
                     $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
-                    throw new EtlException($error);
+                    $code = EtlException::DATABASE_ERROR;
+                    throw new EtlException($error, $code);
                 }
                 # print ("Query {$queryNumber} info: ".$this->mysqli->info."\n");
             }

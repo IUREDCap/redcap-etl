@@ -58,7 +58,7 @@ try {
     $count = $redCapEtl->run();
 } catch (EtlException $exception) {
     $logger->logException($exception);
-    $logger->logError('Processing failed.');
+    $logger->log('Processing failed.');
 }
 
 $endTime = microtime(true);

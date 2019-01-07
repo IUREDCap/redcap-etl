@@ -83,7 +83,8 @@ class RedCapEtl
             $useWebScriptLogFile
         );
 
-        $this->logger = $this->configuration->getLogger();
+        $this->logger = $logger;
+        $this->logger->setConfiguration($this->configuration);
         
         $this->configProject = $this->configuration->getConfigProject();
 
@@ -149,7 +150,7 @@ class RedCapEtl
         # Create a REDCap DET (Data Entry Trigger) Handler,
         # in case it's needed.
         #------------------------------------------------------
-        $projectId = $this->configuration->getProjectId();
+        $projectId = $this->configuration->getConfigProjectId();
         $this->detHandler = new RedCapDetHandler(
             $projectId,
             $this->configuration->getAllowedServers(),
@@ -187,7 +188,7 @@ class RedCapEtl
         # Initialize the schema
         #-----------------------------------------
         $this->schema = new Schema();
-
+                
 
         #---------------------------------------------------
         # Create a database connection for the database
@@ -199,6 +200,41 @@ class RedCapEtl
             $this->configuration->getTablePrefix(),
             $this->configuration->getLabelViewSuffix()
         );
+
+        #-------------------------------------------------
+        # Set up database logging
+        #-------------------------------------------------
+        if ($this->configuration->getDbLogging()) {
+            $this->logger->setDbConnection($this->dbcon);
+            $this->logger->setDbLogging(true);
+            
+            # Add information to logger that is used by database logging
+            
+        
+            #----------------------------------------
+            # (Main) database log table
+            #----------------------------------------
+            $name = $this->configuration->getDbLogTable();
+            $dbLogTable = new EtlLogTable($name);
+            $this->logger->setDbLogTable($dbLogTable);
+            
+            $this->dbcon->createTable($dbLogTable, true);
+                
+            $this->schema->setDbLogTable($dbLogTable);
+            
+            $this->logger->logToDatabase();
+            
+            #------------------------------
+            # Database event log table
+            #------------------------------
+            $name = $this->configuration->getDbEventLogTable();
+            $dbEventLogTable = new EtlEventLogTable($name);
+            $this->logger->setDbEventLogTable($dbEventLogTable);
+            
+            $this->dbcon->createTable($dbEventLogTable, true);
+            
+            $this->schema->setDbEventLogTable($dbEventLogTable);
+        }
     }
 
 
@@ -363,10 +399,10 @@ class RedCapEtl
         }
 
         $endEtlTime = microtime(true);
-        $this->logInfoToFile('Extract time:   '.$extractTime.' seconds');
-        $this->logInfoToFile('Transform time: '.$transformTime.' seconds');
-        $this->logInfoToFile('Load time:      '.$loadTime.' seconds');
-        $this->logInfoToFile('ETL total time: '.($endEtlTime - $startEtlTime).' seconds');
+        $this->logToFile('Extract time:   '.$extractTime.' seconds');
+        $this->logToFile('Transform time: '.$transformTime.' seconds');
+        $this->logToFile('Load time:      '.$loadTime.' seconds');
+        $this->logToFile('ETL total time: '.($endEtlTime - $startEtlTime).' seconds');
 
         $this->reportRows();
 
@@ -603,41 +639,31 @@ class RedCapEtl
      */
     public function run()
     {
-        try {
-            $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-            $this->log("Starting processing.");
+        $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
+        $this->log("Starting processing.");
 
-            #-------------------------------------------------------------------------
-            # Parse Transformation Rules
-            #
-            # NOTE: The $result is not used in batch mode. It is used
-            #       by the DET handler to give feedback within REDCap.
-            #-------------------------------------------------------------------------
-            list($parseStatus, $result) = $this->processTransformationRules();
+        #-------------------------------------------------------------------------
+        # Parse Transformation Rules
+        #
+        # NOTE: The $result is not used in batch mode. It is used
+        #       by the DET handler to give feedback within REDCap.
+        #-------------------------------------------------------------------------
+        list($parseStatus, $result) = $this->processTransformationRules();
 
-            if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
-                $message = "Transformation rules not parsed. Processing stopped.";
-                throw new EtlException($message, EtlException::INPUT_ERROR);
-            } else {
-                $this->createLoadTables();
-                $numberOfRecordIds = $this->extractTransformLoad();
+        if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
+            $message = "Transformation rules not parsed. Processing stopped.";
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        } else {
+            $this->createLoadTables();
+            $numberOfRecordIds = $this->extractTransformLoad();
                 
-                $sqlFile = $this->configuration->getPostProcessingSqlFile();
-                if (!empty($sqlFile)) {
-                    $this->dbcon->processQueryFile($sqlFile);
-                }
+            $sqlFile = $this->configuration->getPostProcessingSqlFile();
+            if (!empty($sqlFile)) {
+                $this->dbcon->processQueryFile($sqlFile);
+            }
 
-                $this->log("Processing complete.");
-                $this->logger->processEmailSummary();
-            }
-        } catch (\Exception $exception) {
-            try {
-                $this->log('Processing failed.');
-                $this->logger->processEmailSummary();
-            } catch (\Exception $logException) {
-                ; // Don't do anything; want original exception to be thrown
-            }
-            throw $exception;  // re-throw the exception
+            $this->log("Processing complete.");
+            $this->logger->logEmailSummary();
         }
 
         return $numberOfRecordIds;
@@ -651,70 +677,61 @@ class RedCapEtl
      */
     public function runForDet()
     {
-        try {
-            $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-            $this->logger->logInfo('Executing web script '.$this->logger->getApp());
+        $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
+        $this->logger->log('Executing web script '.$this->logger->getApp());
 
-            $detHandler = $this->getDetHandler();
-            list($projectId,$recordId, $instrument) = $detHandler->getDetParams();
+        $detHandler = $this->getDetHandler();
+        list($projectId,$recordId, $instrument) = $detHandler->getDetParams();
 
-            #-----------------------------------------------------------------------
-            # Data Entry Trigger: Check for allowed project/servers
-            #-----------------------------------------------------------------------
-            $detHandler->checkDetId($projectId);
-            $detHandler->checkAllowedServers();
+        #-----------------------------------------------------------------------
+        # Data Entry Trigger: Check for allowed project/servers
+        #-----------------------------------------------------------------------
+        $detHandler->checkDetId($projectId);
+        $detHandler->checkAllowedServers();
 
-            if ($instrument !== self::DET_INSTRUMENT_NAME) {
-                # An instrument/form other than the DET instrument/form was
-                # modified, so don't do anything
-                ;
+        if ($instrument !== self::DET_INSTRUMENT_NAME) {
+            # An instrument/form other than the DET instrument/form was
+            # modified, so don't do anything
+            ;
+        } else {
+            list($parseStatus, $result) = $this->processTransformationRules();
+                
+            if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
+                # If the parsing of the transformation rules failed.
+                $msg = "Transformation rules not fully parsed. Processing stopped.";
+                $this->log($msg);
+                $result .= $msg."\n";
             } else {
-                list($parseStatus, $result) = $this->processTransformationRules();
-                    
-                if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
-                    # If the parsing of the transformation rules failed.
-                    $msg = "Transformation rules not fully parsed. Processing stopped.";
+                $result .= "Transformation rules are valid.\n";
+
+                if ($this->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
+                    // ETL not requested
+                    $msg = "Web-invoked process stopped after parsing, per default.";
                     $this->log($msg);
                     $result .= $msg."\n";
                 } else {
-                    $result .= "Transformation rules are valid.\n";
+                    // ETL requested
+                    $result .= "ETL proceeding. Please see log for results\n";
 
-                    if ($this->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
-                        // ETL not requested
-                        $msg = "Web-invoked process stopped after parsing, per default.";
-                        $this->log($msg);
-                        $result .= $msg."\n";
-                    } else {
-                        // ETL requested
-                        $result .= "ETL proceeding. Please see log for results\n";
+                    $this->createLoadTables();
 
-                        $this->createLoadTables();
+                    $numberOfRecordIds = $this->extractTransformLoad();
 
-                        $numberOfRecordIds = $this->extractTransformLoad();
-
-                        $sqlFile = $this->configuration->getPostProcessingSqlFile();
-                        if (!empty($sqlFile)) {
-                            $this->dbcon->processQueryFile($sqlFile);
-                        }
+                    $sqlFile = $this->configuration->getPostProcessingSqlFile();
+                    if (!empty($sqlFile)) {
+                        $this->dbcon->processQueryFile($sqlFile);
                     }
-                } // processTransformationRules valid
+                }
+            } // processTransformationRules valid
 
-                // Provide a timestamp for the results
-                $result = date('g:i:s a d-M-Y T') . "\n" . $result;
+            // Provide a timestamp for the results
+            $result = date('g:i:s a d-M-Y T') . "\n" . $result;
 
-                #-----------------------------------------------------------
-                # Upload the results, and set ETL trigger back to default
-                #-----------------------------------------------------------
-                $this->uploadResultAndReset($result, $recordId);
-                $this->logger->processEmailSummary();
-            }
-        } catch (\Exception $exception) {
-            try {
-                $this->logger->processEmailSummary();
-            } catch (\Exception $logException) {
-                ; // Don't do anything; want original exception to be thrown
-            }
-            throw $exception;  // re-throw the exception
+            #-----------------------------------------------------------
+            # Upload the results, and set ETL trigger back to default
+            #-----------------------------------------------------------
+            $this->uploadResultAndReset($result, $recordId);
+            $this->logger->logEmailSummary();
         }
 
         return $numberOfRecordIds;
@@ -751,10 +768,10 @@ class RedCapEtl
     
     public function log($message)
     {
-        $this->logger->logInfo($message);
+        $this->logger->log($message);
     }
 
-    public function logInfoToFile($message)
+    public function logToFile($message)
     {
         $this->logger->logToFile($message, $this->logFile);
     }

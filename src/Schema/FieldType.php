@@ -15,6 +15,8 @@ class FieldType
     const DATE     = 'date';
     const DATETIME = 'datetime';
     const CHECKBOX = 'checkbox';
+    
+    const AUTO_INCREMENT = 'auto_increment';
 
     public static function isValid($fieldType)
     {
@@ -29,6 +31,7 @@ class FieldType
             case FieldType::DATE:
             case FieldType::DATETIME:
             case FieldType::CHECKBOX:
+            case FieldType::AUTO_INCREMENT:
                 $valid = true;
                 break;
 

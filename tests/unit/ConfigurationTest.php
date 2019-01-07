@@ -394,9 +394,6 @@ class ConfigurationTest extends TestCase
             realpath(__DIR__.'/../../src').'/'.$webScriptLogFile;
         $properties['web_script_log_file'] = $webScriptLogFile;
 
-        $expectedSendEmailSummary = true;
-        $properties['send_email_summary'] = $expectedSendEmailSummary;
-
         $sslVerify = 'true';
         $expectedSslVerify = true;
         $properties['ssl_verify'] = $sslVerify;
@@ -421,12 +418,6 @@ class ConfigurationTest extends TestCase
             'Constructor web_script_log_file set'
         );
 
-        $sendEmailSummary = $config->getSendEmailSummary();
-        $this->assertEquals(
-            $expectedSendEmailSummary,
-            $sendEmailSummary,
-            'Constructor send_email_summary set'
-        );
 
         $sslVerify = $config->getSslVerify();
         $this->assertEquals(

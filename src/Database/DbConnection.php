@@ -40,7 +40,7 @@ abstract class DbConnection
 
     abstract protected function dropTable($table);
 
-    abstract protected function createTable($table);
+    abstract public function createTable($table, $ifNotExists = false);
 
     abstract public function replaceLookupView($table, $lookup);
 
@@ -71,7 +71,7 @@ abstract class DbConnection
 
     abstract protected function updateRow($row);
 
-    abstract protected function insertRow($row);
+    abstract public function insertRow($row);
 
     abstract protected function insertRows($table);
     

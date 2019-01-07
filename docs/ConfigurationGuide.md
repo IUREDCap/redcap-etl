@@ -196,17 +196,83 @@ is loaded.</td>
 </tbody>
 </table>
 
+### Database Logging Properties
 
-### E-mail Properties
+REDCap-ETL logs to the load database by default. It creates and logs to 2 tables:
 
-Properties for e-mail error notifications that are sent by REDCap-ETL when
-an error occurs while running the ETL process.
+1. **etl_log** - contains one row for each ETL process run, where each row contains
+    the start time, table prefix used (if any), batch size, and REDCap-ETL
+    version number. 
+2. **etl_event_log** - contains the individual event messages for each
+    ETL process run.
+
+The 2 tables can be joined on their **log_id** attributes.
+
+Unlike the other tables REDCap-ETL generates,
+the database logging tables are not deleted between runs, so these tables
+accumulate the results of all ETL runs.
 
 <table>
 <thead>
 <tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
 </thead>
 <tbody>
+
+<tr>
+<td>db_logging</td>
+<td> X </td> <td> </td>
+<td>A true/false property indicating if REDCap-ETL should log to the database.
+The default value for this property is true. Database logging is not
+supported for CSV (comma-seperation value) file output.</td>
+</tr>
+
+<tr>
+<td>db_log_table</td>
+<td> X </td> <td> </td>
+<td>The name of the main database logging table.
+This name defaults to **etl_log**.</td>
+</tr>
+
+<tr>
+<td>db_event_log_table</td>
+<td> X </td> <td> </td>
+<td>The name of the database logging event table.
+This name defaults to **etl_event_log**.</td>
+</tr>
+
+</tbody>
+</table>
+
+
+### E-mail Properties
+
+Properties for e-mail error notifications and processing summaries
+that can be sent by REDCap-ETL.
+
+<table>
+<thead>
+<tr> <th>Property</th> <th>File</th> <th>Project</th> <th>Description</th> </tr>
+</thead>
+<tbody>
+
+<tr>
+<td>email_errors</td>
+<td> X </td> <td> </td>
+<td>True/false value that indicates if an e-mail should be sent
+when errors occur to the "email_to_list".
+The default value is true.
+</td>
+</tr>
+
+<tr>
+<td>email_summary</td>
+<td> X </td> <td> </td>
+<td>True/false value that indicates if an e-mail summary of the
+log messages should be sent to the "email_to_list".
+The default value is false, and no summary will be sent
+if the ETL process encounters an error.
+</td>
+</tr>
 
 <tr>
 <td>email_from_address</td>
@@ -227,14 +293,6 @@ an error occurs while running the ETL process.
 <td>The to address list for e-mail notifications sent by REDCap-ETL</td>
 </tr>
 
-<tr>
-<td>send_email_summary</td>
-<td> X </td> <td> </td>
-<td>True/false value that indicates if an e-mail summary of the
-log messages should be sent to the "email_to_list".
-The default value is false.
-</td>
-</tr>
 
 </tbody>
 </table>

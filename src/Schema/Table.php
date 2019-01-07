@@ -98,6 +98,9 @@ class Table
         $this->foreign = $parentTable->primary;
     }
 
+    /**
+     * @param Field $field the field to add to the table.
+     */
     public function addField($field)
     {
         // If the field being added has the same name as the primary key,
@@ -107,6 +110,11 @@ class Table
         }
     }
 
+    /**
+     * Adds a row to the table.
+     *
+     * @param Row $row the row to be added.
+     */
     public function addRow($row)
     {
         array_push($this->rows, $row);
@@ -114,7 +122,7 @@ class Table
 
     public function getFields()
     {
-        return($this->fields);
+        return $this->fields;
     }
 
     /**

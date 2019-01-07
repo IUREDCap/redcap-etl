@@ -38,7 +38,7 @@ class LoggerTest extends TestCase
 
         $logger = new Logger($this->project->getApp());
         $logger->setLogProject($this->project);
-        $logger->setPrintInfo(false);
+        $logger->setPrintLogging(false);
 
         $logFile = __DIR__.'/../logs/logger-test-log.txt';
         $logger->setLogFile($logFile);
@@ -46,7 +46,7 @@ class LoggerTest extends TestCase
         $this->assertEquals($logFile, $getLogFile, 'Log file set/get test');
 
         foreach ($logMessages as $logMessage) {
-            $logger->logInfo($logMessage);
+            $logger->log($logMessage);
         }
 
         # Get the records from the project and check them
@@ -58,9 +58,10 @@ class LoggerTest extends TestCase
 
         $this->assertEquals($logApps, $logRecordApps, 'Log app check');
 
+        /*
         SystemFunctions::setOverrideErrorLog(true);
         $this->project->setImportGeneratesException(true);
-        $logger->logInfo('This is a test.');
+        $logger->log('This is a test.');
         $lastErrorLogMessage = SystemFunctions::getLastErrorLogMessage();
         $this->assertEquals(
             'Logging to project failed: data import error',
@@ -68,6 +69,7 @@ class LoggerTest extends TestCase
             'Import exception check'
         );
         SystemFunctions::setOverrideErrorLog(false);
+        */
     }
     
     public function testGetApp()
@@ -81,7 +83,7 @@ class LoggerTest extends TestCase
     public function testLogEmail()
     {
         $logger = new Logger($this->project->getApp());
-        $logger->setPrintInfo(false);
+        $logger->setPrintLogging(false);
 
         $from    = 'redcap-etl@iu.edu';
         $to      = 'admin1@iu.edu,admin2@iu.edu';
@@ -115,17 +117,17 @@ class LoggerTest extends TestCase
         #-------------------------------------------
         SystemFunctions::setOverrideMail(true);
         $errorMessage = 'Test error';
-        $logger->logToEmail($errorMessage);
+        $logger->logEmailSummary($errorMessage);
         $mailArguments = SystemFunctions::getMailArguments();
         list($to, $mailSubject, $message, $additionalHeaders, $addtionalParameters) = array_pop($mailArguments);
         $this->assertEquals($newTo, $to, 'To e-mail send check');
-        $this->assertEquals($message, $errorMessage, 'Message send check');
+        $this->assertRegexp('/'.$errorMessage.'/', $message, 'Message send check');
         $this->assertEquals($subject, $mailSubject, 'Message send check');
 
         # Test array of to e-mails
         $newTo = array('admin1@iu.edu', 'admin2@iu.edu', 'admin3@iu.edu');
         $logger->setLogToEmail($newTo);
-        $logger->logToEmail($errorMessage);
+        $logger->logEmailSummary($errorMessage);
         $mailArguments = SystemFunctions::getMailArguments();
         for ($i = count($newTo) - 1; $i >= 0; $i--) {
             list($to, $mailSubject, $message, $additionalHeaders, $addtionalParameters) = array_pop($mailArguments);
@@ -135,38 +137,21 @@ class LoggerTest extends TestCase
         # Test multiple to e-mails
         $multTo = 'admin1@iu.edu,admin2@iu.edu,admin3@iu.edu';
         $logger->setLogToEmail($multTo);
-        $logger->logToEmail($errorMessage);
+        $logger->logEmailSummary($errorMessage);
         $mailArguments = SystemFunctions::getMailArguments();
         for ($i = count($newTo) - 1; $i >= 0; $i--) {
             list($to, $mailSubject, $message, $additionalHeaders, $addtionalParameters) = array_pop($mailArguments);
             $this->assertEquals($newTo[$i], $to, 'Multiple to e-mails send check '.$i);
         }
 
-
         SystemFunctions::setOverrideMail(false);
     }
     
-    public function testLogError()
-    {
-        $logger = new Logger($this->project->getApp());
-        $logger->setPrintInfo(false);
-        
-        SystemFunctions::setOverrideErrorLog(true);
-        $message = 'This is an error log test.';
-        $logger->logError($message);
-        $lastErrorLogMessage = SystemFunctions::getLastErrorLogMessage();
-        $this->assertEquals(
-            $message,
-            $lastErrorLogMessage,
-            'Log error check'
-        );
-        SystemFunctions::setOverrideErrorLog(false);
-    }
     
     public function testLogException()
     {
         $logger = new Logger($this->project->getApp());
-        $logger->setPrintInfo(false);
+        $logger->setPrintLogging(false);
         
         $logFile = __DIR__.'/../logs/test-log-exception.txt';
         if (file_exists($logFile)) {
@@ -186,7 +171,7 @@ class LoggerTest extends TestCase
         fclose($fh);
         
         # Remove the timestamp and trailing newline
-        list($timestamp, $fileMessage) = explode(': ', $logEntry);
+        list($date, $time, $logId, $fileMessage) = explode(' ', $logEntry, 4);
         $fileMessage = trim($fileMessage);
 
         $this->assertEquals(
@@ -203,8 +188,9 @@ class LoggerTest extends TestCase
         if (file_exists($logFile)) {
             unlink($logFile);
         }
-        ini_set("log_errors", 1);
-        ini_set("error_log", $logFile);
+        #ini_set("log_errors", 1);
+        #ini_set("error_log", $logFile);
+        $logger->setLogFile($logFile);
                 
         $logger->logException($exception);
                 
@@ -214,9 +200,12 @@ class LoggerTest extends TestCase
         $logEntry = fgets($fh);
         fclose($fh);
         
+        list($date, $time, $logId, $fileMessage) = explode(' ', $logEntry, 4);
+        $fileMessage = preg_replace('/\s+$/', '', $fileMessage);
+
         # Remove the timestamp and trailing newline
-        list($timestamp, $fileMessage) = explode('] ', $logEntry);
-        $fileMessage = trim($fileMessage);
+        #list($timestamp, $fileMessage) = explode('] ', $logEntry);
+        #$fileMessage = trim($fileMessage);
 
         $this->assertEquals(
             $message,
@@ -228,7 +217,7 @@ class LoggerTest extends TestCase
     public function testLogPhpCapException()
     {
         $logger = new Logger($this->project->getApp());
-        $logger->setPrintInfo(false);
+        $logger->setPrintLogging(false);
         
         $logFile = __DIR__.'/../logs/test-log-phpcap-exception.txt';
         if (file_exists($logFile)) {
@@ -254,7 +243,7 @@ class LoggerTest extends TestCase
         fclose($fh);
         
         # Remove the timestamp and trailing newline
-        list($timestamp, $fileMessage) = explode(': ', $logEntry, 2);
+        list($date, $time, $logId, $fileMessage) = explode(' ', $logEntry, 4);
         $fileMessage = trim($fileMessage);
 
         $this->assertEquals(

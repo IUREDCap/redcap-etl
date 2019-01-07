@@ -24,7 +24,14 @@ class Configuration
     # Default values
     const DEFAULT_BATCH_SIZE          = 100;
     const DEFAULT_CREATE_LOOKUP_TABLE = false;
-    const DEFAULT_EMAIL_SUBJECT       = 'REDCap-ETL Error';
+
+    const DEFAULT_DB_LOGGING         = true;
+    const DEFAULT_DB_LOG_TABLE       = 'etl_log';
+    const DEFAULT_DB_EVENT_LOG_TABLE = 'etl_event_log';
+
+    const DEFAULT_EMAIL_ERRORS   = true;
+    const DEFAULT_EMAIL_SUMMARY  = false;
+    const DEFAULT_EMAIL_SUBJECT  = 'REDCap-ETL Error';
 
     const DEFAULT_GENERATED_INSTANCE_TYPE  = 'int';
     const DEFAULT_GENERATED_KEY_TYPE       = 'int';
@@ -35,9 +42,9 @@ class Configuration
 
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
     const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
-
-    const DEFAULT_SEND_EMAIL_SUMMARY = false;
-
+    
+    const DEFAULT_PRINT_LOGGING = true;
+    
     const DEFAULT_TABLE_PREFIX      = '';   # i.e., No table prefix
     const DEFAULT_TIME_LIMIT        = 0;    # zero => no time limit
 
@@ -49,10 +56,21 @@ class Configuration
 
     private $caCertFile;
     private $calcFieldIgnorePattern;
+    
+    private $configName;
+    private $configOwner;
+    private $configProjectId;
+    
     private $createLookupTable;
 
+    private $cronJob;
+        
     private $dataSourceApiToken;
     private $dbConnection;
+
+    private $dbLogging;
+    private $dbLogTable;
+    private $dbEventLogTable;
 
     private $extractedRecordCountCheck;
 
@@ -69,11 +87,11 @@ class Configuration
 
     private $postProcessingSqlFile;
     private $projectId;
+    private $printLogging;
     private $redcapApiUrl;
 
     private $sslVerify;
-    private $sendEmailSummary;
-
+    
     private $tablePrefix;
     private $timeLimit;
     private $timezone;
@@ -87,6 +105,8 @@ class Configuration
     private $configuration;
     private $configProject;
 
+    private $emailErrors;
+    private $emailSummary;
     private $emailFromAddres;
     private $emailSubject;
     private $emailToList;
@@ -105,7 +125,7 @@ class Configuration
      *     web script log file should be used for logging; false indicates
      *     the standard logging file should be used.
      */
-    public function __construct($logger, $properties, $useWebScriptLogFile = false)
+    public function __construct(& $logger, $properties, $useWebScriptLogFile = false)
     {
         $this->logger = $logger;
         $this->app = $this->logger->getApp();
@@ -152,14 +172,26 @@ class Configuration
                         $parseError = ': '.preg_replace('/\s+$/', '', $error['message']);
                     }
                     $message = 'The properties file "'.$this->propertiesFile.'" could not be read'.$parseError.'.';
-
                     $code    = EtlException::INPUT_ERROR;
                     throw new EtlException($message, $code);
                 }
             }
         }
 
-
+        #-------------------------------------------
+        # Print logging
+        #-------------------------------------------
+        $this->printLogging = self::DEFAULT_PRINT_LOGGING;
+        if (array_key_exists(ConfigProperties::PRINT_LOGGING, $this->properties)) {
+            $printLogging = $this->properties[ConfigProperties::PRINT_LOGGING];
+            if ($printLogging === true || strcasecmp($printLogging, 'true') === 0 || $printLogging === '1') {
+                $this->printLogging = true;
+            } elseif ($printLogging === false || strcasecmp($printLogging, 'false') === 0 || $printLogging === '0') {
+                $this->printLogging = false;
+            }
+        }
+        $this->logger->setPrintLogging($this->printLogging);
+        
         #-----------------------------------------------------------------------------
         # Get the log file and set it in the logger, so that messages
         # will start to log to the file
@@ -174,17 +206,59 @@ class Configuration
                 $this->logFile = $this->properties[ConfigProperties::LOG_FILE];
             }
         }
-
-
+        
         if (!empty($this->logFile)) {
             $this->logFile = $this->processFile($this->logFile, $fileShouldExist = false);
             $this->logger->setLogFile($this->logFile);
         }
+ 
+        #-------------------------------------------------------------------
+        # Database logging
+        #-------------------------------------------------------------------
+        $this->dbLogging = self::DEFAULT_DB_LOGGING;
+        if (array_key_exists(ConfigProperties::DB_LOGGING, $this->properties)) {
+            $dbLogging = $this->properties[ConfigProperties::DB_LOGGING];
+            if ($dbLogging === true || strcasecmp($dbLogging, 'true') === 0 || $dbLogging === '1') {
+                $this->dbLogging = true;
+            } elseif ($dbLogging === false || strcasecmp($dbLogging, 'false') === 0 || $dbLogging === '0') {
+                $this->dbLogging = false;
+            }
+        }
+        
+        $this->dbLogTable = self::DEFAULT_DB_LOG_TABLE;
+        if (array_key_exists(ConfigProperties::DB_LOG_TABLE, $this->properties)) {
+            $this->dbLogTable = $this->properties[ConfigProperties::DB_LOG_TABLE];
+        }
 
+        $this->dbEventLogTable = self::DEFAULT_DB_EVENT_LOG_TABLE;
+        if (array_key_exists(ConfigProperties::DB_EVENT_LOG_TABLE, $this->properties)) {
+            $this->dbEventLogTable = $this->properties[ConfigProperties::DB_EVENT_LOG_TABLE];
+        }
 
         #-----------------------------------------------------------
-        # Error e-mail notification information
+        # Email logging
         #-----------------------------------------------------------
+        $this->emailErrors = self::DEFAULT_EMAIL_ERRORS;
+        if (array_key_exists(ConfigProperties::EMAIL_ERRORS, $this->properties)) {
+            $emailErrors = $this->properties[ConfigProperties::EMAIL_ERRORS];
+            if ($emailErrors === true || strcasecmp($emailErrors, 'true') === 0 || $emailErrors === '1') {
+                $this->emailErrors = true;
+            } elseif ($emailErrors === false || strcasecmp($emailErrors, 'false') === 0 || $emailErrors === '0') {
+                $this->emailErrors = false;
+            }
+        }
+        $this->logger->setEmailErrors($this->emailErrors);
+
+        # E-mail summary notification
+        $this->emailSummary = self::DEFAULT_EMAIL_SUMMARY;
+        if (array_key_exists(ConfigProperties::EMAIL_SUMMARY, $this->properties)) {
+            $send = $this->properties[ConfigProperties::EMAIL_SUMMARY];
+            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
+                $this->emailSummary  = true;
+            }
+        }
+        $this->logger->setEmailSummary($this->emailSummary);
+        
         $this->emailFromAddress  = null;
         $this->emailToList   = null;
         if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $this->properties)) {
@@ -199,20 +273,8 @@ class Configuration
         if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
             $this->emailToList = $this->properties[ConfigProperties::EMAIL_TO_LIST];
         }
-
-        # E-mail summary notification
-        $this->sendEmailSummary = self::DEFAULT_SEND_EMAIL_SUMMARY;
-        if (array_key_exists(ConfigProperties::SEND_EMAIL_SUMMARY, $this->properties)) {
-            $send = $this->properties[ConfigProperties::SEND_EMAIL_SUMMARY];
-            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
-                $this->sendEmailSummary  = true;
-                $this->logger->setSendEmailSummary(true);
-            }
-        }
-
-        #------------------------------------------------------
+        
         # Set email logging information
-        #------------------------------------------------------
         if (!empty($this->emailFromAddress) && !empty($this->emailToList)) {
             $this->logger->setLogEmail(
                 $this->emailFromAddress,
@@ -230,7 +292,36 @@ class Configuration
             $message = 'No "'.ConfigProperties::REDCAP_API_URL.'" property was defined.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
-
+        
+        #--------------------------------------------------------
+        # Get configuration information used for file logging
+        #--------------------------------------------------------
+        if (array_key_exists(ConfigProperties::PROJECT_ID, $this->properties)) {
+            $this->projectId = $this->properties[ConfigProperties::PROJECT_ID];
+        }
+        
+        if (array_key_exists(ConfigProperties::CONFIG_OWNER, $this->properties)) {
+            $this->configOwner = $this->properties[ConfigProperties::CONFIG_OWNER];
+        }
+        
+        if (array_key_exists(ConfigProperties::CONFIG_NAME, $this->properties)) {
+            $this->configName = $this->properties[ConfigProperties::CONFIG_NAME];
+        }
+        
+        $this->cronJob = ''; # By default, make this blank
+        if (array_key_exists(ConfigProperties::CRON_JOB, $this->properties)) {
+            $cronJob = $this->properties[ConfigProperties::CRON_JOB];
+            print "CRON '{$cronJob}' - cron job type: ".gettype($cronJob)."\n";
+            
+            if ((is_bool($cronJob) && $cronJob) || strcasecmp($cronJob, 'true') === 0 || $cronJob === '1') {
+                $this->cronJob = 'true';
+            } elseif ((is_bool($cronJob) && !$cronJob) || strcasecmp($cronJob, 'false') === 0 || $cronJob === '0'
+                    || trim($cronJob) === '') {
+                $this->cronJob = 'false';
+            }
+        }
+        
+        
         #---------------------------------------------------------------
         # Get SSL verify flag
         #
@@ -239,10 +330,10 @@ class Configuration
         #---------------------------------------------------------------
         if (array_key_exists(ConfigProperties::SSL_VERIFY, $this->properties)) {
             $sslVerify = $this->properties[ConfigProperties::SSL_VERIFY];
-            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0' || $sslVerify === '') {
+            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0' || $sslVerify === 0) {
                 $this->sslVerify = false;
             } elseif (!isset($sslVerify) || $sslVerify === ''
-                    || strcasecmp($sslVerify, 'true') === 0 || $sslVerify === '1') {
+                    || strcasecmp($sslVerify, 'true') === 0 || $sslVerify === '1' || $sslVerify === 1) {
                 $this->sslVerify = true;
             } else {
                 $message = 'Unrecognized value "'.$sslVerify.'" for '
@@ -638,7 +729,7 @@ class Configuration
         # Get project id
         #------------------------------------------------------
         try {
-            $this->projectId = $this->configProject->exportProjectInfo()['project_id'];
+            $this->configProjectId = $this->configProject->exportProjectInfo()['project_id'];
         } catch (PhpCapException $exception) {
             $message = "Unable to retrieve project_id.";
             throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
@@ -971,10 +1062,25 @@ class Configuration
     {
         return $this->calcFieldIgnorePattern;
     }
-
+    
+    public function getConfigName()
+    {
+        return $this->configName;
+    }
+    
+    public function getConfigOwner()
+    {
+        return $this->configOwner;
+    }
+        
     public function getConfigProject()
     {
         return $this->configProject;
+    }
+    
+    public function getConfigProjectId()
+    {
+        return $this->configProjectId;
     }
 
     public function setConfigProject($configProject)
@@ -987,6 +1093,11 @@ class Configuration
         return $this->createLookupTable;
     }
 
+    public function getCronJob()
+    {
+        return $this->cronJob;
+    }
+    
     public function getDataSourceApiToken()
     {
         return $this->dataSourceApiToken;
@@ -1002,6 +1113,31 @@ class Configuration
         $this->dbConnection = $dbConnection;
     }
 
+    public function getDbLogging()
+    {
+        return $this->dbLogging;
+    }
+    
+    public function getDbLogTable()
+    {
+        return $this->dbLogTable;
+    }
+    
+    public function getDbEventLogTable()
+    {
+        return $this->dbEventLogTable;
+    }
+    
+    public function getEmailErrors()
+    {
+        return $this->emailErrors;
+    }
+    
+    public function getEmailSummary()
+    {
+        return $this->emailSummary;
+    }
+    
     public function getEmailFromAddress()
     {
         return $this->emailFromAddress;
@@ -1087,18 +1223,11 @@ class Configuration
         $this->projectId = $projectId;
     }
 
-    // NOTE: Commenting this function out because it isn't used in the
-    //       code and doesn't make sense -- array_key_exists is called with
-    //       only one argument, but requires two. -- ADA, 3-Dec-2018
-//    public function getRecordId()
-//    {
-//        $recordId = null;
-//        if (array_key_exists(ConfigProperties::RECORD_ID)) {
-//            $recordId = $this->properties[ConfigProperties::RECORD_ID];
-//        }
-//        return $recordId;
-//    }
-
+    public function getPrintLogging()
+    {
+         return $this->printLogging;
+    }
+    
     public function getRedCapApiUrl()
     {
         return $this->redcapApiUrl;

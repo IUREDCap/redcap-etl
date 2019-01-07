@@ -58,7 +58,7 @@ class BasicDemographyJsonTest extends TestCase
             $redCapEtl->run();
         } catch (EtlException $exception) {
             self::$logger->logException($exception);
-            self::$logger->logError('Processing failed.');
+            self::$logger->log('Processing failed.');
         }
 
         #---------------------------------------------------------------------

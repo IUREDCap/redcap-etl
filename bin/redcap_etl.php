@@ -47,7 +47,7 @@ if (array_key_exists('c', $options)) {
 try {
     $redCapEtl = new RedCapEtl($logger, $configFile);
     $redCapEtl->run();
-} catch (EtlException $exception) {
+} catch (\Exception $exception) {
     $logger->logException($exception);
-    $logger->logError('Processing failed.');
+    $logger->log('Processing failed.');
 }

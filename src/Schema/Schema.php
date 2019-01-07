@@ -15,7 +15,12 @@ class Schema
 
     private $tables = array();
     private $rootTables = array();
-    private $lookupTable = null;  # table for mapping multiple choice codes to values
+    
+    /** @var LookupTable table for mapping multiple choice codes to values */
+    private $lookupTable = null;
+    
+    private $dbLogTable      = null;
+    private $dbEventLogTable = null;
 
     public function __construct()
     {
@@ -99,6 +104,28 @@ class Schema
     public function setLookupTable($lookupTable)
     {
         $this->lookupTable = $lookupTable;
+    }
+
+
+    public function getDbLogTable()
+    {
+        return $this->dbLogTable;
+    }
+
+    public function setDbLogTable($dbLogTable)
+    {
+        $this->dbLogTable = $dbLogTable;
+    }
+
+
+    public function getDbEventLogTable()
+    {
+        return $this->dbEventLogTable;
+    }
+
+    public function setDbEventLogTable($dbEventLogTable)
+    {
+        $this->dbEventLogTable = $dbEventLogTable;
     }
 
 

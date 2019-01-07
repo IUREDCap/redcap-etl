@@ -96,7 +96,7 @@ class SchemaGenerator
 
         // Log how many fields in REDCap could be parsed
         $message = "Found ".count($unmappedRedCapFields)." fields in REDCap.";
-        $this->logger->logInfo($message);
+        $this->logger->log($message);
         $info .= $message."\n";
 
         $table = null;
@@ -172,7 +172,7 @@ class SchemaGenerator
                             $fname !== 'redcap_data_access_group' &&
                             (empty($fieldNames[$fname]))) {
                         $message = "Field not found in REDCap: '".$fname."'";
-                        $this->logger->logInfo($message);
+                        $this->logger->log($message);
                         $warnings .= $message."\n";
                         continue 2; //continue 3;
                     }
@@ -285,7 +285,7 @@ class SchemaGenerator
 
         // Log how many fields in REDCap could be parsed
         $message = "Found ".count($unmappedRedCapFields)." unmapped fields in REDCap.";
-        $this->logger->logInfo($message);
+        $this->logger->log($message);
 
         // Set warning if count of remaining redcap fields is above zero
         if (count($unmappedRedCapFields) > 0) {
@@ -294,7 +294,7 @@ class SchemaGenerator
             // List fields, if count is ten or less
             if (count($unmappedRedCapFields) <= 10) {
                 $message = "Unmapped fields: ".  implode(', ', array_keys($unmappedRedCapFields));
-                $this->logger->logInfo($message);
+                $this->logger->log($message);
                 $warnings .= $message;
             }
         }
@@ -309,6 +309,7 @@ class SchemaGenerator
         }
 
         $schema->setLookupTable($this->lookupTable);
+        
         return array($schema, $messages);
     }
 
@@ -501,6 +502,6 @@ class SchemaGenerator
 
     protected function log($message)
     {
-        $this->logger->logInfo($message);
+        $this->logger->log($message);
     }
 }
