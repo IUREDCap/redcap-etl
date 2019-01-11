@@ -51,6 +51,13 @@ class SchemaGenerator
         $this->dataProject   = $dataProject;
         $this->configuration = $configuration;
         $this->tablePrefix   = $configuration->getTablePrefix();
+        // echo "\n \n";
+        //     echo gettype($this->tablePrefix);
+        //     echo "\n \n";
+        //     echo json_encode($this->tablePrefix, JSON_PRETTY_PRINT);
+        //     echo "\n \n";
+        //     echo $this->tablePrefix;
+        //     echo "\n \n";
         $this->logger        = $logger;
     }
 
@@ -94,10 +101,21 @@ class SchemaGenerator
             // echo json_encode($this->lookupChoices, JSON_PRETTY_PRINT);
             //  print_r($this->configuration);
         $keyType = $this->configuration->getGeneratedKeyType();
-            echo "\n \n";
-            echo gettype($keyType);
-            echo json_encode($keyType, JSON_PRETTY_PRINT);
+            // echo "\n \n";
+            // echo gettype($keyType);
+            // echo "\n \n";
+            // echo json_encode($keyType, JSON_PRETTY_PRINT);
+            // echo "\n \n";
+            // echo print_r($keyType);
+            // echo "\n \n";
         $lookupTableName = $this->configuration->getLookupTableName();
+        // echo "\n \n";
+        //     echo gettype($lookupTableName);
+        //     echo "\n \n";
+        //     echo json_encode($lookupTableName, JSON_PRETTY_PRINT);
+        //     echo "\n \n";
+        //     echo $lookupTableName;
+        //     echo "\n \n";
         $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix, $keyType, $lookupTableName);
 
         $info = '';
@@ -338,8 +356,6 @@ class SchemaGenerator
 
  
             echo "\n \n";
-            // $new_object = unserialize(serialize(array($schema, $messages)));
-            // echo serialize($new_object);
             // echo "\"$schemaString\"";
             echo "\n \n";
             
@@ -383,6 +399,13 @@ class SchemaGenerator
             return table;   // try to fix
         } else {
             $fieldTypeSpecifier = $this->configuration->getGeneratedRecordIdType();
+            // echo "\n \n";
+            // echo gettype($fieldTypeSpecifier);
+            // echo "\n \n";
+            // echo json_encode($fieldTypeSpecifier, JSON_PRETTY_PRINT);
+            // echo "\n \n";
+            // echo print_r($fieldTypeSpecifier);
+            // echo "\n \n";
             $field = new Field(
                 $recordIdFieldName,
                 $fieldTypeSpecifier->getType(),
@@ -403,6 +426,7 @@ class SchemaGenerator
         if (in_array(RowsType::BY_SUFFIXES, $rowsType)) {
             $hasSuffixes = true;
         }
+        echo print_r($this->dataProject->isLongitudinal());
 
         if ($this->dataProject->isLongitudinal()) {
             # Longitudinal study
@@ -507,7 +531,7 @@ class SchemaGenerator
             }
 
             $redcapFieldType = $this->dataProject->getFieldType($fieldName);
-            
+            echo $redcapFieldType;
             # Process each value of the checkbox
             foreach ($this->lookupChoices[$lookupFieldName] as $value => $label) {
                 # It looks like REDCap uses the lower-case version of the

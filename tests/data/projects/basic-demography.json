@@ -351,11 +351,7 @@
             "Male"
         ]
     },
-    "schema": [
-        {},
-        [
-            "valid",
-            "Found 19 fields in REDCap.\n"
-        ]
-    ]
+    "schema": {
+        
+    }
 }

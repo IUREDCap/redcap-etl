@@ -144,6 +144,7 @@ class RulesGenerator
                 $rules .= "\n";
             }
         }
+        
         return $rules;
     }
     
