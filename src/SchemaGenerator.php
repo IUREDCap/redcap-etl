@@ -406,7 +406,7 @@ class SchemaGenerator
         }
 
         if ($hasInstrument) {
-            $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+            $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
             $field = new Field(
                 RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
                 $fieldTypeSpecifier->getType(),
