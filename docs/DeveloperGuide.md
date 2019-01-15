@@ -198,7 +198,7 @@ To set up the system steps:
 In the configuration project (created from the VisitsConfig.REDCap.xml
 file):
 
-1. Set the log project api token in the Admin form of the existing
+1. Set the log project API token in the Admin form of the existing
    record to the token that you got for the log project
    (created using file VisitsLog.REDCap.xml).
 
@@ -221,10 +221,12 @@ for the Visits project:
    tests/config-init directory to the tests/config
    directory, for example, from the top-level directory:
    
+   	    cp tests/config-init/repeating-events-mysql-rules.txt tests/config
+	    cp tests/config-init/repeating-events-mysql.ini tests/config
         cp tests/config-init/visits.ini tests/config
         cp tests/config-init/visits.sql tests/config
 
-2. Edit the file tests/config/visits.ini and set the 
+2. Edit the files __tests/config/visits.ini__ and __tests/config/repeating-events-mysql.ini__, and set the 
    following properties to appropriate values:
    
     1. __redcap_api_url__ - set this to the URL for your REDCap's API. Be
@@ -233,6 +235,11 @@ for the Visits project:
 
     2. __config_api_token__ - set this to the REDCap API token for
        your REDCap Visits Config project created above.
+
+3. If you used different values than those used in the example
+    commands above for creating the MySQL database and user, you will need to
+    modify the __db_connection__ property appropriately in file
+    __tests/config/repeating-events-mysql.ini__.
 
 You can check the setup so far by running the following command in the
 top-level directory of you REDCap-ETL installation:
