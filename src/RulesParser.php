@@ -39,7 +39,7 @@ class RulesParser
     const SUFFIXES              = 'SUFFIXES';
     const REPEATING_INSTRUMENTS = 'REPEATING_INSTRUMENTS';
     const REPEATING_EVENTS      = 'REPEATING_EVENTS';
-                
+
     public function __construct()
     {
     }
@@ -67,6 +67,9 @@ class RulesParser
             // If line is nothing but whitespace and commas, skip it
             if (preg_match('/^[\s,]*$/', $line) === 1) {
                 ; // don't do anything
+            } elseif (preg_match('/^[\s]*#/', $line) === 1) {
+                # comment line: first non-blank character is '#'
+                ; // skip
             } else {
                 // Get (comma-separated) values of the line, trimmed
                 // trim removes leading and trailing whitespace
@@ -124,14 +127,14 @@ class RulesParser
                     .$line.'"';
                 $tableRule->addError($error);
             } elseif (empty($tableRule->tableRowsType)) {
-                $error = 'Missing table rows type on line '.$lineNumber.': "'
-                    .$line.'"';
+                $error = 'Missing table rows type on line '.$lineNumber.': "'.$line.'"';
                 $tableRule->addError($error);
             } else {
                 list($rowsType, $suffixes) = $this->parseRowsDef($tableRule->tableRowsType);
                 if ($rowsType === false) {
                     $tableRule->addError('Unrecognized rows type on line '.$lineNumber.': '.$line);
                 } else {
+                    # No errors found
                     $tableRule->rowsType = $rowsType;
                     $tableRule->suffixes = $suffixes;
                 }

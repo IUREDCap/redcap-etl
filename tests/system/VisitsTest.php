@@ -30,13 +30,6 @@ class VisitsTest extends TestCase
         $etlOutput = array();
         $command = "cd ".self::BIN_DIR.";"." php ".self::ETL_COMMAND." -c ".self::CONFIG_FILE;
         $etlResult = exec($command, $etlOutput);
-
-        $expectedResult = 'Processing complete.';
-
-        print "ETL Result: $etlResult\n";
-        if ($etlResult !== 'Processing complete.') {
-            print "    ***WARNING: Expected ETL result is: $expectedResult\n";
-        }
     }
 
     public function testAll()

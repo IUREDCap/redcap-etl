@@ -12,6 +12,8 @@
       <file>tests/unit/EtlExceptionTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
       <file>tests/unit/RedCapDetHandlerTest.php</file>
+      <file>tests/unit/RulesParserTest.php</file>
+      <file>tests/unit/RulesSemanticAnalyzerTest.php</file>
 
       <file>tests/unit/Database/DbConnectionFactoryTest.php</file>
 

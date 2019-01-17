@@ -103,6 +103,8 @@ class SchemaGenerator
         
         $rulesParser = new RulesParser();
         $parsedRules = $rulesParser->parse($rulesText);
+        $analyzer = new RulesSemanticAnalyzer();
+        $parsedRules = $analyzer->check($parsedRules);
         
         # Log parsing errors, and add them to the errors string
         foreach ($parsedRules->getRules() as $rule) {
@@ -278,7 +280,7 @@ class SchemaGenerator
         
         
         if ($parsedRules->getParsedLineCount() < 1) {
-            $message = "Found no lines in Schema Map";
+            $message = "Found no transformation rules.";
             $this->log($message);
             $errors .= $message."\n";
         }

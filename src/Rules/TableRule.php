@@ -2,6 +2,8 @@
 
 namespace IU\REDCapETL\Rules;
 
+use IU\REDCapETL\Schema\RowsType;
+
 class TableRule extends Rule
 {
     public $tableName;
@@ -15,5 +17,19 @@ class TableRule extends Rule
         $this->suffixes = array();
         $this->rowsType = array();
         parent::__construct($line, $lineNumber);
+    }
+    
+    public function isRootTable()
+    {
+        $isRoot = false;
+        if (is_array($this->rowsType) && count($this->rowsType) === 1) {
+            $isRoot = $this->rowsType[0] === RowsType::ROOT;
+        }
+        return $isRoot;
+    }
+    
+    public function getTableName()
+    {
+        return $this->tableName;
     }
 }

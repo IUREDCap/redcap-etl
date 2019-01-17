@@ -80,8 +80,16 @@ a synthetic primary key field and a record ID field.
 The transformation rules language is line-oriented, and each line has a 
 comma-separated value (CSV) syntax. This allows the transformation rules to be
 edited as a spreadsheet, as long as it is saved in CSV format. Editing this way
-eliminates the need to enter field separators (commas), and automatically aligns field mappings horizontally, which makes them easier to read.
+eliminates the need to enter field separators (commas),
+and automatically aligns field mappings horizontally, which makes them easier to read.
 
+#### Comments and Ignored Lines
+
+The following lines are ignored by ETL processing:
+
+* Comment lines - lines where the first (non-space) character is a #
+* Blank lines
+* Lines with _all_ blank fields (i.e., only commas, or commas and spaces)
 
 #### TABLE Statements
 
