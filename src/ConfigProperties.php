@@ -50,6 +50,7 @@ class ConfigProperties
     const LOG_PROJECT_API_TOKEN    = 'log_project_api_token';
     const LOOKUP_TABLE_NAME        = 'lookup_table_name';
 
+    const POST_PROCESSING_SQL      = 'post_processing_sql';
     const POST_PROCESSING_SQL_FILE = 'post_processing_sql_file';
     const PRINT_LOGGING            = 'print_logging';   # true/false indicates if log messages should be printed
     const PROJECT_ID               = 'project_id';  # optional ID of REDCap project from which data are being extracted

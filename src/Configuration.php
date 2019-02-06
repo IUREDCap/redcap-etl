@@ -85,6 +85,7 @@ class Configuration
     private $logProjectApiToken;
     private $lookupTableName;
 
+    private $postProcessingSql;
     private $postProcessingSqlFile;
     private $projectId;
     private $printLogging;
@@ -159,6 +160,14 @@ class Configuration
                     if (is_array($rulesText)) {
                         $rulesText = implode("\n", $rulesText);
                         $this->properties[ConfigProperties::TRANSFORM_RULES_TEXT] = $rulesText;
+                    }
+                }
+
+                if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL, $this->properties)) {
+                    $sql = $this->properties[ConfigProperties::POST_PROCESSING_SQL];
+                    if (is_array($sql)) {
+                        $sql = implode("\n", $sql);
+                        $this->properties[ConfigProperties::POST_PROCESSING_SQL] = $sql;
                     }
                 }
             } else {
@@ -398,6 +407,17 @@ class Configuration
         } else {
             $message = 'No configuration project API token property was defined.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+
+        #---------------------------------------------
+        # Get the post-processing SQL (if any)
+        #---------------------------------------------
+        $this->postProcessingSql = null;
+        if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL, $this->properties)) {
+            $sql = $this->properties[ConfigProperties::POST_PROCESSING_SQL];
+            if (!empty($sql)) {
+                $this->postProcessingSql = $sql;
+            }
         }
 
         #---------------------------------------------
@@ -1205,6 +1225,11 @@ class Configuration
     public function getLookupTableName()
     {
         return $this->lookupTableName;
+    }
+
+    public function getPostProcessingSql()
+    {
+        return $this->postProcessingSql;
     }
 
     public function getPostProcessingSqlFile()
