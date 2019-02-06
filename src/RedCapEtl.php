@@ -658,7 +658,7 @@ class RedCapEtl
             $numberOfRecordIds = $this->extractTransformLoad();
                 
             $sql = $this->configuration->getPostProcessingSql();
-            if (!empty($sqlFile)) {
+            if (!empty($sql)) {
                 $this->dbcon->processQueries($sql);
             }
 
