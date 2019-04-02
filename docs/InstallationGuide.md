@@ -17,17 +17,24 @@ have a REDCap API token for a configuration project that contains the remaining 
 configuration information. In both cases, this file must contain the URL for your
 REDCap API. When the ETL process runs, this is the first file that will be accessed.
 * **REDCap Projects**
-    * **Configuration Project.** This optional project contains configuration
+    * **Configuration Project.** This optional (and now deprecated)
+project contains configuration
 information for the ETL process.  The advantage of using this project is that
 it allows users who have access to REDCap, but not the REDCap-ETL server,
 to be able to change
 certain configuration properties, and to start the ETL process. The disadvantage of
 using this project is that it increases the complexity of the installation.
+It is expected that the configuration project will be removed in a future release
+of REDCap-ETL, and that the configuration project's functionality will be provided
+by a REDCap external module.
     * **Data Project.** This is the REDCap project that contains the data to be extracted.
-    * **Logging Project.** This optional project is used for logging. The advantage of using this project is that
+    * **Logging Project.** This optional (and now deprecated) project is used
+for logging. The advantage of using this project is that
 users who have access to REDCap, but not the REDCap-ETL server, can access the log information.
 The disadvantages of
-using this project are that it increases the complexity of the installation and slows down performance.
+using this project are that it increases the complexity of the installation and slows down performance. It is expected that the logging project will be removed from REDCap-ETL in
+a future release. REDCap-ETL now supports logging to the database, which provides more
+flexible viewing options.
 * **REDCap-ETL.** The software that actually does the Extract Transform and Load.
 * **Database.** There needs to be some kind of database where the extracted and transformed data
 can be loaded, such as a MySQL database, although this could be as simple as a directory for CSV files.
