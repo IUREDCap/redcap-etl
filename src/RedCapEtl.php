@@ -679,6 +679,9 @@ class RedCapEtl
      * Runs the ETL process for a REDCap DET (Data Entry Trigger)
      *
      * @return int the number of record IDs found (and hopefully processed).
+     *
+     * @deprecated REDCap configuration projects and their DET processing will
+     *    be removed in a future version.
      */
     public function runForDet()
     {
