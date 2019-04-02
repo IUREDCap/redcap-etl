@@ -29,12 +29,13 @@ of REDCap-ETL, and that the configuration project's functionality will be provid
 by a REDCap external module.
     * **Data Project.** This is the REDCap project that contains the data to be extracted.
     * **Logging Project.** This optional (and now deprecated) project is used
-for logging. The advantage of using this project is that
+for logging. The advantage of using the logging project over the logging file is that
 users who have access to REDCap, but not the REDCap-ETL server, can access the log information.
 The disadvantages of
 using this project are that it increases the complexity of the installation and slows down performance. It is expected that the logging project will be removed from REDCap-ETL in
 a future release. REDCap-ETL now supports logging to the database, which provides more
-flexible viewing options.
+flexible viewing options. REDCap-ETL also now supports e-mailing of a summary of the logging
+information for an ETL process.
 * **REDCap-ETL.** The software that actually does the Extract Transform and Load.
 * **Database.** There needs to be some kind of database where the extracted and transformed data
 can be loaded, such as a MySQL database, although this could be as simple as a directory for CSV files.
@@ -48,7 +49,7 @@ so that they do not need access to the server. If you only want to run the ETL p
 on a regularly scheduled basis, or by manually running a command on the server,
 then you do not need to have a web server.
 * **E-mail Server.** This is optional, and if set up, is used for e-mailing error
-notifications to designated users.
+notifications and logging summaries to designated users.
 
 
 Installation Steps
@@ -110,7 +111,7 @@ system:
     sudo chown -R etl:etl /opt/redcap-etl
 
 
-### Step 4 (Optional) - Set up a Configuration Project
+### Step 4 (Optional/Deprecated) - Set up a Configuration Project
 
 Setting up a REDCap configuration project is optional. Configuration
 can be specified using only the configuration file (see below) instead.
@@ -139,7 +140,7 @@ To be able to set up the configuration project, you will need a data project and
 
 See [Configuration Guide](ConfigurationGuide.md) for more information.
 
-### Step 5 (Optional) - Set up a Logging Project
+### Step 5 (Optional/Deprecated) - Set up a Logging Project
 
 In REDCap, create a new project using the "Upload a REDCap project XML file" option using the file **projects/redcap-etl-log.xml** from REDCap-ETL downloaded previously. Then get an API token for this project, and then set the field for this in the configuration project.
 
