@@ -389,12 +389,14 @@ class MysqlDbConnection extends DbConnection
             $query .= ' ('.implode(",", $bindPositions) .')';
 
             // Prepare query
-            $stmt = $this->mysqli->prepare($query);  //NOTE add error checking?
+            $stmt = $this->mysqli->prepare($query);
 
-            // ADA DEBUG
+            // Check prepared query
             if (!$stmt) {
-                 error_log("query :".$query."\n", 0);
-                 error_log("Statement failed: ". $this->mysqli->error . "\n", 0);
+                $message = 'MySQL error preparing query "'.$query.'"'
+                    .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
             }
 
             $this->insertRowStatements[$table->name] = $stmt;
