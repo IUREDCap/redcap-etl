@@ -352,7 +352,7 @@ class Logger
 
         $this->logToFile($message);
         
-        # The expcetion message should already get included in the
+        # The exception message should already get included in the
         # e-mail summary from the logging array, so just send the
         # stack trace
         $this->logEmailSummary($stackTrace);
