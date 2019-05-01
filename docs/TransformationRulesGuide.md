@@ -366,7 +366,7 @@ For the **visits** table:
 | evB     | var8b    | yellow1    | yellow2  | yellow3 |
 
 
-**Tranformation Rules**
+**Transformation Rules**
 
     TABLE,  Main, Main_id, ROOT
     FIELD,  record, int
