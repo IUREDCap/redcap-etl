@@ -25,17 +25,32 @@ class DbConnectionFactory
      *
      * @param string $connectionString the database connection string, which contains
      *     the database type and the connection details.
+     *
+     * @param boolean $ssl indicates if SSL should be used for the database connection.
+     *
+     * @param boolean $sslVerify indicates if SSL verification should be done for the database connection.
+     *
+     * @param string $caCertFile certificate authority certificate file; used for SSL verification (if set).
+     *
      * @param string $tablePrefix the table name prefix to use for generated tables.
+     *
      * @param string $labelViewSuffix suffix used for label views, i.e., views of tables
      *     that replace multiple choice value codes with their corresponding labels.
      */
-    public function createDbConnection($connectionString, $tablePrefix, $labelViewSuffix)
+    public function createDbConnection($connectionString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         list($dbType, $dbString) = $this->parseConnectionString($connectionString);
 
         switch ($dbType) {
             case DbConnectionFactory::DBTYPE_MYSQL:
-                $dbcon = new MysqlDbConnection($dbString, $tablePrefix, $labelViewSuffix);
+                $dbcon = new MysqlDbConnection(
+                    $dbString,
+                    $ssl,
+                    $sslVerify,
+                    $caCertFile,
+                    $tablePrefix,
+                    $labelViewSuffix
+                );
                 break;
 
             #case DbConnectionFactory::DBTYPE_SQLSRV:
@@ -43,7 +58,14 @@ class DbConnectionFactory
             #    break;
 
             case DbConnectionFactory::DBTYPE_CSV:
-                $dbcon = new CsvDbConnection($dbString, $tablePrefix, $labelViewSuffix);
+                $dbcon = new CsvDbConnection(
+                    $dbString,
+                    $ssl,
+                    $sslVerify,
+                    $caCertFile,
+                    $tablePrefix,
+                    $labelViewSuffix
+                );
                 break;
 
             default:

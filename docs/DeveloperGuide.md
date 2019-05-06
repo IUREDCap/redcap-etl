@@ -29,6 +29,11 @@ works.
         sudo apt install mysql-server
         sudo mysql_secure_installation
         systemctl status mysql.service   # check status
+        
+        # Set up SSL
+        sudo mysql_ssl_rsa_setup --uid=mysql
+        sudo systemctl restart mysql
+
 
 5. Create a database and database user that will be used as the place to store the REDCap data, for example, in MySQL use:
 

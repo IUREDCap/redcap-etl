@@ -18,9 +18,9 @@ class MysqlDbConnection extends DbConnection
     private $insertRowStatements;
     private $insertRowBindTypes;
 
-    public function __construct($dbString, $tablePrefix, $labelViewSuffix)
+    public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
-        parent::__construct($dbString, $tablePrefix, $labelViewSuffix);
+        parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
 
         // Initialize error string
         $this->errorString = '';
@@ -29,7 +29,7 @@ class MysqlDbConnection extends DbConnection
         # Get the database connection values
         #--------------------------------------------------------------
         $dbValues = explode(':', $dbString);
-        $port = '';
+        $port = null;
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = explode(':', $dbString);
         } elseif (count($dbValues) == 5) {
@@ -50,11 +50,26 @@ class MysqlDbConnection extends DbConnection
         // NOTE: Could add error checking
         // mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         // Setting the above causes the program to stop for any uncaugt errors
+        
         if (empty($port)) {
-            $this->mysqli = new \mysqli($host, $username, $password, $database);
-        } else {
-            $this->mysqli = new \mysqli($host, $username, $password, $database, $port);
+            $port = null;
         }
+        
+        $flags = null;
+        if ($ssl) {
+            $flags = MYSQLI_CLIENT_SSL;
+        }
+        
+        $this->mysqli = mysqli_init();
+        $this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
+
+        # FINISH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+        #if (empty($port)) {
+        #    $this->mysqli = new \mysqli($host, $username, $password, $database);
+        #} else {
+        #    $this->mysqli = new \mysqli($host, $username, $password, $database, $port);
+        #}
 
         if ($this->mysqli->connect_errno) {
             $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;

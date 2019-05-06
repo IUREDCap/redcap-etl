@@ -25,6 +25,8 @@ class ConfigProperties
     
     const DATA_SOURCE_API_TOKEN  = 'data_source_api_token';
     const DB_CONNECTION          = 'db_connection';
+    const DB_SSL                 = 'db_ssl';
+    const DB_SSL_VERIFY          = 'db_ssl_verify';
 
     const DB_LOGGING             = 'db_logging';
     const DB_LOG_TABLE           = 'db_log_table';

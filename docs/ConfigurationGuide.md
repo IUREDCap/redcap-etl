@@ -128,7 +128,7 @@ Not ending the URL with a slash (/) may cause an error.</td>
 <tr>
 <td>ssl_verify</td>
 <td> X </td> <td> &nbsp; </td>
-<td>Indicates is SSL verification is used for the connection to REDCap.
+<td>Indicates if SSL verification is used for the connection to REDCap.
 This defaults to true. Setting it to false is insecure.</td> 
 </tr>
 
@@ -191,6 +191,26 @@ Properties for the database where the extracted data is loaded.
 <td> X </td> <td> X </td>
 <td>The database connection string for the database where the data
 is loaded.</td>
+</tr>
+
+<tr>
+<td>db_ssl</td>
+<td> X </td> <td> </td>
+<td>Flag that indicates if SSL should be used for MySQL database accesses
+(true by default). Note: on Linux systems, having this set to true
+may cause the database connection to fail when the database host is specified
+as "localhost". To fix this problem, set db_ssl to false, or specify
+"127.0.0.1" for the database host instead of "localhost".</td>
+</tr>
+
+<tr>
+<td>db_ssl_verify</td>
+<td> X </td> <td> </td>
+<td>Flag that indicates if the SSL certificate of the database
+server should be verified. For this to work, a valid ca_cert_file
+(certificate authority certificate file)
+needs to be specified.
+</td>
 </tr>
 
 </tbody>

@@ -14,7 +14,7 @@ abstract class DbConnection
     
     private $errorHandler;
 
-    public function __construct($dbString, $tablePrefix, $labelViewSuffix)
+    public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         $this->tablePrefix = $tablePrefix;
         $this->labelViewSuffix = $labelViewSuffix;

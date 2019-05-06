@@ -197,6 +197,9 @@ class RedCapEtl
         $dbconfactory = new DbConnectionFactory();
         $this->dbcon = $dbconfactory->createDbConnection(
             $this->configuration->getDbConnection(),
+            $this->configuration->getDbSsl(),
+            $this->configuration->getDbSslVerify(),
+            $this->configuration->getCaCertFile(),
             $this->configuration->getTablePrefix(),
             $this->configuration->getLabelViewSuffix()
         );

@@ -25,6 +25,9 @@ class Configuration
     const DEFAULT_BATCH_SIZE          = 100;
     const DEFAULT_CREATE_LOOKUP_TABLE = false;
 
+    const DEFAULT_DB_SSL             = true;
+    const DEFAULT_DB_SSL_VERIFY      = false;
+
     const DEFAULT_DB_LOGGING         = true;
     const DEFAULT_DB_LOG_TABLE       = 'etl_log';
     const DEFAULT_DB_EVENT_LOG_TABLE = 'etl_event_log';
@@ -67,6 +70,8 @@ class Configuration
         
     private $dataSourceApiToken;
     private $dbConnection;
+    private $dbSsl;
+    private $dbSslVerify;
 
     private $dbLogging;
     private $dbLogTable;
@@ -657,6 +662,28 @@ class Configuration
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
+        #-----------------------------------------
+        # Process the database SSL flag
+        #-----------------------------------------
+        $this->dbSsl = self::DEFAULT_DB_SSL;
+        if (array_key_exists(ConfigProperties::DB_SSL, $this->properties)) {
+            $ssl = $this->properties[ConfigProperties::DB_SSL];
+            if ($ssl === false|| strcasecmp($ssl, 'false') === 0 || $ssl === '0') {
+                $this->dbSsl  = false;
+            }
+        }
+
+        #-----------------------------------------
+        # Process the database SSL verify flag
+        #-----------------------------------------
+        $this->dbSslVerify = self::DEFAULT_DB_SSL_VERIFY;
+        if (array_key_exists(ConfigProperties::DB_SSL_VERIFY, $this->properties)) {
+            $verify = $this->properties[ConfigProperties::DB_SSL_VERIFY];
+            if ($verify === true || strcasecmp($verify, 'true') === 0 || $verify === '1') {
+                $this->dbSslVerify  = true;
+            }
+        }
+
         return true;
     }
 
@@ -1130,6 +1157,16 @@ class Configuration
     public function setDbConnection($dbConnection)
     {
         $this->dbConnection = $dbConnection;
+    }
+
+    public function getDbSsl()
+    {
+        return $this->dbSsl;
+    }
+
+    public function getDbSslVerify()
+    {
+        return $this->dbSslVerify;
     }
 
     public function getDbLogging()

@@ -19,9 +19,9 @@ class CsvDbConnection extends DbConnection
     private $lookup;
     private $lookupTable;
 
-    public function __construct($dbString, $tablePrefix, $labelViewSuffix)
+    public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
-        parent::__construct($dbString, $tablePrefix, $labelViewSuffix);
+        parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
 
         $this->directory = $dbString;
 
