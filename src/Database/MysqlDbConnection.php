@@ -61,15 +61,12 @@ class MysqlDbConnection extends DbConnection
         }
         
         $this->mysqli = mysqli_init();
+        if ($sslVerify && !empty($caCertFile)) {
+            $this->mysqli->ssl_set(null, null, $caCertFile, null, null);
+            $this->mysqli->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+        }
         $this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
 
-        # FINISH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        
-        #if (empty($port)) {
-        #    $this->mysqli = new \mysqli($host, $username, $password, $database);
-        #} else {
-        #    $this->mysqli = new \mysqli($host, $username, $password, $database, $port);
-        #}
 
         if ($this->mysqli->connect_errno) {
             $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;

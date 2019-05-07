@@ -680,6 +680,11 @@ class Configuration
         if (array_key_exists(ConfigProperties::DB_SSL_VERIFY, $this->properties)) {
             $verify = $this->properties[ConfigProperties::DB_SSL_VERIFY];
             if ($verify === true || strcasecmp($verify, 'true') === 0 || $verify === '1') {
+                if (empty($this->caCertFile)) {
+                    $message = 'Property "'.ConfigProperties::DB_SSL_VERIFY.'" was set, but no value was provided for "'
+                        .ConfigProperties::CA_CERT_FILE.'" (the certificate authority certificate file).';
+                    throw new EtlException($message, EtlException::INPUT_ERROR);
+                }
                 $this->dbSslVerify  = true;
             }
         }

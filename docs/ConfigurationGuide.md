@@ -5,6 +5,8 @@ REDCap-ETL requires a configuration file. In addition, a REDCap
 configuration project can also be used. Using a configuration project
 allows users who do not have access to the REDCap-ETL server to set
 some configuration properties and to start the ETL process.
+However, the configuration project has been deprecated, and the
+plan is to replace its functionality with a REDCap external module.
 
 If a configuration project is used, then REDCap-ETL will use the
 configuration file to locate the configuration project, so in this case
@@ -155,7 +157,7 @@ provide support for it by default</td>
 <tr>
 <td>config_api_token</td>
 <td> X </td> <td> &nbsp; </td>
-<td>The REDCap API token for the (optional) configuration project</td>
+<td>The REDCap API token for the (optional, and now deprecated) configuration project</td>
 </tr>
 
 <tr>
@@ -168,7 +170,7 @@ is being extracted from REDCap.</td>
 <tr>
 <td>log_project_api_token</td>
 <td> X </td> <td> X </td>
-<td>REDCap API token of (optional) logging project</td>
+<td>REDCap API token of (optional, and now deprecated) logging project</td>
 </tr>
 </tbody>
 </table>
@@ -199,7 +201,7 @@ is loaded.</td>
 <td>Flag that indicates if SSL should be used for MySQL database accesses
 (true by default). Note: on Linux systems, having this set to true
 may cause the database connection to fail when the database host is specified
-as "localhost". To fix this problem, set db_ssl to false, or specify
+as "localhost". To fix this problem, set db_ssl to 'false' (or 0), or specify
 "127.0.0.1" for the database host instead of "localhost".</td>
 </tr>
 
@@ -243,7 +245,7 @@ accumulate the results of all ETL runs.
 <td> X </td> <td> </td>
 <td>A true/false property indicating if REDCap-ETL should log to the database.
 The default value for this property is true. Database logging is not
-supported for CSV (comma-seperation value) file output.</td>
+supported for CSV (comma-separated value) file output.</td>
 </tr>
 
 <tr>

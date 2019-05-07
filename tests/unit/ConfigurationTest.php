@@ -856,7 +856,12 @@ class ConfigurationTest extends TestCase
             'GetProperty check'
         );
 
-
+        $dbSsl = $config->getDbSsl();
+        $this->assertTrue($dbSsl, 'DB SSL set to true');
+        
+        $dbSslVerify = $config->getDbSslVerify();
+        $this->assertFalse($dbSslVerify, 'DB SSL verify set to false');
+        
         // Property defined in array
         $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
         $configMock = $reflection->newInstanceWithoutConstructor();
@@ -1443,5 +1448,19 @@ class ConfigurationTest extends TestCase
             array($relativePath)
         );
         $this->assertFalse($isAbsolutePath, 'IsAbsolutePath false check');
+    }
+
+    public function testDbConfigError()
+    {
+        $propertiesFile = __DIR__.'/../data/config-test2.ini';
+        $logger = new Logger('test-app');
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $propertiesFile);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught, 'Db config error check');
     }
 }
