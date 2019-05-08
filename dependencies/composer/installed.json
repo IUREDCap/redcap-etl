@@ -1,17 +1,17 @@
 [
     {
         "name": "phpcap/phpcap",
-        "version": "0.3.2",
-        "version_normalized": "0.3.2.0",
+        "version": "0.3.3",
+        "version_normalized": "0.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aarenson/PHPCap.git",
-            "reference": "bc28965391bd40cc34ba4e33f7fb755d138e7dee"
+            "reference": "7af71a5481120f5efa1ad0f1bd640044b61286df"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aarenson/PHPCap/zipball/bc28965391bd40cc34ba4e33f7fb755d138e7dee",
-            "reference": "bc28965391bd40cc34ba4e33f7fb755d138e7dee",
+            "url": "https://api.github.com/repos/aarenson/PHPCap/zipball/7af71a5481120f5efa1ad0f1bd640044b61286df",
+            "reference": "7af71a5481120f5efa1ad0f1bd640044b61286df",
             "shasum": ""
         },
         "require": {
@@ -24,9 +24,9 @@
             "erusev/parsedown": "1.6.2",
             "kzykhys/php-csv-parser": "1.4.1",
             "phpunit/phpunit": "5.7.15",
-            "squizlabs/php_codesniffer": "2.8.1"
+            "squizlabs/php_codesniffer": "3.2.3"
         },
-        "time": "2018-04-20 19:37:19",
+        "time": "2019-03-10 15:32:57",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

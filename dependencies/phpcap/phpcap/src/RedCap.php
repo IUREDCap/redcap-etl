@@ -18,7 +18,7 @@ class RedCap
     protected $connection;
 
     /** function for creating project object */
-    protected $ProjectConstructorCallback;
+    protected $projectConstructorCallback;
     
     /**
      *
@@ -65,7 +65,7 @@ class RedCap
         
         $this->superToken = $this->processSuperTokenArgument($superToken);
         
-        $this->ProjectConstructorCallback = function (
+        $this->projectConstructorCallback = function (
             $apiUrl,
             $apiToken,
             $sslVerify = false,
@@ -172,10 +172,10 @@ class RedCap
         $connection   = clone $this->connection;
         $errorHandler = clone $this->errorHandler;
         
-        $ProjectConstructorCallback = $this->ProjectConstructorCallback;
+        $projectConstructorCallback = $this->projectConstructorCallback;
         
         $project = call_user_func(
-            $ProjectConstructorCallback,
+            $projectConstructorCallback,
             $apiUrl = null,
             $apiToken,
             $sslVerify = null,
@@ -201,11 +201,11 @@ class RedCap
         $connection   = clone $this->connection;
         $errorHandler = clone $this->errorHandler;
         
-        $ProjectConstructorCallback = $this->ProjectConstructorCallback;
+        $projectConstructorCallback = $this->projectConstructorCallback;
         
         # By default, this creates a RedCapProject
         $project = call_user_func(
-            $ProjectConstructorCallback,
+            $projectConstructorCallback,
             $apiUrl = null,
             $apiToken,
             $sslVerify = null,
@@ -224,7 +224,7 @@ class RedCap
      */
     public function getProjectConstructorCallback()
     {
-        return $this->ProjectConstructorCallback;
+        return $this->projectConstructorCallback;
     }
     
     /**
@@ -233,14 +233,14 @@ class RedCap
      * the RedCapProject class and want RedCap to return
      * projects using your extended class.
      *
-     * @param callable $ProjectConstructorCallback the function to call to create a new project.
+     * @param callable $projectConstructorCallback the function to call to create a new project.
      *     The function will be passed the same arguments as the RedCapProject
      *     constructor gets.
      */
-    public function setProjectConstructorCallback($ProjectConstructorCallback)
+    public function setProjectConstructorCallback($projectConstructorCallback)
     {
-        $this->ProjectConstructorCallback
-            = $this->processProjectConstructorCallbackArgument($ProjectConstructorCallback);
+        $this->projectConstructorCallback
+            = $this->processProjectConstructorCallbackArgument($projectConstructorCallback);
     }
     
     /**

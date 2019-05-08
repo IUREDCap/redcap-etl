@@ -10,7 +10,7 @@
         "ext-curl" : "*",
         "ext-dom" : "*",
         "ext-openssl" : "*",
-        "phpcap/phpcap" : "^0.3.2"
+        "phpcap/phpcap" : "0.3.3"
     },
     "require-dev" : {
         "apigen/apigen" : "v4.1.2",

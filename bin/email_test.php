@@ -31,7 +31,13 @@ switch (count($argv)) {
 }
 
 $logger = new Logger('e-mail-test');
+$logger->setPrintLogging(false);
 
+# Turn on e-mail logging
 $logger->setLogEmail($fromEmail, $toEmail, $subject);
+$logger->setEmailSummary(true);
 
-$logger->logToEmail('This is a test of REDCap-ETL logging to e-mail.');
+$message = 'This is a test of REDCap-ETL logging to e-mail.';
+$logger->log($message);
+
+$logger->logEmailSummary();

@@ -28,6 +28,7 @@
       <file>tests/integration/RecordsTest.php</file>
       <file>tests/integration/RedCapIntegrationTest.php</file>
       <file>tests/integration/RedCapVersionTest.php</file>
+      <file>tests/integration/RepeatingTest.php</file>
       <file>tests/integration/ReportsTest.php</file>
       <file>tests/integration/SurveyTest.php</file>
       <file>tests/integration/UsersTest.php</file>

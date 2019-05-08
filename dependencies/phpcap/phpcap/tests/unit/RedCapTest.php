@@ -43,10 +43,10 @@ class RedCapTest extends TestCase
     
     public function testGetProjectConstructorCallback()
     {
-        $ProjectConstructorCallback = $this->redCap->getProjectConstructorCallback();
+        $projectConstructorCallback = $this->redCap->getProjectConstructorCallback();
         
-        $this->assertNotNull($ProjectConstructorCallback, 'Not null.');
-        $this->assertTrue(is_callable($ProjectConstructorCallback), 'Callable.');
+        $this->assertNotNull($projectConstructorCallback, 'Not null.');
+        $this->assertTrue(is_callable($projectConstructorCallback), 'Callable.');
     }
     
     
@@ -54,7 +54,7 @@ class RedCapTest extends TestCase
     {
         $exceptionCaught = false;
         try {
-            $ProjectConstructorCallback = $this->redCap->setProjectConstructorCallback(null);
+            $this->redCap->setProjectConstructorCallback(null);
         } catch (PhpCapException $exception) {
             $exceptionCaught = true;
             $code = $exception->getCode();
@@ -68,7 +68,7 @@ class RedCapTest extends TestCase
     {
         $exceptionCaught = false;
         try {
-            $ProjectConstructorCallback = $this->redCap->setProjectConstructorCallback('test');
+            $this->redCap->setProjectConstructorCallback('test');
         } catch (PhpCapException $exception) {
             $exceptionCaught = true;
             $code = $exception->getCode();

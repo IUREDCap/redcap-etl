@@ -1372,11 +1372,53 @@ class RedCapProject
                 'token'        => $this->apiToken,
                 'content'      => 'record',
                 'action'       => 'delete',
-                'returnFormat' => 'json',
+                'returnFormat' => 'json'
         );
         
         $data['records'] = $this->processRecordIdsArgument($recordIds);
         $data['arm']     = $this->processArmArgument($arm);
+        
+        $result = $this->connection->callWithArray($data);
+        
+        $this->processNonExportResult($result);
+        
+        return $result;
+    }
+
+
+    /**
+     * Exports the repeating instruments and events.
+     *
+     * @param string $format the format in which to export the records:
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *       <li> 'odm' - string with CDISC ODM XML format, specifically ODM version 1.3.1</li>
+     *     </ul>
+     *
+     * @return mixed an array will be returned for the 'php' format, and a string for
+     *     all other formats. For classic (non-longitudinal) studies, the
+     *     'form name' and 'custom form label' will be returned for each
+     *     repeating form. Longitudinal studies additionally return the
+     *     'event name'. For repeating events in longitudinal studies, a blank
+     *     value will be returned for the form_name. In all cases, a blank
+     *     value will be returned for the 'custom form label' if it is not defined.
+     */
+    public function exportRepeatingInstrumentsAndEvents($format = 'php')
+    {
+        $data = array(
+            'token' => $this->apiToken,
+            'content' => 'repeatingFormsEvents',
+            'returnFormat' => 'json'
+        );
+
+        #---------------------------------------
+        # Process the arguments
+        #---------------------------------------
+        $legalFormats = array('php', 'csv', 'json', 'xml', 'odm');
+        $data['format'] = $this->processFormatArgument($format, $legalFormats);
         
         $result = $this->connection->callWithArray($data);
         
@@ -1394,8 +1436,8 @@ class RedCapProject
     public function exportRedcapVersion()
     {
         $data = array(
-                'token' => $this->apiToken,
-                'content' => 'version'
+            'token' => $this->apiToken,
+            'content' => 'version'
         );
         
         $redcapVersion = $this->connection->callWithArray($data);

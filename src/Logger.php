@@ -529,7 +529,8 @@ class Logger
      * This method would generally be called at the completion of an ETL process.
      * If no exception is passed, then a successful completion is assumed.
      *
-     * @param string $exception the exception that occurred if any.
+     * @param string $errorMessage final additional error message (to what has
+     *      already been logged) if any.
      */
     public function logEmailSummary($errorMessage = null)
     {

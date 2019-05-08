@@ -217,19 +217,20 @@ PHPCap follows the PSR-1 and PSR-2 coding standards. See:
 
 To check for compliance for the PHPCap source code, execute the following command in the root directory of PHPCap:
 
-    ./vendor/bin/phpcs --standard=PSR1,PSR2 src
+    ./vendor/bin/phpcs src
 
 To check compliance for the automated tests, use:
 
-    ./vendor/bin/phpcs --standard=PSR1,PSR2 tests/unit tests/integration
+    ./vendor/bin/phpcs tests/unit tests/integration
 
-To check for compliance for the PHPCap source code and the tests, use:
+To check for compliance for the PHPCap source code and the tests, use the default settings
+(defined in the top-level phpcs.xml file):
 
-    ./vendor/bin/phpcs --standard=PSR1,PSR2 src tests/unit tests/integration
+    ./vendor/bin/phpcs
 
 You can check specific files for compliance by specifying the path to the file, for example:
 
-    ./vendor/bin/phpcs --standard=PSR1,PSR2 src/RedCapProject.php  
+    ./vendor/bin/phpcs src/RedCapProject.php  
      
 Note that if you are working on Windows and have the git property __core.autocrlf__ set to true, you may see errors similar to the following:
 
