@@ -44,9 +44,9 @@ In this example:
   one first name, one last name, and one birthdate.
 * The database field **registration_id** (specified in the TABLE command)
   is created automatically as an auto-incremented synthetic key
-* The database field __record_id__ represents the REDCap record ID, and is
+* The database field **record_id** represents the REDCap record ID, and is
   created automatically in the database for all tables by REDCap-ETL
-* The database fields __record_id__, __first_name__ and __last_name__
+* The database fields **record_id**, **first_name** and **last_name**
   match the REDCap fields.
 * The REDCap field __dob__ with type __date__, was renamed to __birthdate__ in the database
 * The __birthdate__ database field has Y-M-D format, which is what REDCap
@@ -237,15 +237,15 @@ Field statements specify the fields that are generated in the tables in your dat
 
     FIELD, <field_name>, <field_type>[, <database_field_name>]
 
-__`<field_name>`__ is the name of the field in REDCap.
+**`<field_name>`** is the name of the field in REDCap.
 
-* If __`<database_field_name>`__ is not set, __`<field_name>`__ will also be the name
+* If **`<database_field_name>`** is not set, **`<field_name>`** will also be the name
   of the field in the database where the extracted data are loaded
-* If __`<database_field_name>`__ is set, then it will be used as
+* If **`<database_field_name>`** is set, then it will be used as
   the name of the field in the database where the extracted data are loaded
 
 
-__`<field_type>`__ can be one of the REDCap-ETL types in the table below that shows
+**`<field_type>`** can be one of the REDCap-ETL types in the table below that shows
 the database types used to store the different REDCap-ETL types.
 
 | REDCap-ETL Type | MySQL Type      | CSV (Spreadsheet) Type |
