@@ -394,7 +394,8 @@ class RedCapEtl
             foreach ($this->schema->getTables() as $table) {
                 # Single row storage (stores one row at a time):
                 # foreach row, load it
-                $this->loadTableRows($table);
+                ### $this->loadTableRows($table);
+                $this->loadTableRowsEfficiently($table);
             }
             #####$this->loadRows();
             $endLoadTime = microtime(true);
@@ -596,6 +597,30 @@ class RedCapEtl
     }
 
 
+    /**
+     * Load all rows in the specified table using a method that will use
+     * a single insert statement.
+     *
+     * @param Table $table table object for which rows are loaded.
+     * @param boolean $deleteRowsAfterLoad if true, the rows in the table object are
+     *     deleted after they are loaded into the database.
+     */
+    protected function loadTableRowsEfficiently($table, $deleteRowsAfterLoad = true)
+    {
+        $rc = $this->dbcon->storeRows($table);
+
+        // Add to summary how many rows created for this table
+        if (array_key_exists($table->name, $this->rowsLoadedForTable)) {
+            $this->rowsLoadedForTable[$table->name] += $table->getNumRows();
+        } else {
+            $this->rowsLoadedForTable[$table->name] = $table->getNumRows();
+        }
+
+        if ($deleteRowsAfterLoad) {
+            // Empty the rows for this table
+            $table->emptyRows();
+        }
+    }
 
     /**
      * Reports rows written to the database
