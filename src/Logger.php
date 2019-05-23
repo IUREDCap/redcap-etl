@@ -459,7 +459,14 @@ class Logger
             
             $logged = $this->formatAndLogFileMessage($message);
             if ($logged === false) {
-                $message = 'Logging to file "'.($this->logFile).'" as user "'.get_current_user().'" failed.';
+                $user = $this->getProcessUser();
+
+                $message = 'Logging to file "'.($this->logFile).'"';
+                if (!empty($user)) {
+                    $message .= ' as user "'.$user.'"';
+                }
+                $message .= ' failed.';
+
                 $code = EtlException::LOGGING_ERROR;
                 throw new EtlException($message, $code);
             }
@@ -684,6 +691,26 @@ class Logger
             || $this->dbLoggingErrorLogged
             || $this->projectLoggingErrorLogged
             ;
+    }
+
+    /**
+     * Gets the username associated with the current process, if this
+     * functionality is supported by the system, or returns null
+     * otherwise
+     *
+     * @return string the username associated with the current process,
+     *     or null if the system does not support getting this information.
+     */
+    public function getProcessUser()
+    {
+        $user = null;
+
+        if (function_exists('posix_getuid') && function_exists('posix_getpwuid')) {
+            $userInfo = posix_getpwuid(posix_getuid());
+            $user = $userInfo['name'];
+        }
+
+        return $user;
     }
 
     public function getLogArray()
