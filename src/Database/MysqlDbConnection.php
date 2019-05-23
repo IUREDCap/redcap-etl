@@ -617,17 +617,24 @@ class MysqlDbConnection extends DbConnection
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         } else {
-            #print("Query {$queryNumber} info: ".$this->mysqli->info."\n");
             while ($this->mysqli->more_results()) {
-                $queryNumber++;
                 $result = $this->mysqli->next_result();
                 if ($result === false) {
                     $mysqlError = $this->mysqli->error;
                     $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
                     $code = EtlException::DATABASE_ERROR;
                     throw new EtlException($error, $code);
+                } else {
+                    $result = $this->mysqli->store_result();
+                    if ($result instanceof mysqli_result) {
+                        # This appears to be a select query, so free the result
+                        # to avoid the following error:
+                        #     MySQL error [2014]: Commands out of sync;
+                        #     you can't run this command now
+                        $result->free();
+                    }
                 }
-                # print ("Query {$queryNumber} info: ".$this->mysqli->info."\n");
+                $queryNumber++;
             }
         }
     }

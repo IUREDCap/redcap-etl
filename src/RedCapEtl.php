@@ -660,14 +660,22 @@ class RedCapEtl
             $this->createLoadTables();
             $numberOfRecordIds = $this->extractTransformLoad();
                 
-            $sql = $this->configuration->getPostProcessingSql();
-            if (!empty($sql)) {
-                $this->dbcon->processQueries($sql);
-            }
+            #----------------------------------------
+            # Post-processing SQL
+            #----------------------------------------
+            try {
+                $sql = $this->configuration->getPostProcessingSql();
+                if (!empty($sql)) {
+                    $this->dbcon->processQueries($sql);
+                }
 
-            $sqlFile = $this->configuration->getPostProcessingSqlFile();
-            if (!empty($sqlFile)) {
-                $this->dbcon->processQueryFile($sqlFile);
+                $sqlFile = $this->configuration->getPostProcessingSqlFile();
+                if (!empty($sqlFile)) {
+                    $this->dbcon->processQueryFile($sqlFile);
+                }
+            } catch (\Exception $exception) {
+                $message = 'Post-processing SQL error: '.$exception->getMessage();
+                throw new EtlException($message, EtlException::INPUT_ERROR);
             }
 
             $this->log("Processing complete.");
