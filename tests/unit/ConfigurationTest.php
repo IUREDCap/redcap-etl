@@ -770,6 +770,26 @@ class ConfigurationTest extends TestCase
         );
     }
 
+    public function testConfig3()
+    {
+        $propertiesFile = __DIR__.'/../data/config-test3.ini';
+        $logger = new Logger('test-app');
+
+        $config = new Configuration($logger, $propertiesFile);
+        $this->assertNotNull($config, 'config not null check');
+
+        # db log table
+        $expectedDbLogTable = 'my_etl_log';
+        $dbLogTable = $config->getDbLogTable();
+        $this->assertEquals($expectedDbLogTable, $dbLogTable, 'Db log table check');
+
+        # db event log table
+        $expectedDbEventLogTable = 'my_etl_event_log';
+        $dbEventLogTable = $config->getDbEventLogTable();
+        $this->assertEquals($expectedDbEventLogTable, $dbEventLogTable, 'Db event log table check');
+    }
+    
+
     public function testNullPropertiesFile()
     {
         $propertiesFile = null;
@@ -862,7 +882,19 @@ class ConfigurationTest extends TestCase
         $dbSslVerify = $config->getDbSslVerify();
         $this->assertFalse($dbSslVerify, 'DB SSL verify set to false');
         
-        // Property defined in array
+        # db log table
+        $expectedDbLogTable = Configuration::DEFAULT_DB_LOG_TABLE;
+        $dbLogTable = $config->getDbLogTable();
+        $this->assertEquals($expectedDbLogTable, $dbLogTable, 'Db log table check');
+
+        # db event log table
+        $expectedDbEventLogTable = Configuration::DEFAULT_DB_EVENT_LOG_TABLE;
+        $dbEventLogTable = $config->getDbEventLogTable();
+        $this->assertEquals($expectedDbEventLogTable, $dbEventLogTable, 'Db event log table check');
+        
+        #---------------------------------------
+        # Property defined in array
+        #---------------------------------------
         $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
         $configMock = $reflection->newInstanceWithoutConstructor();
 

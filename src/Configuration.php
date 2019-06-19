@@ -242,12 +242,18 @@ class Configuration
         
         $this->dbLogTable = self::DEFAULT_DB_LOG_TABLE;
         if (array_key_exists(ConfigProperties::DB_LOG_TABLE, $this->properties)) {
-            $this->dbLogTable = $this->properties[ConfigProperties::DB_LOG_TABLE];
+            $dbLogTable = trim($this->properties[ConfigProperties::DB_LOG_TABLE]);
+            if (!empty($dbLogTable)) {
+                $this->dbLogTable = $dbLogTable;
+            }
         }
 
         $this->dbEventLogTable = self::DEFAULT_DB_EVENT_LOG_TABLE;
         if (array_key_exists(ConfigProperties::DB_EVENT_LOG_TABLE, $this->properties)) {
-            $this->dbEventLogTable = $this->properties[ConfigProperties::DB_EVENT_LOG_TABLE];
+            $dbEventLogTable = trim($this->properties[ConfigProperties::DB_EVENT_LOG_TABLE]);
+            if (!empty($dbEventLogTable)) {
+                $this->dbEventLogTable = $dbEventLogTable;
+            }
         }
 
         #-----------------------------------------------------------
