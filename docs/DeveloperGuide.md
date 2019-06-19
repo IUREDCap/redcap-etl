@@ -165,16 +165,20 @@ for the tests:
         cp tests/config-init/repeating-events.ini tests/config
         cp tests/config-init/repeating-events-rules.txt tests/config
 
-2. Edit the .ini and .json files that were copied to the tests/config/
-   directory, and set the 
-   following properties to appropriate values:
+2. Edit the .ini and .json configuration files that were copied to the tests/config/
+   directory, and set the following properties to appropriate values:
    
-    1. __redcap_api_url__ - set this to the URL for your REDCap's API. Be
+    1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
        sure to set this to the URL for the _API_, which typically ends
        with "/api/".
 
-    2. __data_source_api_token__ - set this to the REDCap API token for
+    2. **data_source_api_token** - set this to the REDCap API token for
        your REDCap Basic Demography project created above.
+       
+    3. **ssl_verify** - if you are using a REDCap instance for testing that has no,
+       or a self-signed, SSL certificate, you will also need to set the ssl_verify
+       property to 'false' (note: include the single quotes).
+
 
 After the above steps have been completed successfully, you should be
 able to run the integration tests by executing the following command
@@ -234,13 +238,17 @@ for the Visits project:
 2. Edit the files __tests/config/visits.ini__ and __tests/config/repeating-events-mysql.ini__, and set the 
    following properties to appropriate values:
    
-    1. __redcap_api_url__ - set this to the URL for your REDCap's API. Be
+    1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
        sure to set this to the URL for the _API_, which typically ends
        with "/api/".
 
-    2. __config_api_token__ - set this to the REDCap API token for
+    2. **config_api_token** - set this to the REDCap API token for
        your REDCap Visits Config project created above.
 
+    3. **ssl_verify** - if you are using a REDCap instance for testing that has no,
+       or a self-signed, SSL certificate, you will also need to set the ssl_verify
+       property to 'false' (note: include the single quotes).
+   
 3. If you used different values than those used in the example
     commands above for creating the MySQL database and user, you will need to
     modify the __db_connection__ property appropriately in file
