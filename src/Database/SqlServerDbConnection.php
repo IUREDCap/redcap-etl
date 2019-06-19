@@ -21,7 +21,7 @@ class SqlServerDbConnection extends DbConnection
         $this->errorString = '';
 
         // Get parameters from dbString
-        list($host,$database,$username,$password) = explode(':', $dbString, 4);
+        list($host,$database,$username,$password) = DbConnection::parseConnectionString($dbString);
         $dsn = "odbc:Driver={ODBC Driver 13 for SQL Server};".
         "Server=$host;Database=$database";
 

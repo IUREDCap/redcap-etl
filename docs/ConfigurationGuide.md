@@ -60,6 +60,12 @@ Example MySQL database connection strings:
 
         MySQL:someplace.edu:admin:admin_password_123:etl_prod_db:3306
 
+**Note:** Since the ':' character is used as a separator for the database
+connection string, if any of the values
+in your database connection contain a ':', it needs to be escaped with a blackslash.
+For example, if your password is "my:password", then it would need to be specified
+as "my\:password".
+
 
 ### CSV
 For CSV, the database connection string format is:

@@ -5,6 +5,7 @@ namespace IU\REDCapETL;
 use IU\PHPCap\RedCap;
 use IU\PHPCap\PhpCapException;
 
+use IU\REDCapETL\Database\DbConnection;
 use IU\REDCapETL\Database\DbConnectionFactory;
 
 use IU\REDCapETL\Schema\FieldTypeSpecifier;
@@ -971,7 +972,7 @@ class Configuration
         list($dbType, $dbInfo) = explode(':', $this->dbConnection, 2);
 
         if (strcasecmp($dbType, 'MySQL') === 0) {
-            $connectionInfo = explode(':', $dbInfo);
+            $connectionInfo = DbConnection::parseConnectionString($dbInfo);
         }
 
         return $connectionInfo;

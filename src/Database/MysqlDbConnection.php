@@ -28,12 +28,12 @@ class MysqlDbConnection extends DbConnection
         #--------------------------------------------------------------
         # Get the database connection values
         #--------------------------------------------------------------
-        $dbValues = explode(':', $dbString);
+        $dbValues = DbConnection::parseConnectionString($dbString);
         $port = null;
         if (count($dbValues) == 4) {
-            list($host,$username,$password,$database) = explode(':', $dbString);
+            list($host,$username,$password,$database) = DbConnection::parseConnectionString($dbString);
         } elseif (count($dbValues) == 5) {
-            list($host,$username,$password,$database,$port) = explode(':', $dbString);
+            list($host,$username,$password,$database,$port) = DbConnection::parseConnectionString($dbString);
             $port = intval($port);
         } else {
             $message = 'The database connection is not correctly formatted: ';

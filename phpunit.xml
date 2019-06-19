@@ -16,7 +16,8 @@
       <file>tests/unit/RulesSemanticAnalyzerTest.php</file>
 
       <file>tests/unit/Database/DbConnectionFactoryTest.php</file>
-
+      <file>tests/unit/Database/DbConnectionTest.php</file>
+      
       <file>tests/unit/Rules/RuleTest.php</file>
       <file>tests/unit/Rules/TableRuleTest.php</file>
       <file>tests/unit/Rules/FieldRuleTest.php</file>
