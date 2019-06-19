@@ -32,6 +32,11 @@ class RedCapEtl
     const TRIGGER_ETL_NO  = '0';
     const TRIGGER_ETL_YES = '1';
 
+    # Text logged when the ETL process completes successfully.
+    # This can be used to programmatically check the log for
+    # when the process completes.
+    const PROCESSING_COMPLETE = 'Processing complete.';
+
     protected $detHandler;  // For calls related to Data Entry Triggers
 
     protected $configProject;
@@ -703,7 +708,7 @@ class RedCapEtl
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
 
-            $this->log("Processing complete.");
+            $this->log(self::PROCESSING_COMPLETE);
             $this->logger->logEmailSummary();
         }
 
@@ -771,10 +776,13 @@ class RedCapEtl
             // Provide a timestamp for the results
             $result = date('g:i:s a d-M-Y T') . "\n" . $result;
 
+            $this->log(self::PROCESSING_COMPLETE);
+
             #-----------------------------------------------------------
             # Upload the results, and set ETL trigger back to default
             #-----------------------------------------------------------
             $this->uploadResultAndReset($result, $recordId);
+
             $this->logger->logEmailSummary();
         }
 
