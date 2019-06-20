@@ -441,16 +441,15 @@ class Logger
         $logged = false;
         
         if (!empty($this->logFile) && $this->isOn) {
-            $configInfo = '';
-            if (!empty($this->configuration)) {
-                $redcapApiUrl = $this->configuration->getRedCapApiUrl();
-                $projectId    = $this->configuration->getProjectId();
-                $cronJob      = $this->configuration->getCronJob();
-                $configOwner  = $this->configuration->getConfigOwner();
-                $configName   = $this->configuration->getConfigName();
-                $configInfo = "url={$redcapApiUrl} pid={$projectId} cron={$cronJob}"
-                     ." user={$configOwner} config={$configName} ";
-            }
+            #$configInfo = '';
+            #if (!empty($this->configuration)) {
+            #    $redcapApiUrl = $this->configuration->getRedCapApiUrl();
+            #    $projectId    = $this->configuration->getProjectId();
+            #    $cronJob      = $this->configuration->getCronJob();
+            #    $configName   = $this->configuration->getConfigName();
+            #    $configInfo = "url={$redcapApiUrl} pid={$projectId} cron={$cronJob}"
+            #         ." config={$configName} ";
+            #}
             
             #list($microseconds, $seconds) = explode(" ", microtime());
             #$timestamp = date("Y-m-d H:i:s", $seconds).substr($microseconds, 1, 7);
@@ -475,7 +474,7 @@ class Logger
             if ($firstMessage) {
                 $firstMessage = false;
 
-                $this->formatAndLogFileMessage($configInfo);
+                #$this->formatAndLogFileMessage($configInfo);
                 
                 $timezone         = date('e');
                 $utcOffsetSeconds = date('Z'); # seconds offset from UTC (Coordinated Universal Time)

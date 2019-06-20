@@ -1009,6 +1009,11 @@ class Configuration
         return $isAbsolute;
     }
 
+    public function getPropertiesFile()
+    {
+        return $this->propertiesFile;
+    }
+
     private function setPropertiesFile($file)
     {
         $this->propertiesFile = $file;
