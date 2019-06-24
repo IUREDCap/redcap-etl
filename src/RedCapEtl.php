@@ -81,7 +81,8 @@ class RedCapEtl
     public function __construct(
         & $logger,
         $properties,
-        $useWebScriptLogFile = false
+        $useWebScriptLogFile = false,
+        $redcapProjectClass = null
     ) {
         $this->app = $logger->getApp();
 
@@ -124,6 +125,10 @@ class RedCapEtl
         $sslVerify  = $this->configuration->getSslVerify();
         $caCertFile = $this->configuration->getCaCertFile();
 
+        if (empty($redcapProjectClass)) {
+            $redcapProjectClass = EtlRedCapProject::class;
+        }
+
         # Callback function for use in the RedCap class so
         # that project objects retrieved will have class
         # EtlRedCapProject, which has extensions for REDCapETL.
@@ -134,8 +139,8 @@ class RedCapEtl
             $caCertificateFile = null,
             $errorHandler = null,
             $connection = null
-        ) {
-            return new EtlRedCapProject(
+        ) use ($redcapProjectClass) {
+            return new $redcapProjectClass(
                 $apiUrl,
                 $apiToken,
                 $sslVerify,
