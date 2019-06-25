@@ -64,6 +64,9 @@ class RedCapEtl
                                   // for the data project in REDCap
 
     private $configuration;
+
+    /** @var integer REDCap data export right. */
+    private $dataExportRight;
   
 
     /**
@@ -77,14 +80,26 @@ class RedCapEtl
      *     log file should be used instead of the regular log file. This
      *     allows logging to a different file when running REDCap-ETL
      *     using a web script instead of the command line script.
+     * @param string $redcapProjectClass fully qualified class name for class
+     *     to use as the RedcapProject class. By default the EtlRedCapProject
+     *     class is used.
+     * @param integer $dataExportRight REDCap data export right that should
+     *     be used for the data to blank out data that should not be exported.
+     *     Normally this will be controlled automatically by the data export
+     *     right of the API token being used.
+     *     null = no filtering, 1 = full data set (no filtering), 2 = de-identified,
+     *     3 = remove all tagged identifier fields
      */
     public function __construct(
         & $logger,
         $properties,
         $useWebScriptLogFile = false,
-        $redcapProjectClass = null
+        $redcapProjectClass = null,
+        $dataExportRight = null
     ) {
         $this->app = $logger->getApp();
+
+        $this->dataExportRight = $dataExportRight;
 
         $this->configuration = new Configuration(
             $logger,
@@ -355,6 +370,8 @@ class RedCapEtl
             $endExtractTime = microtime(true);
             $extractTime += $endExtractTime - $startExtractTime;
 
+            $this->filterRecordBatch($recordBatch, $this->dataExportRight);
+
             if ($this->configuration->getExtractedRecordCountCheck()) {
                 if (count($recordBatch) < count($recordIdBatch)) {
                     $message = "Attempted to retrieve ".count($recordIdBatch)." records, but only "
@@ -426,6 +443,76 @@ class RedCapEtl
         $this->log("Number of record events transformed: ". $recordEventsCount);
     
         return $recordIdCount;
+    }
+
+    /**
+     * Filters out data that is not allowed by the specified data export right.
+     * A data export right of "3" means that all fields labeled as identifiers
+     * will be set to blank. A data export right of "2" means that all
+     * non-de-identified data values will be set to blank, which includes
+     * free-form text fields (notes), date and time fields, and fields
+     * labeled as identifiers.
+     */
+    protected function filterRecordBatch(& $recordBatch, $dataExportRight)
+    {
+        if ($dataExportRight == 2 || $dataExportRight == 3) {
+            #---------------------------------------------------------
+            # Create a field map from field name to field information
+            #---------------------------------------------------------
+            $fields = $this->dataProject->getMetadata();
+
+            $fieldMap = array();
+            foreach ($fields as $field) {
+                $fieldMap[$field['field_name']] = $field;
+            }
+
+            $fieldNames = $this->dataProject->exportFieldNames();
+            foreach ($fieldNames as $fieldName) {
+                #if (original 'original_field_name', 'export_field_name')
+                $originalName = $fieldName['original_field_name'];
+                $exportName   = $fieldName['export_field_name'];
+
+                # If the export field name is not in the field map, but the original field name is,
+                # then create a new entry in the field map for the export field name with the same
+                # value as the original field name.
+                if (!array_key_exists($exportName, $fieldMap) && array_key_exists($originalName, $fieldMap)) {
+                    $fieldMap[$exportName] = $fieldMap[$originalName];
+                }
+            }
+
+            #----------------------------------------------------------------
+            # Blank out fields according to the specified data export right
+            #----------------------------------------------------------------
+            foreach ($recordBatch as & $recordGroup) {
+                foreach ($recordGroup as & $record) {
+                    foreach ($record as $fieldName => $fieldValue) {
+                        if (array_key_exists($fieldName, $fieldMap)) {
+                            $field = $fieldMap[$fieldName];
+
+                            $identifier     = $field['identifier'];
+                            $validationType = $field['text_validation_type_or_show_slider_number'];
+                            $fieldType      = $field['field_type'];
+
+                            # blank out fields labeled as identifier
+                            if ($identifier) {
+                                $record[$fieldName] = '';
+                            }
+
+                            # If de-identified, blank out notes, date and time fields also
+                            if ($dataExportRight == 2) {
+                                if (strcasecmp($fieldType, 'notes') === 0) {
+                                    $record[$fieldName] = '';
+                                } elseif (substr($validationType, 0, 5) === 'date_') {
+                                    $record[$fieldName] = '';
+                                } elseif (substr($validationType, 0, 9) === 'datetime_') {
+                                    $record[$fieldName] = '';
+                                }
+                            }
+                        }
+                    }
+                } // foreach record group as record
+            } // foreach record batch as record group
+        }
     }
 
 
