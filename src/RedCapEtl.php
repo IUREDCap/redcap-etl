@@ -65,9 +65,6 @@ class RedCapEtl
 
     private $configuration;
 
-    /** @var integer REDCap data export right. */
-    private $dataExportRight;
-  
 
     /**
      * Constructor.
@@ -83,23 +80,14 @@ class RedCapEtl
      * @param string $redcapProjectClass fully qualified class name for class
      *     to use as the RedcapProject class. By default the EtlRedCapProject
      *     class is used.
-     * @param integer $dataExportRight REDCap data export right that should
-     *     be used for the data to blank out data that should not be exported.
-     *     Normally this will be controlled automatically by the data export
-     *     right of the API token being used.
-     *     null = no filtering, 1 = full data set (no filtering), 2 = de-identified,
-     *     3 = remove all tagged identifier fields
      */
     public function __construct(
         & $logger,
         $properties,
         $useWebScriptLogFile = false,
-        $redcapProjectClass = null,
-        $dataExportRight = null
+        $redcapProjectClass = null
     ) {
         $this->app = $logger->getApp();
-
-        $this->dataExportRight = $dataExportRight;
 
         $this->configuration = new Configuration(
             $logger,
@@ -370,7 +358,8 @@ class RedCapEtl
             $endExtractTime = microtime(true);
             $extractTime += $endExtractTime - $startExtractTime;
 
-            $this->filterRecordBatch($recordBatch, $this->dataExportRight);
+            $dataExportRight = $this->configuration->getDataExportFilter();
+            $this->filterRecordBatch($recordBatch, $dataExportRight);
 
             if ($this->configuration->getExtractedRecordCountCheck()) {
                 if (count($recordBatch) < count($recordIdBatch)) {
@@ -459,7 +448,8 @@ class RedCapEtl
             #---------------------------------------------------------
             # Create a field map from field name to field information
             #---------------------------------------------------------
-            $fields = $this->dataProject->getMetadata();
+            $fields     = $this->dataProject->getMetadata();
+            $primaryKey = $this->dataProject->getPrimaryKey();
 
             $fieldMap = array();
             foreach ($fields as $field) {
@@ -501,6 +491,13 @@ class RedCapEtl
                             # If de-identified, blank out notes, date and time fields also
                             if ($dataExportRight == 2) {
                                 if (strcasecmp($fieldType, 'notes') === 0) {
+                                    // free-form text
+                                    $record[$fieldName] = '';
+                                } elseif (strcasecmp($fieldName, $primaryKey) !== 0
+                                    && $fieldType ===  'text'
+                                    && empty($validationType)) {
+                                    // Considered free-form text apparently
+                                    // Unless record ID!!!!!
                                     $record[$fieldName] = '';
                                 } elseif (substr($validationType, 0, 5) === 'date_') {
                                     $record[$fieldName] = '';

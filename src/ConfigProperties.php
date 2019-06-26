@@ -23,6 +23,8 @@ class ConfigProperties
                                                               # should be created
     const CRON_JOB                  = 'cron_job'; # true/false indicating if configuration file being run as cron job
     
+    const DATA_EXPORT_FILTER     = 'data_export_filter';  # int, REDCap data export right to filter data with
+
     const DATA_SOURCE_API_TOKEN  = 'data_source_api_token';
     const DB_CONNECTION          = 'db_connection';
     const DB_SSL                 = 'db_ssl';

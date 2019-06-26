@@ -1,0 +1,101 @@
+"deident_re_enrollment_id","deident_re_root_id","record_id","redcap_event_name","registration_date","first_name","last_name","birthdate","registration_age","gender","race___0","race___1","race___2","race___3","race___4","race___5"
+1,1,"1001","enrollment_arm_1",,"","",,"87","female",0,0,0,0,White,0
+2,2,"1002","enrollment_arm_2",,"","",,"89","female",0,0,0,0,White,0
+3,3,"1003","enrollment_arm_2",,"","",,"81","male",0,0,0,0,White,0
+4,4,"1004","enrollment_arm_3",,"","",,"93","male",0,0,0,0,White,0
+5,5,"1005","enrollment_arm_1",,"","",,"70","female",0,0,0,0,White,0
+6,6,"1006","enrollment_arm_3",,"","",,"27","male",0,0,0,0,White,0
+7,7,"1007","enrollment_arm_2",,"","",,"27","female",0,0,0,0,White,0
+8,8,"1008","enrollment_arm_3",,"","",,"27","male",0,0,0,0,White,0
+9,9,"1009","enrollment_arm_3",,"","",,"51","male",0,0,0,0,White,0
+10,10,"1010","enrollment_arm_3",,"","",,"36","female",0,0,0,0,White,0
+11,11,"1011","enrollment_arm_1",,"","",,"32","male",0,0,0,0,White,0
+12,12,"1012","enrollment_arm_3",,"","",,"27","female",0,0,0,0,White,0
+13,13,"1013","enrollment_arm_2",,"","",,"69","male",0,0,0,0,White,0
+14,14,"1014","enrollment_arm_2",,"","",,"62","female",0,0,0,0,White,0
+15,15,"1015","enrollment_arm_3",,"","",,"27","male",0,0,0,0,White,0
+16,16,"1016","enrollment_arm_2",,"","",,"87","female",0,0,0,0,White,0
+17,17,"1017","enrollment_arm_2",,"","",,"61","female",0,0,0,Black or African American,0,0
+18,18,"1018","enrollment_arm_1",,"","",,"27","male",0,0,0,0,White,0
+19,19,"1019","enrollment_arm_1",,"","",,"37","female",0,0,0,0,White,0
+20,20,"1020","enrollment_arm_1",,"","",,"43","female",0,0,0,0,White,0
+21,21,"1021","enrollment_arm_1",,"","",,"93","male",0,0,0,0,0,Other
+22,22,"1022","enrollment_arm_3",,"","",,"70","female",0,0,0,0,0,Other
+23,23,"1023","enrollment_arm_1",,"","",,"56","female",0,0,0,0,White,0
+24,24,"1024","enrollment_arm_2",,"","",,"70","male",0,0,0,0,White,0
+25,25,"1025","enrollment_arm_2",,"","",,"27","female",0,0,0,0,White,0
+26,26,"1026","enrollment_arm_2",,"","",,"92","female",0,0,0,0,White,0
+27,27,"1027","enrollment_arm_2",,"","",,"58","female",0,0,0,0,White,0
+28,28,"1028","enrollment_arm_2",,"","",,"87","male",0,0,0,0,White,0
+29,29,"1029","enrollment_arm_3",,"","",,"76","male",0,0,0,0,White,0
+30,30,"1030","enrollment_arm_3",,"","",,"46","female",0,0,0,0,White,0
+31,31,"1031","enrollment_arm_1",,"","",,"34","female",0,0,0,0,0,Other
+32,32,"1032","enrollment_arm_2",,"","",,"27","female",0,0,0,0,White,0
+33,33,"1033","enrollment_arm_1",,"","",,"41","female",0,0,0,0,White,0
+34,34,"1034","enrollment_arm_2",,"","",,"37","female",0,0,0,0,0,Other
+35,35,"1035","enrollment_arm_2",,"","",,"27","female",0,0,0,Black or African American,0,0
+36,36,"1036","enrollment_arm_2",,"","",,"59","female",0,0,0,0,White,0
+37,37,"1037","enrollment_arm_1",,"","",,"71","male",0,0,0,0,White,0
+38,38,"1038","enrollment_arm_1",,"","",,"41","female",0,0,0,0,White,0
+39,39,"1039","enrollment_arm_2",,"","",,"86","male",0,0,0,0,White,0
+40,40,"1040","enrollment_arm_3",,"","",,"40","male",0,0,0,0,White,0
+41,41,"1041","enrollment_arm_2",,"","",,"83","female",0,0,0,0,0,Other
+42,42,"1042","enrollment_arm_1",,"","",,"27","male",0,0,0,0,White,0
+43,43,"1043","enrollment_arm_2",,"","",,"27","female",0,0,0,0,White,0
+44,44,"1044","enrollment_arm_3",,"","",,"59","male",0,0,0,Black or African American,0,0
+45,45,"1045","enrollment_arm_2",,"","",,"81","female",0,0,0,0,White,0
+46,46,"1046","enrollment_arm_1",,"","",,"41","female",0,0,0,0,White,0
+47,47,"1047","enrollment_arm_3",,"","",,"93","male",0,0,0,0,White,0
+48,48,"1048","enrollment_arm_2",,"","",,"27","female",0,0,0,0,White,0
+49,49,"1049","enrollment_arm_2",,"","",,"31","female",0,0,0,0,White,0
+50,50,"1050","enrollment_arm_2",,"","",,"33","female",0,0,0,0,White,0
+51,51,"1051","enrollment_arm_3",,"","",,"27","female",0,0,0,0,White,0
+52,52,"1052","enrollment_arm_3",,"","",,"38","female",0,0,0,0,White,0
+53,53,"1053","enrollment_arm_1",,"","",,"67","female",0,0,0,0,White,0
+54,54,"1054","enrollment_arm_3",,"","",,"59","female",0,0,0,Black or African American,0,0
+55,55,"1055","enrollment_arm_1",,"","",,"37","female",0,0,0,0,White,0
+56,56,"1056","enrollment_arm_3",,"","",,"57","female",0,0,0,0,White,0
+57,57,"1057","enrollment_arm_3",,"","",,"94","male",0,0,0,0,White,0
+58,58,"1058","enrollment_arm_2",,"","",,"36","male",0,0,0,Black or African American,0,0
+59,59,"1059","enrollment_arm_3",,"","",,"27","male",0,0,0,0,White,0
+60,60,"1060","enrollment_arm_2",,"","",,"78","female",0,0,0,0,White,0
+61,61,"1061","enrollment_arm_2",,"","",,"84","male",0,0,0,0,White,0
+62,62,"1062","enrollment_arm_2",,"","",,"58","male",0,0,0,Black or African American,0,0
+63,63,"1063","enrollment_arm_2",,"","",,"86","female",0,0,0,0,White,0
+64,64,"1064","enrollment_arm_2",,"","",,"33","male",0,0,0,0,0,Other
+65,65,"1065","enrollment_arm_1",,"","",,"85","female",0,0,0,0,White,0
+66,66,"1066","enrollment_arm_1",,"","",,"27","female",0,0,0,0,0,Other
+67,67,"1067","enrollment_arm_2",,"","",,"27","female",0,0,0,Black or African American,0,0
+68,68,"1068","enrollment_arm_2",,"","",,"53","male",0,0,0,0,White,0
+69,69,"1069","enrollment_arm_2",,"","",,"88","male",0,0,0,Black or African American,0,0
+70,70,"1070","enrollment_arm_3",,"","",,"78","female",0,0,0,0,0,Other
+71,71,"1071","enrollment_arm_1",,"","",,"53","male",0,0,0,0,White,0
+72,72,"1072","enrollment_arm_2",,"","",,"82","male",0,Asian,0,0,0,0
+73,73,"1073","enrollment_arm_2",,"","",,"38","female",0,0,0,0,White,0
+74,74,"1074","enrollment_arm_2",,"","",,"52","female",0,0,0,0,0,Other
+75,75,"1075","enrollment_arm_1",,"","",,"88","female",0,0,0,Black or African American,0,0
+76,76,"1076","enrollment_arm_3",,"","",,"45","female",0,0,0,0,White,0
+77,77,"1077","enrollment_arm_1",,"","",,"80","female",0,0,0,0,White,0
+78,78,"1078","enrollment_arm_2",,"","",,"82","female",0,0,0,0,White,0
+79,79,"1079","enrollment_arm_2",,"","",,"35","male",0,0,0,0,White,0
+80,80,"1080","enrollment_arm_1",,"","",,"82","female",0,0,0,0,White,0
+81,81,"1081","enrollment_arm_2",,"","",,"38","male",0,0,0,Black or African American,0,0
+82,82,"1082","enrollment_arm_1",,"","",,"93","female",0,0,0,0,White,0
+83,83,"1083","enrollment_arm_3",,"","",,"68","female",0,0,0,Black or African American,0,0
+84,84,"1084","enrollment_arm_3",,"","",,"62","female",0,0,0,0,White,0
+85,85,"1085","enrollment_arm_2",,"","",,"64","female",0,0,0,0,White,0
+86,86,"1086","enrollment_arm_2",,"","",,"83","female",0,0,0,0,White,0
+87,87,"1087","enrollment_arm_2",,"","",,"57","male",0,0,0,Black or African American,0,0
+88,88,"1088","enrollment_arm_3",,"","",,"57","male",0,0,0,0,White,0
+89,89,"1089","enrollment_arm_3",,"","",,"49","male",0,0,0,0,White,0
+90,90,"1090","enrollment_arm_3",,"","",,"27","male",0,0,0,0,White,0
+91,91,"1091","enrollment_arm_1",,"","",,"56","female",0,0,0,Black or African American,0,0
+92,92,"1092","enrollment_arm_3",,"","",,"27","male",0,0,0,0,White,0
+93,93,"1093","enrollment_arm_3",,"","",,"50","male",0,0,0,0,White,0
+94,94,"1094","enrollment_arm_3",,"","",,"36","female",0,0,0,Black or African American,0,0
+95,95,"1095","enrollment_arm_1",,"","",,"90","male",0,0,0,0,White,0
+96,96,"1096","enrollment_arm_1",,"","",,"31","male",0,0,0,Black or African American,0,0
+97,97,"1097","enrollment_arm_3",,"","",,"85","male",American Indian/Alaska Native,0,0,0,0,0
+98,98,"1098","enrollment_arm_3",,"","",,"83","female",0,0,0,0,White,0
+99,99,"1099","enrollment_arm_2",,"","",,"60","female",0,0,0,0,White,0
+100,100,"1100","enrollment_arm_2",,"","",,"86","female",0,0,0,0,White,0

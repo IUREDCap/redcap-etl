@@ -172,8 +172,11 @@ for the tests:
        sure to set this to the URL for the _API_, which typically ends
        with "/api/".
 
-    2. **data_source_api_token** - set this to the REDCap API token for
-       your REDCap Basic Demography project created above.
+    2. **data_source_api_token** - for the basic demography configuration (.ini)
+       files, set this to the REDCap API token for your REDCap Basic Demography
+       project created above. And for the repeating events configuration (.ini)
+       file, set it to the REDCap API token for the Repeating Events project
+       created above.
        
     3. **ssl_verify** - if you are using a REDCap instance for testing that has no,
        or a self-signed, SSL certificate, you will also need to set the ssl_verify

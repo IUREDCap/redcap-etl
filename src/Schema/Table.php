@@ -320,11 +320,16 @@ class Table
                 # print "TABLE: ".($this->name)." \n";
                 # print "FIELD: ".($field->name)."\n";
     
-                // Add field and value to row
-                $row->data[$field->name] = $data[$variableName];
 
-                // Keep track of whether any data is found
-                $value = $data[$variableName];
+                // Add field and value to row and
+                // keep track of whether any data is found
+                $row->data[$field->name] = '';
+                $value = null;
+                if (array_key_exists($variableName, $data)) {
+                    $value = $data[$variableName];
+                    $row->data[$field->name] = $value;
+                }
+
                 if (isset($value)) {
                     if (is_string($value)) {
                         $value = trim($value);
