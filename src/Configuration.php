@@ -33,7 +33,7 @@ class Configuration
     const DEFAULT_DB_LOG_TABLE       = 'etl_log';
     const DEFAULT_DB_EVENT_LOG_TABLE = 'etl_event_log';
 
-    const DEFAULT_EMAIL_ERRORS   = true;
+    const DEFAULT_EMAIL_ERRORS   = false;
     const DEFAULT_EMAIL_SUMMARY  = false;
     const DEFAULT_EMAIL_SUBJECT  = 'REDCap-ETL Error';
 
@@ -282,23 +282,38 @@ class Configuration
         }
         $this->logger->setEmailSummary($this->emailSummary);
         
-        $this->emailFromAddress  = null;
-        $this->emailToList   = null;
+        # E-mail from address
+        $this->emailFromAddress = null;
         if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $this->properties)) {
-            $this->emailFromAddress = $this->properties[ConfigProperties::EMAIL_FROM_ADDRESS];
+            $this->emailFromAddress = trim($this->properties[ConfigProperties::EMAIL_FROM_ADDRESS]);
         }
 
+        # E-mail to list
+        $this->emailToList = null;
+        if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
+            $this->emailToList = trim($this->properties[ConfigProperties::EMAIL_TO_LIST]);
+        }
+        
+        # E-mail subject
         $this->emailSubject = self::DEFAULT_EMAIL_SUBJECT;
         if (array_key_exists(ConfigProperties::EMAIL_SUBJECT, $this->properties)) {
             $this->emailSubject = $this->properties[ConfigProperties::EMAIL_SUBJECT];
         }
 
-        if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
-            $this->emailToList = $this->properties[ConfigProperties::EMAIL_TO_LIST];
-        }
-        
-        # Set email logging information
-        if (!empty($this->emailFromAddress) && !empty($this->emailToList)) {
+        # Check and set email logging information
+        if (empty($this->emailFromAddress)) {
+            if ($this->emailErrors || $this->emailSummary) {
+                $message = 'E-mailing of errors and/or summary specified without an e-mail from address.'
+                    ." errors: ".$this->emailErrors.", summary: ".$this->emailSummary;
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+        } elseif (empty($this->emailToAddress)) {
+            if ($this->emailErrors || $this->emailSummary) {
+                $message = 'E-mailing of errors and/or summary specified without an e-mail to address.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+        } else {
+            # Both an e-mail from address and to address were specified
             $this->logger->setLogEmail(
                 $this->emailFromAddress,
                 $this->emailToList,

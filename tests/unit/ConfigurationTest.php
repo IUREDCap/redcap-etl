@@ -1495,4 +1495,94 @@ class ConfigurationTest extends TestCase
 
         $this->assertTrue($exceptionCaught, 'Db config error check');
     }
+
+    public function testEmailLoggingErrors()
+    {
+        $properties = [
+            'redcap_api_url' => 'https://someplace.edu/api/',
+            'config_api_token' => '',
+            'data_source_api_token' => '11111111112222222222333333333344',
+            'transform_rules_source' => '3',
+            'db_connection' => 'CSV:.',
+            'email_errors' => 'true'
+        ];
+
+        $logger = new Logger('test-app');
+
+        #------------------------------------------------------------------------
+        # Test email_errors set without email_from_address or email_to_address
+        #------------------------------------------------------------------------
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'E-mail errors specified without e-mail addresses');
+
+        #------------------------------------------------------------------------
+        # Test email_errors set without email_to_address
+        #------------------------------------------------------------------------
+        $properties['email_from_address'] = 'tester@someplace.edu';
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'E-mail errors specified without to e-mail address');
+
+        #------------------------------------------------------------------------
+        # Test email_errors set without email_from_address
+        #------------------------------------------------------------------------
+        unset($properties['email_from_address']);
+        $properties['email_to_address'] = 'tester@someplace.edu';
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'E-mail errors specified without from e-mail address');
+
+        #------------------------------------------------------------------------
+        # Test email_summary set without email_from_address or email_to_address
+        #------------------------------------------------------------------------
+        unset($properties['email_errors']);
+        unset($properties['email_from_address']);
+        unset($properties['email_to_address']);
+        $properties['email_summary'] = 'true';
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'E-mail summary specified without e-mail addresses');
+
+        #------------------------------------------------------------------------
+        # Test email_summary set without email_to_address
+        #------------------------------------------------------------------------
+        $properties['email_from_address'] = 'tester@someplace.edu';
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'E-mail summary specified without to e-mail address');
+
+        #------------------------------------------------------------------------
+        # Test email_summary set without email_from_address
+        #------------------------------------------------------------------------
+        unset($properties['email_from_address']);
+        $properties['email_to_address'] = 'tester@someplace.edu';
+        $exceptionCaught = false;
+        try {
+            $config = new Configuration($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'E-mail summary specified without from e-mail address');
+    }
 }
