@@ -480,7 +480,7 @@ class RedCapEtl
                             $field = $fieldMap[$fieldName];
 
                             $identifier     = $field['identifier'];
-                            $validationType = $field['text_validation_type_or_show_slider_number'];
+                            $validationType = trim($field['text_validation_type_or_show_slider_number']);
                             $fieldType      = $field['field_type'];
 
                             # blank out fields labeled as identifier
@@ -488,20 +488,18 @@ class RedCapEtl
                                 $record[$fieldName] = '';
                             }
 
-                            # If de-identified, blank out notes, date and time fields also
+                            # If filtering out de-identified data (as defined for REDCap data export)
                             if ($dataExportRight == 2) {
-                                if (strcasecmp($fieldType, 'notes') === 0) {
-                                    // free-form text
-                                    $record[$fieldName] = '';
-                                } elseif (strcasecmp($fieldName, $primaryKey) !== 0
+                                if (strcasecmp($fieldName, $primaryKey) !== 0
                                     && $fieldType ===  'text'
                                     && empty($validationType)) {
-                                    // Considered free-form text apparently
-                                    // Unless record ID!!!!!
+                                    # text field without a validation type that is NOT the record ID field
                                     $record[$fieldName] = '';
-                                } elseif (substr($validationType, 0, 5) === 'date_') {
+                                } elseif ($fieldType == 'notes') {
                                     $record[$fieldName] = '';
-                                } elseif (substr($validationType, 0, 9) === 'datetime_') {
+                                } elseif ($fieldType == 'text' && substr($validationType, 0, 4) == 'date') {
+                                    # text field with validation type that starts with 'date',
+                                    # i.e., a date or datetime field
                                     $record[$fieldName] = '';
                                 }
                             }
