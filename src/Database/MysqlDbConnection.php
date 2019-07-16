@@ -453,150 +453,6 @@ class MysqlDbConnection extends DbConnection
     }
 
 
-
-    /**
-     * WORK IN PROGRESS
-     *
-     * Inserts the rows of the specified Table object
-     * into the database.
-     *
-     * @param Table table the table containing the rows that are
-     *     to be inserted.
-     *
-     * @return true on success, false otherwise.
-     */
-    protected function insertRowsOld($table)
-    {
-        $maxParams = 2**16 - 1;
-
-        $rows = $table->getRows();
-
-        $fields = $table->getAllFields();
-        $fieldNames = array_column($fields, 'name');
-
-        $queryStart = 'INSERT INTO '.$table->name.' ('. implode(",", $fieldNames) .') VALUES ';
-
-
-        $currentFieldCount = 0;
-        $bindTypes = '';
-        $query = $queryStart;
-        $bindTypesArray = array();
-        $isFirst = true;
-        $params = array($bindTypes);
-
-        foreach ($rows as $row) {
-            #------------------------------------------------------------------
-            # If the bind param limit reached, need to start a new statement
-            #------------------------------------------------------------------
-            if ($currentFieldCount + count(fields) > $maxParams) {
-                array_push($bindTypesArray, $bindType);
-                $bindTypes = '';
-            }
-
-            $bindPositions = '';
-            foreach ($fields as $field) {
-                array_push($bindPositions, '?');
-                $bindTypes .= getBindType($field);
-            }
-
-            if ($isFirst) {
-                $isFirst = false;
-            } else {
-                $query .= ',';
-            }
-
-            $query .= ' ('.implode(",", $bindPositions) .')';
-            $statement = $this->mysqli->prepare($query);
-            if ($statement === false) {
-                $message = 'MySQL error in query "'.$query.'"'
-                    .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
-                $code = EtlException::DATABASE_ERROR;
-                throw new EtlException($message, $code);
-            }
-
-            foreach ($params as $param) {
-                $paramRefs[$key] = &$params[$key];
-                $key++;
-            }
-
-            call_user_func_array(array($statement, 'bind_param'), $paramRefs);
-        }
-
-        return(0);
-
-        // NEED TO FIX - has problem with placeholders limit exceeded
-        $result = true;
-
-        $rows = $table->getRows();
-
-
-
-        if (count($rows) > 0) {
-            #--------------------------------------------------------------
-            # Get parameterized query
-            #     If the query doesn't already exist, it will be created
-            #--------------------------------------------------------------
-            list($statement, $bindTypes) = $this->getInsertRowStmt($table, count($rows));
-
-            #$paramRefs = array();
-            #$params = array($bindTypes);
-            #--------------------------------------------------------
-            # Bind the row values to the parameterized query
-            #--------------------------------------------------------
-            $params = array($bindTypes);
-            $paramRefs = array();
-            $key = 0;
-
-            $fields = $table->getAllFields();
-
-            #---------------------------------
-            # Set the params
-            #---------------------------------
-            foreach ($rows as $row) {
-                foreach ($fields as $field) {
-                    $toBind = $row->data[$field->dbName];
-                    if ($toBind === '') {
-                        $toBind = null;
-                    }
-                    array_push($params, $toBind);
-                }
-            }
-
-            foreach ($params as $param) {
-                $paramRefs[$key] = &$params[$key];
-                $key++;
-            }
-
-            ###print_r($paramRefs);
-            call_user_func_array(array($statement, 'bind_param'), $paramRefs);
-
-            #foreach ($params as $key => $value) {
-            #    $paramRefs[$key] = &$params[$key];
-            #}
-            #call_user_func_array(array($statement, 'bind_param'), $paramRefs);
-
-            #-----------------------------
-            # Execute query
-            #-----------------------------
-            $rc = $statement->execute();
-
-            #---------------------------------------------------
-            # If there's an error executing the statement
-            #---------------------------------------------------
-            if ($rc === false) {
-                $this->errorString = $statement->error;
-                $result = false;
-                $this->errorString = $statement->error;
-                $message = 'MySQL error: '
-                    .' ['.$statement->errno.']: '.$statement->error;
-                $code = EtlException::DATABASE_ERROR;
-                throw new EtlException($message, $code);
-            }
-        }
-    
-        return($result);
-    }
-    
     /**
      * Inserts all rows in the specified (in-memory) table into the database. The rows
      * are inserted using a single SQL INSERT command.
@@ -607,102 +463,105 @@ class MysqlDbConnection extends DbConnection
     {
         $rows = $table->getRows();
 
-        $fields = $table->getAllFields();
-        for ($i = 0; $i < count($fields); $i++) {
-            $field = $fields[$i];
-            if ($field->type === FieldType::AUTO_INCREMENT) {
-                unset($fields[$i]);
-            }
-        }
-
-        $redcapFieldNames = array_column($fields, 'name');
-        $redcapTypes = array_column($fields, 'redcapType');
-        $dbFieldNames = array_column($fields, 'dbName');
-        $fieldTypes = array_column($fields, 'type');
-
-        # Escape the database field names
-        for ($i = 0; $i < count($dbFieldNames); $i++) {
-            $dbFieldNames[$i] = $this->escapeName($dbFieldNames[$i]);
-        }
-
-        $queryStart = 'INSERT INTO '.$this->escapeName($table->name).' ('. implode(",", $dbFieldNames) .') VALUES ';
-
-        $queryValues = array();
-        foreach ($rows as $row) {
-            $rowData = $row->getData();
-            $rowValues = array();
-            for ($i = 0; $i < count($redcapFieldNames); $i++) {
-                $fieldName = $redcapFieldNames[$i];
-                $fieldType = $fieldTypes[$i];
-                $redcapType = $redcapTypes[$i];
-
-                switch ($fieldType) {
-                    case FieldType::INT:
-                        #print "REDCAP TYPE FOR {$fieldName}: {$redcapType}\n";
-                        if (empty($rowData[$fieldName]) && $rowData[$fieldName] !== 0) {
-                            if (strcasecmp($redcapType, 'checkbox') === 0) {
-                                $rowValues[] = 0;
-                            } else {
-                                $rowValues[] = 'null';
-                            }
-                        } else {
-                            $rowValues[] = (int) $rowData[$fieldName];
-                        }
-                        break;
-                    case FieldType::CHECKBOX:
-                        if (empty($rowData[$fieldName])) {
-                            $rowValues[] = 0;
-                        } else {
-                            $rowValues[] = (int) $rowData[$fieldName];
-                        }
-                        break;
-                    case FieldType::FLOAT:
-                        if (empty($rowData[$fieldName]) && $rowData[$fieldName] !== 0.0) {
-                            $rowValues[] = 'null';
-                        } else {
-                            $rowValues[] = (float) $rowData[$fieldName];
-                        }
-                        break;
-                    case FieldType::STRING:
-                    case FieldType::CHAR:
-                    case FieldType::VARCHAR:
-                        $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldName])."'";
-                        break;
-                    case FieldType::DATE:
-                    case FieldType::DATETIME:
-                        if (empty($rowData[$fieldName])) {
-                            $rowValues[] = "null";
-                        } else {
-                            $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldName])."'";
-                        }
-                        break;
-                    default:
-                        $message = 'Unrecognized database field type for MySQL: "'.$fieldType.'".';
-                        $code = EtlException::DATABASE_ERROR;
-                        throw new EtlException($message, $code);
-                        break;
-                }
-            }
-            $queryValues[] = '('.implode(",", $rowValues).')';
-        }
-
-        $query = $queryStart.implode(",", $queryValues);
-        # print "\n$query\n";
-
         $result = true;
 
-        $rc = $this->mysqli->query($query);
+        if (is_array($rows) && count($rows) > 0) {
+            $fields = $table->getAllFields();
+            for ($i = 0; $i < count($fields); $i++) {
+                $field = $fields[$i];
+                if ($field->type === FieldType::AUTO_INCREMENT) {
+                    unset($fields[$i]);
+                }
+            }
 
-        #---------------------------------------------------
-        # If there's an error executing the statement
-        #---------------------------------------------------
-        if ($rc === false) {
-            $this->errorString = $this->mysqli->error;
-            $result = false;
-            $message = 'MySQL error: '
-                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
+            $redcapFieldNames = array_column($fields, 'name');
+            $redcapTypes = array_column($fields, 'redcapType');
+            $dbFieldNames = array_column($fields, 'dbName');
+            $fieldTypes = array_column($fields, 'type');
+
+            # Escape the database field names
+            for ($i = 0; $i < count($dbFieldNames); $i++) {
+                $dbFieldNames[$i] = $this->escapeName($dbFieldNames[$i]);
+            }
+
+            $queryStart = 'INSERT INTO '.$this->escapeName($table->name).' ('. implode(",", $dbFieldNames) .') VALUES ';
+
+            $queryValues = array();
+            foreach ($rows as $row) {
+                $rowData = $row->getData();
+                $rowValues = array();
+                for ($i = 0; $i < count($redcapFieldNames); $i++) {
+                    $fieldName = $redcapFieldNames[$i];
+                    $fieldType = $fieldTypes[$i];
+                    $redcapType = $redcapTypes[$i];
+
+                    switch ($fieldType) {
+                        case FieldType::INT:
+                            #print "REDCAP TYPE FOR {$fieldName}: {$redcapType}\n";
+                            if (empty($rowData[$fieldName]) && $rowData[$fieldName] !== 0) {
+                                if (strcasecmp($redcapType, 'checkbox') === 0) {
+                                    $rowValues[] = 0;
+                                } else {
+                                    $rowValues[] = 'null';
+                                }
+                            } else {
+                                $rowValues[] = (int) $rowData[$fieldName];
+                            }
+                            break;
+                        case FieldType::CHECKBOX:
+                            if (empty($rowData[$fieldName])) {
+                                $rowValues[] = 0;
+                            } else {
+                                $rowValues[] = (int) $rowData[$fieldName];
+                            }
+                            break;
+                        case FieldType::FLOAT:
+                            if (empty($rowData[$fieldName]) && $rowData[$fieldName] !== 0.0) {
+                                $rowValues[] = 'null';
+                            } else {
+                                $rowValues[] = (float) $rowData[$fieldName];
+                            }
+                            break;
+                        case FieldType::STRING:
+                        case FieldType::CHAR:
+                        case FieldType::VARCHAR:
+                            $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldName])."'";
+                            break;
+                        case FieldType::DATE:
+                        case FieldType::DATETIME:
+                            if (empty($rowData[$fieldName])) {
+                                $rowValues[] = "null";
+                            } else {
+                                $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldName])."'";
+                            }
+                            break;
+                        default:
+                            $message = 'Unrecognized database field type for MySQL: "'.$fieldType.'".';
+                            $code = EtlException::DATABASE_ERROR;
+                            throw new EtlException($message, $code);
+                            break;
+                    }
+                }
+                $queryValues[] = '('.implode(",", $rowValues).')';
+            }
+    
+            $query = $queryStart.implode(",", $queryValues);
+            # print "\n$query\n";
+    
+            $rc = $this->mysqli->query($query);
+    
+            #---------------------------------------------------
+            # If there's an error executing the statement
+            #---------------------------------------------------
+            if ($rc === false) {
+                $this->errorString = $this->mysqli->error;
+                $result = false;
+                $message = 'MySQL error while trying to insert values into table "'
+                    .$this->escapeName($table->name).'": '
+                    .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
+            }
         }
     
         return($result);
