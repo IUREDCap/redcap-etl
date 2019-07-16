@@ -4,7 +4,7 @@ namespace IU\REDCapETL\Database;
 
 use PHPUnit\Framework\TestCase;
 
-#use IU\REDCapETL\RedCapEtl;            
+use IU\REDCapETL\EtlException;         
 use IU\REDCapETL\Schema\RowsType;    
 use IU\REDCapETL\Schema\Row;    
 use IU\REDCapETL\Schema\FieldTypeSpecifier;    
@@ -57,6 +57,7 @@ class CsvDbConnectionTest extends TestCase
         $field0 = new Field(
             'record_id',
             FieldType::INT,
+            null /*size */,
             'redcap_record_id'
         );
         $rootTable->addField($field0);
@@ -94,9 +95,7 @@ class CsvDbConnectionTest extends TestCase
         $this->assertFileExists($newFile, 'CsvDbConnection createTable new file exists check');
 
         #Verify header was created as expected.
-        #debug
-        #$expected = '"test_id","redcap_record_id","full_name","weight"' . chr(10);
-        $expected = '"test_id","record_id","full_name","weight"' . chr(10);
+        $expected = '"test_id","redcap_record_id","full_name","weight"' . chr(10);
         $header = null;
 
         $fh = fopen($newFile, 'r');
@@ -180,9 +179,8 @@ class CsvDbConnectionTest extends TestCase
         $csvDbConnection->createTable($rootTable, false);
         
         # insert rows into the file
-        $result = $csvDbConnection->insertRows($rootTable);
-        $expected = 1;
-        $this->assertEquals($result, $expected, 'CsvDbConnection insertRows successful return check');
+        $result = $csvDbConnection->storeRows($rootTable);
+        $this->assertNull($result, 'CsvDbConnection insertRows successful return check');
        
         #Verify rows were written as expected.
         $expectedRows = [     
@@ -214,16 +212,35 @@ class CsvDbConnectionTest extends TestCase
         $csvDbConnection = new CsvDbConnection($this->dbString, $this->ssl, $this->sslVerify, $this->caCertFile, $tablePrefix, $labelViewSuffix);
 
         # execute tests for this method
-        $queryFile = 'abc';
-        #debug
-        #$result = $csvDbConnection->processQueryFile($queryFile);
-        #$this->assertEquals($result, $expected, 'CsvDbConnection processQueryFile check');
-        $expected = 1;
-        $this->assertEquals('1', $expected, 'CsvDbConnection processQueryFile check');
+        $queryFile = 'fake.txt';
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Processing a query file is not supported for CSV files';
+        try {
+            $result = $csvDbConnection->processQueryFile($queryFile);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue(
+            $exceptionCaught,
+            'processQueryFile exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'processQueryFile exception code check'
+        );
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'processQueryFile exception message check'
+        );
 
     }
 
-    public function testReplaceLookupView()
+    public function testReplaceLookupView() {
         #############################################################
         # create the table object that will be written to a csv file
         #############################################################
