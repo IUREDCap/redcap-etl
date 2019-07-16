@@ -763,6 +763,7 @@ class RedCapEtl
     public function run()
     {
         $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
+        $this->log('REDCap version '.$this->dataProject->exportRedCapVersion());
         $this->logJobInfo();
         $this->log("Starting processing.");
 
@@ -818,6 +819,7 @@ class RedCapEtl
     public function runForDet()
     {
         $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
+        $this->log('REDCap version '.$this->dataProject->exportRedCapVersion());
         $this->logger->log('Executing web script '.$this->logger->getApp());
 
         $detHandler = $this->getDetHandler();

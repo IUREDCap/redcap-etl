@@ -307,7 +307,7 @@ class Configuration
                     ." errors: ".$this->emailErrors.", summary: ".$this->emailSummary;
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
-        } elseif (empty($this->emailToAddress)) {
+        } elseif (empty($this->emailToList)) {
             if ($this->emailErrors || $this->emailSummary) {
                 $message = 'E-mailing of errors and/or summary specified without an e-mail to address.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
