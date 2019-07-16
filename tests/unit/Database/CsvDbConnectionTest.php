@@ -4,13 +4,13 @@ namespace IU\REDCapETL\Database;
 
 use PHPUnit\Framework\TestCase;
 
-use IU\REDCapETL\EtlException;         
-use IU\REDCapETL\Schema\RowsType;    
-use IU\REDCapETL\Schema\Row;    
-use IU\REDCapETL\Schema\FieldTypeSpecifier;    
-use IU\REDCapETL\Schema\FieldType;    
-use IU\REDCapETL\Schema\Field;    
-use IU\REDCapETL\Schema\Table;    
+use IU\REDCapETL\EtlException;
+use IU\REDCapETL\Schema\RowsType;
+use IU\REDCapETL\Schema\Row;
+use IU\REDCapETL\Schema\FieldTypeSpecifier;
+use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\Field;
+use IU\REDCapETL\Schema\Table;
 
 /**
 * PHPUnit tests for the CsvDbConnection class.
@@ -33,7 +33,14 @@ class CsvDbConnectionTest extends TestCase
         $labelViewSuffix = 'testsuf';
 
         #test object creation
-        $csvDbConnection = new CsvDbConnection($this->dbString, $this->ssl, $this->sslVerify, $this->caCertFile, $tablePrefix, $labelViewSuffix);
+        $csvDbConnection = new CsvDbConnection(
+            $this->dbString,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
+            $tablePrefix,
+            $labelViewSuffix
+        );
         $this->assertNotNull($csvDbConnection, 'Not null csvdbconnection');
     }
 
@@ -48,7 +55,14 @@ class CsvDbConnectionTest extends TestCase
         $name = 'test';
         $parent = 'test_id';
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
-        $rootTable = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $this->recordIdFieldName);
+        $rootTable = new Table(
+            $name,
+            $parent,
+            $keyType,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
 
         #### Create fields in the Table object
         
@@ -79,18 +93,25 @@ class CsvDbConnectionTest extends TestCase
         # Create the CsvDbConnection`
         $tablePrefix = null;
         $labelViewSuffix = null;
-        $csvDbConnection = new CsvDbConnection($this->dbString, $this->ssl, $this->sslVerify, $this->caCertFile, $tablePrefix, $labelViewSuffix);
+        $csvDbConnection = new CsvDbConnection(
+            $this->dbString,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
+            $tablePrefix,
+            $labelViewSuffix
+        );
 
 
         #############################################################
-        # Execute the tests for this method                         
+        # Execute the tests for this method
         #############################################################
         # run the createTable method to create the file and verify it returns successfully
         $result = $csvDbConnection->createTable($rootTable, false);
         $expected = 1;
         $this->assertEquals($result, $expected, 'CsvDbConnection createTable successful return check');
-        
-        #Check to see if a file was actually created.     
+
+        #Check to see if a file was actually created.
         $newFile = $this->dbString . $rootTable->name . CsvDbConnection::FILE_EXTENSION;
         $this->assertFileExists($newFile, 'CsvDbConnection createTable new file exists check');
 
@@ -107,7 +128,11 @@ class CsvDbConnectionTest extends TestCase
         $this->assertEquals($expected, $header, 'CsvDbConnection createTable header is correct check');
     }
 
-   public function testInsertRows()
+   /**
+    * Testing the insertRow method by calling the insertRows method
+    * that is accessible via the storeRows method.
+    */
+    public function testInsertRows()
     {
         #############################################################
         # create the table object that will be written to a csv file
@@ -127,7 +152,7 @@ class CsvDbConnectionTest extends TestCase
         $field0 = new Field(
             'record_id',
             FieldType::INT,
-            null               
+            null
         );
         $rootTable->addField($field0);
 
@@ -148,7 +173,7 @@ class CsvDbConnectionTest extends TestCase
         $field3 = new Field(
             'weight',
             FieldType::INT,
-            null               
+            null
         );
         $rootTable->addField($field3);
 
@@ -175,7 +200,14 @@ class CsvDbConnectionTest extends TestCase
         # Create the csv file
         $tablePrefix = null;
         $labelViewSuffix = null;
-        $csvDbConnection = new CsvDbConnection($this->dbString, $this->ssl, $this->sslVerify, $this->caCertFile, $tablePrefix, $labelViewSuffix);
+        $csvDbConnection = new CsvDbConnection(
+            $this->dbString,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
+            $tablePrefix,
+            $labelViewSuffix
+        );
         $csvDbConnection->createTable($rootTable, false);
         
         # insert rows into the file
@@ -183,7 +215,7 @@ class CsvDbConnectionTest extends TestCase
         $this->assertNull($result, 'CsvDbConnection insertRows successful return check');
        
         #Verify rows were written as expected.
-        $expectedRows = [     
+        $expectedRows = [
             '"registration_id","record_id","first_name","last_name","weight"' . chr(10),
             '1,1000,"Anahi","Gilason",77' . chr(10),
             '2,1001,"Marianne","Crona",57' . chr(10)
@@ -194,22 +226,31 @@ class CsvDbConnectionTest extends TestCase
 
         $i = 0;
         $lines = file($newFile);
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             if ($expectedRows[$i] !== $line) {
                 $fileContentsOK = false;
             }
             $i++;
-        }            
+        }
 
         $this->assertTrue($fileContentsOK, 'CsvDbConnection insertRows File Contents check');
     }
 
-    public function testProcessQueryFile() {
+    public function testProcessQueryFile()
+    {
 
         # Create the csvDbConnection object
         $tablePrefix = null;
         $labelViewSuffix = null;
-        $csvDbConnection = new CsvDbConnection($this->dbString, $this->ssl, $this->sslVerify, $this->caCertFile, $tablePrefix, $labelViewSuffix);
+        $csvDbConnection = new CsvDbConnection(
+            $this->dbString,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
+            $tablePrefix,
+            $labelViewSuffix
+        );
+
 
         # execute tests for this method
         $queryFile = 'fake.txt';
@@ -237,15 +278,15 @@ class CsvDbConnectionTest extends TestCase
             $exception->getMessage(),
             'processQueryFile exception message check'
         );
-
     }
 
-    public function testReplaceLookupView() {
+    public function testReplaceLookupView()
+    {
         #############################################################
         # create the table object that will be written to a csv file
         #############################################################
-        $name = 'demo_test';
-        $parent = 'demo_test_id';
+        $name = 'demo';
+        $parent = 'demo_id';
         $rowsType = RowsType::ROOT;
         $suffixes = '';
         $recordIdFieldName = 'record_id';
@@ -263,31 +304,86 @@ class CsvDbConnectionTest extends TestCase
         $rootTable->addField($field0);
 
         $field1 = new Field(
-            'first_name',
+            'full_name',
             FieldType::STRING,
             null
         );
         $rootTable->addField($field1);
 
         $field2 = new Field(
-            'last_name',
+            'race',
             FieldType::STRING,
             null
         );
         $rootTable->addField($field2);
 
-        $field3 = new Field(
-            'weight',
-            FieldType::INT,
-            null
-        );
-        $rootTable->addField($field3);
-
-
         #############################################################
         # create the lookup table object that has the label values
         #############################################################
+        $primaryId = 'lookup_id';
+        $tableName = 'table_name';
+        $fieldName = 'field_name';
+        $fieldValue = 'value';
+        $fieldLabel = 'label';
+ 
+        #create the lookup table
+        $name = 'raceLookup';
+        $parent = $primaryId;
+        $rowsType = RowsType::ROOT;
+        $suffixes = '';
+        $recordIdFieldName = '';
+
+        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
+
+        $lookupTable = new Table($name, $parent, $keyType, array($rowsType), $suffixes, $recordIdFieldName);
+
+        #add fields to the table
+        $fieldPrimary   = new Field($primaryId, FieldType::STRING);
+        $fieldFieldName = new Field($fieldName, FieldType::STRING);
+        $fieldTableName = new Field($tableName, FieldType::STRING);
+        $fieldCode  = new Field($fieldValue, FieldType::STRING);
+        $fieldText  = new Field($fieldLabel, FieldType::STRING);
+        
+        $lookupTable->addField($fieldPrimary);
+        $lookupTable->addField($fieldFieldName);
+        $lookupTable->addField($fieldTableName);
+        $lookupTable->addField($fieldCode);
+        $lookupTable->addField($fieldText);
+
+        # Create the CsvDbConnection`
+        $tablePrefix = null;
+        $labelViewSuffix = 'LabelView';
+        $csvDbConnection = new CsvDbConnection(
+            $this->dbString,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
+            $tablePrefix,
+            $labelViewSuffix
+        );
+
+
+        #############################################################
+        # Execute the tests for this method
+        #############################################################
+        # run the replaceLookupView method and verify it returns successfully
+        $result = $csvDbConnection->replaceLookupView($rootTable, $lookupTable);
+        $this->assertNull($result, 'CsvDbConnection replaceTable successful return check');
+        
+        #Check to see if a file was actually created.
+        $newFile = $this->dbString . $rootTable->name . $labelViewSuffix . CsvDbConnection::FILE_EXTENSION;
+        $this->assertFileExists($newFile, 'CsvDbConnection replaceLookupView file exists check');
+
+        #Verify header was created as expected.
+        $expected = '"demo_id","record_id","full_name","race"' . chr(10);
+        $header = null;
+
+        $fh = fopen($newFile, 'r');
+        if ($fh) {
+            $header = fgets($fh);
+            fclose($fh);
+        }
+
+        $this->assertEquals($expected, $header, 'CsvDbConnection replaceLookupView header is correct check');
     }
-
 }
-
