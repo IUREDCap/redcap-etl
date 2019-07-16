@@ -4,7 +4,7 @@ namespace IU\REDCapETL\Database;
 
 use PHPUnit\Framework\TestCase;
 
-use IU\REDCapETL\RedCapEtl;            
+#use IU\REDCapETL\RedCapEtl;            
 use IU\REDCapETL\Schema\RowsType;    
 use IU\REDCapETL\Schema\Row;    
 use IU\REDCapETL\Schema\FieldTypeSpecifier;    
@@ -50,7 +50,10 @@ class CsvDbConnectionTest extends TestCase
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
         $rootTable = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $this->recordIdFieldName);
 
-        # Create fields in the Table object
+        #### Create fields in the Table object
+        
+        #the first field will have a column-heading change in the csv file in which
+        #the table column 'record_id' will appear as 'redcap_record_id' in the file.
         $field0 = new Field(
             'record_id',
             FieldType::INT,
@@ -92,6 +95,7 @@ class CsvDbConnectionTest extends TestCase
 
         #Verify header was created as expected.
         $expected = '"test_id","redcap_record_id","full_name","weight"' . chr(10);
+        #$expected = '"test_id","record_id","full_name","weight"' . chr(10);
         $header = null;
 
         $fh = fopen($newFile, 'r');
@@ -199,6 +203,21 @@ class CsvDbConnectionTest extends TestCase
         }            
 
         $this->assertTrue($fileContentsOK, 'CsvDbConnection insertRows File Contents check');
+    }
+
+    public function testProcessQueryFile() {
+
+        # Create the csvDbConnection object
+        $tablePrefix = null;
+        $labelViewSuffix = null;
+        $csvDbConnection = new CsvDbConnection($this->dbString, $this->ssl, $this->sslVerify, $this->caCertFile, $tablePrefix, $labelViewSuffix);
+
+        # execute tests for this method
+        $queryFile = 'abc';
+        $result = $csvDbConnection->processQueryFile($queryFile);
+        $expected = 1;
+        $this->assertEquals($result, $expected, 'CsvDbConnection processQueryFile check');
+
     }
 
 }
