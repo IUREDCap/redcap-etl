@@ -13,11 +13,6 @@ use IU\REDCapETL\Schema\Table;
  */
 class MysqlDbConnection extends DbConnection
 {
-    private $mysqli;
-
-    private $insertRowStatements;
-    private $insertRowBindTypes;
-
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
@@ -73,9 +68,6 @@ class MysqlDbConnection extends DbConnection
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
-
-        $this->insertRowStatements = array();
-        $this->insertRowBindTypes = array();
     }
 
     protected function existsTable($table)
