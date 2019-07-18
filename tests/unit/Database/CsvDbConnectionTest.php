@@ -5,6 +5,7 @@ namespace IU\REDCapETL\Database;
 use PHPUnit\Framework\TestCase;
 
 use IU\REDCapETL\EtlException;
+use IU\REDCapETL\LookupTable;
 use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Row;
 use IU\REDCapETL\Schema\FieldTypeSpecifier;
@@ -128,16 +129,17 @@ class CsvDbConnectionTest extends TestCase
         $this->assertEquals($expected, $header, 'CsvDbConnection createTable header is correct check');
     }
 
-   /**
+    /**
     * Testing the insertRow method by calling the insertRows method
     * that is accessible via the storeRows method.
     */
     public function testInsertRows()
     {
-        #############################################################
-        # create the table object that will be written to a csv file
-        #############################################################
+        ############################################################
+        # test with table that has no lookup
+        ############################################################
 
+        #create the table object
         $name = 'registration';
         $parent = 'registration_id';
         $rowsType = RowsType::ROOT;
@@ -176,8 +178,7 @@ class CsvDbConnectionTest extends TestCase
             null
         );
         $rootTable->addField($field3);
-
-        # Insert two rows into the Table object
+        # Insert two rows into the table object
         $foreignKey = null;
         $suffix = null;
         $data1 = [
@@ -223,7 +224,6 @@ class CsvDbConnectionTest extends TestCase
         $fileContentsOK = true;
 
         $newFile = $this->dbString . $rootTable->name . CsvDbConnection::FILE_EXTENSION;
-
         $i = 0;
         $lines = file($newFile);
         foreach ($lines as $line) {
@@ -234,6 +234,97 @@ class CsvDbConnectionTest extends TestCase
         }
 
         $this->assertTrue($fileContentsOK, 'CsvDbConnection insertRows File Contents check');
+
+        ############################################################
+        # test with table that has a lookup
+        ############################################################
+
+        # create the lookup table object that has the label values
+        $lookupChoices = [
+            "sex" => ['female', 'male']
+        ];
+        $tablePrefix = 'insertRows';
+        $tableName = 'insertRowsLookup';
+        $fieldName = 'sex';
+        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
+        $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
+        $lookupTable->addLookupField($tableName, $fieldName);
+
+
+        #create the table object that has the fields to be translated to labels
+        $name = 'insertRows';
+        $parent = 'insert_id';
+        $rowsType = RowsType::ROOT;
+        $suffixes = '';
+        $recordIdFieldName = 'record_id';
+
+        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
+
+        $rootTable = new Table($name, $parent, $keyType, array($rowsType), $suffixes, $recordIdFieldName);
+        $rootTable->usesLookup = true;
+
+        # Create fields in the data table object
+        $field4 = new Field(
+            'record_id',
+            FieldType::INT,
+            null
+        );
+        $rootTable->addField($field4);
+
+        $field5 = new Field(
+            'full_name',
+            FieldType::STRING,
+            null
+        );
+        $rootTable->addField($field5);
+
+        $field6 = new Field(
+            'sex',
+            FieldType::INT,
+            null
+        );
+        $field6->usesLookup = true;
+        $rootTable->addField($field6);
+
+        # Insert two rows into the table object
+        $foreignKey = null;
+        $suffix = null;
+        $data1 = [
+            'record_id' => 1000,
+            'full_name' => 'Ima Tester',
+            'sex' => 0
+        ];
+        $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
+
+
+        $data2 = [
+            'record_id' => 1001,
+            'full_name' => 'Spider Webb',
+            'sex' => 1
+        ];
+        $rootTable->createRow($data2, $foreignKey, $suffix, RowsType::BY_EVENTS);
+
+        # Create the csvDbConnection object
+        $tablePrefix = null;
+        $labelViewSuffix = 'Lookup';
+        $csvDbConnection = new CsvDbConnection(
+            $this->dbString,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
+            $tablePrefix,
+            $labelViewSuffix
+        );
+
+        # Create the data table csv file that uses the lookup
+        $csvDbConnection->createTable($rootTable, false);
+
+        # run the replaceLookupView method
+        $labelViewSuffix = 'LabelView';
+        $result = $csvDbConnection->replaceLookupView($rootTable, $lookupTable);
+
+        # insert rows into the file
+        $result = $csvDbConnection->storeRows($rootTable);
     }
 
     public function testProcessQueryFile()
@@ -366,6 +457,7 @@ class CsvDbConnectionTest extends TestCase
         #############################################################
         # Execute the tests for this method
         #############################################################
+
         # run the replaceLookupView method and verify it returns successfully
         $result = $csvDbConnection->replaceLookupView($rootTable, $lookupTable);
         $this->assertNull($result, 'CsvDbConnection replaceTable successful return check');
@@ -385,5 +477,151 @@ class CsvDbConnectionTest extends TestCase
         }
 
         $this->assertEquals($expected, $header, 'CsvDbConnection replaceLookupView header is correct check');
+    }
+
+   /**
+    * To test existsTable (protected), the method replaceTable (public),
+    * which call existsTable, is being executed. replaceTable also
+    * executes the dropTable method, so testing for both existsTable
+    * and dropTable have been combined into one test.
+    */
+    public function testExistsTableAndDropTable()
+    {
+        #create table object
+        $name = 'test0';
+        $parent = 'test_id';
+        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
+        $rootTable = new Table(
+            $name,
+            $parent,
+            $keyType,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
+
+        #create fields in the Table object
+        $field0 = new Field(
+            'record_id',
+            FieldType::INT,
+            null
+        );
+        $rootTable->addField($field0);
+
+        # Create the CsvDbConnection
+        $tablePrefix = null;
+        $labelViewSuffix = null;
+        $csvDbConnection = new CsvDbConnection(
+            $this->dbString,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
+            $tablePrefix,
+            $labelViewSuffix
+        );
+
+        # run the createTable method to create the file so that it exists
+        $csvDbConnection->createTable($rootTable, false);
+        $fileName = $this->dbString . $rootTable->name . CsvDbConnection::FILE_EXTENSION;
+        $fileCreationTime = filemtime($fileName);
+
+        # Execute the tests for this method
+        sleep(1); /* need to check the timestamp of when the file was dropped and replaced. */
+        $result = $csvDbConnection->replaceTable($rootTable);
+        $fileReplaceTime = filemtime($fileName);
+
+        $this->assertNull($result, 'csvDbConnection existsTable and dropTable return check');
+        $this->assertLessThan(
+            $fileReplaceTime,
+            $fileCreationTime,
+            'csvDbConnection existsTable and dropTable file was dropped and recreated check'
+        );
+    }
+
+   /**
+    * To test existsRow (protected), the method storeRow (public),
+    * which call existsRow, is being executed.
+    */
+    public function testExistsRow()
+    {
+        #create table object
+        $name = 'test1';
+        $parent = 'test_id';
+        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
+        $rootTable = new Table(
+            $name,
+            $parent,
+            $keyType,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
+
+        #create fields in the Table object
+        $field0 = new Field(
+            'record_id',
+            FieldType::INT,
+            null
+        );
+        $rootTable->addField($field0);
+
+        $field1 = new Field(
+            'full_name',
+            FieldType::STRING,
+            null
+        );
+        $rootTable->addField($field1);
+
+        $foreignKey = null;
+        $suffix = null;
+        $row = [
+            'record_id' => 1001,
+            'full_name' => 'Ima Tester'
+        ];
+        $rootTable->createRow($row, $foreignKey, $suffix, RowsType::BY_EVENTS);
+
+        # Create the CsvDbConnection
+        $tablePrefix = null;
+        $labelViewSuffix = null;
+        $csvDbConnection = new CsvDbConnection(
+            $this->dbString,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
+            $tablePrefix,
+            $labelViewSuffix
+        );
+
+        # run the createTable method to create the file
+        $csvDbConnection->createTable($rootTable, false);
+        $fileName = $this->dbString . $rootTable->name . CsvDbConnection::FILE_EXTENSION;
+
+        # Execute the tests for this method
+        $rows = $rootTable->getRows();
+        foreach ($rows as $row) {
+            $result = $csvDbConnection->storeRow($row, $foreignKey, $suffix, RowsType::BY_EVENTS);
+        }
+        $expected = 1;
+        $this->assertEquals($expected, $result, 'csvDbConnection existsRow return check');
+
+        #Verify the row was written as expected.
+        $expectedRows = [
+            '"test_id","record_id","full_name"' . chr(10),
+            '1,1001,"Ima Tester"' . chr(10)
+        ];
+        $fileContentsOK = true;
+
+        $newFile = $this->dbString . $rootTable->name . CsvDbConnection::FILE_EXTENSION;
+
+        $i = 0;
+        $lines = file($newFile);
+        foreach ($lines as $line) {
+            if ($expectedRows[$i] !== $line) {
+                $fileContentsOK = false;
+            }
+            $i++;
+        }
+
+        $this->assertTrue($fileContentsOK, 'CsvDbConnection existsRow row added check');
     }
 }
