@@ -13,6 +13,8 @@ use IU\REDCapETL\Schema\Table;
  */
 class MysqlDbConnection extends DbConnection
 {
+    private $mysqli;
+
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
