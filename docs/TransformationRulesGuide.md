@@ -385,7 +385,7 @@ For the **visits** table:
     FIELD,  var6, int
 
     TABLE,  Fifth, Main, EVENTS:a;b
-    FIELD,  var8, st
+    FIELD,  var8, string
 
 
 **Database Tables**
