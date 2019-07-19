@@ -321,6 +321,8 @@ class MysqlDbConnection extends DbConnection
         #---------------------------------------------------
         if ($rc === false) {
             $this->errorString = $this->mysqli->error;
+            # Note: do not print out the specific query here, because it will
+            #     be logged, and could contain PHI
             $message = 'MySQL error while trying to insert a single row into table "'
                 .$table->name.'": '
                 .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
@@ -374,6 +376,9 @@ class MysqlDbConnection extends DbConnection
             if ($rc === false) {
                 $this->errorString = $this->mysqli->error;
                 $result = false;
+
+                # Note: do not print out the specific query here, because it will
+                #     be logged, and could contain PHI
                 $message = 'MySQL error while trying to insert values into table "'
                     .$this->escapeName($table->name).'": '
                     .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
@@ -495,7 +500,7 @@ class MysqlDbConnection extends DbConnection
         $result = $this->mysqli->multi_query($queries);
         if ($result === false) {
             $mysqlError = $this->mysqli->error;
-            $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
+            $error = "Post-processing query {$queryNumber} failed: {$mysqlError}.\n";
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         } else {
@@ -503,7 +508,7 @@ class MysqlDbConnection extends DbConnection
                 $result = $this->mysqli->next_result();
                 if ($result === false) {
                     $mysqlError = $this->mysqli->error;
-                    $error = "Query {$queryNumber} failed: {$mysqlError}.\n";
+                    $error = "Post-processing query {$queryNumber} failed: {$mysqlError}.\n";
                     $code = EtlException::DATABASE_ERROR;
                     throw new EtlException($error, $code);
                 } else {
