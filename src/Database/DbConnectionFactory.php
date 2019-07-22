@@ -13,8 +13,6 @@ class DbConnectionFactory
     const DBTYPE_CSV    = 'CSV';
     const DBTYPE_MYSQL  = 'MySQL';
     
-    #const DBTYPE_SQLSRV = 'SQLServer';
-
     public function __construct()
     {
     }
@@ -52,10 +50,6 @@ class DbConnectionFactory
                     $labelViewSuffix
                 );
                 break;
-
-            #case DbConnectionFactory::DBTYPE_SQLSRV:
-            #    $dbcon = new SqlServerDbConnection($dbString, $tablePrefix, $labelViewSuffix);
-            #    break;
 
             case DbConnectionFactory::DBTYPE_CSV:
                 $dbcon = new CsvDbConnection(
