@@ -321,13 +321,7 @@ class PdoMysqlDbConnection extends DbConnection
         #--------------------------------------------------
         # Remove auto-increment fields
         #--------------------------------------------------
-        $fields = $table->getAllFields();
-        for ($i = 0; $i < count($fields); $i++) {
-            $field = $fields[$i];
-            if ($field->type === FieldType::AUTO_INCREMENT) {
-                unset($fields[$i]);
-            }
-        }
+        $fields = $table->getAllNonAutoIncrementFields();
 
         $queryValues = array();
         $rowValues = $this->getRowValues($row, $fields);
@@ -363,15 +357,9 @@ class PdoMysqlDbConnection extends DbConnection
 
         if (is_array($rows) && count($rows) > 0) {
             #--------------------------------------------------
-            # Remove auto-increment fields
+            # Get non-auto-increment fields
             #--------------------------------------------------
-            $fields = $table->getAllFields();
-            for ($i = 0; $i < count($fields); $i++) {
-                $field = $fields[$i];
-                if ($field->type === FieldType::AUTO_INCREMENT) {
-                    unset($fields[$i]);
-                }
-            }
+            $fields = $table->getAllNonAutoIncrementFields();
 
             $queryValues = array();
             foreach ($rows as $row) {

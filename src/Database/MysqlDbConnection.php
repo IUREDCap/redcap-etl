@@ -299,13 +299,7 @@ class MysqlDbConnection extends DbConnection
         #--------------------------------------------------
         # Remove auto-increment fields
         #--------------------------------------------------
-        $fields = $table->getAllFields();
-        for ($i = 0; $i < count($fields); $i++) {
-            $field = $fields[$i];
-            if ($field->type === FieldType::AUTO_INCREMENT) {
-                unset($fields[$i]);
-            }
-        }
+        $fields = $table->getAllNonAutoIncrementFields();
 
         $queryValues = array();
         $rowValues = $this->getRowValues($row, $fields);
@@ -349,15 +343,9 @@ class MysqlDbConnection extends DbConnection
 
         if (is_array($rows) && count($rows) > 0) {
             #--------------------------------------------------
-            # Remove auto-increment fields
+            # Get non-auto-increment fields
             #--------------------------------------------------
-            $fields = $table->getAllFields();
-            for ($i = 0; $i < count($fields); $i++) {
-                $field = $fields[$i];
-                if ($field->type === FieldType::AUTO_INCREMENT) {
-                    unset($fields[$i]);
-                }
-            }
+            $fields = $table->getAllNonAutoIncrementFields();
 
             $queryValues = array();
             foreach ($rows as $row) {
@@ -366,7 +354,6 @@ class MysqlDbConnection extends DbConnection
             }
     
             $query = $this->createInsertStatement($table->name, $fields, $queryValues);
-            # print "\n$query\n";
     
             $rc = $this->mysqli->query($query);
     
@@ -413,10 +400,6 @@ class MysqlDbConnection extends DbConnection
 
     protected function getRowValues($row, $fields)
     {
-        #print "\nFIELDS:\n";
-        #print "--------------------------------------------------------------------:\n";
-        #print_r($fields);
-
         $rowData = $row->getData();
         $rowValues = array();
         foreach ($fields as $field) {

@@ -150,6 +150,19 @@ class Table
         return($allFields);
     }
 
+    public function getAllNonAutoIncrementFields()
+    {
+        $fields = $this->getAllFields();
+        for ($i = 0; $i < count($fields); $i++) {
+            $field = $fields[$i];
+            if ($field->type === FieldType::AUTO_INCREMENT) {
+                unset($fields[$i]);
+            }
+        }
+        return $fields;
+    }
+
+
 
     public function getRows()
     {
