@@ -67,7 +67,7 @@
     <whitelist>
       <directory suffix=".php">src</directory>
       <exclude>
-        <file>src/Database/SqlServerDbConnection.php</file>
+        <file>src/Database/PdoMysqlDbConnection.php</file>
       </exclude>
     </whitelist>
   </filter>

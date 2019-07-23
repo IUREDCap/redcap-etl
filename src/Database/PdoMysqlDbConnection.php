@@ -9,11 +9,16 @@ use IU\REDCapETL\Schema\FieldType;
 use IU\REDCapETL\Schema\Table;
 
 /**
- * Database connection class for MySQL databases.
+ * Database connection class for MySQL databases that uses PDO (EXPERIMENTAL).
+ * This class is considered as experimental, and is not currently used.
+ * There are 2 known problems with this class. Verification of the server's
+ * SSL certificate does not work. And, while post-processing of SQL queries
+ * appears to basically work, if there are errors in the post-processing SQL,
+ * the queries (some or all of them) will fail without notice.
  */
-class MysqlDbConnection extends DbConnection
+class PdoMysqlDbConnection extends DbConnection
 {
-    private $mysqli;
+    private $db;
 
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
@@ -35,41 +40,58 @@ class MysqlDbConnection extends DbConnection
         } else {
             $message = 'The database connection is not correctly formatted: ';
             if (count($dbValues) < 4) {
-                $message .= 'not enough values.';
+                $message = 'not enough values.';
             } else {
-                $message .= 'too many values.';
+                $message = 'too many values.';
             }
             $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
+            throw new \Exception($message, $code);
         }
 
-        // Get MySQL connection
-        // NOTE: Could add error checking
-        // mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-        // Setting the above causes the program to stop for any uncaugt errors
-        
         if (empty($port)) {
             $port = null;
         }
         
-        $flags = null;
+        $driver  = 'mysql';
+        $charset = 'utf8mb4';
+
+        $port = 3306;
+
+        $dataSourceName = "{$driver}:host={$host};dbname={$database};charset={$charset}";
+        if (isset($port)) {
+            $dataSourceName .= ";port={$port}";
+        }
+
+        $options = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::MYSQL_ATTR_MULTI_STATEMENTS => true,
+            \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false
+        ];
+
         if ($ssl) {
-            $flags = MYSQLI_CLIENT_SSL;
+            $options[\PDO::MYSQL_ATTR_SSL_CA] = $caCertFile;
         }
-        
-        $this->mysqli = mysqli_init();
-        if ($sslVerify && !empty($caCertFile)) {
-            $this->mysqli->ssl_set(null, null, $caCertFile, null, null);
-            $this->mysqli->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
-        }
-        $this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
 
-
-        if ($this->mysqli->connect_errno) {
-            $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;
+        try {
+            $this->db = new \PDO($dataSourceName, $username, $password, $options);
+        } catch (\Exception $exception) {
+            $message = 'Database connection error for database "'.$database.'": '.$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
+
+        #$this->mysqli = mysqli_init();
+        #if ($sslVerify && !empty($caCertFile)) {
+            #$this->mysqli->ssl_set(null, null, $caCertFile, null, null);
+            #$this->mysqli->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+        #}
+        #$this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
+
+        #if ($this->mysqli->connect_errno) {
+        #    $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;
+        #    $code = EtlException::DATABASE_ERROR;
+        #    throw new EtlException($message, $code);
+        #}
     }
 
     protected function existsTable($table)
@@ -95,10 +117,10 @@ class MysqlDbConnection extends DbConnection
         $query = "DROP TABLE IF EXISTS ". $this->escapeName($table->name);
 
         // Execute query
-        $result = $this->mysqli->query($query);
-        if ($result === false) {
-            $message = 'MySQL error in query "'.$query.'"'
-                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+        try {
+            $result = $this->db->exec($query);
+        } catch (\Exception $exception) {
+            $message = 'Database error in query "'.$query.'" : '.$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
@@ -182,10 +204,10 @@ class MysqlDbConnection extends DbConnection
         $query .= ')';
 
         // Execute query
-        $result = $this->mysqli->query($query);
-        if ($result === false) {
-            $message = 'MySQL error in query "'.$query.'"'
-                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+        try {
+            $result = $this->db->exec($query);
+        } catch (\Exception $exception) {
+            $message = 'Database error in query "'.$query.'": '.$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
@@ -219,11 +241,11 @@ class MysqlDbConnection extends DbConnection
                 // Separate root from category
                     list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
 
-                    $label = $this->mysqli->real_escape_string(
+                    $label = $this->db->quote(
                         $lookup->getLabel($table->name, $fname, $cat)
                     );
                     $select = 'CASE '.$this->escapeName($field->dbName).' WHEN 1 THEN '
-                        . "'".$label."'"
+                        . $label
                         . ' ELSE 0'
                         . ' END as '.$this->escapeName($field->dbName);
                 } // The field uses the lookup table and is not a checkbox field
@@ -231,8 +253,8 @@ class MysqlDbConnection extends DbConnection
                     $select = 'CASE '.$this->escapeName($field->dbName);
                     $map = $lookup->getValueLabelMap($table->name, $fname);
                     foreach ($map as $value => $label) {
-                        $select .= ' WHEN '."'".($this->mysqli->real_escape_string($value))."'"
-                            .' THEN '."'".($this->mysqli->real_escape_string($label))."'";
+                        $select .= ' WHEN '.($this->db->quote($value))
+                            .' THEN '.($this->db->quote($label));
                     }
                     $select .= ' END as '.$this->escapeName($field->dbName);
                 }
@@ -250,10 +272,10 @@ class MysqlDbConnection extends DbConnection
         ###print("QUERY: $query\n");
 
         // Execute query
-        $result = $this->mysqli->query($query);
-        if ($result === false) {
-            $message = 'MySQL error in query "'.$query.'"'
-                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+        try {
+            $result = $this->db->exec($query);
+        } catch (\Exception $exception) {
+            $message = 'MySQL error in query "'.$query.'": '.$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
@@ -306,24 +328,16 @@ class MysqlDbConnection extends DbConnection
         $queryValues[] = '('.implode(",", $rowValues).')';
     
         $query = $this->createInsertStatement($table->name, $fields, $queryValues);
-        #print "\nQUERY: $query\n";
+        ##print "\nQUERY: $query\n";
     
-        $rc = $this->mysqli->query($query);
-    
-        #---------------------------------------------------
-        # If there's an error executing the statement
-        #---------------------------------------------------
-        if ($rc === false) {
-            $this->errorString = $this->mysqli->error;
-            # Note: do not print out the specific query here, because it will
-            #     be logged, and could contain PHI
-            $message = 'MySQL error while trying to insert a single row into table "'
-                .$table->name.'": '
-                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+        try {
+            $rc = $this->db->exec($query);
+            $insertId = $this->db->lastInsertId();
+        } catch (\Exception $exception) {
+            $message = 'Database error while trying to insert a single row into table "'
+                .$table->name.'": '.$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
-        } else {
-            $insertId = $this->mysqli->insert_id;
         }
 
         return $insertId;
@@ -354,21 +368,13 @@ class MysqlDbConnection extends DbConnection
             }
     
             $query = $this->createInsertStatement($table->name, $fields, $queryValues);
+            # print "\n$query\n";
     
-            $rc = $this->mysqli->query($query);
-    
-            #---------------------------------------------------
-            # If there's an error executing the statement
-            #---------------------------------------------------
-            if ($rc === false) {
-                $this->errorString = $this->mysqli->error;
-                $result = false;
-
-                # Note: do not print out the specific query here, because it will
-                #     be logged, and could contain PHI
+            try {
+                $rc = $this->db->exec($query);
+            } catch (\Exception $exception) {
                 $message = 'MySQL error while trying to insert values into table "'
-                    .$this->escapeName($table->name).'": '
-                    .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+                    .$this->escapeName($table->name).'": '.$exception->getMessage();
                 $code = EtlException::DATABASE_ERROR;
                 throw new EtlException($message, $code);
             }
@@ -400,6 +406,10 @@ class MysqlDbConnection extends DbConnection
 
     protected function getRowValues($row, $fields)
     {
+        #print "\nFIELDS:\n";
+        #print "--------------------------------------------------------------------:\n";
+        #print_r($fields);
+
         $rowData = $row->getData();
         $rowValues = array();
         foreach ($fields as $field) {
@@ -437,14 +447,14 @@ class MysqlDbConnection extends DbConnection
                 case FieldType::STRING:
                 case FieldType::CHAR:
                 case FieldType::VARCHAR:
-                    $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldName])."'";
+                    $rowValues[] = $this->db->quote($rowData[$fieldName]);
                     break;
                 case FieldType::DATE:
                 case FieldType::DATETIME:
                     if (empty($rowData[$fieldName])) {
                         $rowValues[] = "null";
                     } else {
-                        $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldName])."'";
+                        $rowValues[] = $this->db->quote($rowData[$fieldName]);
                     }
                     break;
                 default:
@@ -471,41 +481,15 @@ class MysqlDbConnection extends DbConnection
         }
     }
     
+
     public function processQueries($queries)
     {
-        #---------------------------------------------------
-        # Note: use of multi_query has advantage that it
-        # does the parsing; there could be cases where
-        # a semi-colons is in a string, or commented out
-        # that would make parsing difficult
-        #---------------------------------------------------
-        $queryNumber = 1;
-        $result = $this->mysqli->multi_query($queries);
-        if ($result === false) {
-            $mysqlError = $this->mysqli->error;
-            $error = "Post-processing query {$queryNumber} failed: {$mysqlError}.\n";
+        try {
+            $result = $this->db->query($queries);
+        } catch (\Exception $exception) {
+            $error = "Post-processing query failed: ".$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
-        } else {
-            while ($this->mysqli->more_results()) {
-                $result = $this->mysqli->next_result();
-                if ($result === false) {
-                    $mysqlError = $this->mysqli->error;
-                    $error = "Post-processing query {$queryNumber} failed: {$mysqlError}.\n";
-                    $code = EtlException::DATABASE_ERROR;
-                    throw new EtlException($error, $code);
-                } else {
-                    $result = $this->mysqli->store_result();
-                    if ($result instanceof mysqli_result) {
-                        # This appears to be a select query, so free the result
-                        # to avoid the following error:
-                        #     MySQL error [2014]: Commands out of sync;
-                        #     you can't run this command now
-                        $result->free();
-                    }
-                }
-                $queryNumber++;
-            }
         }
     }
 

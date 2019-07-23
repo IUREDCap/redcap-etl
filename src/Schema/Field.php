@@ -23,10 +23,11 @@ class Field
     /** @var string database field name */
     public $dbName = '';
 
-    /** @var boolean if this field uses the lookup table, i.e., it is
-                     a multiple choice field, and as a results will
-                     have a value to label mapping entry in the
-                     lookup table. */
+    /** @var mixed the lookup field name (string) if this field uses the lookup table,
+             i.e., it is a multiple-choice field, and as a results will
+             have a value to label mapping entry in the lookup table. And false, if
+             this field is not a multiple-choise field.
+    */
     public $usesLookup = false;
 
     public function __construct($name, $type, $size = null, $dbName = '', $redcapType = '')
