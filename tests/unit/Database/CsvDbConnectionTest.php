@@ -135,10 +135,6 @@ class CsvDbConnectionTest extends TestCase
     */
     public function testInsertRows()
     {
-        ############################################################
-        # test with table that has no lookup
-        ############################################################
-
         #create the table object
         $name = 'registration';
         $parent = 'registration_id';
@@ -234,18 +230,20 @@ class CsvDbConnectionTest extends TestCase
         }
 
         $this->assertTrue($fileContentsOK, 'CsvDbConnection insertRows File Contents check');
+    }
 
-        ############################################################
-        # test with table that has a lookup
-        ############################################################
 
+    public function testInsertRowsWithLookup()
+    {
         # create the lookup table object that has the label values
         $lookupChoices = [
             "sex" => ['female', 'male']
         ];
-        $tablePrefix = 'insertRows';
-        $tableName = 'insertRowsLookup';
+        #$tablePrefix = 'insertRows';
+        $tablePrefix = null;           
+        $tableName = 'insertRows';
         $fieldName = 'sex';
+        #$fieldName = false;
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
         $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
         $lookupTable->addLookupField($tableName, $fieldName);
@@ -255,7 +253,7 @@ class CsvDbConnectionTest extends TestCase
         $name = 'insertRows';
         $parent = 'insert_id';
         $rowsType = RowsType::ROOT;
-        $suffixes = '';
+        $suffixes = [];
         $recordIdFieldName = 'record_id';
 
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
@@ -324,7 +322,7 @@ class CsvDbConnectionTest extends TestCase
         $result = $csvDbConnection->replaceLookupView($rootTable, $lookupTable);
 
         # insert rows into the file
-        $result = $csvDbConnection->storeRows($rootTable);
+        #$result = $csvDbConnection->storeRows($rootTable);
     }
 
     public function testProcessQueryFile()

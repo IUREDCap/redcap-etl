@@ -38,12 +38,12 @@ class MysqlDbConnection extends DbConnection
         } else {
             $message = 'The database connection is not correctly formatted: ';
             if (count($dbValues) < 4) {
-                $message = 'not enough values.';
+                $message .= 'not enough values.';
             } else {
-                $message = 'too many values.';
+                $message .= 'too many values.';
             }
             $code = EtlException::DATABASE_ERROR;
-            throw new \Exception($message, $code);
+            throw new EtlException($message, $code);
         }
 
         // Get MySQL connection
