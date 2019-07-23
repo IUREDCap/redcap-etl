@@ -139,7 +139,7 @@ class CsvDbConnectionTest extends TestCase
         $name = 'registration';
         $parent = 'registration_id';
         $rowsType = RowsType::ROOT;
-        $suffixes = '';
+        $suffixes = [];
         $recordIdFieldName = 'record_id';
 
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
@@ -239,15 +239,12 @@ class CsvDbConnectionTest extends TestCase
         $lookupChoices = [
             "sex" => ['female', 'male']
         ];
-        #$tablePrefix = 'insertRows';
         $tablePrefix = null;           
         $tableName = 'insertRows';
         $fieldName = 'sex';
-        #$fieldName = false;
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
         $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
         $lookupTable->addLookupField($tableName, $fieldName);
-
 
         #create the table object that has the fields to be translated to labels
         $name = 'insertRows';
@@ -259,7 +256,7 @@ class CsvDbConnectionTest extends TestCase
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
 
         $rootTable = new Table($name, $parent, $keyType, array($rowsType), $suffixes, $recordIdFieldName);
-        $rootTable->usesLookup = true;
+        $rootTable->usesLookup = 'sex';
 
         # Create fields in the data table object
         $field4 = new Field(
@@ -281,7 +278,7 @@ class CsvDbConnectionTest extends TestCase
             FieldType::INT,
             null
         );
-        $field6->usesLookup = true;
+        $field6->usesLookup = 'sex';
         $rootTable->addField($field6);
 
         # Insert two rows into the table object
@@ -318,12 +315,33 @@ class CsvDbConnectionTest extends TestCase
         $csvDbConnection->createTable($rootTable, false);
 
         # run the replaceLookupView method
-        $labelViewSuffix = 'LabelView';
         $result = $csvDbConnection->replaceLookupView($rootTable, $lookupTable);
 
         # insert rows into the file
-        #$result = $csvDbConnection->storeRows($rootTable);
+        $result = $csvDbConnection->storeRows($rootTable);
+        $this->assertNull($result, 'CsvDbConnection insertRowsWithLookup successful return check');
+       
+        #Verify rows were written as expected.
+        $expectedRows = [
+            '"insert_id","record_id","full_name","sex"' .  chr(10),
+            '1,1000,"Ima Tester",female' . chr(10),
+            '2,1001,"Spider Webb",male' . chr(10)
+        ];
+        $fileContentsOK = true;
+
+        $newFile = $this->dbString . $rootTable->name . $labelViewSuffix . CsvDbConnection::FILE_EXTENSION;
+        $i = 0;
+        $lines = file($newFile);
+        foreach ($lines as $line) {
+            if ($expectedRows[$i] !== $line) {
+                $fileContentsOK = false;
+            }
+            $i++;
+        }
+
+        $this->assertTrue($fileContentsOK, 'CsvDbConnection insertRowsWithLookup File Contents check');
     }
+
 
     public function testProcessQueryFile()
     {
@@ -596,8 +614,15 @@ class CsvDbConnectionTest extends TestCase
 
         # Execute the tests for this method
         $rows = $rootTable->getRows();
+        #print "in testExistsRow, rows  count is: ";
+        ##print_r ($rows[0]->data);
+        #print count($rows);
+        #print PHP_EOL;
         foreach ($rows as $row) {
+            #print "in testExistsRow, in foreach row, row is " . PHP_EOL;
+            #print_r ($row);
             $result = $csvDbConnection->storeRow($row, $foreignKey, $suffix, RowsType::BY_EVENTS);
+            #print "in testExistsRow, after store row" . PHP_EOL;
         }
         $expected = 1;
         $this->assertEquals($expected, $result, 'csvDbConnection existsRow return check');
