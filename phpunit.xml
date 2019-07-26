@@ -10,6 +10,7 @@
       <file>tests/unit/ConfigPropertiesTest.php</file>
       <file>tests/unit/ConfigurationTest.php</file>
       <file>tests/unit/EtlExceptionTest.php</file>
+      <file>tests/unit/LookupTableTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
       <file>tests/unit/RedCapDetHandlerTest.php</file>
       <file>tests/unit/RulesParserTest.php</file>
