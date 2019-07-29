@@ -39,7 +39,7 @@ class EtlEventLogTableTest extends TestCase
         $this->assertTrue($fieldsOk, 'etlEventLogTable fields ok check');
     }
 
-    public function xcreateEventLogDataRowTest()
+    public function createEventLogDataRowTest()
     {
         $name = "etlEventLog";
         $etlEventLogTable = new EtlEventLogTable($name);
