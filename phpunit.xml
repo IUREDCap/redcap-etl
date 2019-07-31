@@ -11,17 +11,17 @@
       <file>tests/unit/ConfigurationTest.php</file>
       <file>tests/unit/EtlExceptionTest.php</file>
       <file>tests/unit/EtlEventLogTableTest.php</file>
+      <file>tests/unit/EtlLogTableTest.php</file>
       <file>tests/unit/LookupTableTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
       <file>tests/unit/RedCapDetHandlerTest.php</file>
       <file>tests/unit/RulesParserTest.php</file>
       <file>tests/unit/RulesSemanticAnalyzerTest.php</file>
+      <file>tests/unit/SchemaGeneratorTest.php</file>
 
       <file>tests/unit/Database/DbConnectionFactoryTest.php</file>
       <file>tests/unit/Database/DbConnectionTest.php</file>
       <file>tests/unit/Database/CsvDbConnectionTest.php</file>
-      <file>tests/unit/Database/MysqlDbConnectionTest.php</file>
-      <file>tests/unit/Database/PdoMysqlDbConnectionTest.php</file>
 
       <file>tests/unit/Rules/RuleTest.php</file>
       <file>tests/unit/Rules/TableRuleTest.php</file>
