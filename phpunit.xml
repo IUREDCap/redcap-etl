@@ -47,8 +47,10 @@
     <testsuite name="integration">
       <file>tests/integration/BasicDemographyTest.php</file>
       <file>tests/integration/BasicDemography2Test.php</file>
+      <file>tests/integration/BasicDemographyDeidentifiedTest.php</file>
       <file>tests/integration/BasicDemographyJsonTest.php</file>
       <file>tests/integration/RepeatingEventsTest.php</file>
+      <file>tests/integration/RepeatingEventsDeidentifiedTest.php</file>
     </testsuite>
 
     <!--
