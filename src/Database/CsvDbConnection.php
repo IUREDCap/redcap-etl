@@ -5,7 +5,6 @@ namespace IU\REDCapETL\Database;
 use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\LookupTable;
-/*use IU\REDCapETL\EtlException;*/
 use IU\REDCapETL\Schema\FieldType;
 
 /**
