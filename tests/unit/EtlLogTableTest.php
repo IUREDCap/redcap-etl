@@ -44,7 +44,7 @@ class EtlLogTableTest extends TestCase
             ,'char'
             ,'varchar'
             ,'varchar'
-            'int'
+            ,'int'
         ];
         $expectedSize = [6, 60,60,'',10,40,40,''];
         $i = 0;
