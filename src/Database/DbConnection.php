@@ -30,7 +30,6 @@ abstract class DbConnection
      */
     public function replaceTable($table)
     {
-
         if ($this->existsTable($table)) {
             $this->dropTable($table);
         }
@@ -153,5 +152,93 @@ abstract class DbConnection
         array_push($connectionValues, $value);
                             
         return $connectionValues;
+    }
+
+
+    /**
+     * Parses the SQL queries in the specified text and
+     * returns an array of queries.
+     */
+    public function parseSqlQueries($text)
+    {
+        $queries = array();
+
+        $separators = [];    // SQL query separators
+        $lastChar = '';
+        $quoteStarted = false;
+        $quoteEnded   = false;
+        $charEscapeStarted = false;
+        $inComment = false;
+        $atEnd = false;
+
+        for ($i = 0; $i < strlen($text); $i++) {
+            if ($i === strlen($text) - 1) {
+                $atEnd = true;
+            }
+
+            $char = $text[$i];
+
+            if ($quoteStarted) {
+                # In quote
+                if ($quoteEnded) {
+                    if ($char === "'") {
+                        # quote wasn't actually ended,
+                        # end quote was escape quote, and this is the
+                        # quote being escaped
+                        $quoteEnded = false;
+                    } else {
+                        $quoteStarted = false;
+                        $quoteEnded   = false;
+                    }
+                } else {
+                    if ($charEscapeStarted) {
+                        $charEscapeStarted = false;
+                    } elseif ($char === '\\') {
+                        $charEscapeStarted = true;
+                    } elseif ($char === "'") {
+                        $quoteEnded = true;
+                    }
+                }
+            } elseif ($inComment) {
+                # In comment
+
+                # If end of line reached, comment ends
+                if ($char === "\n") {
+                    $inComment = false;
+                    $text[$i] = ' ';
+                }
+            } else {
+                #--------------------------------
+                # Not in quote or comment
+                #--------------------------------
+                if ($char === ';') {
+                    $separators[] = $i;
+                } elseif ($char === "'") {
+                    $quoteStarted = true;
+                } elseif ($char === '-' && !$atEnd && $text[$i+1] === '-') {
+                    $inComment = true;
+                } elseif ($char === "\n" || $char === "\r" || $char === "\t") {
+                    $text[$i] = ' ';
+                }
+            }
+            $lastChar = $char;
+        }
+
+        ###print_r($separators);
+
+        $startIndex = 0;
+        $query = '';
+        for ($i = 0; $i < count($separators); $i++) {
+            $query = substr($text, $startIndex, $separators[$i] - $startIndex);
+            $queries[] = trim($query);
+            $startIndex = $separators[$i] + 1;
+        }
+        $i = count($separators) - 1;
+        $query = trim(substr($text, $separators[$i] + 1));
+        if (!empty($query)) {
+            $queries[] = $query;
+        }
+
+        return $queries;
     }
 }

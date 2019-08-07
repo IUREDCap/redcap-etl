@@ -11,7 +11,7 @@ use IU\REDCapETL\Schema\Table;
 /**
  * Database connection class for MySQL databases that uses PDO (EXPERIMENTAL).
  * This class is considered as experimental, and is not currently used.
- * There is 1 known problems with this class, which is that verification of the server's
+ * There is one known problem with this class, which is that verification of the server's
  * SSL certificate does not work.
  */
 class MysqlPdoDbConnection extends PdoDbConnection

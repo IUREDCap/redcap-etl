@@ -13,7 +13,6 @@ class DbConnectionFactory
     // Database types
     const DBTYPE_CSV        = 'CSV';
     const DBTYPE_MYSQL      = 'MySQL';
-    const DBTYPE_MYSQL_PDO  = 'MySQL_PDO';
     const DBTYPE_SQLITE     = 'SQLite';
     
     public function __construct()
@@ -45,17 +44,6 @@ class DbConnectionFactory
         switch ($dbType) {
             case DbConnectionFactory::DBTYPE_MYSQL:
                 $dbcon = new MysqlDbConnection(
-                    $dbString,
-                    $ssl,
-                    $sslVerify,
-                    $caCertFile,
-                    $tablePrefix,
-                    $labelViewSuffix
-                );
-                break;
-
-            case DbConnectionFactory::DBTYPE_MYSQL_PDO:
-                $dbcon = new MysqlPdoDbConnection(
                     $dbString,
                     $ssl,
                     $sslVerify,
