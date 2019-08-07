@@ -1,6 +1,9 @@
 REDCap-ETL Developer Guide
 ======================================
 
+This guide is intended for people who want to modify or extend the REDCap-ETL software.
+If you just want to use the REDCap-ETL software, please see the installation and configuration guides.
+
 Development Environment Setup
 -------------------------------------
 
@@ -99,7 +102,9 @@ are installed
 * _phpunit.xml_ - configuration file for automated tests run with PHPUnit 
 * _README.md_ - main README file for REDCap-ETL
 
+### REDCap-ETL Software Architecture
 
+For more information, see: [REDCap-ETL Software Architecture](SoftwareArchitecture.md)
 
 
 
@@ -236,10 +241,11 @@ file):
 
         MySQL:<db-host>:<db-username>:<db-password>:<db-name>
 
-You need to create a SQLite test database. Use the following commands
+You need to create SQLite test databases. Use the following commands
 
         cd tests/output
         sqlite3 repeating-events.db
+        sqlite3 visits.db
 
 
 The next thing you need to do is to create the configuration files
@@ -253,6 +259,8 @@ for the "Repeating Events" and "Visits" projects:
 	    cp tests/config-init/repeating-events-mysql.ini tests/config
         cp tests/config-init/repeating-events-sqlite.ini tests/config
         cp tests/config-init/visits.ini tests/config
+        cp tests/config-init/visits-sqlite.ini tests/config
+        cp tests/config-init/visits-rules.txt tests/config
         cp tests/config-init/visits.sql tests/config
 
 2. Edit the files __tests/config/visits.ini__ and __tests/config/repeating-events-mysql.ini__, and set the 
