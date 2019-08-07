@@ -13,6 +13,22 @@ REDCap DETs (Data Entry Triggers).
 
 ![Main REDCap-ETL Classes](redcap-etl-classes.png)
 
+---
+
+Database Connection Classes
+------------------------------------------
+
+REDCap-ETL has a database connection class for each type of database that it supports.
+All database connection classes are subclasses of the abstract **DbConnection** class, and database
+connection classes that use [PDO](https://www.php.net/manual/en/book.pdo.php) (PHP Data Objects)
+are also subclasses of of the
+abstract **PdoDbConnection** class.
+
+![REDCap-ETL Database Connection Classes](redcap-etl-db-connections.png)
+
+
+---
+
 Transformation Rules Processing Classes
 ------------------------------------------
 

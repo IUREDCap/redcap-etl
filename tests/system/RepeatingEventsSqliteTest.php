@@ -7,9 +7,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * Runs the "repeating events" tests using MySQL as the database.
  */
-class RepatingEventsTest extends TestCase
+class RepeatingEventsSqliteTest extends TestCase
 {
-    const CONFIG_FILE = __DIR__.'/../config/repeating-events-mysql.ini';
+    const CONFIG_FILE = __DIR__.'/../config/repeating-events-sqlite.ini';
 
     const TEST_DATA_DIR   = __DIR__.'/../data/';     # directory with test data comparison files
 
@@ -18,16 +18,21 @@ class RepatingEventsTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$logger = new Logger('repeating_events_system_test');
+        self::$logger = new Logger('repeating_events_sqlite_system_test');
 
         $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
-        list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
-        $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
+        $dbConnection = $configuration->getDbConnection();
+        list($type, $db) = explode(':', $dbConnection, 2);
+
+        $dsn = 'sqlite:'.realpath($db);
+
         try {
-            self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
-        } catch (Exception $exception) {
-            print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            self::$dbh = new \PDO($dsn, null, null);
+            self::$dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        } catch (\Exception $exception) {
+            print "ERROR - database connection error for db {$dsn}: ".$exception->getMessage()."\n";
+            exit(1);
         }
 
         self::dropTablesAndViews(self::$dbh);
@@ -90,7 +95,7 @@ class RepatingEventsTest extends TestCase
             .', redcap_event_name '
             .', redcap_repeat_instrument '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .', weight_time '
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -105,7 +110,9 @@ class RepatingEventsTest extends TestCase
             .', systolic3 '
             .' FROM re_all_visits ORDER BY record_id';
 
+
         $statement  = self::$dbh->query($sql);
+
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_all_visits.csv');
@@ -123,7 +130,7 @@ class RepatingEventsTest extends TestCase
             .', enrollment_id '
             .', record_id '
             .', redcap_event_name '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .', weight_time '
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -159,7 +166,7 @@ class RepatingEventsTest extends TestCase
             .', redcap_event_name '
             .', redcap_repeat_instrument '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .', weight_time '
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -194,7 +201,7 @@ class RepatingEventsTest extends TestCase
             .', record_id '
             .', redcap_event_name '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .', weight_time '
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -220,6 +227,7 @@ class RepatingEventsTest extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
+
     public function testEnrollmentTable()
     {
         $sql = 'SELECT '
@@ -239,6 +247,7 @@ class RepatingEventsTest extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
+
     public function testEnrollmentView()
     {
         $sql = 'SELECT '
@@ -257,6 +266,7 @@ class RepatingEventsTest extends TestCase
 
         $this->assertEquals($expectedData, $actualData);
     }
+
 
     public function testHomeCardioVascularVisitsTable()
     {
@@ -290,6 +300,7 @@ class RepatingEventsTest extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
+
     public function testHomeWeightVisitsTable()
     {
         $sql = 'SELECT '
@@ -299,7 +310,7 @@ class RepatingEventsTest extends TestCase
             .', redcap_event_name '
             .', redcap_repeat_instrument '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .', weight_time '
             .', weight_kg '
             .', height_m '
             .' FROM re_home_weight_visits ORDER BY record_id';
@@ -315,6 +326,7 @@ class RepatingEventsTest extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
+
     public function testVisitsTable()
     {
         $sql = 'SELECT '
@@ -323,7 +335,7 @@ class RepatingEventsTest extends TestCase
             .', record_id '
             .', redcap_event_name '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .', weight_time '
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -359,7 +371,7 @@ class RepatingEventsTest extends TestCase
             .', redcap_event_name '
             .', redcap_repeat_instrument '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .', weight_time '
             .', weight_kg '
             .', height_m '
             .', weight_complete '

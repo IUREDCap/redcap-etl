@@ -56,7 +56,8 @@
           a server
     -->
     <testsuite name="system">
-      <file>tests/system/RepeatingEventsTest.php</file>
+      <file>tests/system/RepeatingEventsMysqlTest.php</file>
+      <file>tests/system/RepeatingEventsSqliteTest.php</file>
       <file>tests/system/VisitsTest.php</file>
       <file>tests/system/VisitsCodeTest.php</file>
       <file>tests/system/VisitsWebTest.php</file>
@@ -67,7 +68,7 @@
     <whitelist>
       <directory suffix=".php">src</directory>
       <exclude>
-        <file>src/Database/PdoMysqlDbConnection.php</file>
+        <file>src/Database/MysqlPdoDbConnection.php</file>
       </exclude>
     </whitelist>
   </filter>

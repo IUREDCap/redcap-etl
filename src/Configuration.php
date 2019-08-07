@@ -671,12 +671,12 @@ class Configuration
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
 
-            # If this property was defined in a file and uses the CSV database
+            # If this property was defined in a file and uses the CSV or SQLite database
             # type and a relative path was used, replace the relative path with
             # an absolute path
             if ($this->isFromFile(ConfigProperties::DB_CONNECTION)) {
                 list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($this->dbConnection);
-                if ($dbType === DbConnectionFactory::DBTYPE_CSV) {
+                if ($dbType === DbConnectionFactory::DBTYPE_CSV || $dbType === DbConnectionFactory::DBTYPE_SQLITE) {
                     $dbString = $this->processDirectory($dbString);
                     $this->dbConnection = DbConnectionFactory::createConnectionString($dbType, $dbString);
                 }

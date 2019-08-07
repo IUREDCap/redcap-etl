@@ -46,6 +46,7 @@ database connection string. This string has the following format:
 Currently, the supported database connection types are
 
 * **MySQL**
+* **SQLite**
 * **CSV** (comma-separated values).
 
 
@@ -75,6 +76,15 @@ For CSV, the database connection string format is:
 For example:
 
         CSV:/home/redcap-etl/csv/project1
+
+### CSV
+For SQLite, the database connection string format is:
+
+        SQLite:<database-file-path>
+
+For example:
+
+        SQLite:/home/redcap-etl/db/etl-data.db
 
 
 Transformation Rules
