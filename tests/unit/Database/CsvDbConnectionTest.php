@@ -400,7 +400,8 @@ class CsvDbConnectionTest extends TestCase
        
         #Verify rows were written as expected.
         $expectedRows = [
-            '"insert_id","record_id","full_name","sex","exercises___0","exercises___1","exercises___2","employment_status"' .  chr(10),
+            '"insert_id","record_id","full_name","sex","exercises___0","exercises___1",'
+            .'"exercises___2","employment_status"' .  chr(10),
             '1,1000,"Ima Tester",female,0,0,swimming,"Full-time"' . chr(10),
             '2,1001,"Spider Webb",male,aerobic,0,swimming,"Intern"' . chr(10)
         ];

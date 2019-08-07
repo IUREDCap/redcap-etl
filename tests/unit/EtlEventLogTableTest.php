@@ -56,12 +56,32 @@ class EtlEventLogTableTest extends TestCase
         $result = $etlEventLogTable->createEventLogDataRow($logId, $message);
 
         $this->assertEquals($tableName, $result->table->name, 'testCreateEventLogDataRow table name check');
-        $this->assertEquals($expectedTableParent, $result->table->parent, 'testCreateEventLogDataRow table parent check');
-        $this->assertEquals($expectedPrimaryName, $result->table->primary->name, 'testCreateEventLogDataRow primary name check');
-        $this->assertEquals($expectedPrimaryType, $result->table->primary->type, 'testCreateEventLogDataRow primary type check');
-        $this->assertEquals($expectedPrimaryDbName, $result->table->primary->dbName, 'testCreateEventLogDataRow primary dbName check');
+        $this->assertEquals(
+            $expectedTableParent,
+            $result->table->parent,
+            'testCreateEventLogDataRow table parent check'
+        );
+        $this->assertEquals(
+            $expectedPrimaryName,
+            $result->table->primary->name,
+            'testCreateEventLogDataRow primary name check'
+        );
+        $this->assertEquals(
+            $expectedPrimaryType,
+            $result->table->primary->type,
+            'testCreateEventLogDataRow primary type check'
+        );
+        $this->assertEquals(
+            $expectedPrimaryDbName,
+            $result->table->primary->dbName,
+            'testCreateEventLogDataRow primary dbName check'
+        );
         $this->assertEquals($logId, $result->data['log_id'], 'testCreateEventLogDataRow data1 check');
-        $this->assertGreaterThanOrEqual($now, strtotime($result->data['time']), 'testCreateEventLogDataRow data2 check');
+        $this->assertGreaterThanOrEqual(
+            $now,
+            strtotime($result->data['time']),
+            'testCreateEventLogDataRow data2 check'
+        );
         $this->assertEquals($message, $result->data['message'], 'testCreateEventLogDataRow data3 check');
     }
 }

@@ -80,10 +80,26 @@ class EtlLogTableTest extends TestCase
 
         $this->assertEquals($tableName, $result->table->name, 'testCreateLogDataRow table name check');
         $this->assertEquals($expectedTableParent, $result->table->parent, 'testCreateLogDataRow table parent check');
-        $this->assertEquals($expectedPrimaryName, $result->table->primary->name, 'testCreateLogDataRow primary name check');
-        $this->assertEquals($expectedPrimaryType, $result->table->primary->type, 'testCreateLogDataRow primary type check');
-        $this->assertEquals($expectedPrimaryDbName, $result->table->primary->dbName, 'testCreateLogDataRow primary dbName check');
-        $this->assertGreaterThanOrEqual($now, strtotime($result->data['start_time']), 'testCreateLogDataRow data1 check');
+        $this->assertEquals(
+            $expectedPrimaryName,
+            $result->table->primary->name,
+            'testCreateLogDataRow primary name check'
+        );
+        $this->assertEquals(
+            $expectedPrimaryType,
+            $result->table->primary->type,
+            'testCreateLogDataRow primary type check'
+        );
+        $this->assertEquals(
+            $expectedPrimaryDbName,
+            $result->table->primary->dbName,
+            'testCreateLogDataRow primary dbName check'
+        );
+        $this->assertGreaterThanOrEqual(
+            $now,
+            strtotime($result->data['start_time']),
+            'testCreateLogDataRow data1 check'
+        );
         $this->assertEquals($app, $result->data['app'], 'testCreateLogDataRow data2 check');
         $this->assertEquals($tablePrefix, $result->data['table_prefix'], 'testCreateLogDataRow data3 check');
         $this->assertEquals($batchSize, $result->data['batch_size'], 'testCreateLogDataRow data4 check');
