@@ -10,7 +10,8 @@ This is a list of the steps for setting up a REDCap-ETL development environment.
 
         sudo apt install php php-curl php-mbstring php-mysql php-xml
         sudo phpenmod mysqli   # enable mysqli extension
-        sudo phpenmod pdo_mysql # enable PDO extension for PHP 
+        sudo phpenmod pdo_mysql # enable PDO extension for PHP
+        sudo apt install php-sqlite3  # add PHP support for SQLite
         sudo apt install php-xdebug  # Install XDebug to be able to see phpunit test code coverage
 
 2. Install Composer (needed to get PHPCap and development dependencies)
@@ -235,9 +236,14 @@ file):
 
         MySQL:<db-host>:<db-username>:<db-password>:<db-name>
 
+You need to create a SQLite test database. Use the following commands
 
-The next thing you need to do is to create the configuration file
-for the Visits project:
+        cd tests/output
+        sqlite3 repeating-events.db
+
+
+The next thing you need to do is to create the configuration files
+for the "Repeating Events" and "Visits" projects:
 
 1. Copy the visits configuration and SQL post-processing files from the 
    tests/config-init directory to the tests/config

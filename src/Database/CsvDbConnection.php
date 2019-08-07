@@ -50,22 +50,24 @@ class CsvDbConnection extends DbConnection
         return file_exists($this->getTableFile($table));
     }
 
-    protected function dropTable($table)
+    protected function dropTable($table, $ifExists = false)
     {
-        $file = $this->getTableFile($table);
-        unlink($file);
-        return(1);
+        if (!$ifExists || ($ifExists && $this->existsTable($table))) {
+            $file = $this->getTableFile($table);
+            unlink($file);
+        }
     }
 
     public function createTable($table, $ifNotExists = false)
     {
-        $file = $this->getTableFile($table);
-        $fh = fopen($file, 'w');
+        if (!$ifNotExists || ($ifNotExists && !$this->existsTable($table))) {
+            $file = $this->getTableFile($table);
+            $fh = fopen($file, 'w');
 
-        $this->createTableHeader($fh, $table);
+            $this->createTableHeader($fh, $table);
 
-        fclose($fh);
-        return(1);
+            fclose($fh);
+        }
     }
 
     private function createTableHeader($fh, $table)
@@ -107,16 +109,6 @@ class CsvDbConnection extends DbConnection
         $fileHandle = fopen($labelViewFile, 'w');
         $this->createTableHeader($fileHandle, $table);
         fclose($fileHandle);
-    }
-
-    protected function existsRow($row)
-    {
-        return(false);
-    }
-
-    protected function updateRow($row)
-    {
-        return(1);
     }
 
 
@@ -256,6 +248,12 @@ class CsvDbConnection extends DbConnection
     public function processQueryFile($queryFile)
     {
         $message = "Processing a query file is not supported for CSV files";
+        throw new EtlException($message, EtlException::INPUT_ERROR);
+    }
+    
+    public function processQueries($queries)
+    {
+        $message = "Processing a queries is not supported for CSV files";
         throw new EtlException($message, EtlException::INPUT_ERROR);
     }
 }

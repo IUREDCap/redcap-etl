@@ -22,16 +22,6 @@ abstract class PdoDbConnection extends DbConnection
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
     }
 
-    protected function existsTable($table)
-    {
-
-        // Note: exists_table currently assumes that a table always exists,
-        //       as there is no practical problem with attempting to drop
-        //       a non-existent table
-
-        return(true);
-    }
-
 
     /**
      * Drops the specified table from the database.
@@ -39,11 +29,15 @@ abstract class PdoDbConnection extends DbConnection
      * @param Table $table the table object corresponding to the table in
      *     the database that will be deleted.
      */
-    protected function dropTable($table)
+    protected function dropTable($table, $ifExists = false)
     {
         // Define query
-        $query = "DROP TABLE IF EXISTS ". $this->escapeName($table->name);
-
+        if ($ifExists) {
+            $query = "DROP TABLE IF EXISTS ". $this->escapeName($table->name);
+        } else {
+            $query = "DROP TABLE ". $this->escapeName($table->name);
+        }
+        
         // Execute query
         try {
             $result = $this->db->exec($query);
@@ -229,26 +223,6 @@ abstract class PdoDbConnection extends DbConnection
         return(1);
     }
 
-
-    protected function existsRow($row)
-    {
-
-        // NOTE: For now, existsRow will assume that the row does not
-        //       exist and always return false. If the code ever needs
-        //       to maintain existing rows, this will need to be implemented
-
-        return(false);
-    }
-
-    protected function updateRow($row)
-    {
-
-        // NOTE: For now, updateRow is just a stub that returns true. It
-        //       is not expected to be reached. If the code ever needs to
-        //       maintain existing rows, this will need to be implemented.
-
-        return(1);
-    }
 
     /**
      * Inserts a single row into the datatabase.
