@@ -9,100 +9,17 @@ use IU\REDCapETL\Schema\FieldType;
 use IU\REDCapETL\Schema\Table;
 
 /**
- * Database connection class for MySQL databases that uses PDO (EXPERIMENTAL).
- * This class is considered as experimental, and is not currently used.
- * There are 2 known problems with this class. Verification of the server's
- * SSL certificate does not work. And, while post-processing of SQL queries
- * appears to basically work, if there are errors in the post-processing SQL,
- * the queries (some or all of them) will fail without notice.
+ * Abstract PDO Database connection class.
  */
-class PdoMysqlDbConnection extends DbConnection
+abstract class PdoDbConnection extends DbConnection
 {
-    private $db;
+    protected $db;
+
+    const AUTO_INCREMENT_TYPE = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
 
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
-
-        // Initialize error string
-        $this->errorString = '';
-
-        #--------------------------------------------------------------
-        # Get the database connection values
-        #--------------------------------------------------------------
-        $dbValues = DbConnection::parseConnectionString($dbString);
-        $port = null;
-        if (count($dbValues) == 4) {
-            list($host,$username,$password,$database) = DbConnection::parseConnectionString($dbString);
-        } elseif (count($dbValues) == 5) {
-            list($host,$username,$password,$database,$port) = DbConnection::parseConnectionString($dbString);
-            $port = intval($port);
-        } else {
-            $message = 'The database connection is not correctly formatted: ';
-            if (count($dbValues) < 4) {
-                $message .= 'not enough values.';
-            } else {
-                $message .= 'too many values.';
-            }
-            $code = EtlException::DATABASE_ERROR;
-            #throw new Exception($message, $code);
-            throw new EtlException($message, $code);
-        }
-
-        if (empty($port)) {
-            $port = null;
-        }
-        
-        $driver  = 'mysql';
-        $charset = 'utf8mb4';
-
-        $port = 3306;
-
-        $dataSourceName = "{$driver}:host={$host};dbname={$database};charset={$charset}";
-        if (isset($port)) {
-            $dataSourceName .= ";port={$port}";
-        }
-
-        $options = [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::MYSQL_ATTR_MULTI_STATEMENTS => true,
-            \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false
-        ];
-
-        if ($ssl) {
-            $options[\PDO::MYSQL_ATTR_SSL_CA] = $caCertFile;
-        }
-
-        try {
-            $this->db = new \PDO($dataSourceName, $username, $password, $options);
-        } catch (\Exception $exception) {
-            $message = 'Database connection error for database "'.$database.'": '.$exception->getMessage();
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-        #$this->mysqli = mysqli_init();
-        #if ($sslVerify && !empty($caCertFile)) {
-            #$this->mysqli->ssl_set(null, null, $caCertFile, null, null);
-            #$this->mysqli->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
-        #}
-        #$this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
-
-        #if ($this->mysqli->connect_errno) {
-        #    $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;
-        #    $code = EtlException::DATABASE_ERROR;
-        #    throw new EtlException($message, $code);
-        #}
-    }
-
-    protected function existsTable($table)
-    {
-
-        // Note: exists_table currently assumes that a table always exists,
-        //       as there is no practical problem with attempting to drop
-        //       a non-existent table
-
-        return(true);
     }
 
 
@@ -112,11 +29,15 @@ class PdoMysqlDbConnection extends DbConnection
      * @param Table $table the table object corresponding to the table in
      *     the database that will be deleted.
      */
-    protected function dropTable($table)
+    protected function dropTable($table, $ifExists = false)
     {
         // Define query
-        $query = "DROP TABLE IF EXISTS ". $this->escapeName($table->name);
-
+        if ($ifExists) {
+            $query = "DROP TABLE IF EXISTS ". $this->escapeName($table->name);
+        } else {
+            $query = "DROP TABLE ". $this->escapeName($table->name);
+        }
+        
         // Execute query
         try {
             $result = $this->db->exec($query);
@@ -173,7 +94,7 @@ class PdoMysqlDbConnection extends DbConnection
                     break;
 
                 case FieldType::AUTO_INCREMENT:
-                    $fieldDef .= 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+                    $fieldDef .= static::AUTO_INCREMENT_TYPE;
                     break;
                     
                 case FieldType::FLOAT:
@@ -263,7 +184,24 @@ class PdoMysqlDbConnection extends DbConnection
             }
         }
 
-        $query = 'CREATE OR REPLACE VIEW '.$this->escapeName($table->name.$this->labelViewSuffix).' AS ';
+        #------------------------------------------------
+        # Drop the view if it exists
+        #------------------------------------------------
+        $query = 'DROP VIEW IF EXISTS '.$this->escapeName($table->name.$this->labelViewSuffix);
+
+        # Execute query
+        try {
+            $result = $this->db->exec($query);
+        } catch (\Exception $exception) {
+            $message = 'MySQL error in query "'.$query.'": '.$exception->getMessage();
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($message, $code);
+        }
+
+        #------------------------------------------------------------
+        # Create the view
+        #------------------------------------------------------------
+        $query = 'CREATE VIEW '.$this->escapeName($table->name.$this->labelViewSuffix).' AS ';
 
         $select = 'SELECT '. implode(', ', $selects);
         $from = 'FROM '.$this->escapeName($table->name);
@@ -285,26 +223,6 @@ class PdoMysqlDbConnection extends DbConnection
         return(1);
     }
 
-
-    protected function existsRow($row)
-    {
-
-        // NOTE: For now, existsRow will assume that the row does not
-        //       exist and always return false. If the code ever needs
-        //       to maintain existing rows, this will need to be implemented
-
-        return(false);
-    }
-
-    protected function updateRow($row)
-    {
-
-        // NOTE: For now, updateRow is just a stub that returns true. It
-        //       is not expected to be reached. If the code ever needs to
-        //       maintain existing rows, this will need to be implemented.
-
-        return(1);
-    }
 
     /**
      * Inserts a single row into the datatabase.
@@ -486,7 +404,10 @@ class PdoMysqlDbConnection extends DbConnection
     public function processQueries($queries)
     {
         try {
-            $result = $this->db->query($queries);
+            $querySet = $this->parseSqlQueries($queries);
+            foreach ($querySet as $query) {
+                $result = $this->db->query($query);
+            }
         } catch (\Exception $exception) {
             $error = "Post-processing query failed: ".$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
@@ -497,7 +418,7 @@ class PdoMysqlDbConnection extends DbConnection
     /**
      * Escapes a name for use as a table or column name in a query.
      */
-    private function escapeName($name)
+    protected function escapeName($name)
     {
         $name = '`'.str_replace("`", "``", $name).'`';
         return $name;

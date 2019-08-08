@@ -1,6 +1,9 @@
 REDCap-ETL Developer Guide
 ======================================
 
+This guide is intended for people who want to modify or extend the REDCap-ETL software.
+If you just want to use the REDCap-ETL software, please see the installation and configuration guides.
+
 Development Environment Setup
 -------------------------------------
 
@@ -10,7 +13,8 @@ This is a list of the steps for setting up a REDCap-ETL development environment.
 
         sudo apt install php php-curl php-mbstring php-mysql php-xml
         sudo phpenmod mysqli   # enable mysqli extension
-        sudo phpenmod pdo_mysql # enable PDO extension for PHP 
+        sudo phpenmod pdo_mysql # enable PDO extension for PHP
+        sudo apt install php-sqlite3  # add PHP support for SQLite
         sudo apt install php-xdebug  # Install XDebug to be able to see phpunit test code coverage
 
 2. Install Composer (needed to get PHPCap and development dependencies)
@@ -41,23 +45,28 @@ works.
         CREATE USER 'etl_user'@'localhost' IDENTIFIED BY 'etlPassword';
         GRANT ALL ON `etl_test`.* TO 'etl_user'@'localhost';
 
-6. Install Apache (used for DET (Data Entry Trigger) web scripts)
+6. Install SQLite
+
+        sudo apt install sqlite3
+        sudo apt install sqlitebrowser  # optional
+
+7. Install Apache (used for DET (Data Entry Trigger) web scripts)
 
         sudo apt install apache2 libapache2-mod-php
 
-7. Install Git
+8. Install Git
 
         sudo apt install git
         # Add e-mail and name information, for example:
         git config --global user.email "jsmith@someuniversity.edu"
         git config --global user.name "J Smith"
 
-8. Get the code. Execute the following command in the directory where
+9. Get the code. Execute the following command in the directory where
    you want to put REDCap-ETL:
 
         git clone https://github.com/IUREDCap/redcap-etl
 
-9. Install Composer dependencies. In the top-level directory where the code was downloaded, run:
+10. Install Composer dependencies. In the top-level directory where the code was downloaded, run:
 
         composer install
 
@@ -93,7 +102,9 @@ are installed
 * _phpunit.xml_ - configuration file for automated tests run with PHPUnit 
 * _README.md_ - main README file for REDCap-ETL
 
+### REDCap-ETL Software Architecture
 
+For more information, see: [REDCap-ETL Software Architecture](SoftwareArchitecture.md)
 
 
 
@@ -137,8 +148,8 @@ the tests have much better code coverage when they are.
 
 #### Integration tests
 To set up the integration tests, you need to first set up
-the Basic Demography REDCap project that has the data for the
-tests:
+the "Basic Demography" and "Repeating Events" REDCap projects that have
+the data for the tests:
 
 1. In REDCap, create one project using the
    "Upload a REDCap project XML file" option, for each of the
@@ -191,7 +202,8 @@ in the top-level directory of your REDCap-ETL installation:
 
 
 #### System tests
-To set up the system steps:
+
+Steps for setting up the REDCap projects:
 
 1. In REDCap, create a project using the
    "Upload a REDCap project XML file" option for each of the following
@@ -206,6 +218,10 @@ To set up the system steps:
    project tokens need to have export and "API Import/Update"
    permissions. The data project API token needs to have 
    "API Export" permission.
+
+3. If you did not already set up the "Repeating Events" project as described
+    in the steps for setting up integration tests, then you need to set
+    that up also.
 
 In the configuration project (created from the VisitsConfig.REDCap.xml
 file):
@@ -225,9 +241,19 @@ file):
 
         MySQL:<db-host>:<db-username>:<db-password>:<db-name>
 
+You need to create SQLite test databases. Use the following commands
 
-The next thing you need to do is to create the configuration file
-for the Visits project:
+        cd tests/output
+        sqlite3 repeating-events.db
+        sqlite3 visits.db
+
+When in the sqlite shell from executing the above sqlite3 commands, enter the following:
+
+        .databases
+        .quit
+
+The next thing you need to do is to create the configuration files
+for the "Repeating Events" and "Visits" projects:
 
 1. Copy the visits configuration and SQL post-processing files from the 
    tests/config-init directory to the tests/config
@@ -235,7 +261,10 @@ for the Visits project:
    
    	    cp tests/config-init/repeating-events-mysql-rules.txt tests/config
 	    cp tests/config-init/repeating-events-mysql.ini tests/config
+        cp tests/config-init/repeating-events-sqlite.ini tests/config
         cp tests/config-init/visits.ini tests/config
+        cp tests/config-init/visits-sqlite.ini tests/config
+        cp tests/config-init/visits-rules.txt tests/config
         cp tests/config-init/visits.sql tests/config
 
 2. Edit the files __tests/config/visits.ini__ and __tests/config/repeating-events-mysql.ini__, and set the 

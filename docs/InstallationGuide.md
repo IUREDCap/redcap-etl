@@ -76,7 +76,7 @@ Example commands for setting up an Ubuntu 16 system:
 This needs to be set up if you want to load your extracted and transformed data into a
 MySQL database.
 
-Example commands for setting up MySQL on Ubuntu 16
+Example commands for setting up MySQL on Ubuntu 16:
 
     sudo apt install php-mysql
     sudo phpenmod mysqli    # enable mysqli extension
@@ -93,8 +93,23 @@ Create a database and database user that will be used as the place to store the 
     CREATE USER 'etl_user'@'localhost' IDENTIFIED BY 'etlPassword';
     GRANT ALL ON `etl`.* TO 'etl_user'@'localhost';
 
+### Step 3 (Optional) - Set up SQLite
 
-### Step 3 - Get the REDCap-ETL Software
+This needs to be set up if you want to load your extracted data into a SQLite database.
+
+Example commands for setting up SQLite on Ubuntu 16:
+
+    sudo apt install php-sqlite3  # add PHP support for SQLite
+    sudo apt install sqlite3
+    sudo apt install sqlitebrowser   # optional
+
+To create a database, in the directory where you want the database, execute, for example:
+
+    sqlite3 etl-data.db
+    # then enter ".q" to exit SQLite
+
+
+### Step 4 - Get the REDCap-ETL Software
 
 The basic Git command to get the code is:
 
@@ -111,7 +126,7 @@ system:
     sudo chown -R etl:etl /opt/redcap-etl
 
 
-### Step 4 (Optional/Deprecated) - Set up a Configuration Project
+### Step 5 (Optional/Deprecated) - Set up a Configuration Project
 
 Setting up a REDCap configuration project is optional. Configuration
 can be specified using only the configuration file (see below) instead.
@@ -140,13 +155,13 @@ To be able to set up the configuration project, you will need a data project and
 
 See [Configuration Guide](ConfigurationGuide.md) for more information.
 
-### Step 5 (Optional/Deprecated) - Set up a Logging Project
+### Step 6 (Optional/Deprecated) - Set up a Logging Project
 
 In REDCap, create a new project using the "Upload a REDCap project XML file" option using the file **projects/redcap-etl-log.xml** from REDCap-ETL downloaded previously. Then get an API token for this project, and then set the field for this in the configuration project.
 
 
 
-### Step 6 - Create a Configuration File
+### Step 7 - Create a Configuration File
 
 The configuration file can be used to specify your entire configuration, or it can
 be used in conjunction with a configuration project.
@@ -168,7 +183,7 @@ See this file, and the [Configuration Guide](ConfigurationGuide.md)
 for more information about the configuration properties.
 
 
-### Step 7 (Optional) - Set up an E-mail Server
+### Step 8 (Optional) - Set up an E-mail Server
 
 You can optionally set up an e-mail server that will be used for logging
 errors using e-mail to a specified list of users.
@@ -180,7 +195,7 @@ On Ubuntu 16, for example, you can set up an e-mail server using the following c
 The script **bin/email_test.php** can be used to test if e-mail logging
 works.
 
-### Step 8 (Optional) - Set up a Data Entry Trigger
+### Step 9 (Optional) - Set up a Data Entry Trigger
 
 Setting up a Data Entry Trigger (DET) will allow you to run the ETL
 process from REDCap. Once set up, when you save the "Run" form in the

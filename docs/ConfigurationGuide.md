@@ -46,6 +46,7 @@ database connection string. This string has the following format:
 Currently, the supported database connection types are
 
 * **MySQL**
+* **SQLite**
 * **CSV** (comma-separated values).
 
 
@@ -62,7 +63,7 @@ Example MySQL database connection strings:
 
 **Note:** Since the ':' character is used as a separator for the database
 connection string, if any of the values
-in your database connection contain a ':', it needs to be escaped with a blackslash.
+in your database connection contain a ':', it needs to be escaped with a backslash.
 For example, if your password is "my:password", then it would need to be specified
 as "my\:password".
 
@@ -75,6 +76,15 @@ For CSV, the database connection string format is:
 For example:
 
         CSV:/home/redcap-etl/csv/project1
+
+### CSV
+For SQLite, the database connection string format is:
+
+        SQLite:<database-file-path>
+
+For example:
+
+        SQLite:/home/redcap-etl/db/etl-data.db
 
 
 Transformation Rules
