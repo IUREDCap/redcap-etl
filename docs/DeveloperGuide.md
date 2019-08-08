@@ -247,6 +247,10 @@ You need to create SQLite test databases. Use the following commands
         sqlite3 repeating-events.db
         sqlite3 visits.db
 
+When in the sqlite shell from executing the above sqlite3 commands, enter the following:
+
+        .databases
+        .quit
 
 The next thing you need to do is to create the configuration files
 for the "Repeating Events" and "Visits" projects:

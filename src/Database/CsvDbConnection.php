@@ -68,6 +68,7 @@ class CsvDbConnection extends DbConnection
 
             fclose($fh);
         }
+        return 1;
     }
 
     private function createTableHeader($fh, $table)
