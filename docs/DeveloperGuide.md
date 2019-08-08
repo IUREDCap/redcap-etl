@@ -102,10 +102,6 @@ are installed
 * _phpunit.xml_ - configuration file for automated tests run with PHPUnit 
 * _README.md_ - main README file for REDCap-ETL
 
-### REDCap-ETL Software Architecture
-
-For more information, see: [REDCap-ETL Software Architecture](SoftwareArchitecture.md)
-
 
 
 Automated Tests
@@ -378,9 +374,13 @@ To view the API documentation, open the following file with a web browser:
 Note that the version of apigen used does not appear to work 
 with PHP 7.2.
 
+---
 
-Coding Standards Compliance
-------------------------------------
+Modifying the Code
+------------------------------
+
+
+### Coding Standards Compliance
 
 REDCap-ETL follows these PHP coding standards:
 
@@ -396,3 +396,28 @@ to check for coding standards compliance:
     ./vendor/bin/phpcs
 
 The coding standards checks that are done (by default) are configured in the file __phpcs.xml__ in the top-level directory.
+
+
+
+### REDCap-ETL Software Architecture
+
+For more information, see: [REDCap-ETL Software Architecture](SoftwareArchitecture.md)
+
+
+### Adding a New Database Type
+
+If you want to add a new database type (e.g., Oracle, PostgreSQL) to REDCap-ETL you need to
+do the following:
+
+* Create a new database connection class for the new database type that:
+    * extends class PdoDbConnection, if the connection uses
+        [PDO](https://www.php.net/manual/en/book.pdo.php) (PHP Data Objects)
+    * extends class DbConnection, if the connection does not use PDO
+* Modify class DbConnectionFactory to add your new database type:
+    * Add a new constant for your database type
+    * Add a case for your new database type in the constructor
+
+
+![REDCap-ETL Database Connection Classes](redcap-etl-db-connections.png)
+
+
