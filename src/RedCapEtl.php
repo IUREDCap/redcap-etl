@@ -204,8 +204,12 @@ class RedCapEtl
         # Initialize the schema
         #-----------------------------------------
         $this->schema = new Schema();
-                
 
+        $this->setupDbConnection();
+    }
+
+    private function setupDbConnection()
+    {
         #---------------------------------------------------
         # Create a database connection for the database
         # where the transformed REDCap data will be stored
@@ -754,6 +758,86 @@ class RedCapEtl
         return true;
     }
 
+    /**
+     * Runs ETL and returns a CSV zip file of the tables generated.
+     */
+    public function exportEtlCsvZip()
+    {
+        #--------------------------------------------------
+        # Create temporary directory to store CSV files in
+        #--------------------------------------------------
+        $tempDir = sys_get_temp_dir();
+
+        # If the directory doesn't end with a separator, add one
+        if (substr($tempDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
+            $tempDir .= DIRECTORY_SEPARATOR;
+        }
+
+        $tempDir .= uniqid('etl-csv-', true) . DIRECTORY_SEPARATOR;
+
+        $result = mkdir($tempDir, 0700);
+
+        if ($result === false) {
+            $message = 'Unable to create directory for CSV files.';
+            throw new EtlException($message, EtlException::FILE_ERROR);
+        }
+
+        $dbConnection = DbConnectionFactory::DBTYPE_CSV . ':' . $tempDir;
+        $this->configuration->setDbConnection($dbConnection);
+        $this->setupDbConnection();
+
+        $this->run();
+
+        #-------------------------------------------------
+        # Create zip file
+        #-------------------------------------------------
+        $zip = new \ZipArchive();
+
+        $zipFile = $tempDir . 'redcap-etl-csv.zip';
+        $result = $zip->open($tempDir . 'redcap-etl-csv.zip', \ZipArchive::CREATE);
+        if ($result === false) {
+            $message = 'Unable to create zip file.';
+            throw new EtlException($message, EtlException::FILE_ERROR);
+        }
+
+        $pattern = $tempDir.'*'.\IU\REDCapETL\Database\CsvDbConnection::FILE_EXTENSION;
+        $options = ['remove_all_path' => true];
+        $zip->addGlob($pattern, null, $options);
+        $zip->close();
+
+        $files = glob($tempDir.'*'.\IU\REDCapETL\Database\CsvDbConnection::FILE_EXTENSION);
+        print_r($files);
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+
+
+        return $zipFile;
+    }
+
+    /**
+     * Runs ETL and then returns an SQLite database file of the tables generated.
+     */
+    public function exportEtlSqlite()
+    {
+        if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
+            $message = 'The REDCap instance used does not support the SQLite database.';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+
+        $filePath = tempnam(sys_get_temp_dir(), 'redcap-etl-sqlite-');
+
+        # Set database to SQLite with memory database file
+        $dbConnection = DbConnectionFactory::DBTYPE_SQLITE . ':' . $filePath;
+        $this->configuration->setDbConnection($dbConnection);
+        $this->setupDbConnection();
+
+        $this->run();
+
+        return $filePath;
+    }
 
     /**
      * Runs the entire ETL process.
