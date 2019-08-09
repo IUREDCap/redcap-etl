@@ -806,7 +806,6 @@ class RedCapEtl
         $zip->close();
 
         $files = glob($tempDir.'*'.\IU\REDCapETL\Database\CsvDbConnection::FILE_EXTENSION);
-        print_r($files);
         foreach ($files as $file) {
             if (file_exists($file)) {
                 unlink($file);
