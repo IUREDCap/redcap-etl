@@ -52,7 +52,6 @@ class CsvDbConnectionTest extends TestCase
         # create the table object with just column headings
         # that will be written to a csv file
         #############################################################
-        #print "Enter testCreateTable" .PHP_EOL;
         $name = 'test';
         $parent = 'test_id';
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
@@ -127,7 +126,6 @@ class CsvDbConnectionTest extends TestCase
         }
 
         $this->assertEquals($expected, $header, 'CsvDbConnection createTable header is correct check');
-        #print "Exit  testCreateTable" .PHP_EOL;
     }
 
     /**
@@ -136,7 +134,6 @@ class CsvDbConnectionTest extends TestCase
     */
     public function testInsertRows()
     {
-        #print "Enter testInsertRows" .PHP_EOL;
         #create the table object
         $name = 'registration';
         $parent = 'registration_id';
@@ -250,13 +247,11 @@ class CsvDbConnectionTest extends TestCase
         }
 
         $this->assertTrue($fileContentsOK, 'CsvDbConnection insertRows File Contents check');
-        #print "Exit  testInsertRows" .PHP_EOL;
     }
 
 
     public function testInsertRowsWithLookup()
     {
-        #print "Entering testInsertRowsWithLookup" . PHP_EOL;
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
 
         # create the lookup-table object that has the label values
@@ -418,14 +413,12 @@ class CsvDbConnectionTest extends TestCase
         }
 
         $this->assertTrue($fileContentsOK, 'CsvDbConnection insertRowsWithLookup File Contents check');
-        #print "Exit     testInsertRowsWithLookup" . PHP_EOL;
     }
 
 
     public function testProcessQueryFile()
     {
 
-        #print "Entering testProcessQueryFile" . PHP_EOL;
         # Create the csvDbConnection object
         $tablePrefix = null;
         $labelViewSuffix = null;
@@ -465,12 +458,10 @@ class CsvDbConnectionTest extends TestCase
             $exception->getMessage(),
             'processQueryFile exception message check'
         );
-        #print "Exit     testProcessQueryFile" . PHP_EOL;
     }
 
     public function testReplaceLookupView()
     {
-        #print "Entering testReplaceQueryFile" . PHP_EOL;
         #############################################################
         # create the table object that will be written to a csv file
         #############################################################
@@ -575,7 +566,6 @@ class CsvDbConnectionTest extends TestCase
         }
 
         $this->assertEquals($expected, $header, 'CsvDbConnection replaceLookupView header is correct check');
-        #print "Exit     testReplaceQueryFile" . PHP_EOL;
     }
 
    /**
@@ -586,7 +576,6 @@ class CsvDbConnectionTest extends TestCase
     */
     public function testExistsTableAndDropTable()
     {
-        #print "Entering testExistsTableAndDropTable" . PHP_EOL;
         #create table object
         $name = 'test0';
         $parent = 'test_id';
@@ -636,7 +625,6 @@ class CsvDbConnectionTest extends TestCase
             $fileCreationTime,
             'csvDbConnection existsTable and dropTable file was dropped and recreated check'
         );
-        #print "Exit     testExistsTableAndDropTable" . PHP_EOL;
     }
 
    /**
@@ -645,7 +633,6 @@ class CsvDbConnectionTest extends TestCase
     */
     public function testExistsRow()
     {
-        #print "Entering testExistsRow" . PHP_EOL;
         #create table object
         $name = 'test1';
         $parent = 'test_id';
@@ -700,15 +687,8 @@ class CsvDbConnectionTest extends TestCase
 
         # Execute the tests for this method
         $rows = $rootTable->getRows();
-        ##print "in testExistsRow, rows  count is: ";
-        ##print_r ($rows[0]->data);
-        ##print count($rows) . PHP_EOL;
-        ##print 'about to enter foreach in testExists' . PHP_EOL;
         foreach ($rows as $row) {
-            ##print "in testExistsRow, in foreach row, row is " . PHP_EOL;
-            ##print_r ($row);
             $result = $csvDbConnection->storeRow($row, $foreignKey, $suffix, RowsType::BY_EVENTS);
-            ##print "in testExistsRow, after store row" . PHP_EOL;
         }
         $expected = 1;
         $this->assertEquals($expected, $result, 'csvDbConnection existsRow return check');
@@ -732,6 +712,5 @@ class CsvDbConnectionTest extends TestCase
         }
 
         $this->assertTrue($fileContentsOK, 'CsvDbConnection existsRow row added check');
-        #print "Exit     testExistsRow" . PHP_EOL;
     }
 }
