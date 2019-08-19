@@ -812,7 +812,6 @@ class RedCapEtl
             }
         }
 
-
         return $zipFile;
     }
 
