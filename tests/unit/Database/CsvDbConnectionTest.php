@@ -24,7 +24,8 @@ class CsvDbConnectionTest extends TestCase
     protected $sslVerify = null;
     protected $caCertFile = null;
 
-    protected $suffixes = '';
+    protected $suffix = null;
+    protected $suffixes = [];
     protected $rowsType = RowsType::ROOT;
     protected $recordIdFieldName = 'record_id';
 
@@ -137,13 +138,9 @@ class CsvDbConnectionTest extends TestCase
         #create the table object
         $name = 'registration';
         $parent = 'registration_id';
-        $rowsType = RowsType::ROOT;
-        $suffixes = [];
-        $recordIdFieldName = 'record_id';
-
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
 
-        $rootTable = new Table($name, $parent, $keyType, array($rowsType), $suffixes, $recordIdFieldName);
+        $rootTable = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $this->recordIdFieldName);
 
         # Create fields in the Table object
         $field0 = new Field(
@@ -189,7 +186,6 @@ class CsvDbConnectionTest extends TestCase
 
         # Insert two rows into the table object
         $foreignKey = null;
-        $suffix = null;
 
         $data1 = [
             'record_id' => 1000,
@@ -199,7 +195,7 @@ class CsvDbConnectionTest extends TestCase
             'gpa' => 4.012,
             'email' => 'here@there.com'
         ];
-        $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
+        $rootTable->createRow($data1, $foreignKey, $this->suffix, RowsType::BY_EVENTS);
 
         $data2 = [
             'record_id' => 1001,
@@ -209,7 +205,7 @@ class CsvDbConnectionTest extends TestCase
             'gpa' => 4.345,
             'email' => ''
         ];
-        $rootTable->createRow($data2, $foreignKey, $suffix, RowsType::BY_EVENTS);
+        $rootTable->createRow($data2, $foreignKey, $this->suffix, RowsType::BY_EVENTS);
 
         # Create the csv file
         $tablePrefix = null;
@@ -285,11 +281,8 @@ class CsvDbConnectionTest extends TestCase
         #create the table object that has the fields to be translated to labels
         $name = 'insertRows';
         $parent = 'insert_id';
-        $rowsType = RowsType::ROOT;
-        $suffixes = [];
-        $recordIdFieldName = 'record_id';
 
-        $rootTable1 = new Table($name, $parent, $keyType, array($rowsType), $suffixes, $recordIdFieldName);
+        $rootTable1 = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $this->recordIdFieldName);
         #$rootTable->usesLookup = 'sex';
         $rootTable1->usesLookup = true;
 
@@ -350,7 +343,6 @@ class CsvDbConnectionTest extends TestCase
 
         # Insert two rows into the table object
         $foreignKey = null;
-        $suffix = null;
         $data1 = [
             'record_id' => 1000,
             'full_name' => 'Ima Tester',
@@ -358,7 +350,7 @@ class CsvDbConnectionTest extends TestCase
             'exercises___2' => 1,
             'employment_status' => 'F'
         ];
-        $rootTable1->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
+        $rootTable1->createRow($data1, $foreignKey, $this->suffix, RowsType::BY_EVENTS);
 
 
         $data2 = [
@@ -369,7 +361,7 @@ class CsvDbConnectionTest extends TestCase
             'exercises___2' => 1,
             'employment_status' => 'I'
         ];
-        $rootTable1->createRow($data2, $foreignKey, $suffix, RowsType::BY_EVENTS);
+        $rootTable1->createRow($data2, $foreignKey, $this->suffix, RowsType::BY_EVENTS);
 
         # Create the csvDbConnection object
         $tablePrefix = null;
@@ -467,13 +459,10 @@ class CsvDbConnectionTest extends TestCase
         #############################################################
         $name = 'demo';
         $parent = 'demo_id';
-        $rowsType = RowsType::ROOT;
-        $suffixes = '';
-        $recordIdFieldName = 'record_id';
 
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
 
-        $rootTable = new Table($name, $parent, $keyType, array($rowsType), $suffixes, $recordIdFieldName);
+        $rootTable = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $this->recordIdFieldName);
 
         # Create fields in the Table object
         $field0 = new Field(
@@ -509,13 +498,11 @@ class CsvDbConnectionTest extends TestCase
         #create the lookup table
         $name = 'raceLookup';
         $parent = $primaryId;
-        $rowsType = RowsType::ROOT;
-        $suffixes = '';
         $recordIdFieldName = '';
 
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
 
-        $lookupTable = new Table($name, $parent, $keyType, array($rowsType), $suffixes, $recordIdFieldName);
+        $lookupTable = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $recordIdFieldName);
 
         #add fields to the table
         $fieldPrimary   = new Field($primaryId, FieldType::STRING);
@@ -662,12 +649,11 @@ class CsvDbConnectionTest extends TestCase
         $rootTable->addField($field1);
 
         $foreignKey = null;
-        $suffix = null;
         $row = [
             'record_id' => 1001,
             'full_name' => 'Ima Tester'
         ];
-        $rootTable->createRow($row, $foreignKey, $suffix, RowsType::BY_EVENTS);
+        $rootTable->createRow($row, $foreignKey, $this->suffix, RowsType::BY_EVENTS);
 
         # Create the CsvDbConnection
         $tablePrefix = null;
@@ -688,7 +674,7 @@ class CsvDbConnectionTest extends TestCase
         # Execute the tests for this method
         $rows = $rootTable->getRows();
         foreach ($rows as $row) {
-            $result = $csvDbConnection->storeRow($row, $foreignKey, $suffix, RowsType::BY_EVENTS);
+            $result = $csvDbConnection->storeRow($row, $foreignKey, $this->suffix, RowsType::BY_EVENTS);
         }
         $expected = 1;
         $this->assertEquals($expected, $result, 'csvDbConnection existsRow return check');
