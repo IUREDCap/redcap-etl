@@ -140,7 +140,14 @@ class CsvDbConnectionTest extends TestCase
         $parent = 'registration_id';
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
 
-        $rootTable = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $this->recordIdFieldName);
+        $rootTable = new Table(
+            $name,
+            $parent,
+            $keyType,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
 
         # Create fields in the Table object
         $field0 = new Field(
@@ -282,8 +289,14 @@ class CsvDbConnectionTest extends TestCase
         $name = 'insertRows';
         $parent = 'insert_id';
 
-        $rootTable1 = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $this->recordIdFieldName);
-        #$rootTable->usesLookup = 'sex';
+        $rootTable1 = new Table(
+            $name,
+            $parent,
+            $keyType,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
         $rootTable1->usesLookup = true;
 
         # Create fields in the data table object
@@ -462,7 +475,14 @@ class CsvDbConnectionTest extends TestCase
 
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
 
-        $rootTable = new Table($name, $parent, $keyType, array($this->rowsType), $this->suffixes, $this->recordIdFieldName);
+        $rootTable = new Table(
+            $name,
+            $parent,
+            $keyType,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
 
         # Create fields in the Table object
         $field0 = new Field(

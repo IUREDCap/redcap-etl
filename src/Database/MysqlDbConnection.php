@@ -441,14 +441,21 @@ class MysqlDbConnection extends DbConnection
 
     public function processQueryFile($queryFile)
     {
-        $queries = file_get_contents($queryFile);
-        if ($queries === false) {
-            $error = 'Could not access query file "'.$queryFile.'": '
-                .error_get_last();
+        if (file_exists($queryFile)) {
+            $queries = file_get_contents($queryFile);
+            if ($queries === false) {
+                $error = 'processQueryFile: Could not access query file "'.$queryFile.'": '
+                    .error_get_last()['message'];
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($error, $code);
+            } else {
+                $this->processQueries($queries);
+            }
+        } else {
+            $error = "Could not access query file $queryFile: "
+                 .error_get_last()['message'];
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
-        } else {
-            $this->processQueries($queries);
         }
     }
     
