@@ -17,10 +17,10 @@ use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\Table;
 
 /**
-* Integration tests for the MysqlDbConnection class.
+* Integration tests for database classes.
 */
 
-class MysqlDatabaseTest extends TestCase
+class DatabasesTest extends TestCase
 {
     private static $logger;
     private static $configFile = __DIR__.'/../config/repeating-events-mysql.ini';
@@ -35,19 +35,22 @@ class MysqlDatabaseTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$logger = new Logger('mysqldatabase_integration_test');
+        self::$logger = new Logger('databases_integration_test');
     }
 
     /**
-    * This tests the SSL MySQL connection option using branch1 of the redcap MySQL
-    * database server. It depends on the certificate being in tests/config/interim.crt.
-    * If the certificate cannot be found, the test is skipped.
-    */
-    public function testConstructorWithSsl()
+     * This tests the SSL MySQL connection option of the MysqlDbConnection class
+     * using branch1 of the redcap MySQL database server. It depends on the
+     * SSL certificate being in tests/config/interim.crt. If the certificate cannot
+     *be found, the test is skipped.
+     */
+    public function testMysqlDbConnectionConstructorWithSsl()
     {
         $caCertFile = __DIR__.'/../config/interim.crt';
         $configFile = __DIR__.'/../config/mysql-ssl.ini';
         $configuration = new Configuration(self::$logger, $configFile);
+        $skipTestMessage = "DatabasesTest, testMysqlDbConnectionConstructorWithSsl skipped.";
+
         if (file_exists($configFile)) {
             if (file_exists($caCertFile)) {
                 $dbInfo = $configuration->getMySqlConnectionInfo();
@@ -67,20 +70,65 @@ class MysqlDatabaseTest extends TestCase
                 # verify object was created
                 $this->assertNotNull(
                     $mysqlDbConnection,
-                    'mysqlsDbConnection object created, ssl db user check'
+                    'DatabasesTest, mysqlDbConnection object created, ssl db user check'
                 );
             } else {
-                $this->markTestSkipped("Test skipped. $caCertFile not found.");
+                $this->markTestSkipped($skipTestMessage . "$caCertFile not found.");
             }
         } else {
-            $this->markTestSkipped("Test skipped. $configFile not found.");
+            $this->markTestSkipped($skipTestMessage . "$configFile not found.");
         }
     }
 
+    public function testDbConnectionFactoryConstructor()
+    {
+        $dbConnectionFactory = new DbConnectionFactory();
+
+        $configuration = new Configuration(self::$logger, self::$configFile);
+        $dbInfo = $configuration->getMySqlConnectionInfo();
+        $dbString = implode(":", $dbInfo);
+        $sslVerify = null;
+        $caCertFile = null;
+         
+        ### test MySQL
+        $connectionString = "MySQL:$dbString";
+        $mysqlDbFactoryConnection = $dbConnectionFactory->createDbConnection(
+            $connectionString,
+            $this->ssl,
+            $sslVerify,
+            $caCertFile,
+            $this->tablePrefix,
+            $this->labelViewSuffix
+        );
+
+        # verify object was created
+        $this->assertNotNull(
+            $mysqlDbFactoryConnection,
+            'DatabasesTest, DbConnectionFactory, MySQL object creation check'
+        );
+
+        ### test SQLite
+        $connectionString = 'SQLite:./tests/output/sqliteTest.db';
+        $sqliteDbFactoryConnection = $dbConnectionFactory->createDbConnection(
+            $connectionString,
+            $this->ssl,
+            $sslVerify,
+            $caCertFile,
+            $this->tablePrefix,
+            $this->labelViewSuffix
+        );
+
+        # verify object was created
+        $this->assertNotNull(
+            $sqliteDbFactoryConnection,
+            'DatabasesTest, DbConnectionFactory, SQLite object creation check'
+        );
+    }
+
     /**
-    * This test creates an empty table.
-    */
-    public function testCreateTableWithPort()
+     * This test creates an empty table.
+     */
+    public function testMysqlDbConnectionCreateTableWithPort()
     {
         $configuration = new Configuration(self::$logger, self::$configFile);
         $dbInfo = $configuration->getMySqlConnectionInfo();
@@ -149,7 +197,7 @@ class MysqlDatabaseTest extends TestCase
         $this->assertEquals(
             $createResult,
             $expected,
-            'MysqlDatabaseTest mysqlDbConnection createTable successful return check'
+            'DatabasesTest, mysqlDbConnection createTable successful return check'
         );
 
         #Check to see if the table was created as expected.
@@ -157,7 +205,7 @@ class MysqlDatabaseTest extends TestCase
         $result = $this->processMysqli($dbString, $sql);
         $this->assertNotNull(
             $result,
-            'MysqlDatabaseTest mysqlDbConnection createTable check'
+            'DatabasesTest, mysqlDbConnection createTable check'
         );
 
         $expectedColumns = ['test_etl_table_id','record_id','full_name','weight'];
@@ -166,7 +214,7 @@ class MysqlDatabaseTest extends TestCase
             $this->assertEquals(
                 $expectedColumns[$i],
                 $row['Field'],
-                "MysqlDatabaseTest mysqlDbConnection createTable $expectedColumns[$i] column check"
+                "DatabasesTest, mysqlDbConnection createTable $expectedColumns[$i] column check"
             );
             $i++;
         }
@@ -184,19 +232,19 @@ class MysqlDatabaseTest extends TestCase
 
         $this->assertTrue(
             $exceptionCaught4,
-            'MysqlDataabaseTest mysqlsDbConnection expected error for table already exists exception caught'
+            'DatabasesTest, mysqlsDbConnection exception caught for table already exists'
         );
 
         $this->assertEquals(
             self::$expectedCode,
             $exception->getCode(),
-            'mysqlsDbConnection expected error for table already exists error code check'
+            'DatabasesTest, mysqlsDbConnection table already exists error code check'
         );
 
         $this->assertEquals(
             $expectedMessage4,
             substr($exception->getMessage(), -1*strlen($expectedMessage4)),
-            'mysqlsDbConnection expected error for table already exists error message check'
+            'DatabasesTest, mysqlsDbConnection table already exists error message check'
         );
 
         # try to create the table by setting $ifNotExists and make sure an error is not generated
@@ -210,19 +258,22 @@ class MysqlDatabaseTest extends TestCase
 
         $this->assertFalse(
             $exceptionCaught5,
-            'MysqlDataabaseTest mysqlsDbConnection createTable If Exists check'
+            'DatabasesTest, mysqlsDbConnection createTable If Exists check'
         );
 
         #drop the table
         $this->processMysqli($dbString, "drop table $name;");
     }
 
-    public function testInsertRow()
+   /**
+    * Testing the insertRows method by calling the storeRows method.
+    */
+    public function testMysqlDbConnectionInsertRows()
     {
         #############################################################
         # create the table object
         #############################################################
-        $name = 'test1010';
+        $name = 'test2000';
         $parent = 'test_id';
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
         $rootTable = new Table(
@@ -249,6 +300,221 @@ class MysqlDatabaseTest extends TestCase
         );
         $rootTable->addField($field1);
 
+        $field2 = new Field(
+            'score',
+            FieldType::FLOAT,
+            null
+        );
+        $rootTable->addField($field2);
+
+        $field3 = new Field(
+            'update_date',
+            FieldType::DATE,
+            null
+        );
+        $rootTable->addField($field3);
+
+        $field3 = new Field(
+            'exercise___0',
+            FieldType::CHECKBOX,
+            null
+        );
+        $rootTable->addField($field3);
+
+        $foreignKey = null;
+        $suffix = null;
+        #update_date deliberately not populated in any of the rows
+        $data1 = [
+            'record_id' => 1001,
+            'full_name' => 'Ima Tester',
+            'score' => 12.3,
+            'update_date' => '',
+            'exercise___0' => ''
+        ];
+        $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
+
+        $data2 = [
+            'record_id' => 1002,
+            'full_name' => 'Spider Webb',
+            'score' => 4.56,
+            'update_date' => '',
+            'exercise___0' => 1
+        ];
+        $rootTable->createRow($data2, $foreignKey, $suffix, RowsType::BY_EVENTS);
+
+        #############################################################
+        # create the table in the database
+        #############################################################
+        $configuration = new Configuration(self::$logger, self::$configFile);
+        $dbInfo = $configuration->getMySqlConnectionInfo();
+        $dbString = implode(":", $dbInfo);
+
+        #first, drop the table, in case it wasn't dropped from a prior test.
+        $this->processMysqli($dbString, "drop table $name;");
+
+        $caCertFile = null;
+        $sslVerify = false;
+        $mysqlDbConnection = new MysqlDbConnection(
+            $dbString,
+            $this->ssl,
+            $sslVerify,
+            $caCertFile,
+            $this->tablePrefix,
+            $this->labelViewSuffix
+        );
+        $mysqlDbConnection->createTable($rootTable, false);
+        
+        #############################################################
+        # Execute the tests for this method
+        #############################################################
+       
+        ###test normal execution
+        $mysqlDbConnection->storeRows($rootTable);
+
+        #Verify that the view was created as expected.
+        $expectedColumns = 'test_id,record_id,full_name,score,update_date,exercise___0';
+        $expectedRows = [
+            '1,1001,Ima Tester,12.3,,0',
+            '2,1002,Spider Webb,4.56,,1'
+        ];
+
+        $sql = "select * from $name order by 1;";
+        $contents = $this->processMysqli($dbString, $sql);
+        $i = 0;
+        while ($row = $contents->fetch_assoc()) {
+            #Make sure the columns are as expected
+            if ($i === 0) {
+                $columnsArray = array_keys($row);
+                $columnsAsString = implode(',', $columnsArray);
+                $this->assertEquals(
+                    $expectedColumns,
+                    $columnsAsString,
+                    "DatabasesTest, mysqlDbConnection insertRows column check"
+                );
+            }
+
+           #Make sure the rows are as expected
+            $rowAsString = implode(',', $row);
+            $this->assertEquals(
+                $expectedRows[$i],
+                $rowAsString,
+                'DatabasesTest, mysqlDbConnection insertRows rows check'
+            );
+            $i++;
+        }
+
+        ###test an error condition. In this case, create a table and
+        ###insert a row that has more than the allowed number of
+        ###characters for a field.
+        $name2 = 'test2200';
+        $parent2 = 'test_id';
+        $keyType2 = new FieldTypeSpecifier(FieldType::INT, null);
+        $rootTable2 = new Table(
+            $name2,
+            $parent2,
+            $keyType2,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
+
+        #create fields in the Table object
+        $field20 = new Field(
+            'record_id',
+            FieldType::INT,
+            null
+        );
+        $rootTable2->addField($field20);
+
+        $field21 = new Field(
+            'full_name',
+            FieldType::CHAR,
+            30
+        );
+        $rootTable2->addField($field21);
+
+        $foreignKey = null;
+        $suffix = null;
+        $data21 = [
+            'record_id' => 1001,
+            'full_name' => 'Ima Tester'
+        ];
+        $rootTable2->createRow($data21, $foreignKey, $suffix, RowsType::BY_EVENTS);
+
+        $data22 = [
+            'record_id' => 1002,
+            'full_name' => 'Person That Has Way TOOOOO Many Letters in Their Name'
+        ];
+        $rootTable2->createRow($data22, $foreignKey, $suffix, RowsType::BY_EVENTS);
+
+        #create the table in the database
+        #before creating the table, run the command to drop it
+        $this->processMysqli($dbString, "drop table $name2;");
+        $mysqlDbConnection->createTable($rootTable2, false);
+
+        $exceptionCaught = false;
+        $expectedMessage = "[1406]: Data too long for column 'full_name' at row 2";
+ 
+        try {
+            $mysqlDbConnection->storeRows($rootTable2);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue(
+            $exceptionCaught,
+            'DatabasesTest, mysqlDbConnection insertRows exception caught'
+        );
+
+        $this->assertEquals(
+            self::$expectedCode,
+            $exception->getCode(),
+            'DatabasesTest, mysqlDbConnection insertRows exception error code check'
+        );
+
+        $this->assertEquals(
+            $expectedMessage,
+            substr($exception->getMessage(), -1*strlen($expectedMessage)),
+            'DatabasesTest, mysqlDbConnection insertRows exception error message check'
+        );
+
+        #drop the table and view
+        $this->processMysqli($dbString, "drop table $name;");
+        $this->processMysqli($dbString, "drop table $name2;");
+    }
+
+    public function testMysqlDbConnectionInsertRow()
+    {
+        #############################################################
+        # create the table object
+        #############################################################
+        $name = 'test1010';
+        $parent = 'test_id';
+        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
+        $rootTable = new Table(
+            $name,
+            $parent,
+            $keyType,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
+
+        #create fields in the Table object
+        $field0 = new Field(
+            'record_id',
+            FieldType::INT,
+            null
+        );
+        $rootTable->addField($field0);
+
+        $field1 = new Field(
+            'full_name',
+            FieldType::CHAR,
+            30
+        );
+        $rootTable->addField($field1);
+
         $foreignKey = null;
         $suffix = null;
         $data = [
@@ -256,6 +522,12 @@ class MysqlDatabaseTest extends TestCase
             'full_name' => 'Ima Tester'
         ];
         $rootTable->createRow($data, $foreignKey, $suffix, RowsType::BY_EVENTS);
+
+        $data1 = [
+            'record_id' => 1002,
+            'full_name' => 'Person That Has Way TOOOOO Many Letters in Their Name'
+        ];
+        $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         #############################################################
         # create the table in the database
@@ -284,13 +556,21 @@ class MysqlDatabaseTest extends TestCase
         #############################################################
         # Execute the tests for this method
         #############################################################
-        $expectedCount = 1;
+        #insert one row to see if it processes correctly
+        $data = [
+            'record_id' => 1001,
+            'name' => 'Some Other Person'
+        ];
+        $rootTable->createRow($data, $foreignKey, $suffix, RowsType::BY_EVENTS);
         $rows = $rootTable->getRows();
-        $this->assertEquals($expectedCount, sizeof($rows), 'MysqlDatabaseTest mysqlDBConnection insertRow row count');
-        $row = $rows[0];
-        $result = $mysqlDbConnection->insertRow($row);
+        $row0 = $rows[0];
+        $result = $mysqlDbConnection->insertRow($row0);
         $expected = 0;
-        $this->assertEquals($expected, $result, 'MysqlDatabaseTest mysqlDbConnection insertRow return check');
+        $this->assertEquals(
+            $expected,
+            $result,
+            'DatabasesTest, mysqlDbConnection insertRow return check'
+        );
 
         #Verify the row was written as expected.
         $sql = "select * from $name order by 1;";
@@ -304,37 +584,37 @@ class MysqlDatabaseTest extends TestCase
             $this->assertEquals(
                 $expectedRows[$i],
                 $rowAsString,
-                'MysqlDatabaseTest mysqlDbConnection insertRow content check'
+                'DatabasesTest, mysqlDbConnection insertRow content check'
             );
             $i++;
         }
   
-        #Check to see if an error will be generated as expected by trying to create a table
-        #that already exists.
+        #Check to see if an error will be generated by inserting a row in which
+        #the full_name field exceeds its defined length.
         $exceptionCaught6 = false;
-        $expectedMessage6 = "[1050]: Table '$name' already exists";
-
+        $expectedMessage6 = "[1406]: Data too long for column 'full_name' at row 1";
+        $row1 = $rows[1];
         try {
-            $mysqlDbConnection->createTable($rootTable, false);
+            $result = $mysqlDbConnection->insertRow($row1);
         } catch (EtlException $exception) {
             $exceptionCaught6 = true;
         }
 
          $this->assertTrue(
              $exceptionCaught6,
-             'MysqlDatabaseTest mysqlsDbConnection insertRow expected error table already exists exception caught'
+             'DatabasesTest, mysqlsDbConnection insertRow expected error exception caught'
          );
 
         $this->assertEquals(
             self::$expectedCode,
             $exception->getCode(),
-            'MysqlDatabaseTest mysqlsDbConnection insertRow expected error table already exists error code check'
+            'DatabasesTest, mysqlsDbConnection insertRow expected error error code check'
         );
 
         $this->assertEquals(
             $expectedMessage6,
             substr($exception->getMessage(), -1*strlen($expectedMessage6)),
-            'MysqlDatabaseTest mysqlsDbConnection insertRow expected error table already exists error message check'
+            'DatabasesTest, mysqlsDbConnection insertRow expected error error message check'
         );
 
         #drop the table
@@ -342,9 +622,10 @@ class MysqlDatabaseTest extends TestCase
     }
 
     /**
-    * Testing the processQueryFile method also tests the processQueries method.
-    */
-    public function testProcessQueryFile()
+     * This tests the MysqlDbConnection->processQueryFile method, which also ends up
+     * testing the MysqlDbConnection->processQueries method.
+     */
+    public function testMysqlDbConnectionProcessQueryFile()
     {
         #Create the mysqlDbConnection object
         $configuration = new Configuration(self::$logger, self::$configFile);
@@ -366,12 +647,12 @@ class MysqlDatabaseTest extends TestCase
         # Execute the tests for this method
         #############################################################
 
-        #####Test file with valid queries that create two tables
+        ###Test file with valid queries that create two tables
         #first, drop the table, in case it wasn't dropped from a prior test.
         $this->processMysqli($dbString, "drop table queryTest01;");
         $this->processMysqli($dbString, "drop table queryTest02;");
 
-        # create the file that contains the queries
+        #Create the file that contains the queries
         $sql = 'create table queryTest01 (rec_id int, title varchar(255), start date, primary key (rec_id));';
         $sql .= 'create table queryTest02 (p_id int, descr text, end date, primary key (p_id));';
         $qFile = './tests/output/queryTestFile.sql';
@@ -381,14 +662,14 @@ class MysqlDatabaseTest extends TestCase
 
         $result = $mysqlDbConnection->processQueryFile($qFile);
         $expected = 0;
-        $this->assertEquals($expected, $result, 'MysqlDatabaseTest mysqlDbConnection processQueries return check');
+        $this->assertEquals($expected, $result, 'DatabasesTest, mysqlDbConnection processQueryFile return check');
 
         #Check to see if the tables were created as expected.
         $sql1 = "describe queryTest01;";
         $result1 = $this->processMysqli($dbString, $sql1);
         $this->assertNotNull(
             $result1,
-            'MysqlDatabaseTest mysqlDbConnection processQueries sql command query1 check'
+            'DatabasesTest, mysqlDbConnection processQueryFile sql command query1 check'
         );
 
         $expectedColumns1 = ['rec_id', 'title', 'start'];
@@ -397,7 +678,7 @@ class MysqlDatabaseTest extends TestCase
             $this->assertEquals(
                 $expectedColumns1[$i],
                 $row['Field'],
-                "MysqlDatabaseTest mysqlDbConnection processQueries query1 column check"
+                'DatabasesTest, mysqlDbConnection processQueryFile query1 column check'
             );
             $i++;
         }
@@ -406,7 +687,7 @@ class MysqlDatabaseTest extends TestCase
         $result2 = $this->processMysqli($dbString, $sql2);
         $this->assertNotNull(
             $result2,
-            'MysqlDatabaseTest mysqlDbConnection processQueries sql command query2 check'
+            'DatabasesTest, mysqlDbConnection processQueryFile sql command query2 check'
         );
 
         $expectedColumns2 = ['p_id', 'descr', 'end'];
@@ -415,13 +696,13 @@ class MysqlDatabaseTest extends TestCase
             $this->assertEquals(
                 $expectedColumns2[$i],
                 $row['Field'],
-                "MysqlDatabaseTest mysqlDbConnection processQueries query2 column check"
+                'DatabasesTest, mysqlDbConnection processQueryFile query2 column check'
             );
             $i++;
         }
 
-        #####Test with invalid file name
-        $badFile = 'imaBadFile.abc';
+        ###Test with invalid file name
+        $badFile = './tests/output/imaBadFile.abc';
         $exceptionCaught7 = false;
         $expectedMessage7 = 'Could not access query file';
 
@@ -433,23 +714,23 @@ class MysqlDatabaseTest extends TestCase
 
         $this->assertTrue(
             $exceptionCaught7,
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile bad file name exception caught'
+            'DatabasesTest, mysqlDbConnection processQueryFile bad file name exception caught'
         );
 
         $this->assertEquals(
             self::$expectedCode,
             $exception->getCode(),
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile bad file name error code check'
+            'DatabasesTest, mysqlDbConnection processQueryFile bad file name error code check'
         );
 
         $this->assertEquals(
             $expectedMessage7,
             substr($exception->getMessage(), 0, 27),
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile bad file name error message check'
+            'DatabasesTest, mysqlsDbConnection processQueryFile bad file name error message check'
         );
 
-        #####Test with an error condition in the 1st query by testing an empty file
-        $emptyFile = 'emptyFile.sql';
+        ###Test with an error condition in the 1st query by testing an empty file
+        $emptyFile = './tests/output/emptyFile.sql';
         $fh = fopen($emptyFile, 'w');
         fwrite($fh, '');
         fclose($fh);
@@ -465,27 +746,28 @@ class MysqlDatabaseTest extends TestCase
 
         $this->assertTrue(
             $exceptionCaught8,
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile file exception caught'
+            'DatabasesTest, mysqlsDbConnection processQueryFile file exception caught'
         );
 
         $this->assertEquals(
             self::$expectedCode,
             $exception->getCode(),
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile file error code check'
+            'DatabasesTest, mysqlsDbConnection processQueryFile file error code check'
         );
 
         $this->assertEquals(
             $expectedMessage8,
             substr($exception->getMessage(), 0, 31),
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile file error message check'
+            'DatabasesTest, mysqlsDbConnection processQueryFile file error message check'
         );
 
-        #####Test with an error condition in a query other than the first on by sending a bad third query
+        ###Test with an error condition in a query other than the first on by sending
+        ###a bad third query
         #first, drop the table, in case it wasn't dropped from a prior test.
         $this->processMysqli($dbString, "drop table queryTest03;");
         $this->processMysqli($dbString, "drop table queryTest04;");
 
-        # create the file that contains the queries, with the third query misspelling 'table'
+        #Create the file that contains the queries, with the third query misspelling 'table'
         $sql3 = 'create table queryTest03 (rec_id int, title varchar(255), start date, primary key (rec_id));';
         $sql3 .= 'create table queryTest04 (p_id int, descr text, end date, primary key (p_id));';
         $sql3 .= 'create tabl queryTest05 (r_id int, fname, primary key (r_id));';
@@ -505,19 +787,19 @@ class MysqlDatabaseTest extends TestCase
 
         $this->assertTrue(
             $exceptionCaught9,
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile query error exception caught'
+            'DatabasesTest, mysqlDbConnection processQueryFile query error exception caught'
         );
 
         $this->assertEquals(
             self::$expectedCode,
             $exception->getCode(),
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile query error code check'
+            'DatabasesTest, mysqlDbConnection processQueryFile query error code check'
         );
 
         $this->assertEquals(
             $expectedMessage9,
             substr($exception->getMessage(), 0, 31),
-            'MysqlDatabaseTest mysqlsDbConnection processQueryFile query error message check'
+            'DatabasesTest, mysqlDbConnection processQueryFile query error message check'
         );
 
         #drop the tables
@@ -532,7 +814,7 @@ class MysqlDatabaseTest extends TestCase
         unlink($qFile3);
     }
   
-    public function testReplaceLookupViewWithoutLookup()
+    public function testMysqlDbConnectionReplaceLookupViewWithoutLookup()
     {
         #############################################################
         # create the table object
@@ -620,7 +902,7 @@ class MysqlDatabaseTest extends TestCase
         $this->assertEquals(
             $expected,
             $result1,
-            'MysqlDatabaseTest mysqlsDbConnection replaceLookupView return check'
+            'DatabasesTest, mysqlsDbConnection replaceLookupView Without Lookup return check'
         );
         
         #Verify that the view was created as expected.
@@ -641,7 +923,7 @@ class MysqlDatabaseTest extends TestCase
                 $this->assertEquals(
                     $expectedColumns,
                     $columnsAsString,
-                    "MysqlDatabaseTest mysqlDbConnection replaceLookupView column check"
+                    "DatabasesTest, mysqlDbConnection replaceLookupView Without Lookup column check"
                 );
             }
 
@@ -650,7 +932,7 @@ class MysqlDatabaseTest extends TestCase
             $this->assertEquals(
                 $expectedRows[$i],
                 $rowAsString,
-                'MysqlDatabaseTest mysqlDbConnection replaceLookupView rows check'
+                'DatabasesTest, mysqlDbConnection replaceLookupView Without Lookup rows check'
             );
             $i++;
         }
@@ -676,19 +958,19 @@ class MysqlDatabaseTest extends TestCase
 
         $this->assertTrue(
             $exceptionCaught1,
-            'MysqlDatabaseTest mysqlsDbConnection replaceLookupView exception caught'
+            'DatabasesTest, mysqlDbConnection replaceLookupView Without Lookup exception caught'
         );
 
         $this->assertEquals(
             self::$expectedCode,
             $exception->getCode(),
-            'MysqlDatabaseTest mysqlsDbConnection replaceLookupView exception error code check'
+            'DatabasesTest, mysqlDbConnection replaceLookupView Without Lookup exception error code check'
         );
 
         $this->assertEquals(
             $expectedMessage1,
             substr($exception->getMessage(), 0, 20),
-            'MysqlDatabaseTest mysqlsDbConnection replaceLookupView exception error maessage check'
+            'DatabasesTest, mysqlDbConnection replaceLookupView Without Lookup exception error message check'
         );
 
         #drop the table and view
@@ -696,7 +978,7 @@ class MysqlDatabaseTest extends TestCase
         $this->processMysqli($dbString, "drop view  $name$labelViewSuffix;");
     }
   
-    public function testReplaceLookupViewWithLookup()
+    public function testMysqlDbConnectionReplaceLookupViewWithLookup()
     {
         #Create the MysqlDbConnection
         $configuration = new Configuration(self::$logger, self::$configFile);
@@ -804,7 +1086,7 @@ class MysqlDatabaseTest extends TestCase
         $this->assertEquals(
             $expected,
             $result,
-            'MysqlDatabaseTest mysqlDbConnection replaceLookupView with Lookup return check'
+            'DatabasesTest, mysqlDbConnection replaceLookupViewWithLookup return check'
         );
         
         #Verify that the view was created as expected.
@@ -825,7 +1107,7 @@ class MysqlDatabaseTest extends TestCase
                 $this->assertEquals(
                     $expectedColumns,
                     $columnsAsString,
-                    "MysqlDatabaseTest mysqlDbConnection replaceLookupViewWithLookup column check"
+                    'DatabasesTest, mysqlDbConnection replaceLookupViewWithLookup column check'
                 );
             }
 
@@ -834,7 +1116,7 @@ class MysqlDatabaseTest extends TestCase
             $this->assertEquals(
                 $expectedRows[$i],
                 $rowAsString,
-                'MysqlDatabaseTest mysqlDbConnection replaceLookupViewWithLookup rows check'
+                'DatabasesTest, mysqlDbConnection replaceLookupViewWithLookup rows check'
             );
             $i++;
         }
@@ -843,6 +1125,117 @@ class MysqlDatabaseTest extends TestCase
         $this->processMysqli($dbString, "drop table $name;");
     }
 
+    public function testMysqlDbConnectionParseSqlQueries()
+    {
+        $configuration = new Configuration(self::$logger, self::$configFile);
+        $dbInfo = $configuration->getMySqlConnectionInfo();
+        $dbString = implode(":", $dbInfo);
+
+        # Create the MysqlDbConnection
+        $caCertFile = null;
+        $sslVerify = false;
+        $mysqlDbConnection = new MysqlDbConnection(
+            $dbString,
+            $this->ssl,
+            $sslVerify,
+            $caCertFile,
+            $this->tablePrefix,
+            $this->labelViewSuffix
+        );
+
+        $sql = 'create table test01 (rec_id int, title varchar(255) primary key (rec_id));';
+        $sql .= "insert into test01 (rec_id, title) values (0, 'some text & a \ and a /'";
+        $sql .= '--this is a comment' . chr(10) .'--and another comment';
+
+        $queryResults = $mysqlDbConnection->parseSqlQueries($sql);
+        $this->assertNotNull(
+            $queryResults,
+            'DatabasesTest, mysqlDbConnection parseSqlQueries return check'
+        );
+
+        $expected[0] = 'create table test01 (rec_id int, title varchar(255) primary key (rec_id))';
+        $expected[1] = "insert into test01 (rec_id, title) values (0, 'some text & a \ and a /'";
+        $expected[1] .= '--this is a comment --and another comment';
+
+        $i = 0;
+        foreach ($queryResults as $query) {
+            $this->assertEquals(
+                $expected[$i],
+                $query,
+                'DatabasesTest, mysqlDbConnection parseSqlQueries array check'
+            );
+            $i++;
+        }
+    }
+
+   /* This tests the mysqlDbConnection->dropTable protected function
+    * by using PHPUnit Reflection
+    */
+    public function testMysqlDbConnectionDropTable()
+    {
+        #create the table object
+        $name = 'dropTabletest';
+        $parent = 'test_id';
+        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
+        $rootTable = new Table(
+            $name,
+            $parent,
+            $keyType,
+            array($this->rowsType),
+            $this->suffixes,
+            $this->recordIdFieldName
+        );
+
+        #create the MysqlDbConnection
+        $configuration = new Configuration(self::$logger, self::$configFile);
+        $dbInfo = $configuration->getMySqlConnectionInfo();
+        $dbString = implode(":", $dbInfo);
+
+        $caCertFile = null;
+        $sslVerify = false;
+        $mysqlDbConnection = new MysqlDbConnection(
+            $dbString,
+            $this->ssl,
+            $sslVerify,
+            $caCertFile,
+            $this->tablePrefix,
+            $this->labelViewSuffix
+        );
+
+        #create the table in the database (drop it first, in case it already exists)
+        $sql = "drop table $name;";
+        $this->processMysqli($dbString, $sql);
+        $sql = "create table $name (pid int, title char(25));";
+        $this->processMysqli($dbString, $sql);
+
+        #execute the method to drop the table
+        $reflection = new \ReflectionClass(get_class($mysqlDbConnection));
+        $method = $reflection->getMethod('dropTable');
+        $method->setAccessible(true);
+        $ifExists = false;
+        $parameters[0] = $rootTable;
+        $parameters[1] = $ifExists;
+
+        $result = $method->invokeArgs($mysqlDbConnection, $parameters);
+        $expected = 1;
+        $this->assertEquals(
+            $expected,
+            $result,
+            'DatabasesTest, mysqlDbConnection dropTable return check'
+        );
+
+        #check to see if it was actually dropped
+        $sql = "desc $name;";
+        $tableDesc = $this->processMysqli($dbString, $sql);
+        $this->assertFalse(
+            $tableDesc,
+            'DatabasesTest, mysqlDbConnection dropTable table dropped check'
+        );
+    }
+
+    /*
+     * Executes various sql commands used to verify tests
+     */
     private function processMysqli($dbString, $sql)
     {
         list($host, $user, $pw, $database) = explode(":", $dbString);

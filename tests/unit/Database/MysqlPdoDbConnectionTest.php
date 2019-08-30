@@ -7,13 +7,13 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\EtlException;
 
 /**
-* PHPUnit tests for the MysqlDbConnection class.
+* PHPUnit tests for the MysqlPdoDbConnection class.
 * Only a part of the constructor is unit tested.
 * The remainder of the constructor and all of the
 * methods are tested in an integration test.
 */
 
-class MysqlDbConnectionTest extends TestCase
+class MysqlPdoDbConnectionTest extends TestCase
 {
     private $expectedCode = EtlException::DATABASE_ERROR;
     private $sslVerify = null;
@@ -33,7 +33,7 @@ class MysqlDbConnectionTest extends TestCase
         $expectedMessage1 = $message . 'not enough values.';
         $dbString = 'dbhost.somewhere.edu:tester';
         try {
-            $mysqlDbConnection = new MysqlDbConnection(
+            $mysqlPdoDbConnection = new MysqlPdoDbConnection(
                 $dbString,
                 $ssl,
                 $this->sslVerify,
@@ -47,17 +47,17 @@ class MysqlDbConnectionTest extends TestCase
 
         $this->assertTrue(
             $exceptionCaught1,
-            'mysqlDbConnection too few connection string values exception caught'
+            'mysqlPdoDbConnection too few connection string values exception caught'
         );
         $this->assertEquals(
             $this->expectedCode,
             $exception->getCode(),
-            'mysqlDbConnection too few connection string values code check'
+            'mysqlPdoDbConnection too few connection string values code check'
         );
         $this->assertEquals(
             $expectedMessage1,
             $exception->getMessage(),
-            'mysqlDbConnection too few connection string values errer message check'
+            'mysqlPdoDbConnection too few connection string values errer message check'
         );
 
         #############################################################
@@ -81,17 +81,17 @@ class MysqlDbConnectionTest extends TestCase
 
         $this->assertTrue(
             $exceptionCaught2,
-            'mysqlDbConnection too many connection string values exception caught'
+            'mysqlPdoDbConnection too many connection string values exception caught'
         );
         $this->assertEquals(
             $this->expectedCode,
             $exception->getCode(),
-            'mysqlDbConnection too many connection string values code check'
+            'mysqlPdoDbConnection too many connection string values code check'
         );
         $this->assertEquals(
             $expectedMessage2,
             $exception->getMessage(),
-            'mysqlDbConnection too many connection string values errer message check'
+            'mysqlPdoDbConnection too many connection string values errer message check'
         );
     }
 
@@ -102,10 +102,10 @@ class MysqlDbConnectionTest extends TestCase
         $exceptionCaught3 = false;
         $expectedMessage3 = "MySQL error [2002]: php_network_getaddresses: ";
         $expectedMessage3 .= "getaddrinfo failed: Name or service not known";
-        $mysqlDbConnection = null;
+        $mysqlPdoDbConnection = null;
 
         try {
-            $mysqlDbConnection = new MysqlDbConnection(
+            $mysqlPdoDbConnection = new MysqlDbConnection(
                 $dbString3,
                 $ssl,
                 $this->sslVerify,
@@ -119,19 +119,19 @@ class MysqlDbConnectionTest extends TestCase
 
         $this->assertTrue(
             $exceptionCaught3,
-            'mysqlDbConnection expected error for invalid user exception caught'
+            'mysqlPdoDbConnection expected error for invalid user exception caught'
         );
 
         $this->assertEquals(
             $this->expectedCode,
             $exception->getCode(),
-            'mysqlDbConnection expected error for invalid user code check'
+            'mysqlPdoDbConnection expected error for invalid user code check'
         );
 
         $this->assertEquals(
             $expectedMessage3,
             $exception->getMessage(),
-            'mysqlDbConnection expected error for invalid user message check'
+            'mysqlPdoDbConnection expected error for invalid user message check'
         );
     }
 }
