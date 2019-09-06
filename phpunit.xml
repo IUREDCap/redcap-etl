@@ -23,7 +23,6 @@
       <file>tests/unit/Database/DbConnectionTest.php</file>
       <file>tests/unit/Database/CsvDbConnectionTest.php</file>
       <file>tests/unit/Database/MysqlDbConnectionTest.php</file>
-      <file>tests/unit/Database/MysqlPdoDbConnectionTest.php</file>
       <file>tests/unit/Database/SqliteDbConnectionTest.php</file>
 
       <file>tests/unit/Rules/RuleTest.php</file>
