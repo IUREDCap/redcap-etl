@@ -48,10 +48,10 @@ class DatabasesTest extends TestCase
     {
         $caCertFile = __DIR__.'/../config/interim.crt';
         $configFile = __DIR__.'/../config/mysql-ssl.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
         $skipTestMessage = "DatabasesTest, testMysqlDbConnectionConstructorWithSsl skipped.";
 
         if (file_exists($configFile)) {
+            $configuration = new Configuration(self::$logger, $configFile);
             if (file_exists($caCertFile)) {
                 $dbInfo = $configuration->getMySqlConnectionInfo();
                 $dbString = implode(":", $dbInfo);
@@ -80,6 +80,7 @@ class DatabasesTest extends TestCase
         }
     }
 
+    /*
     public function testDbConnectionFactoryConstructor()
     {
         $dbConnectionFactory = new DbConnectionFactory();
@@ -124,6 +125,7 @@ class DatabasesTest extends TestCase
             'DatabasesTest, DbConnectionFactory, SQLite object creation check'
         );
     }
+    */
 
     /**
      * This test creates an empty table.
