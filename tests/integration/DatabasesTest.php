@@ -80,52 +80,6 @@ class DatabasesTest extends TestCase
         }
     }
 
-    /*
-    public function testDbConnectionFactoryConstructor()
-    {
-        $dbConnectionFactory = new DbConnectionFactory();
-
-        $configuration = new Configuration(self::$logger, self::$configFile);
-        $dbInfo = $configuration->getMySqlConnectionInfo();
-        $dbString = implode(":", $dbInfo);
-        $sslVerify = null;
-        $caCertFile = null;
-         
-        ### test MySQL
-        $connectionString = "MySQL:$dbString";
-        $mysqlDbFactoryConnection = $dbConnectionFactory->createDbConnection(
-            $connectionString,
-            $this->ssl,
-            $sslVerify,
-            $caCertFile,
-            $this->tablePrefix,
-            $this->labelViewSuffix
-        );
-
-        # verify object was created
-        $this->assertNotNull(
-            $mysqlDbFactoryConnection,
-            'DatabasesTest, DbConnectionFactory, MySQL object creation check'
-        );
-
-        ### test SQLite
-        $connectionString = 'SQLite:./tests/output/sqliteTest.db';
-        $sqliteDbFactoryConnection = $dbConnectionFactory->createDbConnection(
-            $connectionString,
-            $this->ssl,
-            $sslVerify,
-            $caCertFile,
-            $this->tablePrefix,
-            $this->labelViewSuffix
-        );
-
-        # verify object was created
-        $this->assertNotNull(
-            $sqliteDbFactoryConnection,
-            'DatabasesTest, DbConnectionFactory, SQLite object creation check'
-        );
-    }
-    */
 
     /**
      * This test creates an empty table.
