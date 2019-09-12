@@ -53,7 +53,6 @@
       <file>tests/integration/BasicDemographyJsonTest.php</file>
       <file>tests/integration/RepeatingEventsTest.php</file>
       <file>tests/integration/RepeatingEventsDeidentifiedTest.php</file>
-      <file>tests/integration/DatabasesTest.php</file>
     </testsuite>
 
     <!--
@@ -64,6 +63,8 @@
           a server
     -->
     <testsuite name="system">
+      <file>tests/system/MysqlSslTest.php</file>
+      <file>tests/system/MysqlTest.php</file>
       <file>tests/system/RepeatingEventsMysqlTest.php</file>
       <file>tests/system/RepeatingEventsSqliteTest.php</file>
       <file>tests/system/VisitsTest.php</file>

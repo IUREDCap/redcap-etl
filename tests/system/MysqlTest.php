@@ -39,49 +39,6 @@ class DatabasesTest extends TestCase
     }
 
     /**
-     * This tests the SSL MySQL connection option of the MysqlDbConnection class
-     * using branch1 of the redcap MySQL database server. It depends on the
-     * SSL certificate being in tests/config/interim.crt. If the certificate cannot
-     *be found, the test is skipped.
-     */
-    public function testMysqlDbConnectionConstructorWithSsl()
-    {
-        $caCertFile = __DIR__.'/../config/interim.crt';
-        $configFile = __DIR__.'/../config/mysql-ssl.ini';
-        $skipTestMessage = "DatabasesTest, testMysqlDbConnectionConstructorWithSsl skipped.";
-
-        if (file_exists($configFile)) {
-            $configuration = new Configuration(self::$logger, $configFile);
-            if (file_exists($caCertFile)) {
-                $dbInfo = $configuration->getMySqlConnectionInfo();
-                $dbString = implode(":", $dbInfo);
-
-                # Create the MysqlDbConnection
-                $sslVerify = true;
-                $mysqlDbConnection = new MysqlDbConnection(
-                    $dbString,
-                    $this->ssl,
-                    $sslVerify,
-                    $caCertFile,
-                    $this->tablePrefix,
-                    $this->labelViewSuffix
-                );
-
-                # verify object was created
-                $this->assertNotNull(
-                    $mysqlDbConnection,
-                    'DatabasesTest, mysqlDbConnection object created, ssl db user check'
-                );
-            } else {
-                $this->markTestSkipped($skipTestMessage . "$caCertFile not found.");
-            }
-        } else {
-            $this->markTestSkipped($skipTestMessage . "$configFile not found.");
-        }
-    }
-
-
-    /**
      * This test creates an empty table.
      */
     public function testMysqlDbConnectionCreateTableWithPort()
