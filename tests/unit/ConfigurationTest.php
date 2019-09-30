@@ -145,36 +145,6 @@ class ConfigurationTest extends TestCase
             'Constructor Bad extracted_records_count_check property exception message check'
         );
 
-        // No config API token property
-        $properties = $propertiesTemplate;
-
-        $exceptionCaught = false;
-        $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'No configuration project API token property was defined.';
-        try {
-            $config = new Configuration($logger, $properties);
-        } catch (EtlException $exception) {
-            $exceptionCaught = true;
-        }
-
-        $this->assertTrue(
-            $exceptionCaught,
-            'Constructor No config_api_token property exception caught'
-        );
-        $this->assertEquals(
-            $expectedCode,
-            $exception->getCode(),
-            'Constructor No config_api_token property exception code check'
-        );
-        $this->assertEquals(
-            $expectedMessage,
-            $exception->getMessage(),
-            'Constructor No config_api_token property exception message check'
-        );
-
-        $propertiesTemplate['config_api_token'] = '';
-
-
         // No data API token property
         $properties = $propertiesTemplate;
 
@@ -409,14 +379,7 @@ class ConfigurationTest extends TestCase
         $properties['table_prefix'] = $expectedTablePrefix;
 
         $config =
-            new Configuration($logger, $properties, $useWebScriptLogFile);
-
-        $webScriptLogFile = $config->getLogFile();
-        $this->assertEquals(
-            $expectedWebScriptLogFile,
-            $webScriptLogFile,
-            'Constructor web_script_log_file set'
-        );
+            new Configuration($logger, $properties);
 
 
         $sslVerify = $config->getSslVerify();
@@ -431,13 +394,6 @@ class ConfigurationTest extends TestCase
             $expectedExtractedRecordCountCheck,
             $extractedRecordCountcheck,
             'Constructor extracted_record_count_check set'
-        );
-
-        $logProjectApiToken = $config->getLogProjectApiToken();
-        $this->assertEquals(
-            $expectedLogProjectApiToken,
-            $logProjectApiToken,
-            'Constructor log_project_api_token not set'
         );
 
         $tablePrefix = $config->getTablePrefix();
@@ -690,14 +646,6 @@ class ConfigurationTest extends TestCase
         $expectedLogFile = '/tmp/logfile';
         $logFile = $config->getLogFile();
         $this->assertEquals($expectedLogFile, $logFile, 'LogFile check');
-
-        $expectedLogProjectApiToken = '111222333';
-        $logProjectApiToken = $config->getLogProjectApiToken();
-        $this->assertEquals(
-            $expectedLogProjectApiToken,
-            $logProjectApiToken,
-            'LogProjectApiToken check'
-        );
 
         $expectedCreateLookupTable = true;
         $createLookupTable = $config->getCreateLookupTable();

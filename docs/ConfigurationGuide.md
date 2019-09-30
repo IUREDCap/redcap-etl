@@ -183,11 +183,6 @@ provide support for it by default</td>
 is being extracted from REDCap.</td>
 </tr>
 
-<tr>
-<td>log_project_api_token</td>
-<td> X </td> <td> X </td>
-<td>REDCap API token of (optional, and now deprecated) logging project</td>
-</tr>
 </tbody>
 </table>
 

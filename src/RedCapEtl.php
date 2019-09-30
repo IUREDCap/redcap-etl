@@ -28,10 +28,6 @@ class RedCapEtl
     const COLUMN_REPEATING_INSTRUMENT      = 'redcap_repeat_instrument';
     const COLUMN_REPEATING_INSTANCE        = 'redcap_repeat_instance';
 
-    // For setting whether or not DET invokes the ETL or just parses
-    const TRIGGER_ETL_NO  = '0';
-    const TRIGGER_ETL_YES = '1';
-
     # Text logged when the ETL process completes successfully.
     # This can be used to programmatically check the log for
     # when the process completes.
@@ -39,13 +35,9 @@ class RedCapEtl
 
     protected $detHandler;  // For calls related to Data Entry Triggers
 
-    protected $configProject;
-    
     /** @var EtlRedCapProject the project that has the data to extract */
     protected $dataProject;
     
-    protected $logProject;
-
     protected $logger;
 
     protected $schema;
@@ -73,10 +65,6 @@ class RedCapEtl
      * @param mixed $properties if this is a string, it is assumed to
      *     be the name of the properties file to use, if it is an array,
      *     it is assumed to be a map from property names to values.
-     * @param boolean $useWebScriptLogFile indicates if the web script
-     *     log file should be used instead of the regular log file. This
-     *     allows logging to a different file when running REDCap-ETL
-     *     using a web script instead of the command line script.
      * @param string $redcapProjectClass fully qualified class name for class
      *     to use as the RedcapProject class. By default the EtlRedCapProject
      *     class is used.
@@ -84,23 +72,18 @@ class RedCapEtl
     public function __construct(
         & $logger,
         $properties,
-        $useWebScriptLogFile = false,
         $redcapProjectClass = null
     ) {
         $this->app = $logger->getApp();
 
         $this->configuration = new Configuration(
             $logger,
-            $properties,
-            $useWebScriptLogFile
+            $properties
         );
 
         $this->logger = $logger;
         $this->logger->setConfiguration($this->configuration);
         
-        $this->configProject = $this->configuration->getConfigProject();
-
-       
         #---------------------------------------------------------
         # Set time limit
         #---------------------------------------------------------
@@ -182,22 +165,6 @@ class RedCapEtl
         } catch (PhpCapException $exception) {
             $message = 'Could not get data project.';
             throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        #--------------------------------------------------------------
-        # Get the logging project (the optional REDCap project where
-        # logging message are written)
-        #--------------------------------------------------------------
-        $logToken = $this->configuration->getLogProjectApiToken();
-        if (!empty($logToken)) {
-            try {
-                $this->logProject = $redCap->getProject($logToken);
-                $this->logProject->setApp($this->logger->getApp());
-                $this->logger->setLogProject($this->logProject);
-            } catch (PhpCapException $exception) {
-                $message = 'Could not get logging project.';
-                throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-            }
         }
 
         #-----------------------------------------
@@ -732,28 +699,6 @@ class RedCapEtl
     }
 
 
-    /**
-     * For DET-invocations, upload the result and reset the etl_trigger
-     */
-    public function uploadResultAndReset($result, $recordId)
-    {
-        $records = array();
-        $records[0] = array(
-            'record_id' => $recordId,
-            ConfigProperties::TRIGGER_ETL => RedCapEtl::TRIGGER_ETL_NO,
-            ConfigProperties::TRANSFORM_RULES_CHECK => $result
-        );
-
-        try {
-            $this->configProject->importRecords($records);
-        } catch (PhpCapException $exception) {
-                $message = 'Unable to load results and reset ETL trigger';
-            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        return true;
-    }
-
 
     /**
      * Runs the entire ETL process.
@@ -809,81 +754,6 @@ class RedCapEtl
 
 
     /**
-     * Runs the ETL process for a REDCap DET (Data Entry Trigger)
-     *
-     * @return int the number of record IDs found (and hopefully processed).
-     *
-     * @deprecated REDCap configuration projects and their DET processing will
-     *    be removed in a future version.
-     */
-    public function runForDet()
-    {
-        $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-        $this->log('REDCap version '.$this->dataProject->exportRedCapVersion());
-        $this->logger->log('Executing web script '.$this->logger->getApp());
-
-        $detHandler = $this->getDetHandler();
-        list($projectId,$recordId, $instrument) = $detHandler->getDetParams();
-
-        #-----------------------------------------------------------------------
-        # Data Entry Trigger: Check for allowed project/servers
-        #-----------------------------------------------------------------------
-        $detHandler->checkDetId($projectId);
-        $detHandler->checkAllowedServers();
-
-        if ($instrument !== self::DET_INSTRUMENT_NAME) {
-            # An instrument/form other than the DET instrument/form was
-            # modified, so don't do anything
-            ;
-        } else {
-            list($parseStatus, $result) = $this->processTransformationRules();
-                
-            if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
-                # If the parsing of the transformation rules failed.
-                $msg = "Transformation rules not fully parsed. Processing stopped.";
-                $this->log($msg);
-                $result .= $msg."\n";
-            } else {
-                $result .= "Transformation rules are valid.\n";
-
-                if ($this->getTriggerEtl() !== RedCapEtl::TRIGGER_ETL_YES) {
-                    // ETL not requested
-                    $msg = "Web-invoked process stopped after parsing, per default.";
-                    $this->log($msg);
-                    $result .= $msg."\n";
-                } else {
-                    // ETL requested
-                    $result .= "ETL proceeding. Please see log for results\n";
-
-                    $this->createLoadTables();
-
-                    $numberOfRecordIds = $this->extractTransformLoad();
-
-                    $sqlFile = $this->configuration->getPostProcessingSqlFile();
-                    if (!empty($sqlFile)) {
-                        $this->dbcon->processQueryFile($sqlFile);
-                    }
-                }
-            } // processTransformationRules valid
-
-            // Provide a timestamp for the results
-            $result = date('g:i:s a d-M-Y T') . "\n" . $result;
-
-            $this->log(self::PROCESSING_COMPLETE);
-
-            #-----------------------------------------------------------
-            # Upload the results, and set ETL trigger back to default
-            #-----------------------------------------------------------
-            $this->uploadResultAndReset($result, $recordId);
-
-            $this->logger->logEmailSummary();
-        }
-
-        return $numberOfRecordIds;
-    }
-
-
-    /**
      * Logs job info from configuration, if any
      */
     public function logJobInfo()
@@ -917,29 +787,6 @@ class RedCapEtl
         }
     }
 
-
-    /**
-     * Gets the DET (Data Entry Trigger) handler.
-     */
-    public function getDetHandler()
-    {
-        return $this->detHandler;
-    }
-
-    public function getTriggerEtl()
-    {
-        $records = $this->configProject->exportRecords();
-        $triggerEtl = $records[0][ConfigProperties::TRIGGER_ETL];
-        return $triggerEtl;
-    }
-
-    public function setTriggerEtl()
-    {
-        $records = $this->configProject->exportRecordsAp();
-        $records = array($records[0]);
-        $records[0][ConfigProperties::TRIGGER_ETL] = RedCapEtl::TRIGGER_ETL_YES;
-        $this->configProject->importRecords($records);
-    }
 
     public function getLogger()
     {

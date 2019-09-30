@@ -65,7 +65,6 @@
       <file>tests/system/VisitsTest.php</file>
       <file>tests/system/VisitsCodeTest.php</file>
       <file>tests/system/VisitsSqliteCodeTest.php</file>
-      <file>tests/system/VisitsWebTest.php</file>
     </testsuite>
 
   </testsuites>

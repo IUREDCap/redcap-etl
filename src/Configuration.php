@@ -90,7 +90,6 @@ class Configuration
     private $generatedSuffixType;
 
     private $labelViewSuffix;
-    private $logProjectApiToken;
     private $lookupTableName;
 
     private $postProcessingSql;
@@ -130,11 +129,8 @@ class Configuration
      * @param mixed $properties if this is a string, it is assumed to
      *     be the name of the properties file to use, if it is an array,
      *     it is assumed to be a map from property names to values.
-     * @param boolean $useWebScriptLogFile if true indicates that the
-     *     web script log file should be used for logging; false indicates
-     *     the standard logging file should be used.
      */
-    public function __construct(& $logger, $properties, $useWebScriptLogFile = false)
+    public function __construct(& $logger, $properties)
     {
         $this->logger = $logger;
         $this->app = $this->logger->getApp();
@@ -214,14 +210,8 @@ class Configuration
         # will start to log to the file
         #-----------------------------------------------------------------------------
         $this->logFile = null;
-        if ($useWebScriptLogFile) {
-            if (array_key_exists(ConfigProperties::WEB_SCRIPT_LOG_FILE, $this->properties)) {
-                $this->logFile = $this->properties[ConfigProperties::WEB_SCRIPT_LOG_FILE];
-            }
-        } else {
-            if (array_key_exists(ConfigProperties::LOG_FILE, $this->properties)) {
-                $this->logFile = $this->properties[ConfigProperties::LOG_FILE];
-            }
+        if (array_key_exists(ConfigProperties::LOG_FILE, $this->properties)) {
+            $this->logFile = $this->properties[ConfigProperties::LOG_FILE];
         }
         
         if (!empty($this->logFile)) {
@@ -427,16 +417,6 @@ class Configuration
             }
         }
 
-        #--------------------------------------------------
-        # Get the API token for the configuration project
-        #--------------------------------------------------
-        $configProjectApiToken = null;
-        if (array_key_exists(ConfigProperties::CONFIG_API_TOKEN, $this->properties)) {
-            $configProjectApiToken = $this->properties[ConfigProperties::CONFIG_API_TOKEN];
-        } else {
-            $message = 'No configuration project API token property was defined.';
-            throw new EtlException($message, EtlException::INPUT_ERROR);
-        }
 
         #---------------------------------------------
         # Get the post-processing SQL (if any)
@@ -557,16 +537,6 @@ class Configuration
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
-        #-------------------------------------------------------------------------------
-        # Get the logging project (where log records are written to) API token (if any)
-        #-------------------------------------------------------------------------------
-        # $startLog = microtime(true);
-        if (array_key_exists(ConfigProperties::LOG_PROJECT_API_TOKEN, $this->properties)) {
-            $this->logProjectApiToken = $this->properties[ConfigProperties::LOG_PROJECT_API_TOKEN];
-        } else {
-            $this->logProjectApiToken = null;
-        }
-
         #----------------------------------------------------------
         # Set the time limit; if none is provided, use the default
         #----------------------------------------------------------
@@ -583,14 +553,6 @@ class Configuration
             $this->timezone = $this->properties[ConfigProperties::TIMEZONE];
         }
 
-
-        #----------------------------------------------------------------------
-        # Record whether or not the actual ETL should be run. This is
-        # used by the DET handler program, but not the batch program
-        #----------------------------------------------------------------------
-        if (array_key_exists(ConfigProperties::TRIGGER_ETL, $this->properties)) {
-            $this->triggerEtl = $this->properties[ConfigProperties::TRIGGER_ETL];
-        }
 
         #-----------------------------------------------------------------------
         # Determine the batch size to use (how many records to process at once)
@@ -1299,11 +1261,6 @@ class Configuration
     public function getLogFile()
     {
         return $this->logFile;
-    }
-
-    public function getLogProjectApiToken()
-    {
-        return $this->logProjectApiToken;
     }
 
     public function getLookupTableName()
