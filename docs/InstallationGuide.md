@@ -9,48 +9,17 @@ are shown in the diagram below, and described in the text below.
 
 ![ETL Process](etl-process.png)
 
-* **Configuration File.** This file contains configuration information for a REDCap-ETL
+* **Configuration File.** This file contains the configuration information for a REDCap-ETL
 process. A single REDCap-ETL instance can have multiple configuration files that describe
 different ETL processes.
-The configuration file either needs to define all needed configuration information, or
-have a REDCap API token for a configuration project that contains the remaining necessary
-configuration information. In both cases, this file must contain the URL for your
-REDCap API. When the ETL process runs, this is the first file that will be accessed.
-* **REDCap Projects**
-    * **Configuration Project.** This optional (and now deprecated)
-project contains configuration
-information for the ETL process.  The advantage of using this project is that
-it allows users who have access to REDCap, but not the REDCap-ETL server,
-to be able to change
-certain configuration properties, and to start the ETL process. The disadvantage of
-using this project is that it increases the complexity of the installation.
-It is expected that the configuration project will be removed in a future release
-of REDCap-ETL, and that the configuration project's functionality will be provided
-by a REDCap external module.
-    * **Data Project.** This is the REDCap project that contains the data to be extracted.
-    * **Logging Project.** This optional (and now deprecated) project is used
-for logging. The advantage of using the logging project over the logging file is that
-users who have access to REDCap, but not the REDCap-ETL server, can access the log information.
-The disadvantages of
-using this project are that it increases the complexity of the installation and slows down performance. It is expected that the logging project will be removed from REDCap-ETL in
-a future release. REDCap-ETL now supports logging to the database, which provides more
-flexible viewing options. REDCap-ETL also now supports e-mailing of a summary of the logging
-information for an ETL process.
+* **REDCap Project.** The REDCap project that contains the data to be extracted.
 * **REDCap-ETL.** The software that actually does the Extract Transform and Load.
 * **Database.** There needs to be some kind of database where the extracted and transformed data
 can be loaded, such as a MySQL database, although this could be as simple as a directory for CSV files.
-* **Web Server.** A web server, such as Apache, that supports PHP is necessary if you want to
-  use REDCap's data entry triggers (DETs)
-  to check the transformation rules and/or start
-the ETL (Extract Transform Load) process from REDCap.
-This will allow users to run the process by editing and saving a form in the REDCap
-configuration project,
-so that they do not need access to the server. If you only want to run the ETL process
-on a regularly scheduled basis, or by manually running a command on the server,
-then you do not need to have a web server.
+REDCap-ETL can also log information about its processes to the database.
 * **E-mail Server.** This is optional, and if set up, is used for e-mailing error
 notifications and logging summaries to designated users.
-
+* **Log File.** An optional log file can be set up where REDCap-ETL will log the results of its ETL processes.
 
 Installation Steps
 -------------------------------------
@@ -131,15 +100,9 @@ system:
 The configuration file can be used to specify your entire configuration, or it can
 be used in conjunction with a configuration project.
 
-If you are using a configuration project, your configuration file will
-still need to specify at least your REDCap API's URL, and the REDCap API token
-of your configuration project, so that REDCap-ETL will be able to locate your
-configuration project.
-
 The standard place to store configuration files is in the **config/**
-directory of the REDCap-ETL installation. This is the default directory
-that the web script installation script (see below) will search for configuration
-files. However, they could be stored in any directory where REDCap-ETL
+directory of the REDCap-ETL installation. However, they could be stored
+in any directory where REDCap-ETL
 has read access.
 
 To create a new configuration file, the file **config/config-example.ini**
