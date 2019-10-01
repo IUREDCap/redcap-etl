@@ -1,32 +1,13 @@
 REDCap-ETL Configuration
 ========================
 
-REDCap-ETL requires a configuration file. In addition, a REDCap
-configuration project can also be used. Using a configuration project
-allows users who do not have access to the REDCap-ETL server to set
-some configuration properties and to start the ETL process.
-However, the configuration project has been deprecated, and the
-plan is to replace its functionality with a REDCap external module.
-
-If a configuration project is used, then REDCap-ETL will use the
-configuration file to locate the configuration project, so in this case
-the file needs to contain:
-
-* the URL for your REDCap API
-* the API token for your REDCap configuration project
-
-The 3 main things that need to be specified in the configuration
-are:
+REDCap-ETL requires a configuration file.  The 3 main things that need to be specified
+in the configuration file are:
 
 1. The data source - where the data is extracted from.
 2. The transformation rules - how to transform the data in the data source
 to the target for the data load.
 3. The database - where the extracted and transformed data is loaded
-
-Several properties can be specified in both the configuration file
-and configuration project. For these properties, a non-blank value in the 
-configuration project will replace the value in the configuration file
-(which is read first).
 
 
 Data Source
