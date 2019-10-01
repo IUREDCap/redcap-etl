@@ -33,8 +33,6 @@ class RedCapEtl
     # when the process completes.
     const PROCESSING_COMPLETE = 'Processing complete.';
 
-    protected $detHandler;  // For calls related to Data Entry Triggers
-
     /** @var EtlRedCapProject the project that has the data to extract */
     protected $dataProject;
     
@@ -144,17 +142,6 @@ class RedCapEtl
             throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
 
-
-        #------------------------------------------------------
-        # Create a REDCap DET (Data Entry Trigger) Handler,
-        # in case it's needed.
-        #------------------------------------------------------
-        $projectId = $this->configuration->getConfigProjectId();
-        $this->detHandler = new RedCapDetHandler(
-            $projectId,
-            $this->configuration->getAllowedServers(),
-            $this->logger
-        );
 
         #----------------------------------------------------------------
         # Get the project that has the actual data

@@ -14,7 +14,6 @@
       <file>tests/unit/EtlLogTableTest.php</file>
       <file>tests/unit/LookupTableTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
-      <file>tests/unit/RedCapDetHandlerTest.php</file>
       <file>tests/unit/RulesParserTest.php</file>
       <file>tests/unit/RulesSemanticAnalyzerTest.php</file>
 
