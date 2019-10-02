@@ -55,7 +55,6 @@ class Configuration
     private $logger;
 
     private $app;
-    private $allowedServers;
     private $batchSize;
 
     private $caCertFile;
@@ -108,7 +107,6 @@ class Configuration
 
     private $properties;
     private $propertiesFile;
-    private $configuration;
 
     private $emailErrors;
     private $emailSummary;
@@ -132,20 +130,22 @@ class Configuration
         $this->app = $this->logger->getApp();
         $this->propertiesFile = null;
 
-        #--------------------------------------------------------------------
-        # Read the properties file
-        #--------------------------------------------------------------------
         if (empty($properties)) {
+            # No properties specified
             $message = 'No properties or properties file was specified.';
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         } elseif (is_array($properties)) {
+            # Properties specified as an array
             $this->properties = $properties;
         } elseif (is_string($properties)) {
+            # Properties specified in a file
             $this->propertiesFile = trim($properties);
 
-            # If this is a JSON configuration file
-            if (preg_match('/\.json$/', $this->propertiesFile) === 1) {
+            if (preg_match('/\.json$/i', $this->propertiesFile) === 1) {
+                #-----------------------------------------------------------------
+                # JSON configuration file
+                #-----------------------------------------------------------------
                 $propertiesFileContents = file_get_contents($this->propertiesFile);
                 if ($propertiesFileContents === false) {
                     $message = 'The JSON properties file "'.$this->propertiesFile.'" could not be read.';
@@ -171,6 +171,10 @@ class Configuration
                     }
                 }
             } else {
+                #-------------------------------------------------------------
+                # .ini configuration file
+                #-------------------------------------------------------------
+
                 # suppress errors for this, because it should be
                 # handled by the check for $properties being false
                 @ $this->properties = parse_ini_file($this->propertiesFile);
@@ -506,14 +510,6 @@ class Configuration
         }
 
 
-        #--------------------------------
-        # Process allowed servers
-        #--------------------------------
-        if (array_key_exists(ConfigProperties::ALLOWED_SERVERS, $this->properties)) {
-            $this->allowedServers = $this->properties[ConfigProperties::ALLOWED_SERVERS];
-        }
-
-
         #----------------------------------------------------------------
         # Get the data source project API token
         #----------------------------------------------------------------
@@ -621,15 +617,10 @@ class Configuration
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
 
-            # If this property was defined in a file and uses the CSV or SQLite database
-            # type and a relative path was used, replace the relative path with
-            # an absolute path
-            if ($this->isFromFile(ConfigProperties::DB_CONNECTION)) {
-                list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($this->dbConnection);
-                if ($dbType === DbConnectionFactory::DBTYPE_CSV || $dbType === DbConnectionFactory::DBTYPE_SQLITE) {
-                    $dbString = $this->processDirectory($dbString);
-                    $this->dbConnection = DbConnectionFactory::createConnectionString($dbType, $dbString);
-                }
+            list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($this->dbConnection);
+            if ($dbType === DbConnectionFactory::DBTYPE_CSV || $dbType === DbConnectionFactory::DBTYPE_SQLITE) {
+                $dbString = $this->processDirectory($dbString);
+                $this->dbConnection = DbConnectionFactory::createConnectionString($dbType, $dbString);
             }
         } else {
             $message = 'No database connection was specified in the configuration.';
@@ -696,21 +687,9 @@ class Configuration
                 throw new EtlException($error, EtlException::INPUT_ERROR);
             }
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_FILE) {
-            if ($this->isFromFile(ConfigProperties::TRANSFORM_RULES_FILE)) {
-                $file = $properties[ConfigProperties::TRANSFORM_RULES_FILE];
-                $file = $this->processFile($file);
-                $this->transformationRules = file_get_contents($file);
-            } else {
-                $results = $this->configProject->exportFile(
-                    $properties['record_id'],
-                    ConfigProperties::TRANSFORM_RULES_FILE
-                );
-                $this->transformationRules = $results;
-                if ($this->transformationRules == '') {
-                    $error = 'No transformation rules file was found.';
-                    throw new EtlException($error, EtlException::FILE_ERROR);
-                }
-            }
+            $file = $properties[ConfigProperties::TRANSFORM_RULES_FILE];
+            $file = $this->processFile($file);
+            $this->transformationRules = file_get_contents($file);
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_DEFAULT) {
             # The actual rules are not part of the configuration and will need
             # to be generate later after the data project has been set up.
@@ -907,40 +886,12 @@ class Configuration
         $this->properties = $properties;
     }
 
-    public function setConfiguration($properties)
-    {
-        $this->configuration = $properties;
-    }
-
     /**
      * Gets the specified property.
      */
     public function getProperty($name)
     {
         return $this->properties[$name];
-    }
-
-    /**
-     * Indicates if the current value for the specified property
-     * is from the configuration file or array argument
-     * (as opposed to the configuration project).
-     *
-     * @param string $property the property to check.
-     *
-     * @return boolean returns true if the property is from the
-     *     configuration file, and false otherwise.
-     */
-    public function isFromFile($property)
-    {
-        $isFromFile = true;
-        if (isset($this->configuration) && is_array($this->configuration)) {
-            if (array_key_exists($property, $this->configuration)) {
-                if ($this->properties[$property] === $this->configuration[$property]) {
-                    $isFromFile = false;
-                }
-            }
-        }
-        return $isFromFile;
     }
 
     public function getPropertyInfo($property)
@@ -950,14 +901,10 @@ class Configuration
             if (array_key_exists($property, $this->properties)) {
                 $info = $this->properties[$property];
 
-                if ($this->isFromFile($property)) {
-                    if (empty($this->propertiesFile)) {
-                        $info .= ' - defined in array argument';
-                    } else {
-                        $info .= ' - defined in file: '.$this->propertiesFile;
-                    }
+                if (empty($this->propertiesFile)) {
+                    $info .= ' - defined in array argument';
                 } else {
-                    $info .= ' - defined in configuration project';
+                    $info .= ' - defined in file: '.$this->propertiesFile;
                 }
             } else {
                 $info = 'undefined';
@@ -972,11 +919,6 @@ class Configuration
     public function getLogger()
     {
         return $this->logger;
-    }
-
-    public function getAllowedServers()
-    {
-        return $this->allowedServers;
     }
 
     public function getApp()
@@ -1174,19 +1116,9 @@ class Configuration
         return $this->redcapApiUrl;
     }
 
-    public function setRedCapApiUrl($url)
-    {
-        $this->redcapApiUrl = $url;
-    }
-
     public function getSslVerify()
     {
         return $this->sslVerify;
-    }
-
-    public function getSendEmailSummary()
-    {
-        return $this->sendEmailSummary;
     }
 
     public function getTablePrefix()

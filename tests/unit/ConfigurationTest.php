@@ -415,14 +415,6 @@ class ConfigurationTest extends TestCase
         $retrievedLogger = $config->getLogger();
         $this->assertEquals($logger, $retrievedLogger, 'Logger check');
 
-        $expectedAllowedServers = 'foo.com';
-        $allowedServers = $config->getAllowedServers();
-        $this->assertEquals(
-            $expectedAllowedServers,
-            $allowedServers,
-            'AllowedServers check'
-        );
-
         $this->assertEquals(
             $logger->getApp(),
             $config->getApp(),
@@ -751,9 +743,6 @@ class ConfigurationTest extends TestCase
             'GetProperyInfo in file test'
         );
 
-        $isFromFile = $config->isFromFile($property);
-        $this->assertTrue($isFromFile, 'IsFromFile from file test');
-
         $expectedGetProperty = '3';
         $getProperty = $config->getProperty($property);
         $this->assertEquals(
@@ -803,19 +792,6 @@ class ConfigurationTest extends TestCase
             $info,
             'GetProperyInfo in array test'
         );
-
-        // Property defined in configuration project
-        $configMock->setConfiguration($expectedProperties);
-        $expectedInfo = '2 - defined in configuration project';
-        $info = $configMock->getPropertyInfo($property);
-        $this->assertEquals(
-            $expectedInfo,
-            $info,
-            'GetProperyInfo in config test'
-        );
-
-        $isFromFile = $configMock->isFromFile($property);
-        $this->assertFalse($isFromFile, 'IsFromFile from elsewhere test');
     }
 
     public function testProcessTransformationRules()
