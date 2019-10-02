@@ -23,8 +23,6 @@ class Logger
     /** @var string the name of the log file (if any) */
     private $logFile;
 
-    private $logProject;
-
     /** @var boolean Whether messages logged should be printed to standard output */
     private $printLogging;
 
@@ -100,7 +98,6 @@ class Logger
         $this->logArray      = array();
 
         $this->logFile    = null;
-        $this->logProject = null;
 
         $this->logFromEmail = null;
         $this->logToEmail   = null;
@@ -195,28 +192,6 @@ class Logger
 
 
     /**
-     * Sets the REDCap project for logging.
-     *
-     * @param EtlRedCapProject $project the REDCap logging project.
-     */
-    public function setLogProject($project)
-    {
-        $this->logProject = $project;
-
-        // REDCap must have a record_id when importing a new record. It does
-        // not auto generate a new record_id on API Imports (or regular imports?),
-        // even when the project is set to auto generate new record_ids.
-        // Because multiple people may be using this application simultaneously,
-        // it's not sufficient to simply use a timestamp. There is a risk that
-        // even with the timestamp and a random number, logs might overwrite each
-        // other, but I haven't found a better solution.
-        $this->projectIdBase = time().'-'.rand(1, 9999).'-';
-        $this->projectIndex  = 0;
-        $this->projectDate   = date('g:i:s a d-M-Y T');
-    }
-
-
-    /**
      * Log the specified information to all logging sources that
      * have been enabled.
      *
@@ -263,17 +238,6 @@ class Logger
                  $this->dbLoggingErrorLogged = true;
             }
         }
-            
-        try {
-            $this->logToProject($message);
-        } catch (\Exception $exception) {
-            # Only log the first database logging error
-            if (!$this->projectLoggingErrorLogged) {
-                $this->logLoggingError($exception);
-            } else {
-                $this->projectLoggingErrorLogged = true;
-            }
-        }
     }
 
 
@@ -305,12 +269,6 @@ class Logger
         }
         
         try {
-            $this->logToProject($message);
-        } catch (\Exception $exception) {
-            ; // ignore logging errors
-        }
-
-        try {
             $this->logEventToDatabase($message);
         } catch (\Exception $exception) {
             ; // ignore logging errors
@@ -341,7 +299,6 @@ class Logger
 
         $this->logToArray($message);
         $this->logWithPrint($message);
-        $this->logToProject($message);
         $this->logEventToDatabase($message);
         
         #--------------------------------------------------
@@ -493,42 +450,6 @@ class Logger
         $logged = error_log($formattedMessage, 3, $this->logFile);
         return $logged;
     }
-
-    /**
-     * Logs the specified message to the REDCap logging project, if one was specified.
-     *
-     * @param string $message the message to log.
-     *
-     * @return boolean true if the log operated succeeded, and false otherwise.
-     */
-    public function logToProject($message)
-    {
-        $logged = false;
-
-        if (isset($this->logProject) && $this->isOn) {
-            # Prepare data to be imported
-            $this->projectIndex = sprintf("%'.03d", $this->nextIndex());
-            $records = array();
-            $records[0] = array(
-                'record_id' => ($this->projectIdBase).($this->projectIndex),
-                'curdate'   => $this->projectDate,
-                'app'       => $this->app,
-                'message'   => $message
-            );
-
-            $this->logProject->importRecords($records);
-            $logged = true;
-        }
-
-        return $logged;
-    }
-
-    protected function nextIndex()
-    {
-        $this->projectIndex++;
-        return($this->projectIndex);
-    }
-
 
     /**
      * Logs events that have occurred so far to e-mail if settings indicate to do so.

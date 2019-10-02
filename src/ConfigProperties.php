@@ -15,7 +15,6 @@ class ConfigProperties
     
     const CA_CERT_FILE              = 'ca_cert_file';
     const CALC_FIELD_IGNORE_PATTERN = 'calc_field_ignore_pattern';
-    const CONFIG_API_TOKEN          = 'config_api_token';
     const CONFIG_NAME               = 'config_name';  # Name of configuration, if from the external module
     const CONFIG_OWNER              = 'config_owner'; # REDCap user who created the configuration,
                                                       #  if from the external module
@@ -51,7 +50,6 @@ class ConfigProperties
 
     const LABEL_VIEW_SUFFIX        = 'label_view_suffix';
     const LOG_FILE                 = 'log_file';
-    const LOG_PROJECT_API_TOKEN    = 'log_project_api_token';
     const LOOKUP_TABLE_NAME        = 'lookup_table_name';
 
     const POST_PROCESSING_SQL      = 'post_processing_sql';
@@ -72,11 +70,6 @@ class ConfigProperties
     const TRANSFORM_RULES_SOURCE = 'transform_rules_source';
     const TRANSFORM_RULES_TEXT   = 'transform_rules_text';
     
-    const TRIGGER_ETL            = 'trigger_etl';
-    const WEB_SCRIPT             = 'web_script';
-    const WEB_SCRIPT_LOG_FILE    = 'web_script_log_file';
-    const WEB_SCRIPT_URL         = 'web_script_url';
- 
 
     /**
      * Indicates if the specified property is a valid configuration
@@ -105,37 +98,8 @@ class ConfigProperties
         }
         return $isValid;
     }
-    
-    /**
-     * Indicates if the property is valid in
-     * the configuration project - some valid properties should
-     * not be settable from the config project.
-     */
-    public static function isValidInConfigProject($property)
-    {
-        $isValid = false;
-        switch ($property) {
-            case self::ALLOWED_SERVERS:
-            case self::BATCH_SIZE:
-            case self::DATA_SOURCE_API_TOKEN:
-            case self::DB_CONNECTION:
-            case self::EMAIL_TO_LIST:
-            case self::LABEL_VIEW_SUFFIX:
-            case self::LOG_PROJECT_API_TOKEN:
-            case self::RECORD_ID:
-            case self::TABLE_PREFIX:
-            case self::TRANSFORM_RULES_CHECK:
-            case self::TRANSFORM_RULES_FILE:
-            case self::TRANSFORM_RULES_SOURCE:
-            case self::TRANSFORM_RULES_TEXT:
-            case self::TRIGGER_ETL:
-                $isValid = true;
-                break;
-        }
-        return $isValid;
-    }
-    
-    
+
+
     /**
      * Gets the property names and values.
      *
