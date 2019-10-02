@@ -881,8 +881,7 @@ class ConfigurationTest extends TestCase
         );
 
         // Source: _FILE
-        // Local File. A local file is assumed if the filename is only
-        //             in the properties, not in the Configuration project
+        // Local File.
         $expectedRules = "RULES PLACEHOLDER\n";
         $file = __DIR__.'/../data/rules-test.txt';
 
