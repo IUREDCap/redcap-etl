@@ -150,7 +150,7 @@ class ConfigurationTest extends TestCase
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'No data source API token was found in the configuration project.';
+        $expectedMessage = 'No data source API token was found.';
         try {
             $config = new Configuration($logger, $properties);
         } catch (EtlException $exception) {
@@ -404,59 +404,6 @@ class ConfigurationTest extends TestCase
         );
     }
 
-    // Some parts of this function can't easily be tested by a unit
-    // test, so are handled in integration testing
-    public function testProcessConfigurationProject()
-    {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
-        $method = $reflection->getMethod('processConfigurationProject');
-        $method->setAccessible(true);
-
-        // Unable to create RedCap object
-        $exceptionCaught = false;
-        try {
-            $method->invokeArgs($configMock, array(null,null));
-        } catch (EtlException $exception) {
-            $exceptionCaught = true;
-        }
-
-        $this->assertTrue($exceptionCaught, 'Exception caught');
-
-        $expectedCode = EtlException::PHPCAP_ERROR;
-        $this->assertEquals($expectedCode, $exception->getCode(), 'ProcessConfigurationProject no redcap object code');
-
-        $expectedMessage = 'Unable to set up RedCap object.';
-        $this->assertEquals(
-            $expectedMessage,
-            $exception->getMessage(),
-            'ProcessConfigurationProject no redcap object message'
-        );
-
-        // Unable to get the Configuration project
-        $configMock->setRedCapApiUrl('fake url');
-        $badAPIToken = '1234567890';
-
-        $exceptionCaught = false;
-        try {
-            $method->invokeArgs($configMock, array($badAPIToken,null));
-        } catch (EtlException $exception) {
-            $exceptionCaught = true;
-        }
-
-        $this->assertTrue($exceptionCaught, 'Exception caught');
-
-        $expectedCode = EtlException::PHPCAP_ERROR;
-        $this->assertEquals($expectedCode, $exception->getCode(), 'ProcessConfigurationProject bad config token code');
-
-        $expectedMessage = 'Could not get Configuration data';
-        $this->assertEquals(
-            $expectedMessage,
-            $exception->getMessage(),
-            'ProcessConfigurationProject bad config token message'
-        );
-    }
-
     public function testConfig()
     {
         $propertiesFile = __DIR__.'/../data/config-testconfiguration.ini';
@@ -707,15 +654,6 @@ class ConfigurationTest extends TestCase
         $expectedTimezone = 'America/Indiana/Indianapolis';
         $timezone = $config->getTimezone();
         $this->assertEquals($expectedTimezone, $timezone, 'Timezone check');
-
-        $expectedTriggerEtl = true;
-        $config->setTriggerEtl($expectedTriggerEtl);
-        $triggerEtl = $config->getTriggerEtl();
-        $this->assertEquals(
-            $expectedTriggerEtl,
-            $triggerEtl,
-            'TriggerEtl check'
-        );
     }
 
     public function testConfig3()
@@ -880,22 +818,6 @@ class ConfigurationTest extends TestCase
         $this->assertFalse($isFromFile, 'IsFromFile from elsewhere test');
     }
 
-    public function testConfigWithoutConstructor()
-    {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
-
-        $reflection = new \ReflectionClass('IU\PHPCap\RedCapProject');
-        $expectedConfigProject = $reflection->newInstanceWithoutConstructor();
-        $configMock->SetConfigProject($expectedConfigProject);
-        $configProject = $configMock->GetConfigProject();
-        $this->assertEquals(
-            $expectedConfigProject,
-            $configProject,
-            'GetConfigProject check'
-        );
-    }
-
     public function testProcessTransformationRules()
     {
         $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
@@ -1000,98 +922,6 @@ class ConfigurationTest extends TestCase
             'ProcessTransformationRules local file check'
         );
 
-
-        // Source: _FILE
-        // File in Config project
-        // Need to provide 'configurations' array and set it to both
-        // the configurations value and the properties value to imply that
-        // file of rules is coming from the Configuration project.
-        // Need to create a mock of the Configuration project.
-        // Assumes that the record_id of the Configuration project
-        // is passed in.
-        $expectedRules = 'foo';
-        $fileField = 'config_file';
-
-        $configurationProperties =
-            array(ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
-        $configMock->setConfiguration($configurationProperties);
-        $configMock->setProperties($configurationProperties);
-
-        $configProjectMock = $this->createMock('IU\PHPCap\RedCapProject');
-        $configProjectMock->method('exportFile')->willReturn($expectedRules);
-        $configMock->setConfigProject($configProjectMock);
-
-        $properties = array(
-            'record_id' => 99999,
-            ConfigProperties::TRANSFORM_RULES_SOURCE =>
-            Configuration::TRANSFORM_RULES_FILE,
-            ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
-        $method->invokeArgs($configMock, array($properties));
-        $rules = $configMock->getTransformationRules();
-        $this->assertEquals(
-            $expectedRules,
-            $rules,
-            'ProcessTransformationRules config file check'
-        );
-
-        // Source: _FILE
-        // File in Config project, but empty
-        $fileField = 'config_file';
-
-        $configurationProperties =
-            array(ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
-        $configMock->setConfiguration($configurationProperties);
-        $configMock->setProperties($configurationProperties);
-
-        $configProjectMock = $this->createMock('IU\PHPCap\RedCapProject');
-        $configProjectMock->method('exportFile')->willReturn('');
-        $configMock->setConfigProject($configProjectMock);
-
-        $properties = array(
-            'record_id' => 99999,
-            ConfigProperties::TRANSFORM_RULES_SOURCE =>
-            Configuration::TRANSFORM_RULES_FILE,
-            ConfigProperties::TRANSFORM_RULES_FILE => $fileField);
-
-        $exceptionCaught = false;
-        $expectedCode = EtlException::FILE_ERROR;
-        $expectedMessage = 'No transformation rules file was found.';
-        try {
-            $method->invokeArgs($configMock, array($properties));
-        } catch (EtlException $exception) {
-            $exceptionCaught = true;
-        }
-
-        $this->assertTrue(
-            $exceptionCaught,
-            'ProcessTransformationRules config file empty exception caught'
-        );
-        $this->assertEquals(
-            $expectedCode,
-            $exception->getCode(),
-            'ProcessTransformationRules config file empty exception code check'
-        );
-        $this->assertEquals(
-            $expectedMessage,
-            $exception->getMessage(),
-            'ProcessTransformationRules config file empty exception message check'
-        );
-
-        // Source: _DEFAULT
-        $expectedRules = '';
-
-        $properties = array(
-            ConfigProperties::TRANSFORM_RULES_SOURCE =>
-            Configuration::TRANSFORM_RULES_DEFAULT
-        );
-        $method->invokeArgs($configMock, array($properties));
-        $rules = $configMock->getTransformationRules();
-        $this->assertEquals(
-            $expectedRules,
-            $rules,
-            'ProcessTransformationRules DEFAULT check'
-        );
-
         // Source: Unknown
         $properties = array(
             ConfigProperties::TRANSFORM_RULES_SOURCE => 'foo'
@@ -1121,6 +951,31 @@ class ConfigurationTest extends TestCase
             'ProcessTransformationRules UNKNOWN exception message check'
         );
     }
+
+
+    public function testProcessTransformationRulesDefault()
+    {
+        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
+        $method = $reflection->getMethod('processTransformationRules');
+        $method->setAccessible(true);
+        $configMock = $reflection->newInstanceWithoutConstructor();
+
+        // Source: _DEFAULT
+        $expectedRules = '';
+
+        $properties = array(
+            ConfigProperties::TRANSFORM_RULES_SOURCE =>
+            Configuration::TRANSFORM_RULES_DEFAULT
+        );
+        $method->invokeArgs($configMock, array($properties));
+        $rules = $configMock->getTransformationRules();
+        $this->assertEquals(
+            $expectedRules,
+            $rules,
+            'ProcessTransformationRules DEFAULT check'
+        );
+    }
+
 
     public function testProcessFile()
     {

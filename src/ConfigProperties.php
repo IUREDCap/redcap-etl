@@ -98,35 +98,8 @@ class ConfigProperties
         }
         return $isValid;
     }
-    
-    /**
-     * Indicates if the property is valid in
-     * the configuration project - some valid properties should
-     * not be settable from the config project.
-     */
-    public static function isValidInConfigProject($property)
-    {
-        $isValid = false;
-        switch ($property) {
-            case self::ALLOWED_SERVERS:
-            case self::BATCH_SIZE:
-            case self::DATA_SOURCE_API_TOKEN:
-            case self::DB_CONNECTION:
-            case self::EMAIL_TO_LIST:
-            case self::LABEL_VIEW_SUFFIX:
-            case self::RECORD_ID:
-            case self::TABLE_PREFIX:
-            case self::TRANSFORM_RULES_CHECK:
-            case self::TRANSFORM_RULES_FILE:
-            case self::TRANSFORM_RULES_SOURCE:
-            case self::TRANSFORM_RULES_TEXT:
-                $isValid = true;
-                break;
-        }
-        return $isValid;
-    }
-    
-    
+
+
     /**
      * Gets the property names and values.
      *

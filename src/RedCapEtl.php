@@ -17,10 +17,6 @@ class RedCapEtl
 {
     const CHECKBOX_SEPARATOR         = '___';
 
-    # Instrument (form) name that indicates a DET (Data Entry Trigger)
-    # should be processed
-    const DET_INSTRUMENT_NAME = 'run';
-    
     // For creating output fields to represent events, suffixes and
     // repeating instruments
     const COLUMN_EVENT             = 'redcap_event_name';
@@ -699,12 +695,6 @@ class RedCapEtl
         $this->logJobInfo();
         $this->log("Starting processing.");
 
-        #-------------------------------------------------------------------------
-        # Parse Transformation Rules
-        #
-        # NOTE: The $result is not used in batch mode. It is used
-        #       by the DET handler to give feedback within REDCap.
-        #-------------------------------------------------------------------------
         list($parseStatus, $result) = $this->processTransformationRules();
 
         if ($parseStatus === SchemaGenerator::PARSE_ERROR) {

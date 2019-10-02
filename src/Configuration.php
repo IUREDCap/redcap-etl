@@ -63,7 +63,6 @@ class Configuration
     
     private $configName;
     private $configOwner;
-    private $configProjectId;
     
     private $createLookupTable;
 
@@ -106,12 +105,10 @@ class Configuration
 
     private $transformationRules;
     private $transformRulesSource;
-    private $triggerEtl;
 
     private $properties;
     private $propertiesFile;
     private $configuration;
-    private $configProject;
 
     private $emailErrors;
     private $emailSummary;
@@ -121,9 +118,8 @@ class Configuration
 
     /**
      * Creates a Configuration object from either an array or properties
-     * or the configuration file, and the configuration project,
-     * and updates the logger based on the configuration information
-     * found.
+     * or a configuration file, * and updates the logger based on the
+     * configuration information found.
      *
      * @param Logger $logger logger for information and errors
      * @param mixed $properties if this is a string, it is assumed to
@@ -509,14 +505,6 @@ class Configuration
             $this->calcFieldIgnorePattern = $this->properties[ConfigProperties::CALC_FIELD_IGNORE_PATTERN];
         }
 
-        #------------------------------------------------------
-        # If a configuration project API token was defined,
-        # process the configuration project
-        #------------------------------------------------------
-        if (!empty($configProjectApiToken)) {
-            $this->properties = $this->processConfigurationProject($configProjectApiToken, $this->properties);
-        }
-
 
         #--------------------------------
         # Process allowed servers
@@ -533,7 +521,7 @@ class Configuration
         if (array_key_exists(ConfigProperties::DATA_SOURCE_API_TOKEN, $this->properties)) {
             $this->dataSourceApiToken = $this->properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
         } else {
-            $message = 'No data source API token was found in the configuration project.';
+            $message = 'No data source API token was found.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
@@ -684,103 +672,6 @@ class Configuration
         }
 
         return true;
-    }
-
-
-    /**
-     * Processes a configuration project. Sets the configuration array to the
-     * values in the configuration project.
-     *
-     * @param string $configProjectApiToken the REDCap API token for the configiration
-     *     project.
-     *
-     * @param array $properties the current properties array, a map from property name to
-     *     property value.
-     *
-     * @return array returns an updated properties array, where non-blank values defined
-     *     in the configuration project replace the ones from the configuration file.
-     */
-    private function processConfigurationProject($configProjectApiToken, $properties)
-    {
-        #---------------------------------------------------------------------
-        # Create RedCap object to use for getting the configuration projects
-        #---------------------------------------------------------------------
-        $superToken = null; // There is no need to create projects, so this is not needed
-
-        try {
-            $redCap = new RedCap(
-                $this->redcapApiUrl,
-                $superToken,
-                $this->sslVerify,
-                $this->caCertFile
-            );
-        } catch (PhpCapException $exception) {
-            $message = 'Unable to set up RedCap object.';
-            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        #-----------------------------------------------------------------------
-        # Get the Configuration Project
-        #-----------------------------------------------------------------------
-        try {
-            $this->configProject = $redCap->getProject($configProjectApiToken);
-            $results = $this->configProject->exportRecords();
-        } catch (PhpCapException $exception) {
-            $error = "Could not get Configuration data";
-            throw new EtlException($error, EtlException::PHPCAP_ERROR, $exception);
-        }
-        $this->configuration = $results[0];
-
-        #----------------------------------------------------------------------
-        # Merge the properties from the configuration project that do not end
-        # with "_complete" with those from the configuration file, with
-        # non-blank values from the configuration project replacing those
-        # from the configuration file.
-        #----------------------------------------------------------------------
-        foreach ($this->configuration as $key => $value) {
-            # If the property name is a valid property that
-            # may be set from the configuration project
-            if (ConfigProperties::isValidInConfigProject($key)) {
-                if ($value != null) {
-                    $value = trim($value);
-                }
-
-                if (array_key_exists($key, $properties)) {
-                    if (!empty($value)) {
-                        $properties[$key] = $value;
-                    }
-                } else {
-                    $properties[$key] = $value;
-                }
-            }
-        }
-        $this->properties = $properties;
-
-        #--------------------------------------------------------------
-        # Now that the configuration project has been read,
-        # if it specified an admin e-mail, replace the notifier
-        # sender with this e-mail address.
-        #--------------------------------------------------------------
-        if (!empty($this->emailFromAddress)) {
-            if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $properties)) {
-                $this->emailToList = trim($properties[ConfigProperties::EMAIL_TO_LIST]);
-                if (!empty($this->emailToList)) {
-                    $this->logger->setLogToEmail($this->emailToList);
-                }
-            }
-        }
-
-        #------------------------------------------------------
-        # Get project id
-        #------------------------------------------------------
-        try {
-            $this->configProjectId = $this->configProject->exportProjectInfo()['project_id'];
-        } catch (PhpCapException $exception) {
-            $message = "Unable to retrieve project_id.";
-            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        return $properties;
     }
 
 
@@ -1123,21 +1014,6 @@ class Configuration
         return $this->configOwner;
     }
         
-    public function getConfigProject()
-    {
-        return $this->configProject;
-    }
-    
-    public function getConfigProjectId()
-    {
-        return $this->configProjectId;
-    }
-
-    public function setConfigProject($configProject)
-    {
-        $this->configProject = $configProject;
-    }
-
     public function getCreateLookupTable()
     {
         return $this->createLookupTable;
@@ -1341,15 +1217,5 @@ class Configuration
     public function getTransformRulesSource()
     {
         return $this->transformRulesSource;
-    }
-
-    public function getTriggerEtl()
-    {
-        return $this->triggerEtl;
-    }
-
-    public function setTriggerEtl($triggerEtl)
-    {
-        $this->triggerEtl = $triggerEtl;
     }
 }
