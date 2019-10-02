@@ -1,0 +1,49 @@
+<!-- =================================================
+Copyright (C) 2019 The Trustees of Indiana University
+SPDX-License-Identifier: BSD-3-Clause
+================================================== -->
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php">
+  <testsuites>
+    <testsuite name="unit">
+      <file>tests/unit/ErrorHandlerTest.php</file>
+      <file>tests/unit/FileUtilTest.php</file>
+      <file>tests/unit/PhpCapExceptionTest.php</file>
+      <file>tests/unit/RedCapApiConnectionTest.php</file>
+      <file>tests/unit/RedCapTest.php</file>
+      <file>tests/unit/RedCapProjectTest.php</file>
+    </testsuite>
+    <testsuite name="integration">
+      <file>tests/integration/ArmsTest.php</file>
+      <file>tests/integration/BatchesTest.php</file>
+      <file>tests/integration/ConnectionsTest.php</file>
+      <file>tests/integration/EventsTest.php</file>
+      <file>tests/integration/FieldNamesTest.php</file>
+      <file>tests/integration/FilesTest.php</file>
+      <file>tests/integration/ImportAndDeleteMetadataTest.php</file>
+      <file>tests/integration/InstrumentEventMappingsTest.php</file>
+      <file>tests/integration/InstrumentsTest.php</file>
+      <file>tests/integration/MetadataTest.php</file>
+      <file>tests/integration/NextRecordNameTest.php</file>
+      <file>tests/integration/PdfFormsTest.php</file>
+      <file>tests/integration/PhpCapVersionTest.php</file>
+      <file>tests/integration/ProjectInfoTest.php</file>
+      <file>tests/integration/ProjectsTest.php</file>
+      <file>tests/integration/ProjectXmlTest.php</file>
+      <file>tests/integration/RecordsTest.php</file>
+      <file>tests/integration/RedCapIntegrationTest.php</file>
+      <file>tests/integration/RedCapVersionTest.php</file>
+      <file>tests/integration/RepeatingTest.php</file>
+      <file>tests/integration/ReportsTest.php</file>
+      <file>tests/integration/SurveyTest.php</file>
+      <file>tests/integration/UsersTest.php</file>
+    </testsuite>
+  </testsuites>
+  <filter>
+    <whitelist>
+      <directory suffix=".php">src</directory>
+    </whitelist>
+  </filter>
+</phpunit>

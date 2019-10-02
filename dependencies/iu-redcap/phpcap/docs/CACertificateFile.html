@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="themes/apigen/theme-phpcap/src/resources/style.css">
+<link rel="stylesheet" href="themes/apigen/theme-phpcap/src/resources/docstyle.css">
+<title>PHPCap Documentation</title>
+</head>
+<body>
+<div id="left">
+<div id="menu">
+<div id="topmenu">
+<span>PHPCap Docs</span> | <a href="api/index.html">PHPCap API</a>
+<hr />
+</div>
+<a href="index.html" title="Overview"><span id="overview">Overview</span></a>
+<ul>
+<li><a href="UserGuide1.html">User Guide 1 - Getting Started</a></li>
+<li><a href="UserGuide2.html">User Guide 2 - API Overview</a></li>
+<li><a href="UserGuide3.html">User Guide 3 - Exporting Records</a></li>
+<li><a href="UserGuide4.html">User Guide 4 - Importing Data</a></li>
+<li><a href="UserGuide5.html">User Guide 5 - Extending PHPCap</a></li>
+<li class="active"><a href="CACertificateFile.html">CA Certificate File Info</a></li>
+<ul class="intraPage">
+    <li class="active"><a href="#Creating a CA Certificate File with Firefox">Creating a CA Certificate File with Firefox</a></li>
+</ul>
+<li><a href="DeveloperGuide.html">Developer Guide</a></li>
+</ul>
+</div>
+</div>
+<div id="splitter"></div>
+<div id="right">
+<div id="rightInner">
+<div id="content">
+<!-- =================================================
+Copyright (C) 2019 The Trustees of Indiana University
+SPDX-License-Identifier: BSD-3-Clause
+================================================== -->
+<h1>CA Certificate File Info</h1>
+<p>The CA (Certificate Authority) certificate file is needed so that PHPCap can verify that
+the REDCap instance it is connecting to is actually the instance that
+was specified.</p>
+<p>In PHPCap, it is possible to set SSL verification to false, so that
+a CA certificate file is not required, however, this is insecure, and
+is not recommended. At most, setting SSL verification to false should
+only be used for initial testing with non-critical data.</p>
+<p>It is possible that your system may already be set up to use a correct CA certificate file.
+This can be tested by trying to access a project with SSL verification set to true, but with
+no CA certificate file specified, for example:</p>
+<div class="description"><pre><code class="language-php"><span class="xlang">&lt;?php</span>
+
+<span class="php-keyword1">require</span>(<span class="php-quote">'PHPCap/autoloader.php'</span>);
+
+<span class="php-keyword1">use</span> IU\PHPCap\RedCapProject;
+
+<span class="php-var">$apiUrl</span> = <span class="php-quote">'https://redcap.someplace.edu/api/'</span>; <span class="php-comment"># Replace with your REDCap's API URL</span>
+<span class="php-var">$apiToken</span> = <span class="php-quote">'1234567890A1234567890B1234567890'</span>;  <span class="php-comment"># Replace with your API token</span>
+
+<span class="php-var">$sslVerify</span> = <span class="php-keyword1">true</span>;
+<span class="php-var">$project</span> = RedCapProject(<span class="php-var">$apiUrl</span>, <span class="php-var">$apiToken</span>, <span class="php-var">$sslVerify</span>);
+<span class="php-var">$project</span>-&gt;exportProjectInfo();</code></pre></div>
+<p>If this works, then that would indicate that your system is already set up with a CA certificate
+file. If it fails, and you get an error message about a security certificate, such as</p>
+<blockquote>
+<p>SSL certificate problem: self signed certificate in certificate chain</p>
+</blockquote>
+<p>then your system is not already set up.</p>
+<h2 id="Creating a CA Certificate File with Firefox">Creating a CA Certificate File with Firefox</h2>
+<p>To use the Firefox web browser to create a CA (Certificate Authority) certificate file for use with PHPCap, use the following steps:</p>
+<ol>
+<li>Access your REDCap site with Firefox.</li>
+<li>
+<p>Click on the padlock icon to the left of the URL displayed in Firefox, and then the connection, and then &quot;More Information&quot;.</p>
+<p><img src="resources/secure-connection.png" alt="Page Information" />  </p>
+</li>
+<li>
+<p>If the previous step succeeded, a &quot;Page Info&quot; window should open up. In this window,
+click on the &quot;Security&quot; tab, if it is not already selected.  </p>
+<p><img src="resources/page-info-security.png" alt="Page Information" />  </p>
+</li>
+<li>Click on the &quot;View Certificate&quot; button</li>
+<li>
+<p>Click on the &quot;Detail&quot; tab of the &quot;Certificate Viewer&quot; dialog.  </p>
+<p><img src="resources/certificate-viewer.png" alt="Certificate Viewer" />  </p>
+</li>
+<li>Select the top entry in the &quot;Certificate Hierarchy&quot; box.</li>
+<li>Click the &quot;Export...&quot; button.</li>
+<li>
+<p>In the &quot;Save Certificate to File&quot; window that should appear:</p>
+<ol>
+<li>navigate to where you want to save the file</li>
+<li>change the name of the file if you don't want to use the default name</li>
+<li>set &quot;Save as type&quot; to &quot;X.509 Certificate (PEM)&quot;</li>
+<li>
+<p>click on the &quot;Save&quot; button.  </p>
+<p><img src="resources/save-certificate-to-file.png" alt="Save Certificate to File" />   </p>
+</li>
+</ol>
+</li>
+</ol></div>
+<div id="footer">
+PHPCap documentation
+</div>
+</div></div>
+<script src="api/resources/combined.js"></script>
+</body>
+</html>

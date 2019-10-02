@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'IU\\REDCapETL\\' => array($baseDir . '/src'),
-    'IU\\PHPCap\\' => array($vendorDir . '/phpcap/phpcap/src'),
+    'IU\\PHPCap\\' => array($vendorDir . '/iu-redcap/phpcap/src'),
 );

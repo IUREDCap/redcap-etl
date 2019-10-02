@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="themes/apigen/theme-phpcap/src/resources/style.css">
+<link rel="stylesheet" href="themes/apigen/theme-phpcap/src/resources/docstyle.css">
+<title>PHPCap Documentation</title>
+</head>
+<body>
+<div id="left">
+<div id="menu">
+<div id="topmenu">
+<span>PHPCap Docs</span> | <a href="api/index.html">PHPCap API</a>
+<hr />
+</div>
+<a href="index.html" title="Overview"><span id="overview">Overview</span></a>
+<ul>
+<li><a href="UserGuide1.html">User Guide 1 - Getting Started</a></li>
+<li><a href="UserGuide2.html">User Guide 2 - API Overview</a></li>
+<li><a href="UserGuide3.html">User Guide 3 - Exporting Records</a></li>
+<li class="active"><a href="UserGuide4.html">User Guide 4 - Importing Data</a></li>
+<ul class="intraPage">
+    <li class="active"><a href="#importRecords">importRecords</a></li>
+<ul class="intraPage">
+    <li class="active"><a href="#Batch processing of CSV imports">Batch processing of CSV imports</a></li>
+</ul>
+    <li class="active"><a href="#importFile">importFile</a></li>
+</ul>
+<li><a href="UserGuide5.html">User Guide 5 - Extending PHPCap</a></li>
+<li><a href="CACertificateFile.html">CA Certificate File Info</a></li>
+<li><a href="DeveloperGuide.html">Developer Guide</a></li>
+</ul>
+</div>
+</div>
+<div id="splitter"></div>
+<div id="right">
+<div id="rightInner">
+<div id="content">
+<!-- =================================================
+Copyright (C) 2019 The Trustees of Indiana University
+SPDX-License-Identifier: BSD-3-Clause
+================================================== -->
+<h1>User Guide 4 - Importing Data</h1>
+<p>PHPCap's <strong>RedCapProject</strong> class provides the following methods for importing data:</p>
+<ol>
+<li><strong>importRecords</strong> - method for importing records. </li>
+<li><strong>importFile</strong> - method for importing a file (e.g., a document or image) into an existing REDCap record.</li>
+</ol>
+<h2 id="importRecords">importRecords</h2>
+<p>Detailed documentation for the importRecords method can be found in
+the PHPCap API documentation:
+<a href="https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html">https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html</a></p>
+<p>Since this method corresponds very closely to the REDCap API Import Records method, the
+REDCap API documentation can also be checked for more information. And the REDCap
+API Playground can be used to get a sense of the functionality provided by this method.</p>
+<p>Here is example PHPCap code that uses the importRecords method to import records from a CSV (Comma-Separated Value) file:</p>
+<div class="description"><pre><code class="language-php"><span class="xlang">&lt;?php</span>
+...
+<span class="php-comment">// import records from a CSV file</span>
+<span class="php-keyword1">try</span> {
+    <span class="php-var">$records</span> = FileUtil::fileToString(<span class="php-quote">'data.csv'</span>);
+    <span class="php-var">$number</span> = <span class="php-var">$project</span>-&gt;importRecords(<span class="php-var">$records</span>, <span class="php-quote">'csv'</span>);
+    <span class="php-keyword1">print</span> <span class="php-quote">&quot;</span><span class="php-var">{$number}</span><span class="php-quote"> records were imported.\n&quot;</span>;
+} <span class="php-keyword1">catch</span> (Exception <span class="php-var">$exception</span>) {
+    <span class="php-keyword1">print</span> <span class="php-quote">&quot;*** Import Error: &quot;</span>.<span class="php-var">$exception</span>-&gt;getMessage().<span class="php-quote">&quot;\n&quot;</span>;
+}</code></pre></div>
+<p>The importRecords method imports CSV records from a string, so if your data is stored
+in a file, you need to read the file into a string first, as is done above.
+The importRecords method returns the number of records that were imported.
+It is also possible to specify that the record IDs of the records that were
+imported be returned instead. See the PHPCap API documentation for more details.</p>
+<h3 id="Batch processing of CSV imports">Batch processing of CSV imports</h3>
+<p>PHPCap currently provides no direct support for batch imports.
+To import a large CSV file in batches, you need to either:</p>
+<ul>
+<li>break up the file into multiple files, and import each one separately</li>
+<li>read the file into a string one batch of records at a time, and import the string after
+each read</li>
+</ul>
+<p>One thing you need to be careful about is that each batch of rows needs to have
+the header row with column names as the first row. If you simply read a large CSV files
+100 rows at a time, the first import would succeed, because it would have the header row,
+but the subsequent imports would fail.</p>
+<h2 id="importFile">importFile</h2>
+<p>The importFile method is used for importing a file, such as a consent form for a patient,
+into an existing REDCap record.</p>
+<p>Detailed documentation for the importRecords method can be found in
+the PHPCap API documentation:
+<a href="https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html">https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html</a> </p>
+<p>Below is example code for importing a consent form file for a patient into the patient's record:</p>
+<div class="description"><pre><code class="language-php">project-&gt;importFile(<span class="php-quote">'consent1001.pdf'</span>,<span class="php-quote">'1001'</span>,<span class="php-quote">'patient_consent'</span>);</code></pre></div>
+<p>Or, using variables to indicate what the arguments represent:</p>
+<div class="description"><pre><code class="language-php"><span class="php-var">$file</span> = <span class="php-quote">'consent1001.pdf'</span>;
+<span class="php-var">$recordId</span> = <span class="php-quote">'1001'</span>;
+<span class="php-var">$field</span> = <span class="php-quote">'patient_consent'</span>;
+project-&gt;importFile(<span class="php-var">$file</span>, <span class="php-var">$recordId</span>, <span class="php-var">$field</span>);</code></pre></div>
+<p>Both of the above examples are importing the file &quot;consent1001.pdf&quot; into field &quot;patient_consent&quot; in the record with an ID of 1001.</p>
+<p>A similar example for a longitudinal study is as follows:</p>
+<div class="description"><pre><code class="language-php"><span class="php-var">$file</span> = <span class="php-quote">'consent.pdf'</span>;
+<span class="php-var">$recordId</span> = <span class="php-quote">'1001'</span>;
+<span class="php-var">$field</span> = <span class="php-quote">'patient_consent'</span>;
+<span class="php-var">$event</span> = <span class="php-quote">'enrollment_arm_1'</span>;
+project-&gt;importFile(<span class="php-var">$file</span>, <span class="php-var">$recordId</span>, <span class="php-var">$field</span>, <span class="php-var">$event</span>); </code></pre></div>
+<p>In this case, the event needs to be specified also.</p></div>
+<div id="footer">
+PHPCap documentation
+</div>
+</div></div>
+<script src="api/resources/combined.js"></script>
+</body>
+</html>
