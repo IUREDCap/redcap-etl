@@ -249,7 +249,7 @@ for the "Repeating Events" and "Visits" projects:
        with "/api/".
 
     2. **data_source_api_token** - set this to the REDCap API token for
-       your approproiate REDCap project created above.
+       your REDCap Visits project created above.
 
     3. **ssl_verify** - if you are using a REDCap instance for testing that has no,
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
