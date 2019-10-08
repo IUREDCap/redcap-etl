@@ -1,7 +1,7 @@
 {
     "name" : "iu-redcap/redcap-etl",
-    "license" : "Apache-2.0",
-    "description" : "REDCap-ETL",
+    "license" : "BSD-3-Clause",
+    "description" : "ETL (Extract, Transform, Load) application that extracts data from REDCap",
     "keywords" : [
         "REDCap", "ETL"
     ],
@@ -10,7 +10,7 @@
         "ext-curl" : "*",
         "ext-dom" : "*",
         "ext-openssl" : "*",
-        "phpcap/phpcap" : "0.3.3"
+        "iu-redcap/phpcap" : "1.0.5"
     },
     "require-dev" : {
         "apigen/apigen" : "v4.1.2",

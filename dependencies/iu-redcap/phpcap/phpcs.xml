@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!-- =================================================
+Copyright (C) 2019 The Trustees of Indiana University
+SPDX-License-Identifier: BSD-3-Clause
+================================================== -->
+
+<ruleset name="REDCap-ETL coding standards">
+    <description>REDCap-ETL coding standards</description>
+
+    <!-- Use colors for output -->
+    <arg name="colors"/>
+
+    <!-- =================================
+    Standards to use 
+    ================================== -->
+    <rule ref="PSR1"/>
+    <rule ref="PSR2"/>
+    <!-- local variables need to use lower camel case -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
+    <!-- member variables need to use lower camel case -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps"/>
+    <!-- variables embedded in strings need to use lower camel case -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName.StringNotCamelCaps"/>
+
+    <!-- =================================
+    Paths to check
+    ================================== -->
+    <file>src</file>
+    <file>tests/integration</file>
+    <file>tests/unit</file>
+
+    <!-- How to exclude files: -->
+    <!--<exclude-pattern>...pattern...</exclude-pattern> -->
+
+</ruleset>

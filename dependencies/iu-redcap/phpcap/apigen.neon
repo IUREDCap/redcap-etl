@@ -1,0 +1,24 @@
+#-------------------------------------------------------
+# Copyright (C) 2019 The Trustees of Indiana University
+# SPDX-License-Identifier: BSD-3-Clause
+#-------------------------------------------------------
+
+#-----------------------------------------------------------
+# ApiGen configuration file
+#
+# ApiGen generates HTML documentation from PHPDoc comments.
+#-----------------------------------------------------------
+source: [src]
+destination: docs/api
+title: "PHPCap"
+
+accessLevels: [public]
+
+#exclude: [Util]
+
+# generate documentation for PHP internal classes that are extended
+php: true
+
+# custom template file
+templateConfig: docs/themes/apigen/theme-phpcap/src/config.neon
+

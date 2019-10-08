@@ -1,4 +1,8 @@
 <?php
+#-------------------------------------------------------
+# Copyright (C) 2019 The Trustees of Indiana University
+# SPDX-License-Identifier: BSD-3-Clause
+#-------------------------------------------------------
 
 namespace IU\REDCapETL;
 
@@ -14,7 +18,6 @@ class EtlException extends \Exception
     const PHPCAP_ERROR   = 2;
     const INPUT_ERROR    = 3;
     const DATABASE_ERROR = 4;
-    const DET_ERROR      = 5;  # REDCap Data Entry Trigger error
     const LOGGING_ERROR  = 6;
 
     /**

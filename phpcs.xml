@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!-- =================================================
+Copyright (C) 2019 The Trustees of Indiana University
+SPDX-License-Identifier: BSD-3-Clause
+================================================== -->
+
 <ruleset name="REDCap-ETL coding standards">
     <description>REDCap-ETL coding standards</description>
 

@@ -1,4 +1,8 @@
 <?php
+#-------------------------------------------------------
+# Copyright (C) 2019 The Trustees of Indiana University
+# SPDX-License-Identifier: BSD-3-Clause
+#-------------------------------------------------------
 
 namespace IU\REDCapETL;
 
@@ -22,17 +26,5 @@ class ConfigPropertiesTest extends TestCase
 
         $isValid = ConfigProperties::isValid(ConfigProperties::BATCH_SIZE);
         $this->assertTrue($isValid, 'Valid property test');
-    }
-
-    public function testIsValidConfigProject()
-    {
-        $validProperty = ConfigProperties::ALLOWED_SERVERS;
-        $invalidProperty = 'nonsense string';
-
-        $isValid = ConfigProperties::isValidInConfigProject($invalidProperty);
-        $this->assertFalse($isValid, 'Invalid property in config project test');
-
-        $isValid = ConfigProperties::isValidInConfigProject($validProperty);
-        $this->assertTrue($isValid, 'Valid property in config project test');
     }
 }

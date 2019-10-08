@@ -50,11 +50,7 @@ works.
         sudo apt install sqlite3
         sudo apt install sqlitebrowser  # optional
 
-7. Install Apache (used for DET (Data Entry Trigger) web scripts)
-
-        sudo apt install apache2 libapache2-mod-php
-
-8. Install Git
+7. Install Git
 
         sudo apt install git
         # Add e-mail and name information, for example:
@@ -120,8 +116,6 @@ The test types above are listed in order of least to most setup effort.
 | __Configuration file setup required__ |      | &#10003;   | &#10003;  |
 | __REDCap project setup required__     |      | &#10003;   | &#10003;  |
 | __MySQL database setup required__     |      |            | &#10003;  |
-| __Web server setup required__         |      |            | &#10003;  |
-| __Webs script setup required__        |      |            | &#10003;  |
 
 
 
@@ -202,51 +196,30 @@ in the top-level directory of your REDCap-ETL installation:
 Steps for setting up the REDCap projects:
 
 1. In REDCap, create a project using the
-   "Upload a REDCap project XML file" option for each of the following
+   "Upload a REDCap project XML file" option for the following
    REDCap project files:
 
         tests/projects/Visits.REDCap.xml
-        tests/projects/VisitsConfig.REDCap.xml
-        tests/projects/VisitsLog.REDCap.xml
 
-2. Request an API token for each of the projects you just created (or
-   create a token if you are an admin). The configuration and logging
-   project tokens need to have export and "API Import/Update"
-   permissions. The data project API token needs to have 
-   "API Export" permission.
+2. Request an API token for the project you just created (or
+   create a token if you are an admin).
+   The API token needs to have "API Export" permission.
 
 3. If you did not already set up the "Repeating Events" project as described
     in the steps for setting up integration tests, then you need to set
     that up also.
 
-In the configuration project (created from the VisitsConfig.REDCap.xml
-file):
-
-1. Set the log project API token in the Admin form of the existing
-   record to the token that you got for the log project
-   (created using file VisitsLog.REDCap.xml).
-
-2. Set the data source API token in the ETL Process
-   form to the value of the API token you got for the
-   data project (created from file Visits.REDCap.xml).
-
-3, If you used a different username, password, or database name
-   than those used in the example above for the MySQL database,
-   change the values appropriately in the database connection string
-   field. The syntax to use is:
-
-        MySQL:<db-host>:<db-username>:<db-password>:<db-name>
 
 You need to create SQLite test databases. Use the following commands
 
-        cd tests/output
-        sqlite3 repeating-events.db
-        sqlite3 visits.db
+    cd tests/output
+    sqlite3 repeating-events.db
+    sqlite3 visits.db
 
 When in the sqlite shell from executing the above sqlite3 commands, enter the following:
 
-        .databases
-        .quit
+    .databases
+    .quit
 
 The next thing you need to do is to create the configuration files
 for the "Repeating Events" and "Visits" projects:
@@ -275,8 +248,8 @@ for the "Repeating Events" and "Visits" projects:
        sure to set this to the URL for the _API_, which typically ends
        with "/api/".
 
-    2. **config_api_token** - set this to the REDCap API token for
-       your REDCap Visits Config project created above.
+    2. **data_source_api_token** - set this to the REDCap API token for
+       your REDCap Visits project created above.
 
     3. **ssl_verify** - if you are using a REDCap instance for testing that has no,
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
@@ -323,33 +296,6 @@ command:
 
         ./bin/config_check.php tests/config/visits.ini 
 
-You now need to run the web script installation script to install a
-web script that will handle DETs (Data Entry Triggers) from REDCap.
-The DET will be simulated, so you won't actually need to set this
-up in your REDCap configuration project as you normally would in
-a production installation.
-
-To install the web script, from the top-level directory of your
-REDCap-ETL installation, run the install_web_scripts.php
-script, for example:
-
-        ./bin/install_web_scripts.php -c tests/config -w /var/www/html
-
-Notes:
-
-* You may need to run the command as: 
-  `php ./bin/install_web_script.php ...`
-* `/var/www/html` represents the directory from which your web server
-  serves pages. Change this if your actual directory is different.
-* Make sure that the `web_script_url` property in the 
-  tests/config/visits.ini configuration file is set to a value
-  that corresponds to the directory where the web script is installed 
-* The owner of your web server process must be able to read from
-  your REDCap-ETL installation directory.
-* If you don't have permission to write to the web directory, you
-  may need to run the command as
-  
-      `sudo ./bin/install_web_scripts.php ...`
 
 After the above steps have been completed successfully, you should be
 able to run the system tests by executing the following command

@@ -1,3 +1,8 @@
+<!-- =================================================
+Copyright (C) 2019 The Trustees of Indiana University
+SPDX-License-Identifier: BSD-3-Clause
+================================================== -->
+
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
          bootstrap="vendor/autoload.php">
@@ -14,7 +19,6 @@
       <file>tests/unit/EtlLogTableTest.php</file>
       <file>tests/unit/LookupTableTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
-      <file>tests/unit/RedCapDetHandlerTest.php</file>
       <file>tests/unit/RulesParserTest.php</file>
       <file>tests/unit/RulesSemanticAnalyzerTest.php</file>
       <file>tests/unit/SchemaGeneratorTest.php</file>
@@ -70,7 +74,6 @@
       <file>tests/system/VisitsTest.php</file>
       <file>tests/system/VisitsCodeTest.php</file>
       <file>tests/system/VisitsSqliteCodeTest.php</file>
-      <file>tests/system/VisitsWebTest.php</file>
     </testsuite>
 
   </testsuites>

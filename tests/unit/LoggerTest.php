@@ -1,4 +1,8 @@
 <?php
+#-------------------------------------------------------
+# Copyright (C) 2019 The Trustees of Indiana University
+# SPDX-License-Identifier: BSD-3-Clause
+#-------------------------------------------------------
 
 namespace IU\REDCapETL;
 
@@ -37,7 +41,6 @@ class LoggerTest extends TestCase
         $logApps     = array_fill(0, count($logMessages), $this->project->getApp());
 
         $logger = new Logger($this->project->getApp());
-        $logger->setLogProject($this->project);
         $logger->setPrintLogging(false);
 
         $logFile = __DIR__.'/../logs/logger-test-log.txt';
@@ -45,31 +48,15 @@ class LoggerTest extends TestCase
         $getLogFile = $logger->getLogFile();
         $this->assertEquals($logFile, $getLogFile, 'Log file set/get test');
 
+        file_put_contents($logFile, '');  // Clear any existing file contents
         foreach ($logMessages as $logMessage) {
             $logger->log($logMessage);
         }
 
-        # Get the records from the project and check them
-        $logRecords = $this->project->getAllRecords();
-        $logRecordMessages = array_column($logRecords, 'message');
-        $logRecordApps     = array_column($logRecords, 'app');
-
-        $this->assertEquals($logMessages, $logRecordMessages, 'Log message check');
-
-        $this->assertEquals($logApps, $logRecordApps, 'Log app check');
-
-        /*
-        SystemFunctions::setOverrideErrorLog(true);
-        $this->project->setImportGeneratesException(true);
-        $logger->log('This is a test.');
-        $lastErrorLogMessage = SystemFunctions::getLastErrorLogMessage();
-        $this->assertEquals(
-            'Logging to project failed: data import error',
-            $lastErrorLogMessage,
-            'Import exception check'
-        );
-        SystemFunctions::setOverrideErrorLog(false);
-        */
+        $contents = file_get_contents($logFile);
+        $this->assertRegexp('/Test 1/', $contents, 'Test1 log contents test');
+        $this->assertRegexp('/Test 2/', $contents, 'Test2 log contents test');
+        $this->assertRegexp('/Test 3/', $contents, 'Test3 log contents test');
     }
     
     public function testGetApp()
