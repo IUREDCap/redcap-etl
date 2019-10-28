@@ -74,6 +74,8 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/VisitsTest.php</file>
       <file>tests/system/VisitsCodeTest.php</file>
       <file>tests/system/VisitsSqliteCodeTest.php</file>
+      <file>tests/system/SchemaGeneratorGenerateSchemaTest.php</file>
+      <file>tests/system/RedCapEtlTest.php</file>
     </testsuite>
 
   </testsuites>
