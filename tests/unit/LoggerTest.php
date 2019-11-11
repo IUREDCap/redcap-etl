@@ -133,6 +133,38 @@ class LoggerTest extends TestCase
 
         SystemFunctions::setOverrideMail(false);
     }
+
+    public function testPrintLogging()
+    {
+        $logger = new Logger($this->project->getApp());
+
+        $printLogging = $logger->getPrintLogging();
+        $this->assertTrue($printLogging, 'Default print logging test');
+
+        $logger->setPrintLogging(false);
+        $printLogging = $logger->getPrintLogging();
+        $this->assertFalse($printLogging, 'Set print logging false test');
+
+        $logger->setPrintLogging(true);
+        $printLogging = $logger->getPrintLogging();
+        $this->assertTrue($printLogging, 'Set print logging true test');
+    }
+    
+    public function testEmailSummary()
+    {
+        $logger = new Logger($this->project->getApp());
+
+        $emailSummary = $logger->getEmailSummary();
+        $this->assertFalse($emailSummary, 'Default email summary test');
+
+        $logger->setEmailSummary(true);
+        $emailSummary = $logger->getEmailSummary();
+        $this->assertTrue($emailSummary, 'Set email summary true test');
+
+        $logger->setEmailSummary(false);
+        $emailSummary = $logger->getEmailSummary();
+        $this->assertFalse($emailSummary, 'Set email summary false test');
+    }
     
     
     public function testLogException()
