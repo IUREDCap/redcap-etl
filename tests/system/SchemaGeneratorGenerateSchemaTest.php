@@ -43,7 +43,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         #create a SchemaGenerator object
         $schemaGenerator = new SchemaGenerator($etlRedCapProject, $configuration, self::$logger);
 
-        #Generate the schema 
+        #Generate the schema
         $rulesText = $configuration->getTransformationRules();
         $result = $schemaGenerator->generateSchema($rulesText);
 
@@ -58,7 +58,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         $expected = file_get_contents($file);
  
         #test that the generated output matches what is expected
-        $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema output'); 
+        $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema output');
     }
    
     /**
@@ -140,7 +140,11 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         $expected = file_get_contents($file);
 
         #test that the generated output matches what is expected
-        $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema classic project, repeating instruments output');
+        $this->assertEquals(
+            $expected,
+            $output,
+            'SchemaGenerator, generateSchema classic project, repeating instruments output'
+        );
     }
 
     /**
@@ -191,7 +195,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema bad rule output');
 
         #test that the error message was written to the log file
-        $logText = file_get_contents($logFile, FALSE, NULL, 0, 500);
+        $logText = file_get_contents($logFile, false, null, 0, 500);
         $unrecognizedRuleMsg = 'Unrecognized rule type "IELD"';
         $unmappedFieldMsg= 'Unmapped fields: comments';
         $msgFound1 = (strpos($logText, $unrecognizedRuleMsg) ? true : false);
@@ -253,7 +257,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema bad field name output');
 
         #test that the error message was written to the log file
-        $logText = file_get_contents($logFile, FALSE, NULL, 0, 500);
+        $logText = file_get_contents($logFile, false, null, 0, 500);
         $fieldNotFoundMsg = "Field not found in REDCap: 'bbbmi'";
         $msgFound = (strpos($logText, $fieldNotFoundMsg) ? true : false);
         $this->assertTrue(
@@ -298,7 +302,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         $result = $schemaGenerator->generateSchema($rulesText);
 
         #test that the error message was written to the log file
-        $logText = file_get_contents($logFile, FALSE, NULL, 0, 500);
+        $logText = file_get_contents($logFile, false, null, 0, 500);
         $fieldNotFoundMsg = "Suffix field not found in REDCap: 'missingSuffixField'";
         $msgFound = (strpos($logText, $fieldNotFoundMsg) ? true : false);
         $this->assertTrue(
@@ -343,7 +347,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         $result = $schemaGenerator->generateSchema($rulesText);
 
         #test that the error message was written to the log file
-        $logText = file_get_contents($logFile, FALSE, NULL, 0, 500);
+        $logText = file_get_contents($logFile, false, null, 0, 500);
         $fieldNotFoundMsg = "Found no transformation rules";
         $msgFound = (strpos($logText, $fieldNotFoundMsg) ? true : false);
         $this->assertTrue(
@@ -353,8 +357,8 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
     }
 
    /**
-     * Test using basic demography rule file that has a field name that 
-     * is the sames as the primary key. THIS TEST REQUIRES A NEW 
+     * Test using basic demography rule file that has a field name that
+     * is the sames as the primary key. THIS TEST REQUIRES A NEW
      * REDCAP ETL PROJECT. COMMENTING IT OUT UNTIL ONE IS CREATED.
      */
  /**   public function testGenerateSchemaErrorDuplicatePrimaryKeyName()
