@@ -19,6 +19,7 @@ use IU\REDCapETL\TestProject;
 class LoggerTest extends TestCase
 {
     private $project;
+    private static $customLog;
 
     public function setUp()
     {
@@ -27,6 +28,8 @@ class LoggerTest extends TestCase
 
         $this->project = new TestProject($apiUrl, $apiToken);
         $this->project->setApp('LoggerTest');
+
+        self::$customLog = array();
     }
     
     public function testConstructor()
@@ -65,6 +68,15 @@ class LoggerTest extends TestCase
 
         $app = $logger->getApp();
         $this->assertEquals($this->project->getApp(), $app, 'get app check');
+    }
+
+    public function testGetLogId()
+    {
+        $logger = new Logger($this->project->getApp());
+
+        $logId = $logger->getLogId();
+        $this->assertNotNull($logId, 'Log ID not null check');
+        $this->assertRegExp('/^[a-fA-F0-9]+\.[0-9]+$/', $logId, 'Log ID pattern match');
     }
 
     public function testLogEmail()
@@ -165,7 +177,69 @@ class LoggerTest extends TestCase
         $emailSummary = $logger->getEmailSummary();
         $this->assertFalse($emailSummary, 'Set email summary false test');
     }
+
+    public function testEmailErrors()
+    {
+        $logger = new Logger($this->project->getApp());
+
+        $emailErrors = $logger->getEmailErrors();
+        $this->assertTrue($emailErrors, 'Default email errors test');
+
+        $logger->setEmailErrors(false);
+        $emailErrors = $logger->getEmailErrors();
+        $this->assertFalse($emailErrors, 'Set email errors false test');
+
+        $logger->setEmailErrors(true);
+        $emailErrors = $logger->getEmailErrors();
+        $this->assertTrue($emailErrors, 'Set email errors true test');
+    }
     
+    public function testLoggingCallback()
+    {
+        $loggingCallback = array($this, 'loggingCallback');  // object method callback
+
+        $logger = new Logger($this->project->getApp());
+        $this->assertNotNull($logger);
+
+        $logger->setPrintLogging(false);
+        $logger->setLoggingCallback($loggingCallback);
+
+        $logValue = 'This is a test';
+        $logger->log($logValue);
+        $loggedValue = self::$customLog[0];
+        $this->assertEquals($logValue, $loggedValue, 'log method for callback test');
+
+        $logValue = 'Test of callback logging method';
+        $logger->logToCallback($logValue);
+        $loggedValue = self::$customLog[1];
+        $this->assertEquals($logValue, $loggedValue, 'logToCallback method test');
+
+        # Test turning logger off (new message should NOT be logged)
+        $logger->setOn(false);
+        $logValue = 'On test';
+        $logger->log($logValue);
+        $numLogMessages = count(self::$customLog);
+        $this->assertEquals(2, $numLogMessages, 'Set off log messages count');
+
+        # Test turning logger back on (new message should be logged)
+        $logger->setOn(true);
+        $logger->log($logValue);
+        $numLogMessages = count(self::$customLog);
+        $this->assertEquals(3, $numLogMessages, 'Set on log messages count');
+
+
+        #$logValue = 'Logging error test';
+        #$exception = new \Exception($logValue);
+        #$logger->logLoggingError($exception);
+        #$loggedValue = self::$customLog[2];
+        #print "\n\n{$loggedValue}\n\n";
+        #$this->assertEquals($logValue, $loggedValue, 'logToCallback method test');
+    }
+
+    public function loggingCallback($message)
+    {
+        array_push(self::$customLog, $message);
+    }
     
     public function testLogException()
     {
