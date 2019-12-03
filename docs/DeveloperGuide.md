@@ -164,8 +164,8 @@ for the tests:
         cp tests/config-init/basic-demography-2.ini tests/config
         cp tests/config-init/basic-demography-3.ini tests/config
         cp tests/config-init/basic-demography-bad-field-name.ini tests/config 
-        cp tests/config-init/basic-demography-bad-rule.ini tests/config
         cp tests/config-init/basic-demography-rules-badFieldName.txt tests/config
+        cp tests/config-init/basic-demography-bad-rule.ini tests/config
         cp tests/config-init/basic-demography-rules-badRule.txt tests/config
         cp tests/config-init/repeating-events.ini tests/config
         cp tests/config-init/repeating-events-rules.txt tests/config
