@@ -158,13 +158,21 @@ for the tests:
 1. Copy the configuration and transformation rules
    files from the tests/config-init directory to the tests/config
    directory. From the top-level directory:
-   
         cp tests/config-init/basic-demography.ini tests/config
         cp tests/config-init/basic-demography-rules.txt tests/config
         cp tests/config-init/basic-demography.json tests/config
         cp tests/config-init/basic-demography-2.ini tests/config
+        cp tests/config-init/basic-demography-3.ini tests/config
+        cp tests/config-init/basic-demography-bad-field-name.ini tests/config 
+        cp tests/config-init/basic-demography-bad-rule.ini tests/config
+        cp tests/config-init/basic-demography-rules-badFieldName.txt tests/config
+        cp tests/config-init/basic-demography-rules-badRule.txt tests/config
         cp tests/config-init/repeating-events.ini tests/config
         cp tests/config-init/repeating-events-rules.txt tests/config
+        cp tests/config-init/visits-empty-rules.ini tests/config
+        cp tests/config-init/visits-empty-rules.txt tests/config
+        cp tests/config-init/visits-missing-suffix.ini tests/config
+        cp tests/config-init/visits-missing-suffix-rules.txt tests/config
 
 2. Edit the .ini and .json configuration files that were copied to the tests/config/
    directory, and set the following properties to appropriate values:
@@ -227,7 +235,7 @@ for the "Repeating Events" and "Visits" projects:
 1. Copy the visits configuration and SQL post-processing files from the 
    tests/config-init directory to the tests/config
    directory, for example, from the top-level directory:
-   
+         
         cp tests/config-init/repeating-events-mysql-rules.txt tests/config
         cp tests/config-init/repeating-events-mysql.ini tests/config
         cp tests/config-init/repeating-events-sqlite.ini tests/config
