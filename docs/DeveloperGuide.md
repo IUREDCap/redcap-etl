@@ -147,6 +147,7 @@ the data for the tests:
 
         tests/projects/BasicDemography.REDCap.xml
         tests/projects/RepeatingEvents.REDCap.xml
+        tests/projects/Visits.REDCap.xml
 
 2. Request API tokens for the projects you just created (or
    create tokens if you are an admin). The tokens needs to have export
@@ -207,19 +208,8 @@ in the top-level directory of your REDCap-ETL installation:
 
 Steps for setting up the REDCap projects:
 
-1. In REDCap, create a project using the
-   "Upload a REDCap project XML file" option for the following
-   REDCap project files:
-
-        tests/projects/Visits.REDCap.xml
-
-2. Request an API token for the project you just created (or
-   create a token if you are an admin).
-   The API token needs to have "API Export" permission.
-
-3. If you did not already set up the "Repeating Events" project as described
-    in the steps for setting up integration tests, then you need to set
-    that up also.
+1. If you did not already set up the "Repeating Events" and "Visits" projects as described
+    in the steps for setting up integration tests, then you need to do that now.
 
 
 You need to create SQLite test databases. Use the following commands
