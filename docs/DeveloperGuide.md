@@ -158,11 +158,11 @@ for the tests:
 1. Copy the configuration and transformation rules
    files from the tests/config-init directory to the tests/config
    directory. From the top-level directory:
+
         cp tests/config-init/basic-demography.ini tests/config
         cp tests/config-init/basic-demography-rules.txt tests/config
         cp tests/config-init/basic-demography.json tests/config
         cp tests/config-init/basic-demography-2.ini tests/config
-        cp tests/config-init/basic-demography-3.ini tests/config
         cp tests/config-init/basic-demography-bad-field-name.ini tests/config 
         cp tests/config-init/basic-demography-rules-badFieldName.txt tests/config
         cp tests/config-init/basic-demography-bad-rule.ini tests/config
@@ -191,6 +191,10 @@ for the tests:
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
        property to 'false' (note: include the single quotes).
 
+
+3. Also copy the following file, but do not edit it. It is used for error testing.
+
+        cp tests/config-init/basic-demography-3.ini tests/config
 
 After the above steps have been completed successfully, you should be
 able to run the integration tests by executing the following command

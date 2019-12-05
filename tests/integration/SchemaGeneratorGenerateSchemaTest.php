@@ -40,24 +40,24 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
             $connection
         );
 
-        #create a SchemaGenerator object
+        # Create a SchemaGenerator object
         $schemaGenerator = new SchemaGenerator($etlRedCapProject, $configuration, self::$logger);
 
-        #Generate the schema
+        # Generate the schema
         $rulesText = $configuration->getTransformationRules();
         $result = $schemaGenerator->generateSchema($rulesText);
 
-        #test that the schema object was created
+        # Test that the schema object was created
         $this->assertNotNull($result, 'SchemaGenerator, generateSchema object not null');
 
-        #Put the returned schema into a string format for comparison purposes
+        # Put the returned schema into a string format for comparison purposes
         $output = print_r($result[0], true);
 
-        #Retrieve what the output text string should resemble
-        $file='tests/data/schema_generator_output1.txt';
+        # Retrieve what the output text string should resemble
+        $file = 'tests/data/schema_generator_output1.txt';
         $expected = file_get_contents($file);
  
-        #test that the generated output matches what is expected
+        # Test that the generated output matches what is expected
         $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema output');
     }
    
