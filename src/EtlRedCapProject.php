@@ -212,6 +212,7 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
 
         $results = $this->exportRecordsAp(
             ['recordIds' => $recordIds,
+            'exportSurveyFields' => true,
             'exportDataAccessGroups' => true]
         );
 
