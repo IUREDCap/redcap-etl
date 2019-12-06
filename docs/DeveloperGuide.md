@@ -111,11 +111,11 @@ There are 3 types of automated tests:
 
 The test types above are listed in order of least to most setup effort.
 
-|                                       | Unit |Integration | System    |
-|---------------------------------------|------|:----------:|:---------:|
-| __Configuration file setup required__ |      | &#10003;   | &#10003;  |
-| __REDCap project setup required__     |      | &#10003;   | &#10003;  |
-| __MySQL database setup required__     |      |            | &#10003;  |
+|                                                               | Unit |Integration | System    |
+|---------------------------------------------------------------|------|:----------:|:---------:|
+| __Configuration file setup required__                         |      | &#10003;   | &#10003;  |
+| __REDCap and REDCap project setup required__                  |      | &#10003;   | &#10003;  |
+| __MySQL and SQLite database setup required for loading data__ |      |            | &#10003;  |
 
 
 
