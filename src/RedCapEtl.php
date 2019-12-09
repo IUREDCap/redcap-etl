@@ -24,8 +24,9 @@ class RedCapEtl
     // repeating instruments
     const COLUMN_EVENT             = 'redcap_event_name';
     const COLUMN_SUFFIXES          = 'redcap_suffix';
-    const COLUMN_REPEATING_INSTRUMENT      = 'redcap_repeat_instrument';
-    const COLUMN_REPEATING_INSTANCE        = 'redcap_repeat_instance';
+    const COLUMN_REPEATING_INSTRUMENT   = 'redcap_repeat_instrument';
+    const COLUMN_REPEATING_INSTANCE     = 'redcap_repeat_instance';
+    const COLUMN_SURVEY_IDENTIFIER      = 'redcap_survey_identifier';
 
     # Text logged when the ETL process completes successfully.
     # This can be used to programmatically check the log for
@@ -244,14 +245,17 @@ class RedCapEtl
         return $parseResult;
     }
 
-    public function autoGenerateRules()
+    /**
+     * Automatically generates the data transformation rules.
+     */
+    public function autoGenerateRules($addFormCompleteField = false)
     {
         if (!isset($this->dataProject)) {
             $message = 'No data project was found.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
         $rulesGenerator = new RulesGenerator();
-        $rulesText = $rulesGenerator->generate($this->dataProject);
+        $rulesText = $rulesGenerator->generate($this->dataProject, $addFormCompleteField);
         return $rulesText;
     }
 

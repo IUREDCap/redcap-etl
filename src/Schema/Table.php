@@ -309,6 +309,9 @@ class Table
                 # Just copy the repeating instance field and don't count it
                 # as a "data found" field
                 $row->data[$field->dbName] = $data[$field->name];
+            } elseif ($field->name === RedCapEtl::COLUMN_SURVEY_IDENTIFIER) {
+                # Just copy the field and don't count it as a "data found" field
+                $row->data[$field->dbName] = $data[$field->name];
             } else {
                 // Otherwise, get data
                 

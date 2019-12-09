@@ -1,0 +1,796 @@
+IU\REDCapETL\Schema\Schema Object
+(
+    [tables:IU\REDCapETL\Schema\Schema:private] => Array
+        (
+            [0] => IU\REDCapETL\Schema\Table Object
+                (
+                    [name] => Demography
+                    [parent] => primary_key
+                    [primary] => IU\REDCapETL\Schema\Field Object
+                        (
+                            [name] => primary_key
+                            [redcapType] => 
+                            [type] => int
+                            [size] => 
+                            [dbName] => primary_key
+                            [usesLookup] => 
+                        )
+
+                    [foreign] => 
+                    [children:protected] => Array
+                        (
+                        )
+
+                    [rowsType] => Array
+                        (
+                            [0] => 0
+                        )
+
+                    [rowsSuffixes] => Array
+                        (
+                        )
+
+                    [possibleSuffixes:IU\REDCapETL\Schema\Table:private] => Array
+                        (
+                        )
+
+                    [fields:protected] => Array
+                        (
+                            [0] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => record_id
+                                    [redcapType] => 
+                                    [type] => varchar
+                                    [size] => 255
+                                    [dbName] => record_id
+                                    [usesLookup] => 
+                                )
+
+                            [1] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => first_name
+                                    [redcapType] => text
+                                    [type] => varchar
+                                    [size] => 40
+                                    [dbName] => first_name
+                                    [usesLookup] => 
+                                )
+
+                            [2] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => last_name
+                                    [redcapType] => text
+                                    [type] => varchar
+                                    [size] => 40
+                                    [dbName] => last_name
+                                    [usesLookup] => 
+                                )
+
+                            [3] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => address
+                                    [redcapType] => notes
+                                    [type] => string
+                                    [size] => 
+                                    [dbName] => address
+                                    [usesLookup] => 
+                                )
+
+                            [4] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => telephone
+                                    [redcapType] => text
+                                    [type] => char
+                                    [size] => 24
+                                    [dbName] => phone
+                                    [usesLookup] => 
+                                )
+
+                            [5] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => email
+                                    [redcapType] => text
+                                    [type] => varchar
+                                    [size] => 80
+                                    [dbName] => email
+                                    [usesLookup] => 
+                                )
+
+                            [6] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => dob
+                                    [redcapType] => text
+                                    [type] => string
+                                    [size] => 
+                                    [dbName] => birthdate
+                                    [usesLookup] => 
+                                )
+
+                            [7] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => ethnicity
+                                    [redcapType] => radio
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => ethnicity
+                                    [usesLookup] => ethnicity
+                                )
+
+                            [8] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___0
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___0
+                                    [usesLookup] => race
+                                )
+
+                            [9] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___1
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___1
+                                    [usesLookup] => race
+                                )
+
+                            [10] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___2
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___2
+                                    [usesLookup] => race
+                                )
+
+                            [11] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___3
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___3
+                                    [usesLookup] => race
+                                )
+
+                            [12] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___4
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___4
+                                    [usesLookup] => race
+                                )
+
+                            [13] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___5
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___5
+                                    [usesLookup] => race
+                                )
+
+                            [14] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => sex
+                                    [redcapType] => radio
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => sex
+                                    [usesLookup] => sex
+                                )
+
+                            [15] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => height
+                                    [redcapType] => text
+                                    [type] => float
+                                    [size] => 
+                                    [dbName] => height
+                                    [usesLookup] => 
+                                )
+
+                            [16] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => weight
+                                    [redcapType] => text
+                                    [type] => float
+                                    [size] => 
+                                    [dbName] => weight
+                                    [usesLookup] => 
+                                )
+
+                            [17] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => bmi
+                                    [redcapType] => calc
+                                    [type] => float
+                                    [size] => 
+                                    [dbName] => bmi
+                                    [usesLookup] => 
+                                )
+
+                        )
+
+                    [rows:protected] => Array
+                        (
+                        )
+
+                    [primaryKey:IU\REDCapETL\Schema\Table:private] => 1
+                    [usesLookup] => 1
+                    [recordIdFieldName:IU\REDCapETL\Schema\Table:private] => record_id
+                    [keyType:IU\REDCapETL\Schema\Table:private] => IU\REDCapETL\Schema\FieldTypeSpecifier Object
+                        (
+                            [type:IU\REDCapETL\Schema\FieldTypeSpecifier:private] => int
+                            [size:IU\REDCapETL\Schema\FieldTypeSpecifier:private] => 
+                        )
+
+                )
+
+        )
+
+    [rootTables:IU\REDCapETL\Schema\Schema:private] => Array
+        (
+            [0] => IU\REDCapETL\Schema\Table Object
+                (
+                    [name] => Demography
+                    [parent] => primary_key
+                    [primary] => IU\REDCapETL\Schema\Field Object
+                        (
+                            [name] => primary_key
+                            [redcapType] => 
+                            [type] => int
+                            [size] => 
+                            [dbName] => primary_key
+                            [usesLookup] => 
+                        )
+
+                    [foreign] => 
+                    [children:protected] => Array
+                        (
+                        )
+
+                    [rowsType] => Array
+                        (
+                            [0] => 0
+                        )
+
+                    [rowsSuffixes] => Array
+                        (
+                        )
+
+                    [possibleSuffixes:IU\REDCapETL\Schema\Table:private] => Array
+                        (
+                        )
+
+                    [fields:protected] => Array
+                        (
+                            [0] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => record_id
+                                    [redcapType] => 
+                                    [type] => varchar
+                                    [size] => 255
+                                    [dbName] => record_id
+                                    [usesLookup] => 
+                                )
+
+                            [1] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => first_name
+                                    [redcapType] => text
+                                    [type] => varchar
+                                    [size] => 40
+                                    [dbName] => first_name
+                                    [usesLookup] => 
+                                )
+
+                            [2] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => last_name
+                                    [redcapType] => text
+                                    [type] => varchar
+                                    [size] => 40
+                                    [dbName] => last_name
+                                    [usesLookup] => 
+                                )
+
+                            [3] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => address
+                                    [redcapType] => notes
+                                    [type] => string
+                                    [size] => 
+                                    [dbName] => address
+                                    [usesLookup] => 
+                                )
+
+                            [4] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => telephone
+                                    [redcapType] => text
+                                    [type] => char
+                                    [size] => 24
+                                    [dbName] => phone
+                                    [usesLookup] => 
+                                )
+
+                            [5] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => email
+                                    [redcapType] => text
+                                    [type] => varchar
+                                    [size] => 80
+                                    [dbName] => email
+                                    [usesLookup] => 
+                                )
+
+                            [6] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => dob
+                                    [redcapType] => text
+                                    [type] => string
+                                    [size] => 
+                                    [dbName] => birthdate
+                                    [usesLookup] => 
+                                )
+
+                            [7] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => ethnicity
+                                    [redcapType] => radio
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => ethnicity
+                                    [usesLookup] => ethnicity
+                                )
+
+                            [8] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___0
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___0
+                                    [usesLookup] => race
+                                )
+
+                            [9] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___1
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___1
+                                    [usesLookup] => race
+                                )
+
+                            [10] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___2
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___2
+                                    [usesLookup] => race
+                                )
+
+                            [11] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___3
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___3
+                                    [usesLookup] => race
+                                )
+
+                            [12] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___4
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___4
+                                    [usesLookup] => race
+                                )
+
+                            [13] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => race___5
+                                    [redcapType] => checkbox
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => race___5
+                                    [usesLookup] => race
+                                )
+
+                            [14] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => sex
+                                    [redcapType] => radio
+                                    [type] => int
+                                    [size] => 
+                                    [dbName] => sex
+                                    [usesLookup] => sex
+                                )
+
+                            [15] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => height
+                                    [redcapType] => text
+                                    [type] => float
+                                    [size] => 
+                                    [dbName] => height
+                                    [usesLookup] => 
+                                )
+
+                            [16] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => weight
+                                    [redcapType] => text
+                                    [type] => float
+                                    [size] => 
+                                    [dbName] => weight
+                                    [usesLookup] => 
+                                )
+
+                            [17] => IU\REDCapETL\Schema\Field Object
+                                (
+                                    [name] => bmi
+                                    [redcapType] => calc
+                                    [type] => float
+                                    [size] => 
+                                    [dbName] => bmi
+                                    [usesLookup] => 
+                                )
+
+                        )
+
+                    [rows:protected] => Array
+                        (
+                        )
+
+                    [primaryKey:IU\REDCapETL\Schema\Table:private] => 1
+                    [usesLookup] => 1
+                    [recordIdFieldName:IU\REDCapETL\Schema\Table:private] => record_id
+                    [keyType:IU\REDCapETL\Schema\Table:private] => IU\REDCapETL\Schema\FieldTypeSpecifier Object
+                        (
+                            [type:IU\REDCapETL\Schema\FieldTypeSpecifier:private] => int
+                            [size:IU\REDCapETL\Schema\FieldTypeSpecifier:private] => 
+                        )
+
+                )
+
+        )
+
+    [lookupTable:IU\REDCapETL\Schema\Schema:private] => IU\REDCapETL\LookupTable Object
+        (
+            [map:IU\REDCapETL\LookupTable:private] => Array
+                (
+                    [Demography] => Array
+                        (
+                            [ethnicity] => Array
+                                (
+                                    [0] => Hispanic or Latino
+                                    [1] => NOT Hispanic or Latino
+                                    [2] => Unknown / Not Reported
+                                )
+
+                            [race] => Array
+                                (
+                                    [0] => American Indian/Alaska Native
+                                    [1] => Asian
+                                    [2] => Native Hawaiian or Other Pacific Islander
+                                    [3] => Black or African American
+                                    [4] => White
+                                    [5] => Other
+                                )
+
+                            [sex] => Array
+                                (
+                                    [0] => Female
+                                    [1] => Male
+                                )
+
+                        )
+
+                )
+
+            [lookupChoices:IU\REDCapETL\LookupTable:private] => Array
+                (
+                    [ethnicity] => Array
+                        (
+                            [0] => Hispanic or Latino
+                            [1] => NOT Hispanic or Latino
+                            [2] => Unknown / Not Reported
+                        )
+
+                    [race] => Array
+                        (
+                            [0] => American Indian/Alaska Native
+                            [1] => Asian
+                            [2] => Native Hawaiian or Other Pacific Islander
+                            [3] => Black or African American
+                            [4] => White
+                            [5] => Other
+                        )
+
+                    [sex] => Array
+                        (
+                            [0] => Female
+                            [1] => Male
+                        )
+
+                )
+
+            [lookupTableIn:IU\REDCapETL\LookupTable:private] => Array
+                (
+                    [Demography:ethnicity] => 1
+                    [Demography:race] => 1
+                    [Demography:sex] => 1
+                )
+
+            [name] => Lookup
+            [parent] => lookup_id
+            [primary] => IU\REDCapETL\Schema\Field Object
+                (
+                    [name] => lookup_id
+                    [redcapType] => 
+                    [type] => int
+                    [size] => 
+                    [dbName] => lookup_id
+                    [usesLookup] => 
+                )
+
+            [foreign] => 
+            [children:protected] => Array
+                (
+                )
+
+            [rowsType] => Array
+                (
+                    [0] => 0
+                )
+
+            [rowsSuffixes] => Array
+                (
+                )
+
+            [possibleSuffixes:IU\REDCapETL\Schema\Table:private] => Array
+                (
+                )
+
+            [fields:protected] => Array
+                (
+                    [0] => IU\REDCapETL\Schema\Field Object
+                        (
+                            [name] => table_name
+                            [redcapType] => 
+                            [type] => string
+                            [size] => 
+                            [dbName] => table_name
+                            [usesLookup] => 
+                        )
+
+                    [1] => IU\REDCapETL\Schema\Field Object
+                        (
+                            [name] => field_name
+                            [redcapType] => 
+                            [type] => string
+                            [size] => 
+                            [dbName] => field_name
+                            [usesLookup] => 
+                        )
+
+                    [2] => IU\REDCapETL\Schema\Field Object
+                        (
+                            [name] => value
+                            [redcapType] => 
+                            [type] => string
+                            [size] => 
+                            [dbName] => value
+                            [usesLookup] => 
+                        )
+
+                    [3] => IU\REDCapETL\Schema\Field Object
+                        (
+                            [name] => label
+                            [redcapType] => 
+                            [type] => string
+                            [size] => 
+                            [dbName] => label
+                            [usesLookup] => 
+                        )
+
+                )
+
+            [rows:protected] => Array
+                (
+                    [0] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => ethnicity
+                                    [value] => 0
+                                    [label] => Hispanic or Latino
+                                    [lookup_id] => 1
+                                )
+
+                        )
+
+                    [1] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => ethnicity
+                                    [value] => 1
+                                    [label] => NOT Hispanic or Latino
+                                    [lookup_id] => 2
+                                )
+
+                        )
+
+                    [2] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => ethnicity
+                                    [value] => 2
+                                    [label] => Unknown / Not Reported
+                                    [lookup_id] => 3
+                                )
+
+                        )
+
+                    [3] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => race
+                                    [value] => 0
+                                    [label] => American Indian/Alaska Native
+                                    [lookup_id] => 4
+                                )
+
+                        )
+
+                    [4] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => race
+                                    [value] => 1
+                                    [label] => Asian
+                                    [lookup_id] => 5
+                                )
+
+                        )
+
+                    [5] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => race
+                                    [value] => 2
+                                    [label] => Native Hawaiian or Other Pacific Islander
+                                    [lookup_id] => 6
+                                )
+
+                        )
+
+                    [6] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => race
+                                    [value] => 3
+                                    [label] => Black or African American
+                                    [lookup_id] => 7
+                                )
+
+                        )
+
+                    [7] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => race
+                                    [value] => 4
+                                    [label] => White
+                                    [lookup_id] => 8
+                                )
+
+                        )
+
+                    [8] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => race
+                                    [value] => 5
+                                    [label] => Other
+                                    [lookup_id] => 9
+                                )
+
+                        )
+
+                    [9] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => sex
+                                    [value] => 0
+                                    [label] => Female
+                                    [lookup_id] => 10
+                                )
+
+                        )
+
+                    [10] => IU\REDCapETL\Schema\Row Object
+                        (
+                            [table] => IU\REDCapETL\LookupTable Object
+ *RECURSION*
+                            [data] => Array
+                                (
+                                    [table_name] => Demography
+                                    [field_name] => sex
+                                    [value] => 1
+                                    [label] => Male
+                                    [lookup_id] => 11
+                                )
+
+                        )
+
+                )
+
+            [primaryKey:IU\REDCapETL\Schema\Table:private] => 12
+            [usesLookup] => 
+            [recordIdFieldName:IU\REDCapETL\Schema\Table:private] => 
+            [keyType:IU\REDCapETL\Schema\Table:private] => IU\REDCapETL\Schema\FieldTypeSpecifier Object
+                (
+                    [type:IU\REDCapETL\Schema\FieldTypeSpecifier:private] => int
+                    [size:IU\REDCapETL\Schema\FieldTypeSpecifier:private] => 
+                )
+
+        )
+
+    [dbLogTable:IU\REDCapETL\Schema\Schema:private] => 
+    [dbEventLogTable:IU\REDCapETL\Schema\Schema:private] => 
+)

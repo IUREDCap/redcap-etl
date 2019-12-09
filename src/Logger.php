@@ -81,6 +81,9 @@ class Logger
     private $fileLoggingErrorLogged;
     private $dbLoggingErrorLogged;
     private $projectLoggingErrorLogged;
+
+    /** @var callable callback for custom logging. */
+    private $loggingCallback;
         
     /**
      * Creates a logger.
@@ -194,6 +197,16 @@ class Logger
         $this->logToEmail = $to;
     }
 
+    /**
+     * Sets the logging callback that is used for custom logging.
+     *
+     * @param callable $loggingCallback callback used for custom logging. The callback
+     *     will be passed a single string argument that is the message to log.
+     */
+    public function setLoggingCallback($loggingCallback)
+    {
+        $this->loggingCallback = $loggingCallback;
+    }
 
     /**
      * Log the specified information to all logging sources that
@@ -203,10 +216,11 @@ class Logger
      */
     public function log($message)
     {
-        static $printLoggingErrorLogged   = false;
-        static $fileLoggingErrorLogged    = false;
-        static $dbLoggingErrorLogged      = false;
-        static $projectLoggingErrorLogged = false;
+        static $printLoggingErrorLogged    = false;
+        static $fileLoggingErrorLogged     = false;
+        static $dbLoggingErrorLogged       = false;
+        static $projectLoggingErrorLogged  = false;
+        static $callbackLoggingErrorLogged = false;
         
         $this->logToArray($message);
         
@@ -216,7 +230,6 @@ class Logger
             # Only log the first print logging error
             if (!$this->printLoggingErrorLogged) {
                 $this->logLoggingError($exception);
-            } else {
                 $this->printLoggingErrorLogged = true;
             }
         }
@@ -227,7 +240,6 @@ class Logger
             # Only log the first file logging error
             if (!$this->fileLoggingErrorLogged) {
                 $this->logLoggingError($exception);
-            } else {
                 $this->fileLoggingErrorLogged = true;
             }
         }
@@ -238,8 +250,16 @@ class Logger
             # Only log the first database logging error
             if (!$this->dbLoggingErrorLogged) {
                 $this->logLoggingError($exception);
-            } else {
-                 $this->dbLoggingErrorLogged = true;
+                $this->dbLoggingErrorLogged = true;
+            }
+        }
+
+        try {
+            $this->logToCallback($message);
+        } catch (\Exception $exception) {
+            if (!$this->callbackLoggingErrorLogged) {
+                $this->logLoggingError($exception);
+                $this->callbackLoggingErrorLogged = true;
             }
         }
     }
@@ -274,6 +294,12 @@ class Logger
         
         try {
             $this->logEventToDatabase($message);
+        } catch (\Exception $exception) {
+            ; // ignore logging errors
+        }
+
+        try {
+            $this->logToCallback($message);
         } catch (\Exception $exception) {
             ; // ignore logging errors
         }
@@ -312,6 +338,8 @@ class Logger
         $message .= PHP_EOL.$stackTrace;
 
         $this->logToFile($message);
+
+        $this->logToCallback($message);
         
         # The exception message should already get included in the
         # e-mail summary from the logging array, so just send the
@@ -608,6 +636,19 @@ class Logger
         );
     }
     
+    /**
+     * Logs to the optional user-specified logging callback.
+     *
+     * @param string $message the message to log.
+     */
+    public function logToCallback($message)
+    {
+        if (is_callable($this->loggingCallback) && $this->isOn) {
+            call_user_func($this->loggingCallback, $message);
+        }
+    }
+
+
     public function hasLoggingError()
     {
         return $this->printLoggingErrorLogged
@@ -712,6 +753,12 @@ class Logger
         $this->configuration = $configuration;
     }
     
+    public function getLogId()
+    {
+        return $this->logId;
+    }
+
+
     /**
      * Gets the name of the application that is running the ETL process.
      */
