@@ -12,17 +12,29 @@ use IU\PHPCap\RedCapProject;
 use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\Logger;
 
-if (count($argv) != 2) {
-    print "Usage: php $argv[0] <configuration-file>\n";
-    exit(1);
-} else {
+$usage = "Usage: php {$argv[0]} [--complete-fields] <configuration-file>".PHP_EOL;
+$addFormCompleteField = false;
+
+if (count($argv) == 2) {
     $configurationFile = $argv[1];
+} elseif (count($argv) == 3) {
+    $option = $argv[1];
+    $configurationFile = $argv[2];
+    if ($option == '--complete-fields') {
+        $addFormCompleteField = true;
+    } else {
+        print $usage;
+        exit(1);
+    }
+} else {
+    print $usage;
+    exit(1);
 }
 
 try {
     $logger = new Logger($argv[0]);
     $redCapEtl = new RedCapEtl($logger, $configurationFile);
-    $rules = $redCapEtl->autoGenerateRules();
+    $rules = $redCapEtl->autoGenerateRules($addFormCompleteField);
     print $rules;
 } catch (Exception $exception) {
     print "Error: ".$exception->getMessage()."\n";

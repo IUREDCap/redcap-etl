@@ -7,7 +7,6 @@
 namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
-#use IU\REDCapRTL\RedCapEtl;
 use IU\REDCapETL\EtlRedCapProject;
 
 class SchemaGeneratorTest extends TestCase

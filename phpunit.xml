@@ -28,6 +28,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/unit/Database/CsvDbConnectionTest.php</file>
       <file>tests/unit/Database/MysqlDbConnectionTest.php</file>
       <file>tests/unit/Database/SqliteDbConnectionTest.php</file>
+      <file>tests/unit/Database/SqlServerDbConnectionTest.php</file>
 
       <file>tests/unit/Rules/RuleTest.php</file>
       <file>tests/unit/Rules/TableRuleTest.php</file>
@@ -55,8 +56,10 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/BasicDemography2Test.php</file>
       <file>tests/integration/BasicDemographyDeidentifiedTest.php</file>
       <file>tests/integration/BasicDemographyJsonTest.php</file>
+      <file>tests/integration/RedCapEtlTest.php</file>
       <file>tests/integration/RepeatingEventsTest.php</file>
       <file>tests/integration/RepeatingEventsDeidentifiedTest.php</file>
+      <file>tests/integration/SchemaGeneratorGenerateSchemaTest.php</file>
     </testsuite>
 
     <!--

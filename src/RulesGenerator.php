@@ -15,6 +15,8 @@ use IU\REDCapETL\Schema\FieldType;
 class RulesGenerator
 {
     const REDCAP_XML_NAMESPACE = 'https://projectredcap.org';
+
+    const FORM_COMPLETE_SUFFIX = '_complete';
     
     private $isLongitudinal;
     private $instruments;
@@ -23,6 +25,8 @@ class RulesGenerator
     private $projectXmlDom;
     private $eventMappings;
 
+    private $addFormCompleteField;
+
     /**
      * Generates transformation rules for the
      * specified data project.
@@ -30,10 +34,15 @@ class RulesGenerator
      * @param EtlRedCapProject $dataProject the REDCap project that
      *     contains the data for which rules are being generated.
      *
+     * @param boolean $addFormCompleteField indicates if the form complete field
+     *     should be added to the rules for each table.
+     *
      * @return string the auto-generated transformation rules.
      */
-    public function generate($dataProject)
+    public function generate($dataProject, $addFormCompleteField = false)
     {
+        $this->addFormCompleteField = $addFormCompleteField;
+
         $rules = '';
 
         #----------------------------------------------------
@@ -162,6 +171,15 @@ class RulesGenerator
                 }
             }
         }
+
+        if ($this->addFormCompleteField) {
+            $field['field_name'] = $formName . self::FORM_COMPLETE_SUFFIX;
+            $field['field_type'] = 'dropdown';
+            $field['text_validation_type_or_show_slider_number'] = '';
+            $rule = $this->getFieldRule($field);
+            $fields .= $rule;
+        }
+
         return $fields;
     }
 
