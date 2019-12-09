@@ -67,8 +67,11 @@ class SqlServerDbConnection extends PdoDbConnection
         if ($ssl) {
             $dataSourceName .= ";Encrypt=1";
             if ($sslVerify) {
+                #set the attribute to verify the certificate, i.e., TrustServerCertificate is false.
                 $dataSourceName .= ";TrustServerCertificate=false";
             } else {
+                #set the attribute to so that the cert is not verified,
+                #i.e., TrustServerCertificate is true.
                 $dataSourceName .= ";TrustServerCertificate=true";
             }
         }
