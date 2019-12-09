@@ -36,7 +36,7 @@ class SqlServerDbConnectionTest extends TestCase
         #############################################################
         $exceptionCaught1 = false;
         $expectedMessage1 = $message . 'not enough values.';
-        $dbString = '(local)';
+        $dbString = 'sqlsrv:(local)';
         try {
             $sqlServerDbConnection = new SqlServerDbConnection(
                 $dbString,

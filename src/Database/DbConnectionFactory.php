@@ -18,6 +18,7 @@ class DbConnectionFactory
     const DBTYPE_CSV        = 'CSV';
     const DBTYPE_MYSQL      = 'MySQL';
     const DBTYPE_SQLITE     = 'SQLite';
+    const DBTYPE_SQLSERVER     = 'sqlsrv';
     
     public function __construct()
     {
@@ -79,8 +80,19 @@ class DbConnectionFactory
                 );
                 break;
 
+            case DbConnectionFactory::DBTYPE_SQLSERVER:
+                $dbcon = new SqlServerDbConnection(
+                    $dbString,
+                    $ssl,
+                    $sslVerify,
+                    $caCertFile,
+                    $tablePrefix,
+                    $labelViewSuffix
+                );
+                break;
+
             default:
-                $message = 'Invalid database type: "'.$dbType.'". Valid types are: CSV, MySQL and SQLite.';
+                $message = 'Invalid database type: "'.$dbType.'". Valid types are: CSV, MySQL, SQLite, and sqlsrv.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
