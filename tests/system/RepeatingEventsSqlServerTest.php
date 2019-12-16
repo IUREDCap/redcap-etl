@@ -20,27 +20,38 @@ class RepeatingEventsSqlServerTest extends TestCase
     private static $dbh;
     private static $logger;
 
+    public function setUp()
+    {
+        #These tests depend on the pdo_sqlsrv driver being installed.
+        #If it isn't loaded in PHP, all tests will be skipped.
+     
+        if (!extension_loaded('pdo_sqlsrv')) {
+            $this->markTestSkipped('The pdo_sqlsrv driver is not available.');
+        }
+    }
+
     public static function setUpBeforeClass()
     {
         self::$logger = new Logger('repeating_events_system_test_sql_server');
 
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
-        $dbString = $configuration->getDbConnection();
-        #print_r($dbString);
-        list($driver, $dbHost, $dbUser, $dbPassword, $dbName) = explode(":", $dbString);
-        $dsn = "$driver:server=$dbHost ; Database=$dbName";
-        #print $dsn;
+        if (extension_loaded('pdo_sqlsrv')) {
+            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $dbString = $configuration->getDbConnection();
+            list($driver, $dbHost, $dbUser, $dbPassword, $dbName) = explode(":", $dbString);
+            $dsn = "$driver:server=$dbHost ; Database=$dbName";
 
-        try {
-            self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
-        } catch (Exception $exception) {
-            print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            try {
+                self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
+            } catch (Exception $exception) {
+                print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            }
+
+            self::dropTablesAndViews(self::$dbh);
+
+            self::runEtl();
         }
-
-        self::dropTablesAndViews(self::$dbh);
-
-        self::runEtl();
     }
+
 
     private static function dropTablesAndViews($dbh)
     {

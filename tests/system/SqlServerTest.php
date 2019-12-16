@@ -31,6 +31,8 @@ class SqlServerTest extends TestCase
     private static $expectedCode = EtlException::DATABASE_ERROR;
 
     protected $ssl = null;
+    protected $sslVerify = null;
+    protected $caCertFile = null;
     protected $labelViewSuffix = null;
     protected $tablePrefix = null;
     protected $suffixes = '';
@@ -40,6 +42,91 @@ class SqlServerTest extends TestCase
     public static function setUpBeforeClass()
     {
         self::$logger = new Logger('sqlserver_databases_system_test');
+    }
+
+    public function setUp()
+    {
+        #These tests depend on the sqlsrv and pdo_sqlsrv drivers being installed.
+        #If they are not loaded in PHP, all tests will be skipped.
+     
+        #print_r(get_loaded_extensions());
+        if (!extension_loaded('sqlsrv') || !extension_loaded('pdo_sqlsrv')) {
+            $this->markTestSkipped('The sqlsrv and pdo_sqlsrv drivers are not available.');
+        }
+    }
+
+    /**
+     * This test tries to connect to a nonexistent database.
+     */
+    public function testConnectorErrorCondition()
+    {
+        $dbString3 = 'localhost:idonotexist:somewonderfulpassword:adb';
+        $exceptionCaught3 = false;
+        #Checking for only the first part of the message because the error text
+        #will be different depending on whether SQL Server is running or not.
+        $expectedMessage3 = 'Database connection error for database "adb": SQLSTATE[';
+        $sqlServerDbConnection = null;
+
+        try {
+            $sqlServerDbConnection = new SqlServerDbConnection(
+                $dbString3,
+                $this->ssl,
+                $this->sslVerify,
+                $this->caCertFile,
+                $this->tablePrefix,
+                $this->labelViewSuffix
+            );
+        } catch (EtlException $exception) {
+            $exceptionCaught3 = true;
+        }
+
+        $this->assertTrue(
+            $exceptionCaught3,
+            'SqlServerTest,testConnectorErrorCondition expected error exception caught'
+        );
+
+        $this->assertEquals(
+            self::$expectedCode,
+            $exception->getCode(),
+            'SqlServerTest,testConnectorErrorCondition expected error exception code check'
+        );
+
+        $this->assertEquals(
+            $expectedMessage3,
+            substr($exception->getMessage(), 0, strlen($expectedMessage3)),
+            #$exception->getMessage(),
+            'SqlServerTest,testConnectorErrorCondition expected error exception message check'
+        );
+    }       
+
+    public function testConnectorValidConnectionWithSsl()
+    {
+        $configFile = __DIR__.'/../config/sqlserver-ssl.ini';
+        $configuration = new Configuration(self::$logger, $configFile);
+        $dbConnection = $configuration->getDbConnection();
+ 
+        #The configuration file should have db_ssl set to 1 so that the
+        #SQL Server encryption parameter will be to true and use the self-signed
+        #cert stored in the database instance.
+        $ssl = $configuration->getDbSsl();
+
+        #The configuration file should have db_ssl_verify set to 0 so that the
+        #SQL Server trustServerCertificate is set to true
+        $sslVerify = $configuration->getDbSslVerify();
+         
+        $sqlServerDbConnection4 = new SqlServerDbConnection(
+            $dbConnection,
+            $ssl,
+            $sslVerify,
+            $this->caCertFile,
+            $this->tablePrefix,
+            $this->labelViewSuffix
+        );
+  
+        $this->assertNotNull(
+            $sqlServerDbConnection4,
+            'SqlServerTest,testValidConnectionWithSssl object created check'
+        );
     }
 
     /**
@@ -61,9 +148,9 @@ class SqlServerTest extends TestCase
         $sslVerify = false; 
         $sqlServerDbConnection = new SqlServerDbConnection(
             $dbString,
-            $ssl,
-            $sslVerify,
-            $caCertFile,
+            $this->ssl,
+            $this->sslVerify,
+            $this->caCertFile,
             $this->tablePrefix,
             $this->labelViewSuffix
         );

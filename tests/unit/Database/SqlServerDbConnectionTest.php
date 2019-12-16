@@ -15,12 +15,13 @@ use IU\REDCapETL\Logger;
 * PHPUnit tests for the SqlServerDbConnection class.
 * Only a part of the constructor is unit tested.
 * The remainder of the constructor and all of the
-* methods are tested in an integration test.
+* methods are tested in a system test.
 */
 
 class SqlServerDbConnectionTest extends TestCase
 {
     private $expectedCode = EtlException::DATABASE_ERROR;
+    private $ssl = null;
     private $sslVerify = null;
     private $caCertFile = null;
     private $labelViewSuffix = null;
@@ -28,7 +29,6 @@ class SqlServerDbConnectionTest extends TestCase
 
     public function testConstructor()
     {
-        $ssl = null;
         $message = 'The database connection is not correctly formatted: ';
 
         #############################################################
@@ -40,7 +40,7 @@ class SqlServerDbConnectionTest extends TestCase
         try {
             $sqlServerDbConnection = new SqlServerDbConnection(
                 $dbString,
-                $ssl,
+                $this->ssl,
                 $this->sslVerify,
                 $this->caCertFile,
                 $this->tablePrefix,
@@ -74,7 +74,7 @@ class SqlServerDbConnectionTest extends TestCase
         try {
             $sqlServerDbConnection = new SqlServerDbConnection(
                 $dbString2,
-                $ssl,
+                $this->ssl,
                 $this->sslVerify,
                 $this->caCertFile,
                 $this->tablePrefix,
@@ -97,71 +97,6 @@ class SqlServerDbConnectionTest extends TestCase
             $expectedMessage2,
             $exception->getMessage(),
             'SqlServerDbConnection too many connection string values errer message check'
-        );
-
-        #############################################################
-        #test error condition
-        #############################################################
-        $ssl = true;
-        $dbString3 = 'localhost:idonotexist:somewonderfulpassword:adb';
-        $exceptionCaught3 = false;
-        #Checking for only the first part of the message because the error text will be different
-        #depending on whether SQL Server is running or not.
-        $expectedMessage3 = 'Database connection error for database "adb": SQLSTATE[';
-        $sqlServerDbConnection = null;
-
-        try {
-            $sqlServerDbConnection = new SqlServerDbConnection(
-                $dbString3,
-                $ssl,
-                $this->sslVerify,
-                $this->caCertFile,
-                $this->tablePrefix,
-                $this->labelViewSuffix
-            );
-        } catch (EtlException $exception) {
-            $exceptionCaught3 = true;
-        }
-
-        $this->assertTrue(
-            $exceptionCaught3,
-            'SqlServerDbConnection expected error exception caught'
-        );
-
-        $this->assertEquals(
-            $this->expectedCode,
-            $exception->getCode(),
-            'SqlServerDbConnection expected error exception code check'
-        );
-
-        $this->assertEquals(
-            $expectedMessage3,
-            substr($exception->getMessage(), 0, strlen($expectedMessage3)),
-            #$exception->getMessage(),
-            'SqlServerDbConnection expected error exception message check'
-        );
-
-        #############################################################
-        #test object is created with valid configuration
-        #############################################################
-        $ssl = false;
-        $logger = new Logger('sql_server_connect_test');
-        $configFile = __DIR__.'/../../config/sqlserver.ini';
-        $configuration = new Configuration($logger, $configFile);
-        $dbConnection = $configuration->getDbConnection();
-
-        $sqlServerDbConnection4 = new SqlServerDbConnection(
-            $dbConnection,
-            $ssl,
-            $this->sslVerify,
-            $this->caCertFile,
-            $this->tablePrefix,
-            $this->labelViewSuffix
-        );
-  
-        $this->assertNotNull(
-            $sqlServerDbConnection4,
-            'SqlServerDbConnection object created check'
         );
     }
 }
