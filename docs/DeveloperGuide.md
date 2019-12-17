@@ -227,24 +227,27 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
    then you need to do that now.
    
    3.1 Login into SQL Server:
+   
         sqlcmd -S localhost -U SA -P 'yourSApasswordGoesHere'
    
    3.2 Create a database and verify it was created:
+   
         1> CREATE DATABASE etl_test
         2> GO
 
         1> SELECT name FROM sys.databases
         2> GO
 
-   3.3 Create a server login and verify it was created. (For the paramenter {enterAPasswordHere},
-       enter a password without the curly braces, one that conforms to the SQL Server password rules.)
-        1> CREATE LOGIN etl_user WITH PASSWORD=N'{enterAPasswordHere}', DEFAULT_DATABASE=etl_test
+   3.3 Create a server login and verify it was created. 
+       
+        1> CREATE LOGIN etl_user WITH PASSWORD=N'etlPassword123', DEFAULT_DATABASE=etl_test
         2> GO
 
         1> SELECT name FROM sys.sql_logins
         2> GO
 
    3.4 Create a database user and verify the username was created:
+   
         1> CREATE USER etl FOR LOGIN etl_user WITH DEFAULT_SCHEMA=[DBO]
         2> GO
 
@@ -253,6 +256,7 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
 
 
    3.5 Assign the role db_owner to the database user:
+   
         1> EXEC sp_addrolemember N'db_owner', N'etl'
         2> GO
         1>exit
