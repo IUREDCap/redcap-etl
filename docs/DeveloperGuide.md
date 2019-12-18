@@ -278,7 +278,7 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
         cp tests/config-init/visits-rules.txt tests/config
         cp tests/config-init/visits.sql tests/config
 
-2. If you have a database that supports SSL and has a certified SSL certificate, then also
+2. If you have a MySQL database that supports SSL and has a certified SSL certificate, then also
    copy the following configuration file:
 
         cp tests/config-init/mysql-ssl.ini tests/config
