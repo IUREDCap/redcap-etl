@@ -212,7 +212,7 @@ Steps for setting up the REDCap projects:
     in the steps for setting up integration tests, then you need to do that now.
 
 
-You need to create SQLite test databases. Use the following commands
+2. You need to create SQLite test databases. Use the following commands
 
     cd tests/output
     sqlite3 repeating-events.db
@@ -223,16 +223,56 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
     .databases
     .quit
 
-The next thing you need to do is to create the configuration files
-for the "Repeating Events" and "Visits" projects:
+3. If you did not already set up the SQL Server database when you installed SQL Server,
+   then you need to do that now.
+   
+   3.1 Login into SQL Server:
+   
+        sqlcmd -S localhost -U SA -P 'yourSApasswordGoesHere'
+   
+   3.2 Create a database and verify it was created:
+   
+        1> CREATE DATABASE etl_test
+        2> GO
+
+        1> SELECT name FROM sys.databases
+        2> GO
+
+   3.3 Create a server login and verify it was created. 
+       
+        1> CREATE LOGIN etl_user WITH PASSWORD=N'etlPassword123', DEFAULT_DATABASE=etl_test
+        2> GO
+
+        1> SELECT name FROM sys.sql_logins
+        2> GO
+
+   3.4 Create a database user and verify the username was created:
+   
+        1> CREATE USER etl FOR LOGIN etl_user WITH DEFAULT_SCHEMA=[DBO]
+        2> GO
+
+        1> SELECT name, principal_id FROM sys.database_principals
+        2> GO
+
+
+   3.5 Assign the role db_owner to the database user:
+   
+        1> EXEC sp_addrolemember N'db_owner', N'etl'
+        2> GO
+        1>exit
+
+4. The next thing you need to do is to create the configuration files for the "Repeating Events" and "Visits" projects:
 
 1. Copy the visits configuration and SQL post-processing files from the 
    tests/config-init directory to the tests/config
    directory, for example, from the top-level directory:
          
+        cp tests/config-init/sqlserver.ini tests/config
+        cp tests/config-init/sqlserver-ssl.ini tests/config
         cp tests/config-init/repeating-events-mysql-rules.txt tests/config
         cp tests/config-init/repeating-events-mysql.ini tests/config
         cp tests/config-init/repeating-events-sqlite.ini tests/config
+        cp tests/config-init/repeating-events-sqlserver.ini tests/config
         cp tests/config-init/visits.ini tests/config
         cp tests/config-init/visits-sqlite.ini tests/config
         cp tests/config-init/visits-rules.txt tests/config
