@@ -97,7 +97,7 @@ class SqlServerTest extends TestCase
             #$exception->getMessage(),
             'SqlServerTest,testConnectorErrorCondition expected error exception message check'
         );
-    }       
+    }
 
     public function testConnectorValidConnectionWithSsl()
     {
@@ -138,14 +138,14 @@ class SqlServerTest extends TestCase
         $dbInfo = $configuration->getDbConnection();
         $port = '1433';
         $dbString =$dbInfo . ":$port";
-      
+
         # Create the SqlServerDbConnection
         $ssl = true; #set encryption to true, using the self-signed cert
         $caCertFile = null;
         # Set TrustServerCertificate to true, so that the cert is not verified.
         # (Since the cert is self-signed, there is no 3rd party to verify the cert.
         #  The login will fail with a self-signed cert and TrustServerCertificate = false.
-        $sslVerify = false; 
+        $sslVerify = false;
         $sqlServerDbConnection = new SqlServerDbConnection(
             $dbString,
             $this->ssl,
@@ -220,11 +220,13 @@ class SqlServerTest extends TestCase
         $expectedColumns = ['test_etl_table_id','recordid','fullname','weight'];
         $i = 0;
         foreach ($result as $row) {
+            // phpcs:disable
             $this->assertEquals(
                 $expectedColumns[$i],
                 $row->column_name,
                 "SqlServerTest, SqlServerDbConnection createTable $expectedColumns[$i] column check"
             );
+            // phpcs:enable
             $i++;
             #print $row->column_name . PHP_EOL;
         }
