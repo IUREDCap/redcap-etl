@@ -11,7 +11,6 @@ If you do not have Ubuntu 18.04 LTS installed, check the ubuntu wiki to see if 1
 If 18.04 is the listed as the LTS version, then update/upgrade Ubuntu Server in your home directory:
 
     sudo apt-get update
-
     sudo apt-get upgrade
 
 Reboot the server, if necessary:
@@ -36,7 +35,6 @@ Then register the Microsoft SQL Server Ubuntu repository:
 Run the following commands to install SQL Server:
 
     sudo apt-get update
-
     sudo apt-get install -y mssql-server
 
 
@@ -45,10 +43,12 @@ Run the following commands to install SQL Server:
 
 Run the setup command shown below. You will be prompted to enter your MQL SERVER system administrator password and to choose your edition.
 
+    sudo /opt/mssql/bin/mssql-conf setup
+
 * The password has a minimum length of 8 characters and includes uppercase and lowercase letters, base 10 digits, and non-alphanumeric symbols.
 * You should choose the Developer edition, which is free and has no production-use rights.
 
-    sudo /opt/mssql/bin/mssql-conf setup
+
 
 Once the configuration is done, verify that the service is running using the status command:
 
@@ -90,9 +90,7 @@ Update the sources list and run the installation command with the unixODBC devel
 Add /opt/mssql-tools/bin/ to your PATH environment variable in a bash shell.
 
     echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
-
     echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
-
     source ~/.bashrc
 
 
@@ -101,7 +99,7 @@ Add /opt/mssql-tools/bin/ to your PATH environment variable in a bash shell.
 
 At the time of this document, there is an issue with TCP, but the issue might be resolved by the time you are doing the installation, so try logging in at the unix prompt:
 
-    sqlcmd -S localhost -U SA -P 'yourSApasswordGoesHere'
+    sqlcmd -S localhost -U SA
 
 If you get the error “Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : TCP Provider: Error code 0x2746”, see the section 6. Troubleshooting below.
 
@@ -144,13 +142,12 @@ Open the editor for the service configuration
 
 In the editor, add the following lines to the file and save it:
 
-    \[Service\]
+    [Service]
     Environment="LD_LIBRARY_PATH=/opt/mssql/lib"
 
 Create symbolic links to OpenSSL 1.0 for SQL Server to use:
 
     sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /opt/mssql/lib/libssl.so
-
     sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/mssql/lib/libcrypto.so
 
 Start SQL Server
@@ -191,14 +188,18 @@ and then Install the package that is displayed. For example if the output from t
 
     php-pear: /usr/bin/pecl
 
-then run the command to install php-pear:   sudo apt install php-pear
+then run the command to install php-pear:
+
+    sudo apt install php-pear
 
 
 To install phpize, run the apt-file to find the package that provides it:
 
     sudo apt-file search /usr/bin/phpize
 
-and then Install the package that is displayed. For example if the output from the above command was:   php7.2-dev: /usr/bin/phpize7.2
+and then Install the package that is displayed. For example if the output from the above command was:   
+
+    php7.2-dev: /usr/bin/phpize7.2
 
 then run the command to install php-pear:
 
@@ -230,7 +231,7 @@ Run the following commands, replacing the version number in the /etc/php directo
 
 Login into SQL Server:
 
-    sqlcmd -S localhost -U SA -P 'yourSApasswordGoesHere'
+    sqlcmd -S localhost -U SA
 
 Create a database and verify it was created:
 
@@ -259,11 +260,10 @@ Create a database user and verify the username was created:
     2> GO
 
 
-Create a database user and verify the username was created:
+Add the database user to the db_owmer role:
 
     1> EXEC sp_addrolemember N'db_owner', N'etl'
     2> GO
-
-        1.  exit
+    1> exit
 
 

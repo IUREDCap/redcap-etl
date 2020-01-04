@@ -208,11 +208,11 @@ in the top-level directory of your REDCap-ETL installation:
 
 Steps for setting up the REDCap projects:
 
-1. If you did not already set up the "Repeating Events" and "Visits" projects as described
-    in the steps for setting up integration tests, then you need to do that now.
+__REDCap Project Setup.__ If you did not already set up the "Repeating Events" and "Visits" projects as described
+in the steps for setting up integration tests, then you need to do that now.
 
 
-2. You need to create SQLite test databases. Use the following commands
+__SQLite Database Setup.__ You need to create SQLite test databases. Use the following commands
 
     cd tests/output
     sqlite3 repeating-events.db
@@ -223,56 +223,19 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
     .databases
     .quit
 
-3. If you did not already set up the SQL Server database when you installed SQL Server,
-   then you need to do that now.
-   
-   3.1 Login into SQL Server:
-   
-        sqlcmd -S localhost -U SA -P 'yourSApasswordGoesHere'
-   
-   3.2 Create a database and verify it was created:
-   
-        1> CREATE DATABASE etl_test
-        2> GO
+__SQL Server Database Setup.__ If you want to run the SQL Server automated tests, you need to have a SQL Server database. For information on setting
+one up on Ubuntu 18, see [SQL Server](SqlServer.md).
 
-        1> SELECT name FROM sys.databases
-        2> GO
+__ETL Configuration File Setup.__ The next thing you need to do is to create the configuration files for the "Repeating Events" and "Visits" projects:
 
-   3.3 Create a server login and verify it was created. 
-       
-        1> CREATE LOGIN etl_user WITH PASSWORD=N'etlPassword123', DEFAULT_DATABASE=etl_test
-        2> GO
-
-        1> SELECT name FROM sys.sql_logins
-        2> GO
-
-   3.4 Create a database user and verify the username was created:
-   
-        1> CREATE USER etl FOR LOGIN etl_user WITH DEFAULT_SCHEMA=[DBO]
-        2> GO
-
-        1> SELECT name, principal_id FROM sys.database_principals
-        2> GO
-
-
-   3.5 Assign the role db_owner to the database user:
-   
-        1> EXEC sp_addrolemember N'db_owner', N'etl'
-        2> GO
-        1>exit
-
-4. The next thing you need to do is to create the configuration files for the "Repeating Events" and "Visits" projects:
 
 1. Copy the visits configuration and SQL post-processing files from the 
    tests/config-init directory to the tests/config
    directory, for example, from the top-level directory:
-         
-        cp tests/config-init/sqlserver.ini tests/config
-        cp tests/config-init/sqlserver-ssl.ini tests/config
+
         cp tests/config-init/repeating-events-mysql-rules.txt tests/config
         cp tests/config-init/repeating-events-mysql.ini tests/config
         cp tests/config-init/repeating-events-sqlite.ini tests/config
-        cp tests/config-init/repeating-events-sqlserver.ini tests/config
         cp tests/config-init/visits.ini tests/config
         cp tests/config-init/visits-sqlite.ini tests/config
         cp tests/config-init/visits-rules.txt tests/config
@@ -283,7 +246,14 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
 
         cp tests/config-init/mysql-ssl.ini tests/config
 
-3. Edit the __tests/config/visits.ini__ file and set the 
+3. If you have a SQL Server database, then also
+   copy the following configuration files:
+
+        cp tests/config-init/sqlserver.ini tests/config
+        cp tests/config-init/sqlserver-ssl.ini tests/config
+        cp tests/config-init/repeating-events-sqlserver.ini tests/config
+
+4. Edit the __tests/config/visits.ini__ and __tests/config/visits-sqlite.ini__ files and set the 
    following properties to appropriate values:
    
     1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
@@ -297,8 +267,8 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
        property to 'false' (note: include the single quotes).
 
-4. Edit the __tests/config/repeating-events-mysql.ini__ file, and set the 
-   following properties to appropriate values:
+5. Edit the __tests/config/repeating-events-mysql.ini__ and __tests/config/repeating-events-sqlite.ini__ files,
+   and set the following properties to appropriate values:
    
     1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
        sure to set this to the URL for the _API_, which typically ends
@@ -311,14 +281,19 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
        property to 'false' (note: include the single quotes).
 
-5. If you are setting up the __mysql-ssl.ini__ file,
+6. If you are setting up the __mysql-ssl.ini__ file,
    edit it and modify the values listed in the previous step.
    In addition, set the **db_connection** property with the information
    for your database that supports SSL and has a certified SSL certificate. In addition, you need
    to create a **ca.crt** file in the __tests/config__ directory that is a valid certificate
    authority certificate file. If this file is missing, the MySQL SSL tests will be skipped.
 
-6. If you used different values than those used in the example
+7. If you are setting up the SQL Server tests, edit and set the **sqlserver** configuration files
+   the sames as the **repeating-events** files set above, and then also set the **db_connection**
+   property to match the SQL Server database, login and user that you set up.
+
+
+8. If you used different values than those used in the example
     commands above for creating the MySQL database and user, you will need to
     modify the __db_connection__ property appropriately in file
     __tests/config/repeating-events-mysql.ini__.
