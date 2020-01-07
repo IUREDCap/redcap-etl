@@ -187,6 +187,13 @@ class SchemaGenerator
                 foreach ($fields as $field) {
                     $fname = $field->name;
 
+                    #--------------------------------------------------------
+                    # Replace '-' with '_'; needed for case where multiple
+                    # choice values are specified as negative numbers
+                    # or as text and have a '-' in them
+                    #--------------------------------------------------------
+                    $fname = str_replace('-', '_', $fname);
+
                     //-------------------------------------------------------------
                     // !SUFFIXES: Prep for and warn that map field is not in REDCap
                     //-------------------------------------------------------------
@@ -198,7 +205,7 @@ class SchemaGenerator
                         $message = "Field not found in REDCap: '".$fname."'";
                         $this->logger->log($message);
                         $warnings .= $message."\n";
-                        continue 2; //continue 3;
+                        continue 2;
                     }
 
                     //------------------------------------------------------------
