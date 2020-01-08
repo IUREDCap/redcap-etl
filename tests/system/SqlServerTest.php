@@ -972,7 +972,7 @@ class SqlServerTest extends TestCase
         );
 
         $exceptionCaught1 = false;
-        $expectedMessage1 = 'SQL Server error in query';
+        $expectedMessage1 = 'Error in database query';
         try {
             $sqlServerDbConnection->replaceLookupView($rootTable, null);
         } catch (EtlException $exception) {
@@ -992,7 +992,7 @@ class SqlServerTest extends TestCase
 
         $this->assertEquals(
             $expectedMessage1,
-            substr($exception->getMessage(), 0, 25),
+            substr($exception->getMessage(), 0, 23),
             'SqlServerTest, SqlServerDbConnection replaceLookupView Without Lookup exception error message check'
         );
 

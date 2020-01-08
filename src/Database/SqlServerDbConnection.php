@@ -91,33 +91,6 @@ class SqlServerDbConnection extends PdoDbConnection
     }
  
     /**
-     * Drops the specified table from the database.
-     *
-     * @param Table $table the table object corresponding to the table in
-     *     the database that will be deleted.
-     */
-    protected function dropTable($table, $ifExists = false)
-    {
-        // Define query
-        if ($ifExists) {
-            $query = "DROP TABLE IF EXISTS ". $table->name;
-        } else {
-            $query = "DROP TABLE ". $table->name;
-        }
-        
-        // Execute query
-        try {
-            $result = $this->db->exec($query);
-        } catch (\Exception $exception) {
-            $message = 'Database error in query "'.$query.'" : '.$exception->getMessage();
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-        return(1);
-    }
-
-    /**
      * Creates the specified table.
      *
      * @param Table $table the table to be created.
@@ -201,85 +174,6 @@ class SqlServerDbConnection extends PdoDbConnection
         return(1);
     }
 
-    public function replaceLookupView($table, $lookup)
-    {
-        $selects = array();
-
-        // foreach field
-        foreach ($table->getAllFields() as $field) {
-            // If the field does not use lookup table
-            if ($field->usesLookup === false) {
-                array_push($selects, $field->dbName);
-            } else {
-                // $field->usesLookup holds name of lookup field, if not false
-                // name of lookup field is root of field name for checkbox
-                $fname = $field->usesLookup;
-
-                // If the field uses the lookup table and is a checkbox field
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
-                // For checkbox fields, the join needs to be done based on
-                // the category embedded in the name of the checkbox field
-
-                // Separate root from category
-                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
-
-                    $label = $this->db->quote(
-                        $lookup->getLabel($table->name, $fname, $cat)
-                    );
-                    $select = 'CASE ' . $field->dbName . ' WHEN 1 THEN '
-                        . $label
-                        . " ELSE '0'"
-                        . ' END as ' . $field->dbName;
-                } // The field uses the lookup table and is not a checkbox field
-                else {
-                    $select = 'CASE ' . $field->dbName;
-                    $map = $lookup->getValueLabelMap($table->name, $fname);
-                    foreach ($map as $value => $label) {
-                        $select .= ' WHEN '.($this->db->quote($value))
-                            .' THEN '.($this->db->quote($label));
-                    }
-                    $select .= ' END as ' . $field->dbName;
-                }
-                array_push($selects, $select);
-            }
-        }
-
-        #------------------------------------------------
-        # Drop the view if it exists
-        #------------------------------------------------
-        $query = 'DROP VIEW IF EXISTS ' . $table->name.$this->labelViewSuffix;
-
-        # Execute query
-        try {
-            $result = $this->db->exec($query);
-        } catch (\Exception $exception) {
-            $message = 'SQL Server error in query "'.$query.'": '.$exception->getMessage();
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-        #------------------------------------------------------------
-        # Create the view
-        #------------------------------------------------------------
-        $query = 'CREATE VIEW ' . $table->name.$this->labelViewSuffix . ' AS ';
-
-        $select = 'SELECT ' . implode(', ', $selects);
-        $from = 'FROM ' . $table->name;
-
-        $query .= $select.' '.$from;
-
-        #print("IN REPLACE LABEL VIEW, QUERY: $query\n");
-        // Execute query
-        try {
-            $result = $this->db->exec($query);
-        } catch (\Exception $exception) {
-            $message = 'SQL Server error in query "'.$query.'": '.$exception->getMessage();
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-        return(1);
-    }
 
     /**
      * Inserts a single row into the datatabase.
@@ -399,5 +293,13 @@ class SqlServerDbConnection extends PdoDbConnection
         $insert = $insertStart.implode(",", $values);
         #print "\nin SqlServerDbConnection, createInsertStatement, INSERT: $insert\n";
         return $insert;
+    }
+
+    protected function escapeName($name)
+    {
+        $name = str_replace('[', '', $name);
+        $name = str_replace(']', '', $name);
+        $name = '['.$name.']';
+        return $name;
     }
 }
