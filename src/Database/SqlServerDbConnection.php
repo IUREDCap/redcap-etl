@@ -242,58 +242,6 @@ class SqlServerDbConnection extends PdoDbConnection
         return $insertId;
     }
 
-    /**
-     * Inserts all rows in the specified (in-memory) table into the database. The rows
-     * are inserted using a single SQL INSERT command.
-     *
-     * @param Table $table the table object containing the rows to be inserted in the database.
-     */
-    protected function insertRows($table)
-    {
-        $rows = $table->getRows();
-        $result = true;
-
-        if (is_array($rows) && count($rows) > 0) {
-            #--------------------------------------------------
-            # Get non-auto-increment fields
-            #--------------------------------------------------
-            $fields = $table->getAllNonAutoIncrementFields();
-
-            $queryValues = array();
-            foreach ($rows as $row) {
-                $rowValues = $this->getRowValues($row, $fields);
-                $queryValues[] = '('.implode(",", $rowValues).')';
-            }
-    
-            $query = $this->createInsertStatement($table->name, $fields, $queryValues);
-            #print "\n in SQL Server insert Rows, $query\n";
-    
-            try {
-                $rc = $this->db->exec($query);
-            } catch (\Exception $exception) {
-                $message = 'SQL Server error while trying to insert values into table "'
-                    .$table->name.'": '.$exception->getMessage();
-                $code = EtlException::DATABASE_ERROR;
-                throw new EtlException($message, $code);
-            }
-        }
-    
-        return($result);
-    }
-
-    /**
-     * Creates an insert statement.
-     *
-     * @param array $fields array of Field objects for the table which values are being inserted into.
-     */
-    protected function createInsertStatement($tableName, $fields, $values)
-    {
-        $dbFieldNames = array_column($fields, 'dbName');
-        $insertStart = 'INSERT INTO ' .  $tableName . ' (' . implode(",", $dbFieldNames) .') VALUES ';
-        $insert = $insertStart.implode(",", $values);
-        #print "\nin SqlServerDbConnection, createInsertStatement, INSERT: $insert\n";
-        return $insert;
-    }
 
     protected function escapeName($name)
     {
