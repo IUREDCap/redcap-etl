@@ -251,7 +251,7 @@ abstract class PdoDbConnection extends DbConnection
         $queryValues[] = '('.implode(",", $rowValues).')';
     
         $query = $this->createInsertStatement($table->name, $fields, $queryValues);
-        ##print "\nQUERY: $query\n";
+        #print "\nQUERY: $query\n";
     
         try {
             $rc = $this->db->exec($query);
@@ -291,7 +291,7 @@ abstract class PdoDbConnection extends DbConnection
             }
     
             $query = $this->createInsertStatement($table->name, $fields, $queryValues);
-            # print "\n$query\n";
+            #print "\n\nQUERY:\n----------------------------\n$query\n\n";
     
             try {
                 $rc = $this->db->exec($query);

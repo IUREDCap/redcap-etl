@@ -19,8 +19,6 @@ class SqlServerDbConnection extends PdoDbConnection
 {
     const AUTO_INCREMENT_TYPE = 'INT NOT NULL IDENTITY(0,1) PRIMARY KEY';
 
-    private static $autoIncrementType = 'INT NOT NULL IDENTITY(0,1) PRIMARY KEY';
-
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
@@ -99,74 +97,6 @@ class SqlServerDbConnection extends PdoDbConnection
         $query .= "WHERE [name] = " . $this->db->quote($tableName) . ') ';
         $query .= 'CREATE TABLE ' . $this->escapeName($tableName) . ' (';
         return $query;
-    }
-
-
-    /**
-     * Inserts a single row into the datatabase.
-     *
-     * @parm Row $row the row of data to insert into the table (the row
-     *     has a reference to the table that it should be inserted into).
-     *
-     * @return integer if the table has an auto-increment ID, then the value
-     *     of the ID for the record that was inserted.
-     */
-    public function insertRow($row)
-    {
-        $table = $row->table;
-
-        #--------------------------------------------------
-        # Remove auto-increment fields
-        #--------------------------------------------------
-        $fields = $table->getAllNonAutoIncrementFields();
-
-        $queryValues = array();
-        $rowValues = $this->getRowValues($row, $fields);
-                
-        #if the table is one the log tables, then convert the string date into
-        #a datetime value that SQL Server can process.
-        if ($table->name === 'etl_event_log') {
-            #check to see if the string is a date.
-            if (is_string($rowValues[1])
-                 && (substr($rowValues[1], 1, 2) === '20')
-                 && (substr($rowValues[1], 5, 1) === '-')
-                ) {
-                    #Since later code implodes on a comma and commas are used in the convert syntax,
-                    #use '!!!!' to get past the implode, then replace the '!!!!' with commas
-                    $rowValues[1] = 'CONVERT(datetime!!!!' . substr($rowValues[1], 0, 24) . "'!!!!21)";
-            }
-        } elseif ($table->name === 'etl_log') {
-            #check to see if the string is a date.
-            if (is_string($rowValues[0])
-                 && (substr($rowValues[0], 1, 2) === '20')
-                 && (substr($rowValues[0], 5, 1) === '-')
-                ) {
-                    #Since later code implodes on a comma and commas are used in the convert syntax,
-                    #use '!!!!' to get past the implode, then replace the '!!!!' with commas
-                    $rowValues[0] = 'CONVERT(datetime!!!!' . substr($rowValues[0], 0, 24) . "'!!!!21)";
-            }
-        }
-
-        $queryValues[] = '('.implode(",", $rowValues).')';
-        
-        if ($table->name === 'etl_log' || $table->name === 'etl_event_log') {
-            $queryValues[0] = str_replace('!!!!', ',', $queryValues[0]);
-        }
-
-        $query = $this->createInsertStatement($table->name, $fields, $queryValues);
-        #print "\nin SqlServerDbConnection, insertRow, QUERY: $query\n";
-
-        try {
-            $rc = $this->db->exec($query);
-            $insertId = $this->db->lastInsertId();
-        } catch (\Exception $exception) {
-            $message = 'Database error while trying to insert a single row into table "'
-                .$table->name.'": '.$exception->getMessage();
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-        return $insertId;
     }
 
 
