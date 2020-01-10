@@ -28,7 +28,8 @@ Currently, the supported database connection types are
 
 * **MySQL**
 * **SQLite**
-* **CSV** (comma-separated values).
+* **CSV** (comma-separated values)
+* **SQL Server**
 
 
 ### MySQL
@@ -46,7 +47,7 @@ Example MySQL database connection strings:
 connection string, if any of the values
 in your database connection contain a ':', it needs to be escaped with a backslash.
 For example, if your password is "my:password", then it would need to be specified
-as "my\:password".
+as "my\\:password".
 
 
 ### CSV
@@ -58,7 +59,7 @@ For example:
 
         CSV:/home/redcap-etl/csv/project1
 
-### CSV
+### SQLite
 For SQLite, the database connection string format is:
 
         SQLite:<database-file-path>
@@ -66,6 +67,24 @@ For SQLite, the database connection string format is:
 For example:
 
         SQLite:/home/redcap-etl/db/etl-data.db
+
+
+### SQL Server
+For SQL Server, the format of the database connection string is:
+
+        sqlsrv:<host>:<username>:<password>:<database>[:<port>]
+
+Example SQL server database connection strings:
+
+        sqlsrv:localhost:some_user:amazingPW987:etl_test_db
+
+        sqlsrv:someplace.edu:admin:adminPassword123:etl_prod_db:1433
+
+**Note:** Since the ':' character is used as a separator for the database connection string, if any of the values in your database connection contain a ':', it needs to be escaped with a backslash. For example, if your password is "my:password", then it would need to be specified
+as "my\\:password".
+
+
+
 
 
 Transformation Rules
@@ -175,19 +194,21 @@ is loaded.</td>
 
 <tr>
 <td>db_ssl</td>
-<td>Flag that indicates if SSL should be used for MySQL database accesses
+<td><ul>
+        <li>MySQL: Flag that indicates if SSL should be used for MySQL database accesses
 (true by default). Note: on Linux systems, having this set to true
 may cause the database connection to fail when the database host is specified
 as "localhost". To fix this problem, set db_ssl to 'false' (or 0), or specify
-"127.0.0.1" for the database host instead of "localhost".</td>
+        "127.0.0.1" for the database host instead of "localhost".</li>
+        <li>SQL Server: Flag for the 'encrypt' option of the PHP SQL Server Driver. It indicates whether the connection to the database server should be encrypted (false by default). Uses the self-signed certificate in the SQL Server database instance.</li></ul>
+        </td>
 </tr>
 
 <tr>
 <td>db_ssl_verify</td>
-<td>Flag that indicates if the SSL certificate of the database
-server should be verified. For this to work, a valid ca_cert_file
-(certificate authority certificate file)
-needs to be specified.
+<td><ul>
+        <li>MySQL: Flag that indicates if the SSL certificate of the database server should be verified. For this to work, a valid ca_cert_file (certificate authority certificate file) needs to be specified.</li>
+        <li>SQL Server: Flag for the TrustServerCertificate option for the PHP SQL Server Driver. It indicates whether the certificate on the SQL Server instance should be trusted (default is false.) For this to work, a valid ca_cert_file (certificate authority certificate file) needs to be specified.</li></ul>
 </td>
 </tr>
 

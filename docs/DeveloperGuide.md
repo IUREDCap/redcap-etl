@@ -208,11 +208,11 @@ in the top-level directory of your REDCap-ETL installation:
 
 Steps for setting up the REDCap projects:
 
-1. If you did not already set up the "Repeating Events" and "Visits" projects as described
-    in the steps for setting up integration tests, then you need to do that now.
+__REDCap Project Setup.__ If you did not already set up the "Repeating Events" and "Visits" projects as described
+in the steps for setting up integration tests, then you need to do that now.
 
 
-You need to create SQLite test databases. Use the following commands
+__SQLite Database Setup.__ You need to create SQLite test databases. Use the following commands
 
     cd tests/output
     sqlite3 repeating-events.db
@@ -223,13 +223,16 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
     .databases
     .quit
 
-The next thing you need to do is to create the configuration files
-for the "Repeating Events" and "Visits" projects:
+__SQL Server Database Setup.__ If you want to run the SQL Server automated tests, you need to have a SQL Server database. For information on setting
+one up on Ubuntu 18, see [SQL Server](SqlServer.md).
+
+__ETL Configuration File Setup.__ The next thing you need to do is to create the configuration files for the "Repeating Events" and "Visits" projects:
+
 
 1. Copy the visits configuration and SQL post-processing files from the 
    tests/config-init directory to the tests/config
    directory, for example, from the top-level directory:
-         
+
         cp tests/config-init/repeating-events-mysql-rules.txt tests/config
         cp tests/config-init/repeating-events-mysql.ini tests/config
         cp tests/config-init/repeating-events-sqlite.ini tests/config
@@ -238,12 +241,19 @@ for the "Repeating Events" and "Visits" projects:
         cp tests/config-init/visits-rules.txt tests/config
         cp tests/config-init/visits.sql tests/config
 
-2. If you have a database that supports SSL and has a certified SSL certificate, then also
+2. If you have a MySQL database that supports SSL and has a certified SSL certificate, then also
    copy the following configuration file:
 
         cp tests/config-init/mysql-ssl.ini tests/config
 
-3. Edit the __tests/config/visits.ini__ file and set the 
+3. If you have a SQL Server database, then also
+   copy the following configuration files:
+
+        cp tests/config-init/sqlserver.ini tests/config
+        cp tests/config-init/sqlserver-ssl.ini tests/config
+        cp tests/config-init/repeating-events-sqlserver.ini tests/config
+
+4. Edit the __tests/config/visits.ini__ and __tests/config/visits-sqlite.ini__ files and set the 
    following properties to appropriate values:
    
     1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
@@ -257,8 +267,8 @@ for the "Repeating Events" and "Visits" projects:
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
        property to 'false' (note: include the single quotes).
 
-4. Edit the __tests/config/repeating-events-mysql.ini__ file, and set the 
-   following properties to appropriate values:
+5. Edit the __tests/config/repeating-events-mysql.ini__ and __tests/config/repeating-events-sqlite.ini__ files,
+   and set the following properties to appropriate values:
    
     1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
        sure to set this to the URL for the _API_, which typically ends
@@ -271,14 +281,19 @@ for the "Repeating Events" and "Visits" projects:
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
        property to 'false' (note: include the single quotes).
 
-5. If you are setting up the __mysql-ssl.ini__ file,
+6. If you are setting up the __mysql-ssl.ini__ file,
    edit it and modify the values listed in the previous step.
    In addition, set the **db_connection** property with the information
    for your database that supports SSL and has a certified SSL certificate. In addition, you need
    to create a **ca.crt** file in the __tests/config__ directory that is a valid certificate
    authority certificate file. If this file is missing, the MySQL SSL tests will be skipped.
 
-6. If you used different values than those used in the example
+7. If you are setting up the SQL Server tests, edit and set the **sqlserver** configuration files
+   the sames as the **repeating-events** files set above, and then also set the **db_connection**
+   property to match the SQL Server database, login and user that you set up.
+
+
+8. If you used different values than those used in the example
     commands above for creating the MySQL database and user, you will need to
     modify the __db_connection__ property appropriately in file
     __tests/config/repeating-events-mysql.ini__.
