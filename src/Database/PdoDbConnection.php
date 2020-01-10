@@ -66,7 +66,8 @@ abstract class PdoDbConnection extends DbConnection
     {
         // Start query
         if ($ifNotExists) {
-            $query = 'CREATE TABLE IF NOT EXISTS '.$this->escapeName($table->name).' (';
+            $query = $this->getCreateTableIfNotExistsQueryPrefix($table->name);
+            #$query = 'CREATE TABLE IF NOT EXISTS '.$this->escapeName($table->name).' (';
         } else {
             $query = 'CREATE TABLE '.$this->escapeName($table->name).' (';
         }
@@ -74,10 +75,10 @@ abstract class PdoDbConnection extends DbConnection
         // foreach field
         $fieldDefs = array();
         foreach ($table->getAllFields() as $field) {
-            // Begin field_def
+            # Add field name to field definition
             $fieldDef = $this->escapeName($field->dbName).' ';
 
-            // Add field type to field definition
+            # Add field type to field definition
             switch ($field->type) {
                 case FieldType::DATE:
                     $fieldDef .= 'DATE';
@@ -85,14 +86,11 @@ abstract class PdoDbConnection extends DbConnection
                     
                 case FieldType::DATETIME:
                     $fieldDef .= 'DATETIME';
-                    if (isset($field->size)) {
-                        $size = intval($field->size);
-                        if ($size > 0 || $size <= 6) {
-                            $fieldDef .= '('.$size.')';
-                        }
-                    }
+                    # Note: neither SQLite or SQL Server support a size specification
+                    # for DATETIME
                     break;
 
+                case FieldType::CHECKBOX:
                 case FieldType::INT:
                     $fieldDef .= 'INT';
                     break;
@@ -141,6 +139,11 @@ abstract class PdoDbConnection extends DbConnection
         return(1);
     }
 
+    protected function getCreateTableIfNotExistsQueryPrefix($tableName)
+    {
+        $query = 'CREATE TABLE IF NOT EXISTS '.$this->escapeName($tableName).' (';
+        return $query;
+    }
 
     /**
      * Creates (or replaces) the lookup view for the specified table.

@@ -17,6 +17,8 @@ use IU\REDCapETL\Schema\Table;
  */
 class SqlServerDbConnection extends PdoDbConnection
 {
+    const AUTO_INCREMENT_TYPE = 'INT NOT NULL IDENTITY(0,1) PRIMARY KEY';
+
     private static $autoIncrementType = 'INT NOT NULL IDENTITY(0,1) PRIMARY KEY';
 
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
@@ -90,88 +92,13 @@ class SqlServerDbConnection extends PdoDbConnection
         }
     }
  
-    /**
-     * Creates the specified table.
-     *
-     * @param Table $table the table to be created.
-     * @param boolean $ifNotExists indicates if the table should only be created if it
-     *     doesn't already exist.
-     */
-    public function createTable($table, $ifNotExists = false)
+
+    protected function getCreateTableIfNotExistsQueryPrefix($tableName)
     {
-        // Start query
-        if ($ifNotExists) {
-            $query = 'IF NOT EXISTS (SELECT [name] FROM sys.tables ';
-            $query .= "WHERE [name] = '" . $table->name . "'" .') ';
-            $query .= 'CREATE TABLE ' . $table->name . ' (';
-        } else {
-            $query = 'CREATE TABLE ' . $table->name .' (';
-        }
-
-        // foreach field
-        $fieldDefs = array();
-        foreach ($table->getAllFields() as $field) {
-            // Begin field_def
-            $fieldDef = $field->dbName . ' ';
-
-            // Add field type to field definition
-            switch ($field->type) {
-                case FieldType::DATE:
-                    $fieldDef .= 'DATE';
-                    break;
-                    
-                case FieldType::DATETIME:
-                    $fieldDef .= 'DATETIME';
-                    break;
-
-                case FieldType::CHECKBOX:
-                case FieldType::INT:
-                    $fieldDef .= 'INT';
-                    break;
-
-                case FieldType::AUTO_INCREMENT:
-                    $fieldDef .= self::$autoIncrementType;
-                    break;
-                    
-                case FieldType::FLOAT:
-                    $fieldDef .= 'FLOAT';
-                    break;
-    
-                case FieldType::CHAR:
-                    $fieldDef .= 'CHAR('.($field->size).')';
-                    break;
-
-                case FieldType::VARCHAR:
-                    $fieldDef .= 'VARCHAR('.($field->size).')';
-                    break;
-
-                case FieldType::STRING:
-                default:
-                      $fieldDef .= 'TEXT';
-                    break;
-            } // switch
-
-            // Add field_def to array of field_defs
-            array_push($fieldDefs, $fieldDef);
-        }
-
-        // Add field definitions to query
-        $query .= join(', ', $fieldDefs);
-
-        // End query
-        $query .= ')';
-
-        #print "in SqlServerDbConnection create table , query is $query" . PHP_EOL;
-
-        // Execute query
-        try {
-            $result = $this->db->exec($query);
-        } catch (\Exception $exception) {
-            $message = 'Database error in query "'.$query.'": '.$exception->getMessage();
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
-        return(1);
+        $query = 'IF NOT EXISTS (SELECT [name] FROM sys.tables ';
+        $query .= "WHERE [name] = " . $this->db->quote($tableName) . ') ';
+        $query .= 'CREATE TABLE ' . $this->escapeName($tableName) . ' (';
+        return $query;
     }
 
 
