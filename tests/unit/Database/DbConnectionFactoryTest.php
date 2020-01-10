@@ -55,7 +55,7 @@ class DbConnectionFactoryTest extends TestCase
   
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'Invalid database type: "other". Valid types are: CSV, MySQL and SQLite.';
+        $expectedMessage = 'Invalid database type: "other". Valid types are: CSV, MySQL, SQLite, and sqlsrv.';
         
         try {
             $dbConnectionFactory->createDbConnection(
