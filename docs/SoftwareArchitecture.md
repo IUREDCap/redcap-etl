@@ -7,8 +7,7 @@ REDCap-ETL Main Classes
 **RedCapEtl** is the main class and starting point for the ETL (Extract
 Transform Load) process. An instance of it is created by the
 redcap_etl.php script that is used to run the ETL process manually
-or from a cron job, and by web scripts that are generated to handle
-REDCap DETs (Data Entry Triggers). 
+or from a cron job. 
 <br />
 
 ![Main REDCap-ETL Classes](redcap-etl-classes.png)
