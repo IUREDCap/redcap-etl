@@ -260,7 +260,7 @@ Create a database user and verify the username was created:
     2> GO
 
 
-Add the database user to the db_owmer role:
+Add the database user to the db_owner role:
 
     1> EXEC sp_addrolemember N'db_owner', N'etl'
     2> GO
