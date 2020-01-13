@@ -72,13 +72,13 @@ For example:
 ### SQL Server
 For SQL Server, the format of the database connection string is:
 
-        sqlsrv:<host>:<username>:<password>:<database>[:<port>]
+        SQLServer:<host>:<username>:<password>:<database>[:<port>]
 
 Example SQL server database connection strings:
 
-        sqlsrv:localhost:some_user:amazingPW987:etl_test_db
+        SQLServer:localhost:some_user:amazingPW987:etl_test_db
 
-        sqlsrv:someplace.edu:admin:adminPassword123:etl_prod_db:1433
+        SQLServer:someplace.edu:admin:adminPassword123:etl_prod_db:1433
 
 **Note:** Since the ':' character is used as a separator for the database connection string, if any of the values in your database connection contain a ':', it needs to be escaped with a backslash. For example, if your password is "my:password", then it would need to be specified
 as "my\\:password".

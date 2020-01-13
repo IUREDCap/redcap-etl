@@ -18,7 +18,7 @@ class DbConnectionFactory
     const DBTYPE_CSV        = 'CSV';
     const DBTYPE_MYSQL      = 'MySQL';
     const DBTYPE_SQLITE     = 'SQLite';
-    const DBTYPE_SQLSERVER     = 'sqlsrv';
+    const DBTYPE_SQLSERVER     = 'SQLServer';
     
     public function __construct()
     {

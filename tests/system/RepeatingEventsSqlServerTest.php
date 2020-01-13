@@ -37,7 +37,9 @@ class RepeatingEventsSqlServerTest extends TestCase
         if (extension_loaded('pdo_sqlsrv')) {
             $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
             $dbString = $configuration->getDbConnection();
-            list($driver, $dbHost, $dbUser, $dbPassword, $dbName) = explode(":", $dbString);
+            list($dbType, $dbHost, $dbUser, $dbPassword, $dbName) = explode(":", $dbString);
+            $driver = 'sqlsrv';
+
             $dsn = "$driver:server=$dbHost ; Database=$dbName";
 
             try {
