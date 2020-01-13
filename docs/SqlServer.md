@@ -108,7 +108,7 @@ Once logged in, run the following simple select statement that shows a list of d
     1> select @@version
     2> go
 
-Enter ‘quit’ to exit the SQL Server command line.
+Enter 'quit' to exit the SQL Server command line.
 
 The output should resemble:
 
@@ -122,7 +122,7 @@ The output should resemble:
     1>
 
 
-If you don’t have to troubleshoot, continue with section 7. Install the PHP Drivers for SQL Server.
+If you don't have to troubleshoot, continue with section 7. Install the PHP Drivers for SQL Server.
 
 
 6. Troubleshooting the SQL Server Installation
