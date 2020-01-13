@@ -31,18 +31,13 @@ class SqlServerDbConnection extends PdoDbConnection
         #--------------------------------------------------------------
         $driver  = 'sqlsrv';
 
-        #strip out the driver if it has been included
-        if (strtolower(substr($dbString, 0, 7)) == $driver . ':') {
-            $dbString = substr($dbString, -1*(trim(strlen($dbString)) - 7));
-        }
-
         $dbValues = DbConnection::parseConnectionString($dbString);
 
         $port = null;
         if (count($dbValues) == 4) {
-            list($host,$username,$password,$database) = DbConnection::parseConnectionString($dbString);
+            list($host,$username,$password,$database) = $dbValues;
         } elseif (count($dbValues) == 5) {
-            list($host,$username,$password,$database,$port) = DbConnection::parseConnectionString($dbString);
+            list($host,$username,$password,$database,$port) = $dbValues;
             $port = intval($port);
         } else {
             $message = 'The database connection is not correctly formatted: ';

@@ -104,6 +104,7 @@ class SqlServerTest extends TestCase
         $configFile = __DIR__.'/../config/sqlserver-ssl.ini';
         $configuration = new Configuration(self::$logger, $configFile);
         $dbConnection = $configuration->getDbConnection();
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
  
         #The configuration file should have db_ssl set to 1 so that the
         #SQL Server encryption parameter will be to true and use the self-signed
@@ -115,7 +116,7 @@ class SqlServerTest extends TestCase
         $sslVerify = $configuration->getDbSslVerify();
          
         $sqlServerDbConnection4 = new SqlServerDbConnection(
-            $dbConnection,
+            $dbString,
             $ssl,
             $sslVerify,
             $this->caCertFile,
@@ -135,13 +136,17 @@ class SqlServerTest extends TestCase
     public function testSqlServerDbConnectionCreateTableWithPortAndEncryption()
     {
         $configuration = new Configuration(self::$logger, self::$configFile);
-        $dbInfo = $configuration->getDbConnection();
+
+        $dbConnection = $configuration->getDbConnection();
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
+
         $port = '1433';
-        $dbString =$dbInfo . ":$port";
+        $dbString .= ':'.$port;
 
         # Create the SqlServerDbConnection
         $ssl = true; #set encryption to true, using the self-signed cert
         $caCertFile = null;
+
         # Set TrustServerCertificate to true, so that the cert is not verified.
         # (Since the cert is self-signed, there is no 3rd party to verify the cert.
         #  The login will fail with a self-signed cert and TrustServerCertificate = false.
@@ -334,7 +339,8 @@ class SqlServerTest extends TestCase
         # create the table in the database
         #############################################################
         $configuration = new Configuration(self::$logger, self::$configFile);
-        $dbString = $configuration->getDbConnection();
+        $dbConnection = $configuration->getDbConnection();
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
         #first, drop the table, in case it wasn't dropped from a prior test.
         $this->processSqlSrv($dbString, "DROP TABLE $name;");
@@ -501,7 +507,8 @@ class SqlServerTest extends TestCase
         # create the table in the database
         #############################################################
         $configuration = new Configuration(self::$logger, self::$configFile);
-        $dbString = $configuration->getDbConnection();
+        $dbConnection = $configuration->getDbConnection();
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
         #first, drop the table, in case it wasn't dropped from a prior test.
         $this->processSqlSrv($dbString, "DROP TABLE $name;");
@@ -645,7 +652,8 @@ class SqlServerTest extends TestCase
     {
         #Create the SqlServerDbConnection object
         $configuration = new Configuration(self::$logger, self::$configFile);
-        $dbString = $configuration->getDbConnection();
+        $dbConnection = $configuration->getDbConnection();
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
         $caCertFile = null;
         $sslVerify = false;
@@ -897,7 +905,8 @@ class SqlServerTest extends TestCase
         # create the table in the database
         #############################################################
         $configuration = new Configuration(self::$logger, self::$configFile);
-        $dbString = $configuration->getDbConnection();
+        $dbConnection = $configuration->getDbConnection();
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
         $caCertFile = null;
         $sslVerify = false;
@@ -1076,7 +1085,8 @@ class SqlServerTest extends TestCase
         # create the data table in the database
         #############################################################
         $configuration = new Configuration(self::$logger, self::$configFile);
-        $dbString = $configuration->getDbConnection();
+        $dbConnection = $configuration->getDbConnection();
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
         $caCertFile = null;
         $sslVerify = false;
@@ -1160,7 +1170,8 @@ class SqlServerTest extends TestCase
 
         #create the SqlServerDbConnection
         $configuration = new Configuration(self::$logger, self::$configFile);
-        $dbString = $configuration->getDbConnection();
+        $dbConnection = $configuration->getDbConnection();
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
         $caCertFile = null;
         $sslVerify = false;
@@ -1211,12 +1222,6 @@ class SqlServerTest extends TestCase
      */
     private function processSqlSrv($dbString, $sql)
     {
-        $driver  = 'sqlsrv';
-        #strip out the driver if it has been included
-        if (strtolower(substr($dbString, 0, 7)) == $driver . ':') {
-            $dbString = substr($dbString, -1*(trim(strlen($dbString)) - 7));
-        }
-
         $dbValues = DbConnection::parseConnectionString($dbString);
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = DbConnection::parseConnectionString($dbString);

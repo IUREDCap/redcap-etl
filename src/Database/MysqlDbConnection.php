@@ -32,9 +32,9 @@ class MysqlDbConnection extends DbConnection
         $dbValues = DbConnection::parseConnectionString($dbString);
         $port = null;
         if (count($dbValues) == 4) {
-            list($host,$username,$password,$database) = DbConnection::parseConnectionString($dbString);
+            list($host,$username,$password,$database) = $dbValues;
         } elseif (count($dbValues) == 5) {
-            list($host,$username,$password,$database,$port) = DbConnection::parseConnectionString($dbString);
+            list($host,$username,$password,$database,$port) = $dbValues;
             $port = intval($port);
         } else {
             $message = 'The database connection is not correctly formatted: ';
