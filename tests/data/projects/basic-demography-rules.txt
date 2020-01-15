@@ -6,11 +6,11 @@ FIELD,address,string
 FIELD,telephone,string
 FIELD,email,string
 FIELD,dob,date
-FIELD,ethnicity,string
+FIELD,ethnicity,varchar(255)
 FIELD,race,checkbox
-FIELD,sex,string
-FIELD,height,string
-FIELD,weight,string
+FIELD,sex,varchar(255)
+FIELD,height,float
+FIELD,weight,varchar(255)
 FIELD,bmi,string
 FIELD,comments,string
 

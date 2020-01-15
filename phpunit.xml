@@ -70,12 +70,14 @@ SPDX-License-Identifier: BSD-3-Clause
           a server
     -->
     <testsuite name="system">
+      <file>tests/system/MysqlAutoRulesTest.php</file>
       <file>tests/system/MysqlSslTest.php</file>
       <file>tests/system/MysqlTest.php</file>
       <file>tests/system/RepeatingEventsMysqlTest.php</file>
       <file>tests/system/RepeatingEventsSqliteTest.php</file>
       <file>tests/system/RepeatingEventsSqlServerTest.php</file>
       <file>tests/system/SqlServerTest.php</file>
+      <file>tests/system/SqlServerAutoRulesTest.php</file>
       <file>tests/system/VisitsTest.php</file>
       <file>tests/system/VisitsCodeTest.php</file>
       <file>tests/system/VisitsSqliteCodeTest.php</file>

@@ -7,17 +7,17 @@ FIELD,first_name,string
 FIELD,last_name,string
 FIELD,birthdate,date
 FIELD,registration_age,string
-FIELD,gender,string
+FIELD,gender,varchar(255)
 FIELD,race,checkbox
 
 TABLE,contact_information,root,EVENTS
 FIELD,home_address,string
 FIELD,phone1,string
-FIELD,phone_type1,string
+FIELD,phone_type1,varchar(255)
 FIELD,phone2,string
-FIELD,phone_type2,string
+FIELD,phone_type2,varchar(255)
 FIELD,phone3,string
-FIELD,phone_type3,string
+FIELD,phone_type3,varchar(255)
 FIELD,email,string
 
 TABLE,emergency_contacts,root,EVENTS
@@ -30,52 +30,52 @@ FIELD,em_contact_phone2b,string
 
 TABLE,weight,root,EVENTS
 FIELD,weight_time,datetime
-FIELD,weight_kg,string
-FIELD,height_m,string
+FIELD,weight_kg,float
+FIELD,height_m,float
 
 TABLE,weight_repeating_events,root,REPEATING_EVENTS
 FIELD,weight_time,datetime
-FIELD,weight_kg,string
-FIELD,height_m,string
+FIELD,weight_kg,float
+FIELD,height_m,float
 
 TABLE,weight_repeating_instruments,root,REPEATING_INSTRUMENTS
 FIELD,weight_time,datetime
-FIELD,weight_kg,string
-FIELD,height_m,string
+FIELD,weight_kg,float
+FIELD,height_m,float
 
 TABLE,cardiovascular,root,EVENTS
 FIELD,cardiovascular_date,date
-FIELD,hdl_mg_dl,string
-FIELD,ldl_mg_dl,string
-FIELD,triglycerides_mg_dl,string
-FIELD,diastolic1,string
-FIELD,diastolic2,string
-FIELD,diastolic3,string
-FIELD,systolic1,string
-FIELD,systolic2,string
-FIELD,systolic3,string
+FIELD,hdl_mg_dl,varchar(255)
+FIELD,ldl_mg_dl,varchar(255)
+FIELD,triglycerides_mg_dl,varchar(255)
+FIELD,diastolic1,varchar(255)
+FIELD,diastolic2,varchar(255)
+FIELD,diastolic3,varchar(255)
+FIELD,systolic1,varchar(255)
+FIELD,systolic2,varchar(255)
+FIELD,systolic3,varchar(255)
 
 TABLE,cardiovascular_repeating_events,root,REPEATING_EVENTS
 FIELD,cardiovascular_date,date
-FIELD,hdl_mg_dl,string
-FIELD,ldl_mg_dl,string
-FIELD,triglycerides_mg_dl,string
-FIELD,diastolic1,string
-FIELD,diastolic2,string
-FIELD,diastolic3,string
-FIELD,systolic1,string
-FIELD,systolic2,string
-FIELD,systolic3,string
+FIELD,hdl_mg_dl,varchar(255)
+FIELD,ldl_mg_dl,varchar(255)
+FIELD,triglycerides_mg_dl,varchar(255)
+FIELD,diastolic1,varchar(255)
+FIELD,diastolic2,varchar(255)
+FIELD,diastolic3,varchar(255)
+FIELD,systolic1,varchar(255)
+FIELD,systolic2,varchar(255)
+FIELD,systolic3,varchar(255)
 
 TABLE,cardiovascular_repeating_instruments,root,REPEATING_INSTRUMENTS
 FIELD,cardiovascular_date,date
-FIELD,hdl_mg_dl,string
-FIELD,ldl_mg_dl,string
-FIELD,triglycerides_mg_dl,string
-FIELD,diastolic1,string
-FIELD,diastolic2,string
-FIELD,diastolic3,string
-FIELD,systolic1,string
-FIELD,systolic2,string
-FIELD,systolic3,string
+FIELD,hdl_mg_dl,varchar(255)
+FIELD,ldl_mg_dl,varchar(255)
+FIELD,triglycerides_mg_dl,varchar(255)
+FIELD,diastolic1,varchar(255)
+FIELD,diastolic2,varchar(255)
+FIELD,diastolic3,varchar(255)
+FIELD,systolic1,varchar(255)
+FIELD,systolic2,varchar(255)
+FIELD,systolic3,varchar(255)
 

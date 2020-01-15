@@ -9,16 +9,16 @@ FIELD,telephone,string
 FIELD,email,string
 FIELD,dob,date
 FIELD,age,string
-FIELD,ethnicity,string
-FIELD,race,string
-FIELD,sex,string
-FIELD,height,string
-FIELD,weight,string
+FIELD,ethnicity,varchar(255)
+FIELD,race,varchar(255)
+FIELD,sex,varchar(255)
+FIELD,height,float
+FIELD,weight,varchar(255)
 FIELD,bmi,string
 FIELD,comments,string
-FIELD,age_variable,string
-FIELD,fav_number_variable,string
+FIELD,age_variable,float
+FIELD,fav_number_variable,float
 
 TABLE,test_form_repeating_instruments,root,REPEATING_INSTRUMENTS
-FIELD,number_fav_var,string
+FIELD,number_fav_var,varchar(255)
 

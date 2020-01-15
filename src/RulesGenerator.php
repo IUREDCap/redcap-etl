@@ -17,6 +17,8 @@ class RulesGenerator
     const REDCAP_XML_NAMESPACE = 'https://projectredcap.org';
 
     const FORM_COMPLETE_SUFFIX = '_complete';
+
+    const DEFAULT_VARCHAR_SIZE = 255;
     
     private $isLongitudinal;
     private $instruments;
@@ -202,12 +204,16 @@ class RulesGenerator
         if ($fieldType === 'checkbox') {
             $type = FieldType::CHECKBOX;
         } elseif ($validationType === 'integer') {
-            # The value may be too large for the database int type,
-            # so use a string here
-            $type = FieldType::STRING;
+            # The number be too large for the database int type,
+            # so use a varchar here
+            $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+        } elseif (substr($validationType, 0, 6) === 'number') {
+            # starts with 'number'
+            $type = FieldType::FLOAT;
+            #$type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
         } elseif ($fieldType === 'dropdown' || $fieldType === 'radio') {
             # values for multiple choice can have letters
-            $type = FieldType::STRING;
+            $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
         } elseif (substr($validationType, 0, 5) === 'date_') {
             # starts with 'date_'
             $type = FieldType::DATE;

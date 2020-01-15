@@ -3,8 +3,8 @@ TABLE,root,root_id,ROOT
 TABLE,demography,root,EVENTS
 FIELD,record_id,string
 FIELD,name,string
-FIELD,fruit,string
-FIELD,height,string
+FIELD,fruit,varchar(255)
+FIELD,height,float
 FIELD,weight,string
 FIELD,email1,string
 FIELD,email2,string
@@ -16,10 +16,10 @@ FIELD,sent1b,date
 FIELD,recip2,string
 FIELD,sent2a,date
 FIELD,sent2b,date
-FIELD,color,string
+FIELD,color,varchar(255)
 FIELD,rooms,checkbox
-FIELD,workat1,string
-FIELD,workat2,string
+FIELD,workat1,varchar(255)
+FIELD,workat2,varchar(255)
 
 TABLE,demographyextras,root,EVENTS
 FIELD,phone,string
@@ -27,16 +27,16 @@ FIELD,dob,date
 
 TABLE,visit,root,EVENTS
 FIELD,visit_date,date
-FIELD,sleep_hours,string
+FIELD,sleep_hours,float
 
 TABLE,visitsurvey,root,EVENTS
-FIELD,satisfaction,string
+FIELD,satisfaction,varchar(255)
 
 TABLE,visitresults,root,EVENTS
 FIELD,lab1,string
 FIELD,lab2,string
 
 TABLE,followup,root,EVENTS
-FIELD,impression1,string
-FIELD,impression2,string
+FIELD,impression1,varchar(255)
+FIELD,impression2,varchar(255)
 

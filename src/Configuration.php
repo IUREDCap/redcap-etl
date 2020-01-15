@@ -841,14 +841,30 @@ class Configuration
         $connectionInfo = null;
         list($dbType, $dbInfo) = explode(':', $this->dbConnection, 2);
 
-        if (strcasecmp($dbType, 'MySQL') === 0) {
+        if (strcasecmp($dbType, DbConnectionFactory::DBTYPE_MYSQL) === 0) {
             $connectionInfo = DbConnection::parseConnectionString($dbInfo);
         }
 
         return $connectionInfo;
     }
 
+    /**
+     * Gets the SqlServer connection information.
+     *
+     * @return array string array with (host, user, password, dbname),
+     *               or null if there is no MySQL connection.
+     */
+    public function getSqlServerConnectionInfo()
+    {
+        $connectionInfo = null;
+        list($dbType, $dbInfo) = explode(':', $this->dbConnection, 2);
 
+        if (strcasecmp($dbType, DbConnectionFactory::DBTYPE_SQLSERVER) === 0) {
+            $connectionInfo = DbConnection::parseConnectionString($dbInfo);
+        }
+
+        return $connectionInfo;
+    }
     /**
      * Indicates is the specified path is an absolute path.
      *
