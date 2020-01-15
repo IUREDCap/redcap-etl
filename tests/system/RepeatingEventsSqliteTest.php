@@ -70,26 +70,6 @@ class RepeatingEventsSqliteTest extends TestCase
         }
     }
 
-    /**
-     * Convert CSV data into a map format that matches the output
-     * of PDO's fetchall method.
-     */
-    private function convertCsvToMap($csv)
-    {
-        $map = array();
-        $header = $csv[0];
-        for ($i = 1; $i < count($csv); $i++) {
-            $row = array();
-            for ($j = 0; $j < count($header); $j++) {
-                $key   = $header[$j];
-                $value = $csv[$i][$j];
-                $row[$key] = $value;
-            }
-            array_push($map, $row);
-        }
-        return $map;
-    }
-
     public function testAllVisitsTable()
     {
         $sql = 'SELECT '
@@ -122,7 +102,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_all_visits.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -155,7 +135,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -191,7 +171,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_home_visits.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -226,7 +206,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_visits.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -246,7 +226,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -266,7 +246,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment_label_view.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -299,7 +279,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_cardiovascular_visits.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -325,7 +305,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_weight_visits.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -360,7 +340,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -398,7 +378,7 @@ class RepeatingEventsSqliteTest extends TestCase
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits_and_home_visits.csv');
         $expectedData = $parser2->parse();
 
-        $expectedData = $this->convertCsvToMap($expectedData);
+        $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
         $this->assertEquals($expectedData, $actualData);
     }
