@@ -263,7 +263,7 @@ abstract class PdoDbConnection extends DbConnection
             throw new EtlException($message, $code);
         }
 
-        return $insertId;
+        return (int) $insertId;
     }
 
     /**
