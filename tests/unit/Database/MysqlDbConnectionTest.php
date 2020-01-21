@@ -104,8 +104,7 @@ class MysqlDbConnectionTest extends TestCase
         $ssl = true;
         $dbString3 = 'someserver.here.there.edu:idonotexist:somewonderfulpassword:adb';
         $exceptionCaught3 = false;
-        $expectedMessage3 = "MySQL error [2002]: php_network_getaddresses: ";
-        $expectedMessage3 .= "getaddrinfo failed: Name or service not known";
+        $expectedMessage3 = "php_network_getaddresses: getaddrinfo failed: Name or service not known";
         $mysqlDbConnection = null;
 
         try {
@@ -132,7 +131,7 @@ class MysqlDbConnectionTest extends TestCase
             'mysqlDbConnection expected error for invalid user code check'
         );
 
-        $this->assertEquals(
+        $this->assertStringEndsWith(
             $expectedMessage3,
             $exception->getMessage(),
             'mysqlDbConnection expected error for invalid user message check'

@@ -62,24 +62,39 @@ class MysqlDbConnection extends DbConnection
         }
         
         $this->mysqli = mysqli_init();
-        if ($sslVerify && !empty($caCertFile)) {
-            $this->mysqli->ssl_set(null, null, $caCertFile, null, null);
+        if (!isset($this->mysqli)) {
+            $message = "Call to mysqli_init failed.";
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($message, $code);
+        } elseif ($sslVerify && !empty($caCertFile)) {
+            $result = $this->mysqli->ssl_set(null, null, $caCertFile, null, null);
+            if (!$result) {
+                $message = "Call to mysqli::ssl_set failed.";
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
+            }
+
             $this->mysqli->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
         }
 
         try {
-            $this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
-        } catch (\Exception $e) {
-            $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;
+            $result = $this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
+            if (!$result) {
+                $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
+            }
+        } catch (\Exception $exception) {
+            $message = 'Unable to connect to MySQL database "'.$database.'" at host "'.$host.'"';
+            if (!empty($port)) {
+                $message .= ' on port '.$port;
+            }
+            $message .= ' as user "'.$username.'".';
+
+            $message .= ' '. $exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
-
-        //if ($this->mysqli->connect_errno) {
-        //    $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;
-        //    $code = EtlException::DATABASE_ERROR;
-        //    throw new EtlException($message, $code);
-        //}
     }
 
 
