@@ -78,7 +78,7 @@ class MysqlDbConnection extends DbConnection
         }
 
         try {
-            $result = $this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
+            @$result = $this->mysqli->real_connect($host, $username, $password, $database, $port, null, $flags);
             if (!$result) {
                 $message = 'MySQL error ['.$this->mysqli->connect_errno.']: '.$this->mysqli->connect_error;
                 $code = EtlException::DATABASE_ERROR;
@@ -89,7 +89,25 @@ class MysqlDbConnection extends DbConnection
             if (!empty($port)) {
                 $message .= ' on port '.$port;
             }
-            $message .= ' as user "'.$username.'".';
+
+            $message .= ' as user "'.$username.'"';
+
+            if ($ssl) {
+                $message .= ' using SSL';
+                if ($sslVerify) {
+                    $message .= ' with verification';
+                }
+                $message .= '. Possible causes:';
+                $message .= ' your database connection information may be incorrect';
+                if ($ssl) {
+                    $message .= ', your database may not support SSL';
+                    if ($sslVerify) {
+                        $message .= ' or the database SSL certificate could not be verified';
+                    }
+                }
+                $message .= ', a firewall may be restricting access to your database';
+            }
+            $message .= '.';
 
             $message .= ' '. $exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
