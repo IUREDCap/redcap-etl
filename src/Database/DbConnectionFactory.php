@@ -17,8 +17,9 @@ class DbConnectionFactory
     // Database types
     const DBTYPE_CSV        = 'CSV';
     const DBTYPE_MYSQL      = 'MySQL';
+    const DBTYPE_POSTGRESQL = 'PostgreSQL';
     const DBTYPE_SQLITE     = 'SQLite';
-    const DBTYPE_SQLSERVER     = 'SQLServer';
+    const DBTYPE_SQLSERVER  = 'SQLServer';
     
     public function __construct()
     {
@@ -49,6 +50,17 @@ class DbConnectionFactory
         switch ($dbType) {
             case DbConnectionFactory::DBTYPE_MYSQL:
                 $dbcon = new MysqlDbConnection(
+                    $dbString,
+                    $ssl,
+                    $sslVerify,
+                    $caCertFile,
+                    $tablePrefix,
+                    $labelViewSuffix
+                );
+                break;
+
+            case DbConnectionFactory::DBTYPE_POSTGRESQL:
+                $dbcon = new PostgreSqlDbConnection(
                     $dbString,
                     $ssl,
                     $sslVerify,

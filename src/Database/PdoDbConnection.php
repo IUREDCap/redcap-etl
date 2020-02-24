@@ -20,6 +20,7 @@ abstract class PdoDbConnection extends DbConnection
     protected $db;
 
     const AUTO_INCREMENT_TYPE = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+    const DATETIME_TYPE       = 'DATETIME';
 
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
@@ -85,7 +86,7 @@ abstract class PdoDbConnection extends DbConnection
                     break;
                     
                 case FieldType::DATETIME:
-                    $fieldDef .= 'DATETIME';
+                    $fieldDef .= static::DATETIME_TYPE;
                     # Note: neither SQLite or SQL Server support a size specification
                     # for DATETIME
                     break;
