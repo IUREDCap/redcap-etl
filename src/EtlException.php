@@ -19,6 +19,7 @@ class EtlException extends \Exception
     const INPUT_ERROR    = 3;
     const DATABASE_ERROR = 4;
     const LOGGING_ERROR  = 6;
+    const FATAL_ERROR    = 9;
 
     /**
      * Constructor.

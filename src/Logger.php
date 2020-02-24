@@ -315,6 +315,7 @@ class Logger
     {
         $message = $exception->getMessage();
         $message = preg_replace('/\s+$/', '', $message);
+        $message = 'REDCap-ETL LOG EXCEPTION: '.$message;
 
         #--------------------------------------------------------------------
         # if this was an error caused by PHPCap, then include information

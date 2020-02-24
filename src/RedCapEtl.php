@@ -55,6 +55,10 @@ class RedCapEtl
 
     private $configuration;
 
+    private static $memory;
+
+    private static $staticLogger;
+
 
     /**
      * Constructor.
@@ -72,6 +76,12 @@ class RedCapEtl
         $properties,
         $redcapProjectClass = null
     ) {
+        self::$staticLogger = $logger;
+        $callback = get_class($this).'::fatalErrorShutdownHandler';
+        print "\nCALLBACK: {$callback}\n\n";
+        register_shutdown_function(get_class($this).'::fatalErrorShutdownHandler');
+        self::$memory = str_repeat('*', 1024 * 1024);
+
         $this->app = $logger->getApp();
 
         $this->configuration = new Configuration(
@@ -81,6 +91,8 @@ class RedCapEtl
 
         $this->logger = $logger;
         $this->logger->setConfiguration($this->configuration);
+
+        self::$staticLogger = $this->logger;
         
         #---------------------------------------------------------
         # Set time limit
@@ -208,6 +220,9 @@ class RedCapEtl
             
             $this->schema->setDbEventLogTable($dbEventLogTable);
         }
+
+        self::$staticLogger = $this->logger;
+        print "STATIC LOGGER: {self::$staticLogger}\n";
     }
 
 
@@ -253,6 +268,7 @@ class RedCapEtl
         if (!isset($this->dataProject)) {
             $message = 'No data project was found.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
+            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
         }
         $rulesGenerator = new RulesGenerator();
         $rulesText = $rulesGenerator->generate($this->dataProject, $addFormCompleteField);
@@ -736,6 +752,25 @@ class RedCapEtl
         return $numberOfRecordIds;
     }
 
+
+    /**
+     * Callback function for fatal errors.
+     */
+    public static function fatalErrorShutdownHandler()
+    {
+        self::$memory = null;
+        print "\n\n******************************* TEST\n\n";
+        $lastError = @error_get_last();
+
+        # If this is a fatal error
+        if (isset($lastError['type']) && $lastError['type'] === E_ERROR) {
+            $message = '*************** FATAL ERROR: '.$lastError['message']
+                .' in file '.$lastError['file']
+                .' on line '.$lastError['line'];
+            $exception = new EtlException($message, EtlException::FATAL_ERROR);
+            self::$staticLogger->logException($exception);
+        }
+    }
 
     /**
      * Logs job info from configuration, if any
