@@ -54,15 +54,6 @@ Once the configuration is done, verify that the service is running using the sta
 
     systemctl status mssql-server --no-pager
 
-The status output should resemble:
-
-    mysql.service - MySQL Community Server
-        Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: en
-        Active: active (running) since Fri 2019-11-15 11:28:49 EST; 18min ago
-    Main PID: 738 (mysqld)
-        Tasks: 28 (limit: 3526)
-        CGroup: /system.slice/mysql.service
-                └─738 /usr/sbin/mysqld --daemonize --pid-file=/run/mysqld/mysqld.pid
 
 Note: If you plan to connect remotely, you might also need to open the SQL Server TCP port (default 1433) on your firewall.
 

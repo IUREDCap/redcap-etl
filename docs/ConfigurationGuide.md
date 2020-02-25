@@ -27,8 +27,9 @@ database connection string. This string has the following format:
 Currently, the supported database connection types are
 
 * **MySQL**
-* **SQLite**
 * **CSV** (comma-separated values)
+* **PostgreSQL**
+* **SQLite**
 * **SQL Server**
 
 
@@ -58,6 +59,13 @@ For CSV, the database connection string format is:
 For example:
 
         CSV:/home/redcap-etl/csv/project1
+
+### PostgreSQL
+
+For PostgreSQL, the database connection string format is:
+
+    PostgreSQL:<host>:<username>:<password>:<database>[:<schema>[:<port>]]
+
 
 ### SQLite
 For SQLite, the database connection string format is:

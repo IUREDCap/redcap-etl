@@ -54,6 +54,11 @@ class CsvDbConnection extends DbConnection
         return file_exists($this->getTableFile($table));
     }
 
+    protected function existsLabelView($table)
+    {
+        return file_exists($this->getLabelViewFile($table));
+    }
+
     protected function dropTable($table, $ifExists = false)
     {
         if (!$ifExists || ($ifExists && $this->existsTable($table))) {
@@ -88,6 +93,14 @@ class CsvDbConnection extends DbConnection
             fwrite($fh, '"'.$field->dbName.'"');
         }
         fwrite($fh, PHP_EOL);
+    }
+
+    public function dropLabelView($table, $ifExists = false)
+    {
+        if (!$ifExists || ($ifExists && $this->existsLabelView($table))) {
+            $file = $this->getLabelViewFile($table);
+            unlink($file);
+        }
     }
 
     /**

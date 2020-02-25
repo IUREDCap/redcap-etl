@@ -580,6 +580,11 @@ class RedCapEtl
         // foreach table, replace it with an empty table
         $tables = $this->schema->getTables();
         foreach ($tables as $table) {
+            if ($table->usesLookup === true) {
+                $ifExists = true;
+                $this->dbcon->dropLabelView($table, $ifExists);
+            }
+
             $this->dbcon->replaceTable($table);
 
             $msg = "Created table '".$table->name."'";

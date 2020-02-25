@@ -1200,12 +1200,6 @@ class SqlServerTest extends TestCase
         $parameters[1] = $ifExists;
 
         $result = $method->invokeArgs($sqlServerDbConnection, $parameters);
-        $expected = 1;
-        $this->assertEquals(
-            $expected,
-            $result,
-            'SqlServerTest, SqlServerDbConnection dropTable return check'
-        );
 
         #check to see if it was actually dropped
         $sql = "select 1 from sys.tables where name = '$name';";

@@ -51,8 +51,6 @@ abstract class PdoDbConnection extends DbConnection
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
-
-        return(1);
     }
 
 
@@ -145,6 +143,28 @@ abstract class PdoDbConnection extends DbConnection
         $query = 'CREATE TABLE IF NOT EXISTS '.$this->escapeName($tableName).' (';
         return $query;
     }
+
+    public function dropLabelView($table, $ifExists = false)
+    {
+        $view = ($table->name).($this->labelViewSuffix);
+
+        // Define query
+        if ($ifExists) {
+            $query = "DROP VIEW IF EXISTS ". $this->escapeName($view);
+        } else {
+            $query = "DROP VIEW ". $this->escapeName($view);
+        }
+        
+        // Execute query
+        try {
+            $result = $this->db->exec($query);
+        } catch (\Exception $exception) {
+            $message = 'Database error in query "'.$query.'" : '.$exception->getMessage();
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($message, $code);
+        }
+    }
+
 
     /**
      * Creates (or replaces) the lookup view for the specified table.

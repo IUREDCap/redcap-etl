@@ -34,11 +34,15 @@ class PostgreSqlDbConnection extends PdoDbConnection
 
         $dbValues = DbConnection::parseConnectionString($dbString);
 
-        $port = null;
+        $schema = null;
+        $port   = null;
+
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = $dbValues;
         } elseif (count($dbValues) == 5) {
-            list($host,$username,$password,$database,$port) = $dbValues;
+            list($host,$username,$password,$database,$schema) = $dbValues;
+        } elseif (count($dbValues) == 6) {
+            list($host,$username,$password,$database,$schema, $port) = $dbValues;
             $port = intval($port);
         } else {
             $message = 'The database connection is not correctly formatted: ';
@@ -58,17 +62,15 @@ class PostgreSqlDbConnection extends PdoDbConnection
         }
         
         $dataSourceName = "{$driver}:host={$host};dbname={$database}";
-        #if ($ssl) {
-        #    $dataSourceName .= ";Encrypt=1";
-        #    if ($sslVerify) {
-        #        #set the attribute to verify the certificate, i.e., TrustServerCertificate is false.
-        #        $dataSourceName .= ";TrustServerCertificate=false";
-        #    } else {
-        #        #set the attribute to so that the cert is not verified,
-        #        #i.e., TrustServerCertificate is true.
-        #        $dataSourceName .= ";TrustServerCertificate=true";
-        #    }
-        #}
+        if ($ssl) {
+            $dataSourceName .= ";sslmode=require";
+            if ($sslVerify) {
+                # set the attribute to verify the certificate
+                $dataSourceName .= ";sslrootcert={$caCertFile}";
+            } else {
+                ;
+            }
+        }
 
         $options = [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION #,
@@ -77,8 +79,20 @@ class PostgreSqlDbConnection extends PdoDbConnection
 
         try {
             $this->db = new \PDO($dataSourceName, $username, $password, $options);
+
+            # Set schema:
+            if (!empty($schema)) {
+                $sql = 'SET search_path TO '.$this->escapeName($schema);
+                $this->db->exec($sql);
+            }
         } catch (\Exception $exception) {
-            $message = 'Database connection error for database "'.$database.'": '.$exception->getMessage();
+            $message = 'Database connection error on host "'.$host.'"'
+                .' for PostgeSQL database "'.$database.'"';
+            if (!empty($schema)) {
+                $message .= ' and schema "'.$schema.'"';
+            }
+            $message .= ' for user "'.$username.'"';
+            $message .= ': '.$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }

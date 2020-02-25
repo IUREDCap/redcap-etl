@@ -231,6 +231,28 @@ class MysqlDbConnection extends DbConnection
     }
 
 
+    public function dropLabelView($table, $ifExists = false)
+    {
+        $view = ($table->name).($this->labelViewSuffix);
+
+        // Define query
+        if ($ifExists) {
+            $query = "DROP VIEW IF EXISTS ". $this->escapeName($view);
+        } else {
+            $query = "DROP VIEW ". $this->escapeName($view);
+        }
+        
+        // Execute query
+        $result = $this->mysqli->query($query);
+        if ($result === false) {
+            $message = 'MySQL error in query "'.$query.'"'
+                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($message, $code);
+        }
+    }
+
+
     /**
      * Creates (or replaces) the lookup view for the specified table.
      */

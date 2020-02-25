@@ -62,6 +62,14 @@ abstract class DbConnection
     abstract public function createTable($table, $ifNotExists = false);
 
     /**
+     * Drops the specified label view.
+     *
+     * @param IU\REDCapETL\Schema\Table $table table object corresponding
+     *     to the database table for which the label view is being dropped.
+     */
+    abstract public function dropLabelView($table, $ifExists = false);
+
+    /**
      * Replace the lookup view for the specified table. The lookup view
      * for a table is the same as the table except that for multiple-choice
      * fields, the label is displayed instead of the value.
