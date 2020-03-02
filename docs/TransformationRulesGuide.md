@@ -248,16 +248,16 @@ Field statements specify the fields that are generated in the tables in your dat
 **`<field_type>`** can be one of the REDCap-ETL types in the table below that shows
 the database types used to store the different REDCap-ETL types.
 
-| REDCap-ETL Type | MySQL Type      | CSV (Spreadsheet) Type |
-| --------------- | --------------- | ---------------------- |
-| int             | int             | number                 |
-| float           | float           | number                 |
-| char(_size_)    | char(_size_)    | text                   |
-| varchar(_size_) | varchar(_size_) | text                   |
-| string          | text            | text                   |
-| date            | date            | datetime               |
-| datetime        | datetime        | datetime               |
-| checkbox        | int             | number                 |
+| REDCap-ETL Type | MySQL Type      | PostgreSQL Type | SQL Server Type | SQLite Type     | CSV (Spreadsheet) Type |
+| --------------- | --------------- | --------------- | --------------- | --------------- | ---------------------- |
+| int             | int             | int             | int             | int             | number                 |
+| float           | float           | float           | float           | float           | number                 |
+| char(_size_)    | char(_size_)    | char(_size_)    | char(_size_)    | char(_size_)    | text                   |
+| varchar(_size_) | varchar(_size_) | varchar(_size_) | varchar(_size_) | varchar(_size_) | text                   |
+| string          | text            | text            | text            | text            | text                   |
+| date            | date            | date            | date            | date            | datetime               |
+| datetime        | datetime        | timestamptz     | datetime        | datetime        | datetime               |
+| checkbox        | int             | int             | int             | int             | number                 |
 
 NOTE: `TABLE`, `FIELD`, `<rows_type>`, and `<field_type>`; are all case sensitive. So, for example, `TABLE`, `FIELD`, `ROOT`, and `EVENTS` must be uppercase, and `int`, `float`, `string`, `date`, and `checkbox` must be lowercase.
 

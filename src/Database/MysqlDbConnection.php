@@ -182,6 +182,7 @@ class MysqlDbConnection extends DbConnection
                     }
                     break;
 
+                case FieldType::CHECKBOX:
                 case FieldType::INT:
                     $fieldDef .= 'INT';
                     break;
