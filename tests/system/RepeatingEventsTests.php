@@ -11,15 +11,17 @@ use PHPUnit\Framework\TestCase;
 /**
  * Runs the "repeating events" tests using MySQL as the database.
  */
-class RepatingEventsMysqlTest extends TestCase
+abstract class RepeatingEventsTests extends TestCase
 {
     const CONFIG_FILE = __DIR__.'/../config/repeating-events-mysql.ini';
 
     const TEST_DATA_DIR   = __DIR__.'/../data/';     # directory with test data comparison files
+    
+    const WEIGHT_TIME_FIELD_DECLARATION = "weight_time";
 
-    private $dbh;
+    protected static $dbh;
 
-    public function dropTablesAndViews($dbh)
+    public static function dropTablesAndViews($dbh)
     {
         $dbh->exec("DROP TABLE IF EXISTS re_all_visits");
         $dbh->exec("DROP TABLE IF EXISTS re_baseline");
@@ -54,7 +56,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', redcap_event_name '
             .', redcap_repeat_instrument '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .", ".static::WEIGHT_TIME_FIELD_DECLARATION." "
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -69,7 +71,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', systolic3 '
             .' FROM re_all_visits ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_all_visits.csv');
@@ -87,7 +89,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', enrollment_id '
             .', record_id '
             .', redcap_event_name '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .", ".static::WEIGHT_TIME_FIELD_DECLARATION." "
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -102,7 +104,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', systolic3 '
             .' FROM re_baseline ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline.csv');
@@ -123,7 +125,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', redcap_event_name '
             .', redcap_repeat_instrument '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .", ".static::WEIGHT_TIME_FIELD_DECLARATION." "
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -138,7 +140,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', systolic3 '
             .' FROM re_baseline_and_home_visits ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_home_visits.csv');
@@ -158,7 +160,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', record_id '
             .', redcap_event_name '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .", ".static::WEIGHT_TIME_FIELD_DECLARATION." "
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -173,7 +175,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', systolic3 '
             .' FROM re_baseline_and_visits ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_visits.csv');
@@ -192,7 +194,7 @@ class RepatingEventsMysqlTest extends TestCase
             .' race___0, race___1, race___2, race___3, race___4, race___5'
             .' FROM re_enrollment ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment.csv');
@@ -211,7 +213,7 @@ class RepatingEventsMysqlTest extends TestCase
             .' race___0, race___1, race___2, race___3, race___4, race___5'
             .' FROM re_enrollment_label_view ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment_label_view.csv');
@@ -243,7 +245,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', systolic3 '
             .' FROM re_home_cardiovascular_visits ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_cardiovascular_visits.csv');
@@ -263,12 +265,12 @@ class RepatingEventsMysqlTest extends TestCase
             .', redcap_event_name '
             .', redcap_repeat_instrument '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .", ".static::WEIGHT_TIME_FIELD_DECLARATION." "
             .', weight_kg '
             .', height_m '
             .' FROM re_home_weight_visits ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_weight_visits.csv');
@@ -287,7 +289,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', record_id '
             .', redcap_event_name '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .", ".static::WEIGHT_TIME_FIELD_DECLARATION." "
             .', weight_kg '
             .', height_m '
             .', cardiovascular_date '
@@ -302,7 +304,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', systolic3 '
             .' FROM re_visits ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits.csv');
@@ -323,7 +325,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', redcap_event_name '
             .', redcap_repeat_instrument '
             .', redcap_repeat_instance '
-            .", DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time' "
+            .", ".static::WEIGHT_TIME_FIELD_DECLARATION." "
             .', weight_kg '
             .', height_m '
             .', weight_complete '
@@ -340,7 +342,7 @@ class RepatingEventsMysqlTest extends TestCase
             .', cardiovascular_complete '
             .' FROM re_visits_and_home_visits ORDER BY record_id';
 
-        $statement  = self::$dbh->query($sql);
+        $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits_and_home_visits.csv');
