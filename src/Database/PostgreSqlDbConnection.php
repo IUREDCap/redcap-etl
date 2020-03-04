@@ -98,21 +98,9 @@ class PostgreSqlDbConnection extends PdoDbConnection
         }
     }
  
-
-    /*
-    protected function getCreateTableIfNotExistsQueryPrefix($tableName)
-    {
-        $query = 'IF NOT EXISTS (SELECT [name] FROM sys.tables ';
-        $query .= "WHERE [name] = " . $this->db->quote($tableName) . ') ';
-        $query .= 'CREATE TABLE ' . $this->escapeName($tableName) . ' (';
-        return $query;
-    }
-     */
-
-
     protected function escapeName($name)
     {
-        $name = '"'.$name.'"';
+        $name = '"'.(str_replace('"', '', $name)).'"';
         return $name;
     }
 }
