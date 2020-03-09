@@ -61,6 +61,22 @@ works.
         sudo apt install postgresql postgresql-contrib
         sudo apt install php-pgsql
 
+    You can use the following command to test your PostgreSQL installation:
+
+        sudo -u postgres psql -c "SELECT version();"
+
+    To log in as the root user use:
+
+        sudo -u postgres psql
+
+    To create the a database, schema and user that match the values in the test configuration file, use:
+
+        create database etl_test;
+        create schema etl_test;
+
+        create user etl_user with password 'etlPassword';
+        grant all privileges on database etl_test to etl_user;
+
 
 8. **Install SQL Server**
 
@@ -270,7 +286,7 @@ __ETL Configuration File Setup.__ The next thing you need to do is to create the
 
         cp tests/config-init/mysql-ssl.ini tests/config
 
-3. If you have a PoastgreSQL database, then also
+3. If you have a PostgreSQL database, then also
    copy the following configuration files:
 
         cp tests/config-init/repeating-events-postgresql.ini tests/config
