@@ -22,6 +22,15 @@ class RepeatingEventsSqliteTest extends RepeatingEventsTests
     protected static $dbh;
     private static $logger;
 
+    public function setUp()
+    {
+        # These tests depend on the pdo_pgsql driver being installed.
+        # If it isn't loaded, all tests will be skipped.
+        if (!extension_loaded('pdo_pgsql')) {
+            $this->markTestSkipped('The pdo_pgsql driver is not available.');
+        }
+    }
+    
     public static function setUpBeforeClass()
     {
         self::$logger = new Logger('repeating_events_postgresql_system_test');
