@@ -9,7 +9,7 @@ Development Environment Setup
 
 This is a list of the steps for setting up a REDCap-ETL development environment. Example commands are shown for Ubuntu 16.
 
-1. Install PHP
+1. **Install PHP**
 
         sudo apt install php php-curl php-mbstring php-mysql php-xml
         sudo phpenmod mysqli   # enable mysqli extension
@@ -17,18 +17,18 @@ This is a list of the steps for setting up a REDCap-ETL development environment.
         sudo apt install php-sqlite3  # add PHP support for SQLite
         sudo apt install php-xdebug  # Install XDebug to be able to see phpunit test code coverage
 
-2. Install Composer (needed to get PHPCap and development dependencies)
+2. **Install Composer** (needed to get PHPCap and development dependencies)
 
         sudo apt install composer
 
-3. Install sendmail (needed for logging to e-mail)
+3. **Install sendmail** (needed for logging to e-mail)
 
         sudo apt install sendmail
         
     Note: after REDCap-ETL has been installed, its **bin/email_test.php** script can be used to test if e-mail logging
 works.
 
-4. Install MySQL
+4. **Install MySQL**
 
         sudo apt install mysql-server
         sudo mysql_secure_installation
@@ -39,30 +39,53 @@ works.
         sudo systemctl restart mysql
 
 
-5. Create a database and database user that will be used as the place to store the REDCap data, for example, in MySQL use:
+5. **Create MySQL Database and User**
+
+    Create a database and database user that will be used as the place to store the REDCap data,
+    for example, in MySQL use:
 
         CREATE DATABASE `etl_test`;
         CREATE USER 'etl_user'@'localhost' IDENTIFIED BY 'etlPassword';
         GRANT ALL ON `etl_test`.* TO 'etl_user'@'localhost';
 
-6. Install SQLite
+6. **Install SQLite**
 
         sudo apt install sqlite3
         sudo apt install sqlitebrowser  # optional
 
-7. Install Git
+7. **Install PostgreSQL**
+
+    To run the PostgreSQL system tests (discussed below), you will need to install        
+    PostgreSQL. If PostgreSQL is not installed, these tests should be automatically skipped.
+
+        sudo apt install postgresql postgresql-contrib
+        sudo apt install php-pgsql
+
+
+8. **Install SQL Server**
+
+    To run the SQL Server system tests (discussed below), you will need to install SQL Server.
+    If SQL Server is not installed, these tests should be automatically skipped.
+
+    For details see [SQL Server](SqlServer.md).
+
+9. **Install Git**
 
         sudo apt install git
         # Add e-mail and name information, for example:
         git config --global user.email "jsmith@someuniversity.edu"
         git config --global user.name "J Smith"
 
-9. Get the code. Execute the following command in the directory where
-   you want to put REDCap-ETL:
+10. **Get REDCap-ETL Code**
+
+    Execute the following command in the directory where
+    you want to put REDCap-ETL:
 
         git clone https://github.com/IUREDCap/redcap-etl
 
-10. Install Composer dependencies. In the top-level directory where the code was downloaded, run:
+11. **Install Composer Dependencies**
+
+    In the top-level directory where the code was downloaded, run:
 
         composer install
 
@@ -223,10 +246,11 @@ When in the sqlite shell from executing the above sqlite3 commands, enter the fo
     .databases
     .quit
 
-__SQL Server Database Setup.__ If you want to run the SQL Server automated tests, you need to have a SQL Server database. For information on setting
-one up on Ubuntu 18, see [SQL Server](SqlServer.md).
+__SQL Server Database Setup.__ If you want to run the SQL Server automated tests, you need to have a SQL Server database.
+For information on setting one up on Ubuntu 18, see [SQL Server](SqlServer.md).
 
-__ETL Configuration File Setup.__ The next thing you need to do is to create the configuration files for the "Repeating Events" and "Visits" projects:
+__ETL Configuration File Setup.__ The next thing you need to do is to create the configuration files for the "Repeating Events"
+ and "Visits" projects:
 
 
 1. Copy the visits configuration and SQL post-processing files from the 
@@ -246,14 +270,19 @@ __ETL Configuration File Setup.__ The next thing you need to do is to create the
 
         cp tests/config-init/mysql-ssl.ini tests/config
 
-3. If you have a SQL Server database, then also
+3. If you have a PoastgreSQL database, then also
+   copy the following configuration files:
+
+        cp tests/config-init/repeating-events-postgresql.ini tests/config
+
+4. If you have a SQL Server database, then also
    copy the following configuration files:
 
         cp tests/config-init/sqlserver.ini tests/config
         cp tests/config-init/sqlserver-ssl.ini tests/config
         cp tests/config-init/repeating-events-sqlserver.ini tests/config
 
-4. Edit the __tests/config/visits.ini__ and __tests/config/visits-sqlite.ini__ files and set the 
+5. Edit the __tests/config/visits.ini__ and __tests/config/visits-sqlite.ini__ files and set the 
    following properties to appropriate values:
    
     1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
@@ -267,7 +296,7 @@ __ETL Configuration File Setup.__ The next thing you need to do is to create the
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
        property to 'false' (note: include the single quotes).
 
-5. Edit the __tests/config/repeating-events-mysql.ini__ and __tests/config/repeating-events-sqlite.ini__ files,
+6. Edit the __tests/config/repeating-events-mysql.ini__ and __tests/config/repeating-events-sqlite.ini__ files,
    and set the following properties to appropriate values:
    
     1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
@@ -281,19 +310,23 @@ __ETL Configuration File Setup.__ The next thing you need to do is to create the
        or a self-signed, SSL certificate, you will also need to set the ssl_verify
        property to 'false' (note: include the single quotes).
 
-6. If you are setting up the __mysql-ssl.ini__ file,
+7. If you are setting up the __mysql-ssl.ini__ file,
    edit it and modify the values listed in the previous step.
    In addition, set the **db_connection** property with the information
    for your database that supports SSL and has a certified SSL certificate. In addition, you need
    to create a **ca.crt** file in the __tests/config__ directory that is a valid certificate
    authority certificate file. If this file is missing, the MySQL SSL tests will be skipped.
 
-7. If you are setting up the SQL Server tests, edit and set the **sqlserver** configuration files
+8. If you are setting up the PostgreSQL tests, edit and set the **postgresql** configuration files
+   the sames as the **repeating-events** files set above, and then also set the **db_connection**
+   property to match the PostgreSQL database, login and user that you set up.
+
+8. If you are setting up the SQL Server tests, edit and set the **sqlserver** configuration files
    the sames as the **repeating-events** files set above, and then also set the **db_connection**
    property to match the SQL Server database, login and user that you set up.
 
 
-8. If you used different values than those used in the example
+9. If you used different values than those used in the example
     commands above for creating the MySQL database and user, you will need to
     modify the __db_connection__ property appropriately in file
     __tests/config/repeating-events-mysql.ini__.
