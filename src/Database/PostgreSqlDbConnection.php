@@ -26,7 +26,14 @@ class PostgreSqlDbConnection extends PdoDbConnection
 
         // Initialize error string
         $this->errorString = '';
-
+        
+        $this->db = self::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
+    }
+ 
+    public static function getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile)
+    {
+        $pdoConnection = null;
+        
         #--------------------------------------------------------------
         # Get the database connection values
         #--------------------------------------------------------------
@@ -78,12 +85,12 @@ class PostgreSqlDbConnection extends PdoDbConnection
         ];
 
         try {
-            $this->db = new \PDO($dataSourceName, $username, $password, $options);
+            $pdoConnection = new \PDO($dataSourceName, $username, $password, $options);
 
             # Set schema:
             if (!empty($schema)) {
-                $sql = 'SET search_path TO '.$this->escapeName($schema);
-                $this->db->exec($sql);
+                $sql = 'SET search_path TO '.self::escapeNameStatically($schema);
+                $pdoConnection->exec($sql);
             }
         } catch (\Exception $exception) {
             $message = 'Database connection error on host "'.$host.'"'
@@ -96,9 +103,17 @@ class PostgreSqlDbConnection extends PdoDbConnection
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
+        
+        return $pdoConnection;
     }
- 
+    
     protected function escapeName($name)
+    {
+        $name = self::escapeNameStatically($name);
+        return $name;
+    }
+    
+    protected static function escapeNameStatically($name)
     {
         $name = '"'.(str_replace('"', '', $name)).'"';
         return $name;

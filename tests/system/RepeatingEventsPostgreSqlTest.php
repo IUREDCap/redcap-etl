@@ -7,20 +7,21 @@
 namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
+use IU\REDCapETL\ConfigProperties;
+use IU\REDCapETL\Database\DbConnectionFactory;
+use IU\REDCapETL\Database\PostgreSqlDbConnection;
 
 /**
  * Runs the "repeating events" tests using MySQL as the database.
  */
-class RepeatingEventsSqliteTest extends RepeatingEventsTests
+class RepeatingEventsPostgreSqlTest extends RepeatingEventsTests
 {
     const WEIGHT_TIME_FIELD_DECLARATION = "to_char(weight_time, 'YYYY-MM-DD HH24:MI') as \"weight_time\"";
 
     const CONFIG_FILE = __DIR__.'/../config/repeating-events-postgresql.ini';
 
-    const TEST_DATA_DIR   = __DIR__.'/../data/';     # directory with test data comparison files
-
     protected static $dbh;
-    private static $logger;
+    protected static $logger;
 
     public function setUp()
     {
@@ -39,6 +40,20 @@ class RepeatingEventsSqliteTest extends RepeatingEventsTests
 
         $dbConnection = $configuration->getDbConnection();
 
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
+
+        if ($dbType !== DbConnectionFactory::DBTYPE_POSTGRESQL) {
+            throw new \Exception('Incorrect database type "'.$dbType.'" for PostgreSQL test.');
+        }
+        
+        $ssl             = $configuration->getDbSsl();
+        $sslVerify       = $configuration->getDbSslVerify();
+        $caCertFile      = $configuration->getCaCertFile();
+        $tablePrefix     = $configuration->getTablePrefix();
+        $labelViewSuffix = $configuration->getLabelViewSuffix();
+        self::$dbh = PostgreSqlDbConnection::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
+
+/*
         $dbSchema = null;
         $dbPosrt  = null;
         $dbValues = explode(":", $dbConnection);
@@ -70,7 +85,7 @@ class RepeatingEventsSqliteTest extends RepeatingEventsTests
             print "ERROR - database connection error for db {$dsn}: ".$exception->getMessage()."\n";
             exit(1);
         }
-
+*/
         self::dropTablesAndViews(self::$dbh);
 
         self::runEtl(self::$logger, self::CONFIG_FILE);

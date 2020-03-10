@@ -74,6 +74,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/MysqlSslTest.php</file>
       <file>tests/system/MysqlTest.php</file>
       <file>tests/system/RepeatingEventsMysqlTest.php</file>
+      <file>tests/system/RepeatingEventsPostgreSqlTest.php</file>
       <file>tests/system/RepeatingEventsSqliteTest.php</file>
       <file>tests/system/RepeatingEventsSqlServerTest.php</file>
       <file>tests/system/SqlServerTest.php</file>

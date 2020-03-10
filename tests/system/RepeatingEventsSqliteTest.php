@@ -15,10 +15,8 @@ class RepeatingEventsSqliteTest extends RepeatingEventsTests
 {
     const CONFIG_FILE = __DIR__.'/../config/repeating-events-sqlite.ini';
 
-    const TEST_DATA_DIR   = __DIR__.'/../data/';     # directory with test data comparison files
-
     protected static $dbh;
-    private static $logger;
+    protected static $logger;
 
     public static function setUpBeforeClass()
     {

@@ -13,15 +13,16 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class RepeatingEventsTests extends TestCase
 {
-    const CONFIG_FILE = __DIR__.'/../config/repeating-events-mysql.ini';
+    const CONFIG_FILE = '';
 
     const TEST_DATA_DIR   = __DIR__.'/../data/';     # directory with test data comparison files
     
     const WEIGHT_TIME_FIELD_DECLARATION = "weight_time";
 
     protected static $dbh;
+    protected static $logger;
 
-    public static function dropTablesAndViews($dbh)
+    public function dropTablesAndViews($dbh)
     {
         $dbh->exec("DROP TABLE IF EXISTS re_all_visits");
         $dbh->exec("DROP TABLE IF EXISTS re_baseline");
@@ -36,18 +37,35 @@ abstract class RepeatingEventsTests extends TestCase
     }
 
 
-    public static function runEtl($logger, $configFile)
+    public function runEtl($logger, $configFile)
     {
         try {
             $redCapEtl = new RedCapEtl($logger, $configFile);
             $redCapEtl->run();
         } catch (EtlException $exception) {
-            self::$logger->logException($exception);
-            self::$logger->log('Processing failed.');
+            $logger->logException($exception);
+            $logger->log('Processing failed.');
         }
     }
 
-    public function testAllVisitsTable()
+    public function testRepeatingEvents()
+    {
+        $this->dropTablesAndViews(static::$dbh);
+        $this->runEtl(static::$logger, static::CONFIG_FILE);
+        
+        $this->checkAllVisitsTable();
+        $this->checkBaselineTable();
+        $this->checkBaselineAndHomeVisitsTable();
+        $this->checkBaselineAndVisitsTable();
+        $this->checkEnrollmentTable();
+        $this->checkEnrollmentView();
+        $this->checkHomeCardioVascularVisitsTable();
+        $this->checkHomeWeightVisitsTable();
+        $this->checkVisitsTable();
+        $this->checkVisitsAndHomeVisitsTable();
+    }
+
+    public function checkAllVisitsTable()
     {
         $sql = 'SELECT '
             .' re_all_visits_id '
@@ -82,7 +100,7 @@ abstract class RepeatingEventsTests extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
-    public function testBaselineTable()
+    public function checkBaselineTable()
     {
         $sql = 'SELECT '
             .' re_baseline_id '
@@ -116,7 +134,7 @@ abstract class RepeatingEventsTests extends TestCase
     }
 
 
-    public function testBaselineAndHomeVisitsTable()
+    public function checkBaselineAndHomeVisitsTable()
     {
         $sql = 'SELECT '
             .' re_baseline_and_home_visits_id '
@@ -152,7 +170,7 @@ abstract class RepeatingEventsTests extends TestCase
     }
 
 
-    public function testBaselineAndVisitsTable()
+    public function checkBaselineAndVisitsTable()
     {
         $sql = 'SELECT '
             .' re_baseline_and_visits_id '
@@ -186,7 +204,7 @@ abstract class RepeatingEventsTests extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
-    public function testEnrollmentTable()
+    public function checkEnrollmentTable()
     {
         $sql = 'SELECT '
             .' enrollment_id, record_id, registration_date, first_name, last_name, '
@@ -205,7 +223,7 @@ abstract class RepeatingEventsTests extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
-    public function testEnrollmentView()
+    public function checkEnrollmentView()
     {
         $sql = 'SELECT '
             .' enrollment_id, record_id, registration_date, first_name, last_name, '
@@ -224,7 +242,7 @@ abstract class RepeatingEventsTests extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
-    public function testHomeCardioVascularVisitsTable()
+    public function checkHomeCardioVascularVisitsTable()
     {
         $sql = 'SELECT '
             .' re_home_cardiovascular_visits_id '
@@ -256,7 +274,7 @@ abstract class RepeatingEventsTests extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
-    public function testHomeWeightVisitsTable()
+    public function checkHomeWeightVisitsTable()
     {
         $sql = 'SELECT '
             .' re_home_weight_visits_id '
@@ -281,7 +299,7 @@ abstract class RepeatingEventsTests extends TestCase
         $this->assertEquals($expectedData, $actualData);
     }
 
-    public function testVisitsTable()
+    public function checkVisitsTable()
     {
         $sql = 'SELECT '
             .' re_visits_id '
@@ -316,7 +334,7 @@ abstract class RepeatingEventsTests extends TestCase
     }
 
 
-    public function testVisitsAndHomeVisitsTable()
+    public function checkVisitsAndHomeVisitsTable()
     {
         $sql = 'SELECT '
             .' re_visits_and_home_visits_id '
