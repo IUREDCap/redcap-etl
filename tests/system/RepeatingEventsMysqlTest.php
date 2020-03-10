@@ -34,9 +34,5 @@ class RepeatingEventsMysqlTest extends RepeatingEventsTests
         } catch (Exception $exception) {
             print "ERROR - database connection error: ".$exception->getMessage()."\n";
         }
-
-        self::dropTablesAndViews(self::$dbh);
-
-        self::runEtl(self::$logger, self::CONFIG_FILE);
     }
 }

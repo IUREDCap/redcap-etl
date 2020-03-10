@@ -34,60 +34,23 @@ class RepeatingEventsPostgreSqlTest extends RepeatingEventsTests
     
     public static function setUpBeforeClass()
     {
-        self::$logger = new Logger('repeating_events_postgresql_system_test');
+        if (extension_loaded('pdo_pgsql')) {
+            self::$logger = new Logger('repeating_events_postgresql_system_test');
 
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
-        $dbConnection = $configuration->getDbConnection();
+            $dbConnection = $configuration->getDbConnection();
 
-        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
+            list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
-        if ($dbType !== DbConnectionFactory::DBTYPE_POSTGRESQL) {
-            throw new \Exception('Incorrect database type "'.$dbType.'" for PostgreSQL test.');
-        }
-        
-        $ssl             = $configuration->getDbSsl();
-        $sslVerify       = $configuration->getDbSslVerify();
-        $caCertFile      = $configuration->getCaCertFile();
-        $tablePrefix     = $configuration->getTablePrefix();
-        $labelViewSuffix = $configuration->getLabelViewSuffix();
-        self::$dbh = PostgreSqlDbConnection::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
-
-/*
-        $dbSchema = null;
-        $dbPosrt  = null;
-        $dbValues = explode(":", $dbConnection);
-
-        if (count($dbValues) == 5) {
-            list($dbType, $dbHost, $dbUser, $dbPassword, $dbName) = $dbValues;
-        } elseif (count($dbValues) == 6) {
-            list($dbType, $dbHost, $dbUser, $dbPassword, $dbName, $dbSchema) = $dbValues;
-        } elseif (count($dbValues) == 7) {
-            list($dbType, $dbHost, $dbUser, $dbPassword, $dbName, $dbSchema, $dbPort) = $dbValues;
-        }
-
-        print "DB SCHEMA: {$dbSchema}\n";
-
-        $dsn = "pgsql:host={$dbHost};user={$dbUser};password={$dbPassword};dbname={$dbName}";
-        if (!empty($dbPort)) {
-            $dsn .= ";port={$dbPort}";
-        }
-
-        try {
-            self::$dbh = new \PDO($dsn, null, null);
-            self::$dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            if (!empty($dbSchema)) {
-                $dbSchema = '"'.(str_replace('"', '', $dbSchema)).'"';
-                $sql = 'SET search_path TO '.$dbSchema;
-                self::$dbh->exec($sql);
+            if ($dbType !== DbConnectionFactory::DBTYPE_POSTGRESQL) {
+                throw new \Exception('Incorrect database type "'.$dbType.'" for PostgreSQL test.');
             }
-        } catch (\Exception $exception) {
-            print "ERROR - database connection error for db {$dsn}: ".$exception->getMessage()."\n";
-            exit(1);
+        
+            $ssl             = $configuration->getDbSsl();
+            $sslVerify       = $configuration->getDbSslVerify();
+            $caCertFile      = $configuration->getCaCertFile();
+            self::$dbh = PostgreSqlDbConnection::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
         }
-*/
-        self::dropTablesAndViews(self::$dbh);
-
-        self::runEtl(self::$logger, self::CONFIG_FILE);
     }
 }

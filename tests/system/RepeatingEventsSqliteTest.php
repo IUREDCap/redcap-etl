@@ -7,6 +7,9 @@
 namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
+use IU\REDCapETL\ConfigProperties;
+use IU\REDCapETL\Database\DbConnectionFactory;
+use IU\REDCapETL\Database\SqliteDbConnection;
 
 /**
  * Runs the "repeating events" tests using MySQL as the database.
@@ -25,20 +28,12 @@ class RepeatingEventsSqliteTest extends RepeatingEventsTests
         $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
         $dbConnection = $configuration->getDbConnection();
-        list($type, $db) = explode(':', $dbConnection, 2);
+        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
-        $dsn = 'sqlite:'.realpath($db);
-
-        try {
-            self::$dbh = new \PDO($dsn, null, null);
-            self::$dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch (\Exception $exception) {
-            print "ERROR - database connection error for db {$dsn}: ".$exception->getMessage()."\n";
-            exit(1);
+        if ($dbType !== DbConnectionFactory::DBTYPE_SQLITE) {
+            throw new \Exception('Incorrect database type "'.$dbType.'" SQLite test.');
         }
 
-        self::dropTablesAndViews(self::$dbh);
-
-        self::runEtl(self::$logger, self::CONFIG_FILE);
+        self::$dbh = SqliteDbConnection::getPdoConnection($dbString);
     }
 }

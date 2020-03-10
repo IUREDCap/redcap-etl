@@ -25,7 +25,11 @@ class SqlServerDbConnection extends PdoDbConnection
 
         // Initialize error string
         $this->errorString = '';
+        $this->db = self::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
+    }
 
+    public static function getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile)
+    {
         #--------------------------------------------------------------
         # Get the database connection values
         #--------------------------------------------------------------
@@ -77,12 +81,14 @@ class SqlServerDbConnection extends PdoDbConnection
         ];
 
         try {
-            $this->db = new \PDO($dataSourceName, $username, $password, $options);
+            $pdoConnection = new \PDO($dataSourceName, $username, $password, $options);
         } catch (\Exception $exception) {
             $message = 'Database connection error for database "'.$database.'": '.$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
+
+        return $pdoConnection;
     }
  
 

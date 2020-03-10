@@ -7,6 +7,9 @@
 namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
+use IU\REDCapETL\ConfigProperties;
+use IU\REDCapETL\Database\DbConnectionFactory;
+use IU\REDCapETL\Database\SqlServerDbConnection;
 
 /**
  * Runs the "repeating events" tests using SQL Server as the database.
@@ -36,21 +39,17 @@ class RepeatingEventsSqlServerTest extends RepeatingEventsTests
 
         if (extension_loaded('pdo_sqlsrv')) {
             $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
-            $dbString = $configuration->getDbConnection();
-            list($dbType, $dbHost, $dbUser, $dbPassword, $dbName) = explode(":", $dbString);
-            $driver = 'sqlsrv';
 
-            $dsn = "$driver:server=$dbHost ; Database=$dbName";
-
-            try {
-                self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
-            } catch (Exception $exception) {
-                print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            $dbConnection = $configuration->getDbConnection();
+            list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
+            if ($dbType !== DbConnectionFactory::DBTYPE_SQLSERVER) {
+                throw new \Exception('Incorrect database type "'.$dbType.'" for SQL Server test.');
             }
 
-            self::dropTablesAndViews(self::$dbh);
-
-            self::runEtl(self::$logger, self::CONFIG_FILE);
+            $ssl             = $configuration->getDbSsl();
+            $sslVerify       = $configuration->getDbSslVerify();
+            $caCertFile      = $configuration->getCaCertFile();
+            self::$dbh = SqlServerDbConnection::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
         }
     }
 }

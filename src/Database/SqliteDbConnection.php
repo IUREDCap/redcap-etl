@@ -26,6 +26,11 @@ class SqliteDbConnection extends PdoDbConnection
         // Initialize error string
         $this->errorString = '';
 
+        $this->db = self::getPdoConnection($dbString);
+    }
+
+    public static function getPdoConnection($dbString)
+    {
         #--------------------------------------------------------------
         # Get the database connection values
         #--------------------------------------------------------------
@@ -40,11 +45,12 @@ class SqliteDbConnection extends PdoDbConnection
         ];
 
         try {
-            $this->db = new \PDO($dataSourceName, null, null, $options);
+            $pdoConnection = new \PDO($dataSourceName, null, null, $options);
         } catch (\Exception $exception) {
             $message = 'Database connection error for Sqlite database "'.$dataSourceName.'": '.$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
+        return $pdoConnection;
     }
 }
