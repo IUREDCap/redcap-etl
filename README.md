@@ -32,7 +32,7 @@ there are still cases where you might want to use the REDCap-ETL application:
     the REDCap-ETL application)
 
 
-###Documentation:
+### Documentation:
 
 * [Installation Guide](docs/InstallationGuide.md)
 * [Configuration Guide](docs/ConfigurationGuide.md)
