@@ -78,6 +78,33 @@ class PostgreSqlTest extends TestCase
     public function testConnectionWithInvalidArguments()
     {
         $dbString   = 'localhost:non_existent_usert:invalid_password:db:schema:1234';
+        $ssl        = true;
+        $sslVerify  = true;
+        $caCertFile = './data/not-an-actual-file.txt';
+
+        $exceptionCaught = false;
+
+        $postgreSqlDbConnection = null;
+
+        try {
+            $postgreSqlDbConnection = PostgreSqlDbConnection::getPdoConnection(
+                $dbString,
+                $ssl,
+                $sslVerify,
+                $caCertFile
+            );
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+            $exceptionCode = $exception->getCode();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Invalid arguments check');
+        $this->assertEquals(EtlException::DATABASE_ERROR, $exceptionCode);
+    }
+    
+    public function testConnectionWithInvalidArguments2()
+    {
+        $dbString   = 'localhost:non_existent_usert:invalid_password:db';
         $ssl        = false;
         $sslVerify  = false;
         $caCertFile = null;
