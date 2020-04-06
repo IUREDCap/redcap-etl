@@ -119,7 +119,7 @@ class Configuration
     private $emailToList;
 
     /**
-     * Creates a Configuration object from either an array or properties
+     * Creates a Configuration object from either an array of properties
      * or a configuration file, * and updates the logger based on the
      * configuration information found.
      *
@@ -668,8 +668,6 @@ class Configuration
         if (array_key_exists(ConfigProperties::DATA_EXPORT_FILTER, $this->properties)) {
             $this->dataExportFilter = trim($this->properties[ConfigProperties::DATA_EXPORT_FILTER]);
         }
-
-        return true;
     }
 
 

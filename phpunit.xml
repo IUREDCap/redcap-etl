@@ -22,6 +22,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/unit/RulesParserTest.php</file>
       <file>tests/unit/RulesSemanticAnalyzerTest.php</file>
       <file>tests/unit/SchemaGeneratorTest.php</file>
+      <file>tests/unit/WorkflowTest.php</file>
 
       <file>tests/unit/Database/DbConnectionFactoryTest.php</file>
       <file>tests/unit/Database/DbConnectionTest.php</file>

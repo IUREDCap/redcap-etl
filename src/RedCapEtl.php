@@ -568,6 +568,21 @@ class RedCapEtl
     }
 
 
+    /** WORK IN PROGRESS
+     *
+     * Need to split of drop and create for workflows
+     */
+    public function dropLoadTables()
+    {
+        $tables = $this->schema->getTables();
+        foreach ($tables as $table) {
+            if ($table->usesLookup === true) {
+                $ifExists = true;
+                $this->dbcon->dropLabelView($table, $ifExists);
+            }
+        }
+    }
+
     /**
      * Creates the database tables where the data will be loaded, and
      * creates views for the tables that have multiple choice

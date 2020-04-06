@@ -49,7 +49,7 @@ abstract class DbConnection
      * @param boolean $ifExists if true, the table will only be dropped if it
      *     already exists
      */
-    abstract protected function dropTable($table, $ifExists = false);
+    abstract public function dropTable($table, $ifExists = false);
 
     /**
      * Creates the specified table.
