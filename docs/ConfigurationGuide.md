@@ -34,7 +34,7 @@ Transformation Rules
 The transformation rules specify how the records in REDCap should be transformed into records in your database. 
 
 You need to set the **transform_rules_source** property to one of the numbers (1, 2, or 3), which are
-decribed below:
+described below:
 
 1. __text__ - rules are entered directly in the configuration file.
     This option is only available for JSON (.json) configuration files,
