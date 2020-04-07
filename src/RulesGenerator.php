@@ -259,7 +259,10 @@ class RulesGenerator
         #-----------------------------------------
         # Generate the rule
         #-----------------------------------------
-        if ($fieldType === 'descriptive') {
+        if ($fieldName === $this->recordId) {
+            # REDCap record ID field
+            ; // Don't do anything; this field will be generated automatically
+        } elseif ($fieldType === 'descriptive') {
             ; // Don't do anything
         } elseif ($fieldType === 'file' && !($this->addFileFields)) {
             ; // Don't do anything

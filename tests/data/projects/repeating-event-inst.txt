@@ -1,7 +1,6 @@
 TABLE,root,root_id,ROOT
 
 TABLE,demographics,root,EVENTS
-FIELD,record_id,string
 FIELD,first_name,string
 FIELD,last_name,string
 FIELD,address,string
