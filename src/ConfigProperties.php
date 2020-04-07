@@ -77,6 +77,9 @@ class ConfigProperties
     const TRANSFORM_RULES_FILE   = 'transform_rules_file';
     const TRANSFORM_RULES_SOURCE = 'transform_rules_source';
     const TRANSFORM_RULES_TEXT   = 'transform_rules_text';
+
+    const AUTO_GENERATE_COMPLETE_FIELDS = 'auto_generate_complete_fields';
+    const AUTO_GENERATE_DAG_FIELDS      = 'auto_generate_dag_fields';
     
 
     /**

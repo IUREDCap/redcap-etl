@@ -28,6 +28,7 @@ class RulesGenerator
     private $eventMappings;
 
     private $addFormCompleteField;
+    private $addDagField;
 
     /**
      * Generates transformation rules for the
@@ -39,11 +40,15 @@ class RulesGenerator
      * @param boolean $addFormCompleteField indicates if the form complete field
      *     should be added to the rules for each table.
      *
+     * @param boolean $addDagField indicates if the DAG (Data Access Group) field
+     *     should be added to the rules for each table.
+     *
      * @return string the auto-generated transformation rules.
      */
-    public function generate($dataProject, $addFormCompleteField = false)
+    public function generate($dataProject, $addFormCompleteField = false, $addDagField = false)
     {
         $this->addFormCompleteField = $addFormCompleteField;
+        $this->addDagField = $addDagField;
 
         $rules = '';
 
@@ -165,6 +170,15 @@ class RulesGenerator
     protected function generateFields($formName)
     {
         $fields = '';
+
+        if ($this->addDagField) {
+            $field['field_name'] = RedCapEtl::COLUMN_DAG;
+            $field['field_type'] = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+            $field['text_validation_type_or_show_slider_number'] = '';
+            $rule = $this->getFieldRule($field);
+            $fields .= $rule;
+        }
+
         foreach ($this->metadata as $field) {
             if ($field['form_name'] == $formName) {
                 $rule = $this->getFieldRule($field);
@@ -203,6 +217,8 @@ class RulesGenerator
 
         if ($fieldType === 'checkbox') {
             $type = FieldType::CHECKBOX;
+        } elseif ($fieldType === 'file') {
+            $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
         } elseif ($validationType === 'integer') {
             # The number be too large for the database int type,
             # so use a varchar here
@@ -222,7 +238,7 @@ class RulesGenerator
             $type = FieldType::DATETIME;
         }
                
-        if ($fieldType === 'descriptive' || $fieldType === 'file') {
+        if ($fieldType === 'descriptive') {
             ; // Don't do anything
         } else {
             $rule .= "FIELD,".$field['field_name'].",".$type."\n";
