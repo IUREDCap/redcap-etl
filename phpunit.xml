@@ -57,6 +57,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/BasicDemographyJsonTest.php</file>
       <file>tests/integration/RedCapEtlTest.php</file>
       <file>tests/integration/RepeatingEventsTest.php</file>
+      <file>tests/integration/RulesGenerationTest.php</file>
       <file>tests/integration/SchemaGeneratorGenerateSchemaTest.php</file>
     </testsuite>
 

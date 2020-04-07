@@ -24,9 +24,10 @@ repository ([REDCap Repo](https://redcap.vanderbilt.edu/consortium/modules/index
 and you should be able to find and install it from within REDCap.
 
 Even though the REDCap-ETL external module is substantially easier to set up and use,
-there are still cases where you might want to use the REDCap-ETL application:
+there are still several cases where you might want to use the REDCap-ETL application:
 
 * It's not possible or practical to get the REDCap-ETL external module installed on your system
+* You want to incorporate REDCap-ETL into an existing program or script
 * You want to reduce the load on your REDCap server as much as possible
 * You want to use the CSV or SQLite database types (these are currently only supported in
     the REDCap-ETL application)

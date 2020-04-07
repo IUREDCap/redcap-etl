@@ -250,11 +250,15 @@ class RedCapEtl
     /**
      * Automatically generates the data transformation rules.
      *
-     * @param boolean $addFormCompleteField indicates if a form complete field should be added to each table.
+     * @param boolean $addFormCompleteFields indicates if a form complete field should be added to each table.
      *
-     * @param boolean $addDagField indicates if a DAG (Data Access Group) field should be added to each table.
+     * @param boolean $addDagFields indicates if a DAG (Data Access Group) field should be added to each table.
+     *
+     * @param boolean $addFileFields indicates if file fields should be added.
+     *
+     * @return string the rules text
      */
-    public function autoGenerateRules($addFormCompleteField = false, $addDagField = false)
+    public function autoGenerateRules($addFormCompleteFields = false, $addDagFields = false, $addFileFields = false)
     {
         if (!isset($this->dataProject)) {
             $message = 'No data project was found.';
@@ -262,7 +266,12 @@ class RedCapEtl
         }
 
         $rulesGenerator = new RulesGenerator();
-        $rulesText = $rulesGenerator->generate($this->dataProject, $addFormCompleteField, $addDagField);
+        $rulesText = $rulesGenerator->generate(
+            $this->dataProject,
+            $addFormCompleteFields,
+            $addDagFields,
+            $addFileFields
+        );
         return $rulesText;
     }
 
