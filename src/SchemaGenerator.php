@@ -101,6 +101,8 @@ class SchemaGenerator
         foreach ($unmappedRedCapFields as $fieldName => $val) {
             if (preg_match('/'.self::FORM_COMPLETE_SUFFIX.'$/', $fieldName)) {
                 unset($unmappedRedCapFields[$fieldName]);
+            } elseif ($fieldName === $recordIdFieldName) {
+                unset($unmappedRedCapFields[$fieldName]);
             }
         }
 
