@@ -186,6 +186,13 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
             foreach ($fields as $field) {
                 $this->fieldNames[$field['export_field_name']] = 1;
             }
+
+            $metadata = $this->getMetadata();
+            foreach ($metadata as $field) {
+                if ($field['field_type'] === 'file') {
+                    $this->fieldNames[$field['field_name']] = 1;
+                }
+            };
         }
 
         return $this->fieldNames;

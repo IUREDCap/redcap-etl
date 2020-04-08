@@ -27,7 +27,9 @@ class RulesGenerator
     private $projectXmlDom;
     private $eventMappings;
 
-    private $addFormCompleteField;
+    private $addFormCompleteFields;
+    private $addDagFields;
+    private $addFileFields;
 
     /**
      * Generates transformation rules for the
@@ -36,14 +38,26 @@ class RulesGenerator
      * @param EtlRedCapProject $dataProject the REDCap project that
      *     contains the data for which rules are being generated.
      *
-     * @param boolean $addFormCompleteField indicates if the form complete field
+     * @param boolean $addFormCompleteFields indicates if form complete fields
+     *     should be added to the rules for each table.
+     *
+     * @param boolean $addDagFields indicates if DAG (Data Access Group) fields
+     *     should be added to the rules for each table.
+     *
+     * @param boolean $addFileFields indicates if file fields
      *     should be added to the rules for each table.
      *
      * @return string the auto-generated transformation rules.
      */
-    public function generate($dataProject, $addFormCompleteField = false)
-    {
-        $this->addFormCompleteField = $addFormCompleteField;
+    public function generate(
+        $dataProject,
+        $addFormCompleteFields = false,
+        $addDagFields = false,
+        $addFileFields = false
+    ) {
+        $this->addFormCompleteFields = $addFormCompleteFields;
+        $this->addDagFields          = $addDagFields;
+        $this->addFileFields         = $addFileFields;
 
         $rules = '';
 
@@ -165,6 +179,15 @@ class RulesGenerator
     protected function generateFields($formName)
     {
         $fields = '';
+
+        if ($this->addDagFields) {
+            $field['field_name'] = RedCapEtl::COLUMN_DAG;
+            $field['field_type'] = 'text';
+            $field['text_validation_type_or_show_slider_number'] = '';
+            $rule = $this->getFieldRule($field);
+            $fields .= $rule;
+        }
+
         foreach ($this->metadata as $field) {
             if ($field['form_name'] == $formName) {
                 $rule = $this->getFieldRule($field);
@@ -174,7 +197,7 @@ class RulesGenerator
             }
         }
 
-        if ($this->addFormCompleteField) {
+        if ($this->addFormCompleteFields) {
             $field['field_name'] = $formName . self::FORM_COMPLETE_SUFFIX;
             $field['field_type'] = 'dropdown';
             $field['text_validation_type_or_show_slider_number'] = '';
@@ -199,10 +222,19 @@ class RulesGenerator
         $type = FieldType::STRING;
                 
         $validationType = $field['text_validation_type_or_show_slider_number'];
+        $fieldName      = $field['field_name'];
         $fieldType      = $field['field_type'];
 
-        if ($fieldType === 'checkbox') {
+        #----------------------------------------------
+        # Set the rule type
+        #----------------------------------------------
+        if ($fieldName === RedCapEtl::COLUMN_DAG) {
+            # DAG (Data Access Group) column
+            $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+        } elseif ($fieldType === 'checkbox') {
             $type = FieldType::CHECKBOX;
+        } elseif ($fieldType === 'file') {
+            $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
         } elseif ($validationType === 'integer') {
             # The number be too large for the database int type,
             # so use a varchar here
@@ -220,12 +252,22 @@ class RulesGenerator
         } elseif (substr($validationType, 0, 9) === 'datetime_') {
             # starts with 'datetime_'
             $type = FieldType::DATETIME;
+        } else {
+            $type = FieldType::STRING;
         }
-               
-        if ($fieldType === 'descriptive' || $fieldType === 'file') {
+
+        #-----------------------------------------
+        # Generate the rule
+        #-----------------------------------------
+        if ($fieldName === $this->recordId) {
+            # REDCap record ID field
+            ; // Don't do anything; this field will be generated automatically
+        } elseif ($fieldType === 'descriptive') {
+            ; // Don't do anything
+        } elseif ($fieldType === 'file' && !($this->addFileFields)) {
             ; // Don't do anything
         } else {
-            $rule .= "FIELD,".$field['field_name'].",".$type."\n";
+            $rule .= "FIELD,".$fieldName.",".$type."\n";
         }
         
         return $rule;

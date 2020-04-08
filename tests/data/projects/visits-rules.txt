@@ -1,7 +1,6 @@
 TABLE,root,root_id,ROOT
 
 TABLE,demography,root,EVENTS
-FIELD,record_id,string
 FIELD,name,string
 FIELD,fruit,varchar(255)
 FIELD,height,float

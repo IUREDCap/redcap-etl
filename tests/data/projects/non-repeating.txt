@@ -1,7 +1,6 @@
 TABLE,demographics_root,demographics_root_id,ROOT
 
 TABLE,demographics,demographics_root,REPEATING_INSTRUMENTS
-FIELD,record_id,string
 FIELD,first_name,string
 FIELD,last_name,string
 FIELD,address,string

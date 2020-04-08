@@ -1,7 +1,6 @@
 TABLE,root,root_id,ROOT
 
 TABLE,enrollment,root,EVENTS
-FIELD,record_id,string
 FIELD,registration_date,date
 FIELD,first_name,string
 FIELD,last_name,string
