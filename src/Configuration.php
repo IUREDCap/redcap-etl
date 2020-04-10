@@ -135,6 +135,34 @@ class Configuration
         $this->app = $this->logger->getApp();
         $this->propertiesFile = null;
 
+        #---------------------------------------------------------
+        # Set default values
+        #---------------------------------------------------------
+        $this->dbSsl           = self::DEFAULT_DB_SSL;
+
+        $this->printLogging    = self::DEFAULT_PRINT_LOGGING;
+        $this->logFile         = null;
+
+        $this->dbLogging       = self::DEFAULT_DB_LOGGING;
+        $this->dbLogTable      = self::DEFAULT_DB_LOG_TABLE;
+        $this->dbEventLogTable = self::DEFAULT_DB_EVENT_LOG_TABLE;
+
+        $this->emailErrors      = self::DEFAULT_EMAIL_ERRORS;
+        $this->emailSummary     = self::DEFAULT_EMAIL_SUMMARY;
+        $this->emailFromAddress = null;
+        $this->emailToList      = null;
+        $this->emailSubject     = self::DEFAULT_EMAIL_SUBJECT;
+
+        $this->cronJob          = ''; # By default, make this blank
+
+        $this->sslVerify        = true;
+
+        $this->extractedRecordCountCheck = true;
+
+
+        #---------------------------------------------
+        # Process properties argument
+        #---------------------------------------------
         if (empty($properties)) {
             # No properties specified
             $message = 'No properties or properties file was specified.';
@@ -196,10 +224,10 @@ class Configuration
             }
         }
 
+
         #-------------------------------------------
         # Print logging
         #-------------------------------------------
-        $this->printLogging = self::DEFAULT_PRINT_LOGGING;
         if (array_key_exists(ConfigProperties::PRINT_LOGGING, $this->properties)) {
             $printLogging = $this->properties[ConfigProperties::PRINT_LOGGING];
             if ($printLogging === true || strcasecmp($printLogging, 'true') === 0 || $printLogging === '1') {
@@ -214,7 +242,6 @@ class Configuration
         # Get the log file and set it in the logger, so that messages
         # will start to log to the file
         #-----------------------------------------------------------------------------
-        $this->logFile = null;
         if (array_key_exists(ConfigProperties::LOG_FILE, $this->properties)) {
             $this->logFile = $this->properties[ConfigProperties::LOG_FILE];
         }
@@ -227,7 +254,6 @@ class Configuration
         #-------------------------------------------------------------------
         # Database logging
         #-------------------------------------------------------------------
-        $this->dbLogging = self::DEFAULT_DB_LOGGING;
         if (array_key_exists(ConfigProperties::DB_LOGGING, $this->properties)) {
             $dbLogging = $this->properties[ConfigProperties::DB_LOGGING];
             if ($dbLogging === true || strcasecmp($dbLogging, 'true') === 0 || $dbLogging === '1') {
@@ -237,7 +263,6 @@ class Configuration
             }
         }
         
-        $this->dbLogTable = self::DEFAULT_DB_LOG_TABLE;
         if (array_key_exists(ConfigProperties::DB_LOG_TABLE, $this->properties)) {
             $dbLogTable = trim($this->properties[ConfigProperties::DB_LOG_TABLE]);
             if (!empty($dbLogTable)) {
@@ -245,7 +270,6 @@ class Configuration
             }
         }
 
-        $this->dbEventLogTable = self::DEFAULT_DB_EVENT_LOG_TABLE;
         if (array_key_exists(ConfigProperties::DB_EVENT_LOG_TABLE, $this->properties)) {
             $dbEventLogTable = trim($this->properties[ConfigProperties::DB_EVENT_LOG_TABLE]);
             if (!empty($dbEventLogTable)) {
@@ -256,7 +280,6 @@ class Configuration
         #-----------------------------------------------------------
         # Email logging
         #-----------------------------------------------------------
-        $this->emailErrors = self::DEFAULT_EMAIL_ERRORS;
         if (array_key_exists(ConfigProperties::EMAIL_ERRORS, $this->properties)) {
             $emailErrors = $this->properties[ConfigProperties::EMAIL_ERRORS];
             if ($emailErrors === true || strcasecmp($emailErrors, 'true') === 0 || $emailErrors === '1') {
@@ -268,7 +291,6 @@ class Configuration
         $this->logger->setEmailErrors($this->emailErrors);
 
         # E-mail summary notification
-        $this->emailSummary = self::DEFAULT_EMAIL_SUMMARY;
         if (array_key_exists(ConfigProperties::EMAIL_SUMMARY, $this->properties)) {
             $send = $this->properties[ConfigProperties::EMAIL_SUMMARY];
             if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
@@ -278,19 +300,16 @@ class Configuration
         $this->logger->setEmailSummary($this->emailSummary);
         
         # E-mail from address
-        $this->emailFromAddress = null;
         if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $this->properties)) {
             $this->emailFromAddress = trim($this->properties[ConfigProperties::EMAIL_FROM_ADDRESS]);
         }
 
         # E-mail to list
-        $this->emailToList = null;
         if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
             $this->emailToList = trim($this->properties[ConfigProperties::EMAIL_TO_LIST]);
         }
         
         # E-mail subject
-        $this->emailSubject = self::DEFAULT_EMAIL_SUBJECT;
         if (array_key_exists(ConfigProperties::EMAIL_SUBJECT, $this->properties)) {
             $this->emailSubject = $this->properties[ConfigProperties::EMAIL_SUBJECT];
         }
@@ -341,7 +360,6 @@ class Configuration
             $this->configName = $this->properties[ConfigProperties::CONFIG_NAME];
         }
         
-        $this->cronJob = ''; # By default, make this blank
         if (array_key_exists(ConfigProperties::CRON_JOB, $this->properties)) {
             $cronJob = $this->properties[ConfigProperties::CRON_JOB];
             
@@ -373,8 +391,6 @@ class Configuration
                     .' property; a true or false value should be specified.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
-        } else {
-            $this->sslVerify = true;
         }
 
 
@@ -399,8 +415,6 @@ class Configuration
                     .' property; a true or false value should be specified.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
-        } else {
-            $this->extractedRecordCountCheck = true;
         }
 
         #---------------------------------------------------------
@@ -635,7 +649,6 @@ class Configuration
         #-----------------------------------------
         # Process the database SSL flag
         #-----------------------------------------
-        $this->dbSsl = self::DEFAULT_DB_SSL;
         if (array_key_exists(ConfigProperties::DB_SSL, $this->properties)) {
             $ssl = $this->properties[ConfigProperties::DB_SSL];
             if ($ssl === false|| strcasecmp($ssl, 'false') === 0 || $ssl === '0') {

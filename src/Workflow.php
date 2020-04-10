@@ -80,6 +80,7 @@ class Workflow
         $processSections = true;
         $config = parse_ini_file($configurationFile, $processSections);
 
+        /*
         $isWorkflow = $this->isWorkflow($config);
 
         if ($isWorkflow) {
@@ -91,6 +92,22 @@ class Workflow
             $configuration = new Configuration($this->logger, $configurationFile);
             array_push($this->configurations, $configuration);
         }
+         */
+
+        # Parse file into properties and sections
+        $properties = array();
+        $sections = array();
+        foreach ($config as $key => $value) {
+            if (is_array($value)) {
+                $sections[$key] = $value;
+            } else {
+                $properties[$key] = $value;
+            }
+        }
+        #print "SECTIONS:\n";
+        #print_r($sections);
+        #print "\n\nPROPERTIES:\n";
+        #print_r($properties);
     }
 
 
