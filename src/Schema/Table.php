@@ -284,15 +284,23 @@ class Table
         }
 
         $dataFound = false;
-
+        
+        $allFields = $this->getFields();
+        $fieldNames = array_column($allFields, 'name');
+        
         // Foreach field
-        foreach ($this->getFields() as $field) {
+        foreach ($allFields as $field) {
             if (isset($this->recordIdFieldName) && $field->name === $this->recordIdFieldName) {
                 $row->data[$field->dbName] = $data[$field->name];
-                # If the record ID is the ONLY field in the table,
-                # (and it has been found if you get to here)
-                # consider the data to be found
-                if (count($this->getFields()) === 1) {
+
+                if (count($allFields) === 1) {
+                    # If the record ID is the ONLY field in the table, (and it has been found if you get to here)
+                    # consider the data to be found
+                    $dataFound = true;
+                } elseif (count($allFields) === 2 && in_array(RedCapEtl::COLUMN_DAG, $fieldNames)) {
+                    # If the record ID and DAG (Data Access Group) are the only records in the table,
+                    # consider the data to be found (e.g., this is a root table of auto-generation where the DAG
+                    # fields option was selected)
                     $dataFound = true;
                 }
             } elseif ($field->name === RedCapEtl::COLUMN_EVENT) {
@@ -312,6 +320,13 @@ class Table
             } elseif ($field->name === RedCapEtl::COLUMN_SURVEY_IDENTIFIER) {
                 # Just copy the field and don't count it as a "data found" field
                 $row->data[$field->dbName] = $data[$field->name];
+            } elseif ($field->name === RedCapEtl::COLUMN_DAG) {
+                # Just copy the field, if it exists, and don't count it as a "data found" field
+                if (array_key_exists($field->name, $data)) {
+                    $row->data[$field->dbName] = $data[$field->name];
+                } else {
+                    $row->data[$field->dbName] = '';
+                }
             } else {
                 // Otherwise, get data
                 

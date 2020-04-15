@@ -112,13 +112,17 @@ class RulesGenerator
         $repeatingForms = $this->getRepeatingInstruments();
         
         if (in_array($rootForm, $repeatingForms)) {
-            // special case...
-            // Need a way to generate a record_id only table
+            #--------------------------------------------------------
+            # Generate record_id only table (with DAG if applicable)
+            # Note: record_id added automatically
+            #--------------------------------------------------------
             $rootTable = $rootForm . '_root';
             $primaryKey = strtolower($rootTable) . '_id';
             $rules .= "TABLE,{$rootTable},{$primaryKey},".RulesParser::ROOT."\n";
-            #$rules .= "FIELD,{$this->recordId},varchar(255)\n";
-            #$rules .= "FIELD,first_name,string\n";
+            if ($this->addDagFields) {
+                $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+                $rules .= "FIELD,".RedCapEtl::COLUMN_DAG.",{$type}\n";
+            }
             $rules .= "\n";
         } else {
             $rootTable = $rootForm;
@@ -143,10 +147,16 @@ class RulesGenerator
     {
         $rules = '';
         
+        #-------------------------------------------------------------
         # Create table with only record ID - it's possible that the
         # same record ID is in multiple arms
+        #-------------------------------------------------------------
         $rootTable = 'root';
         $rules .= 'TABLE,'.$rootTable.',root_id,'.RulesParser::ROOT."\n";
+        if ($this->addDagFields) {
+            $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+            $rules .= "FIELD,".RedCapEtl::COLUMN_DAG.",{$type}\n";
+        }
         $rules .= "\n";
 
         foreach ($this->instruments as $formName => $formLabel) {
