@@ -118,7 +118,7 @@ class SchemaGenerator
         $schema = new Schema();
 
         // Log how many fields in REDCap could be parsed
-        $message = "Found ".count($unmappedRedCapFields)." fields in REDCap.";
+        $message = "Found ".count($unmappedRedCapFields)." user-defined fields in REDCap.";
         $this->logger->log($message);
         $info .= $message."\n";
 
@@ -317,7 +317,7 @@ class SchemaGenerator
         }
 
         // Log how many fields in REDCap could be parsed
-        $message = "Found ".count($unmappedRedCapFields)." unmapped fields in REDCap.";
+        $message = "Found ".count($unmappedRedCapFields)." unmapped user-defined fields in REDCap.";
         $this->logger->log($message);
 
         // Set warning if count of remaining redcap fields is above zero
