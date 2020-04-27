@@ -5,6 +5,7 @@ IU\REDCapETL\Schema\Schema Object
             [0] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Demography
+                    [namePrefix] => 
                     [parent] => record_id
                     [primary] => IU\REDCapETL\Schema\Field Object
                         (
@@ -22,6 +23,7 @@ IU\REDCapETL\Schema\Schema Object
                             [0] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => VisitInfo
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -124,6 +126,7 @@ IU\REDCapETL\Schema\Schema Object
                             [1] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => VisitResults
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -151,6 +154,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [0] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Labs
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -311,6 +315,7 @@ IU\REDCapETL\Schema\Schema Object
                             [2] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Contact
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -436,6 +441,7 @@ IU\REDCapETL\Schema\Schema Object
                             [3] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Recipients
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -463,6 +469,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [0] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Sent
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -628,6 +635,7 @@ IU\REDCapETL\Schema\Schema Object
                             [4] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Followup
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -847,6 +855,7 @@ IU\REDCapETL\Schema\Schema Object
             [1] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => BMI
+                    [namePrefix] => 
                     [parent] => record_id
                     [primary] => IU\REDCapETL\Schema\Field Object
                         (
@@ -918,9 +927,11 @@ IU\REDCapETL\Schema\Schema Object
             [2] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => VisitInfo
+                    [namePrefix] => 
                     [parent] => IU\REDCapETL\Schema\Table Object
                         (
                             [name] => Demography
+                            [namePrefix] => 
                             [parent] => record_id
                             [primary] => IU\REDCapETL\Schema\Field Object
                                 (
@@ -940,6 +951,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [1] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => VisitResults
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -967,6 +979,7 @@ IU\REDCapETL\Schema\Schema Object
                                                     [0] => IU\REDCapETL\Schema\Table Object
                                                         (
                                                             [name] => Labs
+                                                            [namePrefix] => 
                                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -1127,6 +1140,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [2] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Contact
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -1252,6 +1266,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [3] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Recipients
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -1279,6 +1294,7 @@ IU\REDCapETL\Schema\Schema Object
                                                     [0] => IU\REDCapETL\Schema\Table Object
                                                         (
                                                             [name] => Sent
+                                                            [namePrefix] => 
                                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -1444,6 +1460,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [4] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Followup
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -1760,9 +1777,11 @@ IU\REDCapETL\Schema\Schema Object
             [3] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => VisitResults
+                    [namePrefix] => 
                     [parent] => IU\REDCapETL\Schema\Table Object
                         (
                             [name] => Demography
+                            [namePrefix] => 
                             [parent] => record_id
                             [primary] => IU\REDCapETL\Schema\Field Object
                                 (
@@ -1780,6 +1799,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [0] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => VisitInfo
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -1884,6 +1904,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [2] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Contact
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -2009,6 +2030,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [3] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Recipients
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -2036,6 +2058,7 @@ IU\REDCapETL\Schema\Schema Object
                                                     [0] => IU\REDCapETL\Schema\Table Object
                                                         (
                                                             [name] => Sent
+                                                            [namePrefix] => 
                                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -2201,6 +2224,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [4] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Followup
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -2442,6 +2466,7 @@ IU\REDCapETL\Schema\Schema Object
                             [0] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Labs
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -2602,9 +2627,11 @@ IU\REDCapETL\Schema\Schema Object
             [4] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Contact
+                    [namePrefix] => 
                     [parent] => IU\REDCapETL\Schema\Table Object
                         (
                             [name] => Demography
+                            [namePrefix] => 
                             [parent] => record_id
                             [primary] => IU\REDCapETL\Schema\Field Object
                                 (
@@ -2622,6 +2649,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [0] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => VisitInfo
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -2724,6 +2752,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [1] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => VisitResults
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -2751,6 +2780,7 @@ IU\REDCapETL\Schema\Schema Object
                                                     [0] => IU\REDCapETL\Schema\Table Object
                                                         (
                                                             [name] => Labs
+                                                            [namePrefix] => 
                                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -2913,6 +2943,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [3] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Recipients
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -2940,6 +2971,7 @@ IU\REDCapETL\Schema\Schema Object
                                                     [0] => IU\REDCapETL\Schema\Table Object
                                                         (
                                                             [name] => Sent
+                                                            [namePrefix] => 
                                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -3105,6 +3137,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [4] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Followup
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -3444,12 +3477,15 @@ IU\REDCapETL\Schema\Schema Object
             [5] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Labs
+                    [namePrefix] => 
                     [parent] => IU\REDCapETL\Schema\Table Object
                         (
                             [name] => VisitResults
+                            [namePrefix] => 
                             [parent] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Demography
+                                    [namePrefix] => 
                                     [parent] => record_id
                                     [primary] => IU\REDCapETL\Schema\Field Object
                                         (
@@ -3467,6 +3503,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [0] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => VisitInfo
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -3571,6 +3608,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [2] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Contact
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -3696,6 +3734,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [3] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Recipients
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -3723,6 +3762,7 @@ IU\REDCapETL\Schema\Schema Object
                                                             [0] => IU\REDCapETL\Schema\Table Object
                                                                 (
                                                                     [name] => Sent
+                                                                    [namePrefix] => 
                                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -3888,6 +3928,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [4] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Followup
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -4286,9 +4327,11 @@ IU\REDCapETL\Schema\Schema Object
             [6] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Recipients
+                    [namePrefix] => 
                     [parent] => IU\REDCapETL\Schema\Table Object
                         (
                             [name] => Demography
+                            [namePrefix] => 
                             [parent] => record_id
                             [primary] => IU\REDCapETL\Schema\Field Object
                                 (
@@ -4306,6 +4349,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [0] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => VisitInfo
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -4408,6 +4452,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [1] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => VisitResults
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -4435,6 +4480,7 @@ IU\REDCapETL\Schema\Schema Object
                                                     [0] => IU\REDCapETL\Schema\Table Object
                                                         (
                                                             [name] => Labs
+                                                            [namePrefix] => 
                                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -4595,6 +4641,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [2] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Contact
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -4722,6 +4769,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [4] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Followup
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -4963,6 +5011,7 @@ IU\REDCapETL\Schema\Schema Object
                             [0] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Sent
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -5128,12 +5177,15 @@ IU\REDCapETL\Schema\Schema Object
             [7] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Sent
+                    [namePrefix] => 
                     [parent] => IU\REDCapETL\Schema\Table Object
                         (
                             [name] => Recipients
+                            [namePrefix] => 
                             [parent] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Demography
+                                    [namePrefix] => 
                                     [parent] => record_id
                                     [primary] => IU\REDCapETL\Schema\Field Object
                                         (
@@ -5151,6 +5203,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [0] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => VisitInfo
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -5253,6 +5306,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [1] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => VisitResults
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -5280,6 +5334,7 @@ IU\REDCapETL\Schema\Schema Object
                                                             [0] => IU\REDCapETL\Schema\Table Object
                                                                 (
                                                                     [name] => Labs
+                                                                    [namePrefix] => 
                                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -5440,6 +5495,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [2] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Contact
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -5567,6 +5623,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [4] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Followup
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -5970,9 +6027,11 @@ IU\REDCapETL\Schema\Schema Object
             [8] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Followup
+                    [namePrefix] => 
                     [parent] => IU\REDCapETL\Schema\Table Object
                         (
                             [name] => Demography
+                            [namePrefix] => 
                             [parent] => record_id
                             [primary] => IU\REDCapETL\Schema\Field Object
                                 (
@@ -5990,6 +6049,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [0] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => VisitInfo
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -6092,6 +6152,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [1] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => VisitResults
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -6119,6 +6180,7 @@ IU\REDCapETL\Schema\Schema Object
                                                     [0] => IU\REDCapETL\Schema\Table Object
                                                         (
                                                             [name] => Labs
+                                                            [namePrefix] => 
                                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -6279,6 +6341,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [2] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Contact
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -6404,6 +6467,7 @@ IU\REDCapETL\Schema\Schema Object
                                     [3] => IU\REDCapETL\Schema\Table Object
                                         (
                                             [name] => Recipients
+                                            [namePrefix] => 
                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -6431,6 +6495,7 @@ IU\REDCapETL\Schema\Schema Object
                                                     [0] => IU\REDCapETL\Schema\Table Object
                                                         (
                                                             [name] => Sent
+                                                            [namePrefix] => 
                                                             [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                             [primary] => IU\REDCapETL\Schema\Field Object
@@ -6816,6 +6881,7 @@ IU\REDCapETL\Schema\Schema Object
             [0] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Demography
+                    [namePrefix] => 
                     [parent] => record_id
                     [primary] => IU\REDCapETL\Schema\Field Object
                         (
@@ -6833,6 +6899,7 @@ IU\REDCapETL\Schema\Schema Object
                             [0] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => VisitInfo
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -6935,6 +7002,7 @@ IU\REDCapETL\Schema\Schema Object
                             [1] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => VisitResults
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -6962,6 +7030,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [0] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Labs
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -7122,6 +7191,7 @@ IU\REDCapETL\Schema\Schema Object
                             [2] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Contact
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -7247,6 +7317,7 @@ IU\REDCapETL\Schema\Schema Object
                             [3] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Recipients
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -7274,6 +7345,7 @@ IU\REDCapETL\Schema\Schema Object
                                             [0] => IU\REDCapETL\Schema\Table Object
                                                 (
                                                     [name] => Sent
+                                                    [namePrefix] => 
                                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -7439,6 +7511,7 @@ IU\REDCapETL\Schema\Schema Object
                             [4] => IU\REDCapETL\Schema\Table Object
                                 (
                                     [name] => Followup
+                                    [namePrefix] => 
                                     [parent] => IU\REDCapETL\Schema\Table Object
  *RECURSION*
                                     [primary] => IU\REDCapETL\Schema\Field Object
@@ -7658,6 +7731,7 @@ IU\REDCapETL\Schema\Schema Object
             [1] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => BMI
+                    [namePrefix] => 
                     [parent] => record_id
                     [primary] => IU\REDCapETL\Schema\Field Object
                         (
@@ -7889,6 +7963,7 @@ IU\REDCapETL\Schema\Schema Object
                 )
 
             [name] => Lookup
+            [namePrefix] => 
             [parent] => lookup_id
             [primary] => IU\REDCapETL\Schema\Field Object
                 (

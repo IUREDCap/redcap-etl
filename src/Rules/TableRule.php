@@ -10,10 +10,22 @@ use IU\REDCapETL\Schema\RowsType;
 
 class TableRule extends Rule
 {
+    /** @var string the name of the table as specified in the rule
+     * (i.e., not including any table prefix that has been configured).
+     **/
     public $tableName;
+
     public $parentTable;
+
     public $primaryKey;
+
+    /** @var string the text part of the rule that specified the table rows type(s) */
+    public $tableRowsType;
+
+    /** @var array list of rows types defined in the rule for this table */
     public $rowsType;
+
+    /** @var array list of suffixes (if any) defined for this table */
     public $suffixes;
     
     public function __construct($line, $lineNumber)

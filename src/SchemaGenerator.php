@@ -76,7 +76,6 @@ class SchemaGenerator
         $recordIdFieldName = $this->dataProject->getRecordIdFieldName();
         $fieldNames        = $this->dataProject->getFieldNames();
 
-
         $formInfo = $this->dataProject->exportInstruments();
         $formNames = array_keys($formInfo);
 
@@ -147,8 +146,16 @@ class SchemaGenerator
                 #   a Table object for non-root tables
                 #   a string that is the primary key for root tables
                 #------------------------------------------------------------
-                $parentTableName = $this->tablePrefix . $rule->parentTable;
-                $parentTable = $schema->getTable($parentTableName);
+                if ($rule->isRootTable()) {
+                    # If this is a root table, parentTable actually represents the primary key
+                    # to be used for the table as specified by the user in the transformation rules,
+                    # so do NOT prepend the table prefix (if any) to it
+                    $parentTableName = $rule->parentTable;
+                    $parentTable = $parentTableName;
+                } else {
+                    $parentTableName = $this->tablePrefix . $rule->parentTable;
+                    $parentTable = $schema->getTable($parentTableName);
+                }
 
                 # Table creation will create the primary key
                 $table = $this->generateTable($rule, $parentTable, $this->tablePrefix, $recordIdFieldName);
@@ -361,7 +368,8 @@ class SchemaGenerator
             $keyType,
             $rowsType,
             $rule->suffixes,
-            $recordIdFieldName
+            $recordIdFieldName,
+            $this->tablePrefix
         );
 
         #---------------------------------------------------------
