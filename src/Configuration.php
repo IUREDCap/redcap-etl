@@ -109,6 +109,7 @@ class Configuration
 
     private $properties;
     private $propertiesFile;
+    private $propertyOverrides;
 
     private $emailErrors;
     private $emailSummary;
@@ -122,14 +123,20 @@ class Configuration
      * configuration information found.
      *
      * @param Logger $logger logger for information and errors
+     *
      * @param mixed $properties if this is a string, it is assumed to
      *     be the name of the properties file to use, if it is an array,
      *     it is assumed to be a map from property names to values.
      *     If a properties file name string is used, then it is assumed
      *     to be a JSON file if the file name ends with .json, and a
      *     .ini file otherwise.
+     *
+     * @param array $propertyOverrides an array mapping property names
+     *     to property values that overrides values specified in $properties.
+     *     This allows you, for example, to programmatically override values
+     *     in a properties configuration file without modifying the file.
      */
-    public function __construct(& $logger, $properties)
+    public function __construct(& $logger, $properties, $propertyOverrides = array())
     {
         $this->logger = $logger;
         $this->app = $this->logger->getApp();
@@ -194,6 +201,21 @@ class Configuration
                     throw new EtlException($message, $code);
                 }
             }
+        }
+
+        #--------------------------------------------
+        # Process property overrides
+        #--------------------------------------------
+        if (!is_array($propertyOverrides)) {
+            $message = 'Argument "propertyOverrides" is not an array.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        } else {
+            $this->propertyOverrides = $propertyOverrides;
+        }
+
+        foreach ($this->propertyOverrides as $propertyName => $propertyValue) {
+            $this->properties[$propertyName] = $propertyValue;
         }
 
         #-------------------------------------------
