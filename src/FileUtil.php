@@ -36,6 +36,36 @@ class FileUtil
     }
     
     /**
+     * Gets the absolute directory path for the specified path.
+     * If the specified path includes a file, then the file
+     * will be removed from the path that is returned.
+     *
+     * @param string path the file or directory path
+     *
+     * @param string $baseDir the optional base directory to use if a relative path
+     *     is specified.
+     *
+     * @return string absolute path for the specified path.
+     */
+    public function getAbsoluteDir($path)
+    {
+        if ($path == null) {
+            $path = '';
+        } else {
+            $path = trim($path);
+        }
+        
+        $dirName  = dirname($path);
+        $realDir  = realpath($dirName);
+        if ($realDir === false) {
+            $message = 'Directory for "'.$path.'" not found.';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+
+        return $realDir;
+    }
+    
+    /**
      * Gets the absolute path of a path to a file or direcory.
      * The directory part of the path must exist, but the file
      * part does not need to.
@@ -50,7 +80,7 @@ class FileUtil
     public function getAbsolutePath($path, $baseDir = null)
     {
         if ($path == null) {
-            $file = '';
+            $path = '';
         } else {
             $path = trim($path);
         }

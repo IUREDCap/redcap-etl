@@ -1337,4 +1337,16 @@ class ConfigurationTest extends TestCase
         }
         $this->assertTrue($exceptionCaught, 'E-mail summary specified without from e-mail address');
     }
+    
+    public function testOverrideProperties()
+    {
+        $properties = ['test1' => 'value1', 'test2' => 'val2'];
+        $propertyOverrides = ['test2' => 'value2'];
+        
+        $expectedResult = ['test1' => 'value1', 'test2' => 'value2'];
+        
+        $properties = Configuration::overrideProperties($properties, $propertyOverrides);
+        
+        $this->assertEquals($expectedResult, $properties, 'Override test');
+    }
 }

@@ -707,6 +707,21 @@ class Configuration
 
         return $properties;
     }
+    
+    /**
+     * Overrides properties in $properties with those defined in $propertyOverrides.
+     *
+     * @return array the overridden properties.
+     */
+    public static function overrideProperties($properties, $propertyOverrides)
+    {
+        if (!empty($propertyOverrides) && is_array($propertyOverrides)) {
+            foreach ($propertyOverrides as $propertyName => $propertyValue) {
+                $properties[$propertyName] = $propertyValue;
+            }
+        }
+        return $properties;
+    }
 
 
     /**
@@ -764,36 +779,23 @@ class Configuration
             $file = trim($file);
         }
 
-        if (FileUtil::isAbsolutePath($file)) {
-            if ($fileShouldExist) {
-                $realFile = realpath($file);
-            } else {
-                $dirName  = dirname($file);
-                $realDir  = realpath($dirName);
-                $fileName = basename($file);
-                $realFile = $realDir.'/'.$fileName;
-            }
-        } else { // Relative path
-            # take path relative to properties file, if it exists, or
-            # relative to the directory of this file if it does not
+        if (!FileUtil::isAbsolutePath($file)) {
             if (empty($this->propertiesFile)) {
                 $baseDir = realpath(__DIR__);
             } else {
-                $baseDir = dirname(realpath($this->propertiesFile));
+                $baseDir = dirname($this->propertiesFile);
             }
-
-            if ($fileShouldExist) {
-                $realFile = realpath($baseDir.'/'.$file);
-            } else {
-                # File may not exist (e.g., a log file)
-                $dirName  = dirname($file);
-                $fileName = basename($file);
-                $realDir  = realpath($baseDir.'/'.$dirName);
-                $realFile = $realDir.'/'.$fileName;
-            }
+            $file = $baseDir . '/' . $file;
         }
+        
+        $dirName  = dirname($file);
+        $realDir  = realpath($dirName);
+        $fileName = basename($file);
+        $realFile = $realDir.'/'.$fileName;
+
 
         if ($fileShouldExist) {
+            $realFile = realpath($realFile);
             if ($realFile === false) {
                 $message = 'File "'.$file.'" not found.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
