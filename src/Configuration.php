@@ -109,13 +109,16 @@ class Configuration
 
     private $properties;
     private $propertiesFile;
-    private $propertyOverrides;
 
     private $emailErrors;
     private $emailSummary;
     private $emailFromAddres;
     private $emailSubject;
     private $emailToList;
+    
+    /** @var string the base directory used for relative paths specified
+     *     in property values */
+    private $baseDir;
 
     /**
      * Creates a Configuration object from either an array or properties
@@ -131,12 +134,10 @@ class Configuration
      *     to be a JSON file if the file name ends with .json, and a
      *     .ini file otherwise.
      *
-     * @param array $propertyOverrides an array mapping property names
-     *     to property values that overrides values specified in $properties.
-     *     This allows you, for example, to programmatically override values
-     *     in a properties configuration file without modifying the file.
+     * @param string $baseDir the base directory used for properties that
+     *     specify a relative path.
      */
-    public function __construct(& $logger, $properties, $propertyOverrides = array())
+    public function __construct(& $logger, $properties, $baseDir = null)
     {
         $this->logger = $logger;
         $this->app = $this->logger->getApp();
@@ -158,20 +159,17 @@ class Configuration
             $this->propertiesFile = trim($properties);
             $this->properties = self::getPropertiesFromFile($this->propertiesFile);
         }
-
-        #--------------------------------------------
-        # Process property overrides
-        #--------------------------------------------
-        if (!is_array($propertyOverrides)) {
-            $message = 'Argument "propertyOverrides" is not an array.';
-            $code    = EtlException::INPUT_ERROR;
-            throw new EtlException($message, $code);
+        
+        #-----------------------------------------------------
+        # Set the base directory, wich is used for properties
+        # that contain relative paths
+        #-----------------------------------------------------
+        if (isset($baseDir)) {
+            $this->baseDir = $baseDir;
+        } elseif (!empty($this->propertiesFile)) {
+            $this->baseDir = dirname($this->propertiesFile);
         } else {
-            $this->propertyOverrides = $propertyOverrides;
-        }
-
-        foreach ($this->propertyOverrides as $propertyName => $propertyValue) {
-            $this->properties[$propertyName] = $propertyValue;
+            $this->baseDir = realpath(__DIR__);
         }
 
         #-------------------------------------------
@@ -780,12 +778,7 @@ class Configuration
         }
 
         if (!FileUtil::isAbsolutePath($file)) {
-            if (empty($this->propertiesFile)) {
-                $baseDir = realpath(__DIR__);
-            } else {
-                $baseDir = dirname($this->propertiesFile);
-            }
-            $file = $baseDir . '/' . $file;
+            $file = $this->baseDir . '/' . $file;
         }
         
         $dirName  = dirname($file);
@@ -834,12 +827,7 @@ class Configuration
         if (FileUtil::isAbsolutePath($path)) {
             $realDir  = realpath($path);
         } else { // Relative path
-            if (empty($this->propertiesFile)) {
-                $baseDir = dirname(realpath(__DIR__));
-            } else {
-                $baseDir = dirname(realpath($this->propertiesFile));
-            }
-            $realDir = realpath($baseDir.'/'.$path);
+            $realDir = realpath(realpath($this->baseDir).'/'.$path);
         }
 
         if ($realDir === false) {
