@@ -33,13 +33,14 @@ class ConfigurationTest extends TestCase
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'The JSON properties file "'.$propertiesFile.
+        $expectedMessage = 'The JSON configuration file "'.$propertiesFile.
             '" could not be read.';
         try {
             $config = new Configuration($logger, $propertiesFile);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
+        SystemFunctions::setOverrideFileGetContents(false);
 
         $this->assertTrue(
             $exceptionCaught,
@@ -55,7 +56,6 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor Bad .json exception message check'
         );
-        SystemFunctions::setOverrideFileGetContents(false);
 
 
         // No API URL
@@ -1232,36 +1232,6 @@ class ConfigurationTest extends TestCase
             $mySqlConnectionInfo,
             'GetMySqlConnectionInfo check'
         );
-    }
-
-    // NOTE: The following unit test allows for a direct test of a private
-    //       function, 'isAbsolutePath'.
-    // NOTE: This  unit test is probably unnecessary, as the
-    //       private method 'isAbsolutePath' could probably have been tested
-    //       as part of the test of some other, public method.
-    // NOTE: I don't know how to get full code coverage on code that
-    //       can't be reached fully from any one single OS.
-    public function testIsAbsolutePath()
-    {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
-        $method = $reflection->getMethod('isAbsolutePath');
-        $method->setAccessible(true);
-
-        $absolutePath = '/foo/bar/bang';
-        $relativePath = 'foo/bar/bang';
-
-        $isAbsolutePath = $method->invokeArgs(
-            $configMock,
-            array($absolutePath)
-        );
-        $this->assertTrue($isAbsolutePath, 'IsAbsolutePath true check');
-
-        $isAbsolutePath = $method->invokeArgs(
-            $configMock,
-            array($relativePath)
-        );
-        $this->assertFalse($isAbsolutePath, 'IsAbsolutePath false check');
     }
 
     public function testDbConfigError()
