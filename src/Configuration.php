@@ -133,11 +133,8 @@ class Configuration
      *     If a properties file name string is used, then it is assumed
      *     to be a JSON file if the file name ends with .json, and a
      *     .ini file otherwise.
-     *
-     * @param string $baseDir the base directory used for properties that
-     *     specify a relative path.
      */
-    public function __construct(& $logger, $properties, $baseDir = null)
+    public function __construct(& $logger, $properties)
     {
         $this->logger = $logger;
         $this->app = $this->logger->getApp();
@@ -164,6 +161,7 @@ class Configuration
         # Set the base directory, wich is used for properties
         # that contain relative paths
         #-----------------------------------------------------
+        $baseDir = null; // eventually, this may be a parameter or property
         if (isset($baseDir)) {
             $this->baseDir = $baseDir;
         } elseif (!empty($this->propertiesFile)) {
