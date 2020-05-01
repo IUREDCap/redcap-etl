@@ -76,7 +76,6 @@ class SchemaGenerator
         $recordIdFieldName = $this->dataProject->getRecordIdFieldName();
         $fieldNames        = $this->dataProject->getFieldNames();
 
-
         $formInfo = $this->dataProject->exportInstruments();
         $formNames = array_keys($formInfo);
 
@@ -118,7 +117,7 @@ class SchemaGenerator
         $schema = new Schema();
 
         // Log how many fields in REDCap could be parsed
-        $message = "Found ".count($unmappedRedCapFields)." fields in REDCap.";
+        $message = "Found ".count($unmappedRedCapFields)." user-defined fields in REDCap.";
         $this->logger->log($message);
         $info .= $message."\n";
 
@@ -147,8 +146,16 @@ class SchemaGenerator
                 #   a Table object for non-root tables
                 #   a string that is the primary key for root tables
                 #------------------------------------------------------------
-                $parentTableName = $this->tablePrefix . $rule->parentTable;
-                $parentTable = $schema->getTable($parentTableName);
+                if ($rule->isRootTable()) {
+                    # If this is a root table, parentTable actually represents the primary key
+                    # to be used for the table as specified by the user in the transformation rules,
+                    # so do NOT prepend the table prefix (if any) to it
+                    $parentTableName = $rule->parentTable;
+                    $parentTable = $parentTableName;
+                } else {
+                    $parentTableName = $this->tablePrefix . $rule->parentTable;
+                    $parentTable = $schema->getTable($parentTableName);
+                }
 
                 # Table creation will create the primary key
                 $table = $this->generateTable($rule, $parentTable, $this->tablePrefix, $recordIdFieldName);
@@ -317,7 +324,7 @@ class SchemaGenerator
         }
 
         // Log how many fields in REDCap could be parsed
-        $message = "Found ".count($unmappedRedCapFields)." unmapped fields in REDCap.";
+        $message = "Found ".count($unmappedRedCapFields)." unmapped user-defined fields in REDCap.";
         $this->logger->log($message);
 
         // Set warning if count of remaining redcap fields is above zero
@@ -361,7 +368,8 @@ class SchemaGenerator
             $keyType,
             $rowsType,
             $rule->suffixes,
-            $recordIdFieldName
+            $recordIdFieldName,
+            $this->tablePrefix
         );
 
         #---------------------------------------------------------

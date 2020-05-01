@@ -15,8 +15,16 @@ use IU\REDCapETL\TestProject;
  */
 class ConfigurationTest extends TestCase
 {
+    private $properties;
+    
     public function setUp()
     {
+        $this->properties = [
+            ConfigProperties::REDCAP_API_URL => 'http://localhost/redcap/api',
+            ConfigProperties::DATA_SOURCE_API_TOKEN => '11111111112222222222333333333344',
+            ConfigProperties::TRANSFORM_RULES_SOURCE => '3',
+            ConfigProperties::DB_CONNECTION => 'CSV:./'
+        ];
     }
 
     public function testConstructor()
@@ -33,13 +41,14 @@ class ConfigurationTest extends TestCase
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'The JSON properties file "'.$propertiesFile.
+        $expectedMessage = 'The JSON configuration file "'.$propertiesFile.
             '" could not be read.';
         try {
             $config = new Configuration($logger, $propertiesFile);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
+        SystemFunctions::setOverrideFileGetContents(false);
 
         $this->assertTrue(
             $exceptionCaught,
@@ -55,7 +64,6 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor Bad .json exception message check'
         );
-        SystemFunctions::setOverrideFileGetContents(false);
 
 
         // No API URL
@@ -958,6 +966,9 @@ class ConfigurationTest extends TestCase
 
     public function testProcessFile()
     {
+        $logger = new Logger('configuration-test');
+        $configuration = new Configuration($logger, $this->properties);
+        
         $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
         $configMock = $reflection->newInstanceWithoutConstructor();
 
@@ -970,13 +981,8 @@ class ConfigurationTest extends TestCase
         // NOTE: __DIR__ returns the abs path of the dir of _this_ code file.
         $file = null;
         $expectedFile = realpath(__DIR__.'/../../src/');
-        $realFile = $configMock->processFile($file, true);
-        $this->assertEquals(
-            $expectedFile,
-            $realFile,
-            'ProcessFile null check'
-        );
-
+        $realFile = $configuration->processFile($file, true);
+        $this->assertEquals($expectedFile, $realFile, 'ProcessFile null check');
 
         // Non-existing directory
         // Relative path
@@ -1064,8 +1070,8 @@ class ConfigurationTest extends TestCase
 
     public function testProcessDirectory()
     {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
+        $logger = new Logger('configuration-test');
+        $configuration = new Configuration($logger, $this->properties);
 
         // Null argument
         $exceptionCaught = false;
@@ -1073,7 +1079,7 @@ class ConfigurationTest extends TestCase
         $expectedMessage =
             'Null path specified as argument to processDirectory';
         try {
-            $configMock->processDirectory(null);
+            $configuration->processDirectory(null);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -1098,7 +1104,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'Non-string path specified as argument';
         try {
-            $configMock->processDirectory(array('foo'));
+            $configuration->processDirectory(array('foo'));
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -1120,7 +1126,7 @@ class ConfigurationTest extends TestCase
 
         // Absolute path argument
         $expectedRealDir = '/tmp';
-        $realDir = $configMock->processDirectory($expectedRealDir);
+        $realDir = $configuration->processDirectory($expectedRealDir);
 
         $this->assertEquals(
             $expectedRealDir,
@@ -1132,9 +1138,9 @@ class ConfigurationTest extends TestCase
         // NOTE: Because PHPUnit runs the test from the 'tests/unit'
         //       directory, the __DIR__ variable will include tests/unit
         //       already.
-        $path = 'tests/unit/Database';
+        $path = '../tests/unit/Database';
         $expectedRealDir = __DIR__.'/Database';
-        $realDir = $configMock->processDirectory($path);
+        $realDir = $configuration->processDirectory($path);
 
         $this->assertEquals(
             $expectedRealDir,
@@ -1147,7 +1153,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'Directory';
         try {
-            $configMock->processDirectory('foo');
+            $configuration->processDirectory('foo');
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -1174,6 +1180,7 @@ class ConfigurationTest extends TestCase
         //       properties file using __DIR_, too, then REDCapEtl will check
         //       for relative paths to the same directory as the properties
         //       file, effectively adding 'test/unit' to the relative path.
+        /*
         $method = $reflection->getMethod('setPropertiesFile');
         $method->setAccessible(true);
         $method->invokeArgs($configMock, array(__DIR__.'/ConfigurationTest.php'));
@@ -1186,6 +1193,7 @@ class ConfigurationTest extends TestCase
             $realDir,
             'ProcessDirectory relative, properties file'
         );
+        */
     }
 
     public function testIsValidEmail()
@@ -1232,36 +1240,6 @@ class ConfigurationTest extends TestCase
             $mySqlConnectionInfo,
             'GetMySqlConnectionInfo check'
         );
-    }
-
-    // NOTE: The following unit test allows for a direct test of a private
-    //       function, 'isAbsolutePath'.
-    // NOTE: This  unit test is probably unnecessary, as the
-    //       private method 'isAbsolutePath' could probably have been tested
-    //       as part of the test of some other, public method.
-    // NOTE: I don't know how to get full code coverage on code that
-    //       can't be reached fully from any one single OS.
-    public function testIsAbsolutePath()
-    {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
-        $method = $reflection->getMethod('isAbsolutePath');
-        $method->setAccessible(true);
-
-        $absolutePath = '/foo/bar/bang';
-        $relativePath = 'foo/bar/bang';
-
-        $isAbsolutePath = $method->invokeArgs(
-            $configMock,
-            array($absolutePath)
-        );
-        $this->assertTrue($isAbsolutePath, 'IsAbsolutePath true check');
-
-        $isAbsolutePath = $method->invokeArgs(
-            $configMock,
-            array($relativePath)
-        );
-        $this->assertFalse($isAbsolutePath, 'IsAbsolutePath false check');
     }
 
     public function testDbConfigError()
@@ -1366,5 +1344,17 @@ class ConfigurationTest extends TestCase
             $exceptionCaught = true;
         }
         $this->assertTrue($exceptionCaught, 'E-mail summary specified without from e-mail address');
+    }
+    
+    public function testOverrideProperties()
+    {
+        $properties = ['test1' => 'value1', 'test2' => 'val2'];
+        $propertyOverrides = ['test2' => 'value2'];
+        
+        $expectedResult = ['test1' => 'value1', 'test2' => 'value2'];
+        
+        $properties = Configuration::overrideProperties($properties, $propertyOverrides);
+        
+        $this->assertEquals($expectedResult, $properties, 'Override test');
     }
 }

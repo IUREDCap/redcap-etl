@@ -5,6 +5,7 @@ IU\REDCapETL\Schema\Schema Object
             [0] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Demography
+                    [namePrefix] => 
                     [parent] => primary_key
                     [primary] => IU\REDCapETL\Schema\Field Object
                         (
@@ -240,6 +241,7 @@ IU\REDCapETL\Schema\Schema Object
             [0] => IU\REDCapETL\Schema\Table Object
                 (
                     [name] => Demography
+                    [namePrefix] => 
                     [parent] => primary_key
                     [primary] => IU\REDCapETL\Schema\Field Object
                         (
@@ -538,6 +540,7 @@ IU\REDCapETL\Schema\Schema Object
                 )
 
             [name] => Lookup
+            [namePrefix] => 
             [parent] => lookup_id
             [primary] => IU\REDCapETL\Schema\Field Object
                 (
