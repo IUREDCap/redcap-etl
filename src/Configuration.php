@@ -16,8 +16,7 @@ use IU\REDCapETL\Schema\FieldTypeSpecifier;
 
 /**
  * Class used to store ETL configuration information from
- * the configuration file and the optional configuration
- * project if defined.
+ * a configuration file or proprties arrary.
  */
 class Configuration
 {
@@ -342,6 +341,14 @@ class Configuration
             }
         }
         
+        #--------------------------------------------------
+        # Check for invalid configuration file property
+        #--------------------------------------------------
+        if (array_key_exists(ConfigProperties::CONFIG_FILE, $this->properties)) {
+            $message = 'Invalid property '.ConfigProperties::CONFIG_FILE
+                .' specified in configuration; this property can only be used in workflows.';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
         
         #---------------------------------------------------------------
         # Get SSL verify flag

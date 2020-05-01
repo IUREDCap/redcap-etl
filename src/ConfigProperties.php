@@ -22,6 +22,9 @@ class ConfigProperties
     const CONFIG_NAME               = 'config_name';  # Name of configuration, if from the external module
     const CONFIG_OWNER              = 'config_owner'; # REDCap user who created the configuration,
                                                       #  if from the external module
+
+    const CONFIG_FILE               = 'config_file'; # Only allowed in workflows; for including a configuration file
+
     const CREATE_LOOKUP_TABLE       = 'create_lookup_table';  # true/false indicating if a lookup table
                                                               # should be created
     const CRON_JOB                  = 'cron_job'; # true/false indicating if configuration file being run as cron job

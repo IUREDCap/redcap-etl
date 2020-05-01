@@ -15,13 +15,21 @@ use IU\REDCapETL\Database\DbConnectionFactory;
 use IU\REDCapETL\Schema\FieldTypeSpecifier;
 
 /**
- * Class used to store ETL configuration information from
- * the configuration file and the optional configuration
- * project if defined.
+ * Class used to store ETL workflow information from
+ * a configuration file.
+ *
+ * Workflows contain one or more configurations that are
+ * executed sequentially by REDCap-ETL with optional global properties
+ * that override properties defined for individual configurations.
  */
 class Workflow
 {
     private $logger;
+
+    /** @var array array of global properties (as map from property name to property value) */
+    private $globalProperties;
+
+    /** @var array array of Configurations */
     private $configurations;
 
     private $configurationFile;
@@ -41,6 +49,7 @@ class Workflow
     {
         $this->logger = $logger;
 
+        $this->globalProperties = array();
         $this->configurations = array();
 
         if (empty($configurationFile)) {
@@ -54,7 +63,7 @@ class Workflow
                 #---------------------------
                 # .ini configuration file
                 #---------------------------
-                $this->parseIniworkflowFile($this->configurationFile);
+                $this->parseIniWorkflowFile($this->configurationFile);
             } elseif (preg_match('/\.json$/i', $this->configurationFile) === 1) {
                 #-----------------------------------------------------------------
                 # JSON configuration file
@@ -80,19 +89,29 @@ class Workflow
         $processSections = true;
         $config = parse_ini_file($configurationFile, $processSections);
 
-        /*
         $isWorkflow = $this->isWorkflow($config);
 
         if ($isWorkflow) {
-            foreach ($config as $section) {
-                $properties = $section;
-                # Check for config_file property
+            foreach ($config as $propertyName => $propertyValue) {
+                if (is_array($propertyValue)) {
+                    # Section (that defines a configuration)
+                    $section = $propertyName;
+                    $properties = $propertyValue;
+                    $configFile = null;
+                    if (array_key_exists(ConfigProperties::CONFIG_FILE, $properties)) {
+                        $configFile = $properties[ConfigProperties::CONFIG_FILE];
+                        unset($properties[ConfigProperties::CONFIG_FILE]);
+                    }
+                    $this->configurations[$section] = new Configuration($this->logger, $properties);
+                } else {
+                    # Global property
+                    $this->globalProperties[$propertyName] =  $propertyValue;
+                }
             }
         } else {
             $configuration = new Configuration($this->logger, $configurationFile);
             array_push($this->configurations, $configuration);
         }
-         */
 
         # Parse file into properties and sections
         $properties = array();
@@ -112,9 +131,7 @@ class Workflow
 
 
     /**
-     * @return true if this is a workflow configuration, false if it is a
-     *     single ETL configuration, and throws an exception if an
-     *     error is found
+     * @return true if this is a workflow configuration, false otherwise
      */
     public function isWorkflow($config)
     {
@@ -123,21 +140,18 @@ class Workflow
         $numScalars = 0;
         foreach ($config as $key => $value) {
             if (is_array($value)) {
-                $numArrays++;
-            } else {
-                $numScalars++;
+                $isWorkflow = true;
+                break;
             }
         }
 
-        if ($numScalars > 0 && $numArrays > 0) {
-            $message = 'Invalid configuration file. Some properties are in sections and some are not.'
-                . ' Workflows must have all properties in sections, and single configurations'
-                . ' must have no sections.';
-            throw new \Exception($message);
-        } elseif ($numArrays > 0 && $numScalars === 0) {
-            $isWorkflow = true;
-        }
-
         return $isWorkflow;
+    }
+
+    public function generateJson()
+    {
+        $data = [$this->globalProperties, $this->configurations];
+        $json = json_encode($data, JSON_PRETTY_PRINT);
+        return $json;
     }
 }
