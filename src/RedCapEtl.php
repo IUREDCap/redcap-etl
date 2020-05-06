@@ -476,7 +476,7 @@ class RedCapEtl
                                     $message = 'WARNING: ROOT table "'.$tableName.'" has fields'
                                         .' that have multiple values per record ID in REDCap.'
                                         .' ROOT tables are intended for fields that only have'
-                                        .' one value per record ID';
+                                        .' one value per record ID.';
                                     $this->logger->log($message);
                                     $this->rootTablesWithMultiValues[$tableName] = true;
                                 }
