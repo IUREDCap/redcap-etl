@@ -457,6 +457,7 @@ class RedCapEtl
                         $primaryKey =
                             $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
 
+                        # If row creation succeeded:
                         if ($primaryKey) {
                             if (!$rootRecordFound) {
                                 $rootRecordFound = true;
@@ -464,8 +465,7 @@ class RedCapEtl
                                     $this->transform($childTable, $records, $primaryKey, $suffix);
                                 }
                                 if ($table->isRecordIdTable()) {
-                                    # If this is a record ID table, break out of the loop;
-                                    # don't store multiple rows
+                                    # If this is a record ID table stop processing; don't store multiple rows
                                     break;
                                 }
                             } else {
@@ -473,6 +473,7 @@ class RedCapEtl
                                 # so there are multiple values per record ID for at least one
                                 # field in the root table.
                                 if (!array_key_exists($tableName, $this->rootTablesWithMultiValues)) {
+                                    # Only print warning message once for each table
                                     $message = 'WARNING: ROOT table "'.$tableName.'" has fields'
                                         .' that have multiple values per record ID in REDCap.'
                                         .' ROOT tables are intended for fields that only have'
@@ -491,8 +492,6 @@ class RedCapEtl
                 case RowsType::BY_REPEATING_EVENTS:
                     // Foreach Record (i.e., foreach event or repeatable form or repeatable event)
                     foreach ($records as $record) {
-                        # ORIG:
-                        # $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix, $rowType);
                         $primaryKey =
                             $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
 
@@ -508,8 +507,6 @@ class RedCapEtl
                 case RowsType::BY_SUFFIXES:
                     // Foreach Suffix
                     foreach ($table->rowsSuffixes as $newSuffix) {
-                        # ORIG:
-                        # $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$newSuffix, $rowType);
                         $primaryKey = $table->createRow(
                             $records[0],
                             $foreignKey,
@@ -532,14 +529,6 @@ class RedCapEtl
                     foreach ($records as $record) {
                         // Foreach Suffix
                         foreach ($table->rowsSuffixes as $newSuffix) {
-                            # ORIG:
-                            #$this->createRowAndRecurse(
-                            #    $table,
-                            #    array($record),
-                            #    $foreignKey,
-                            #    $suffix.$newSuffix,
-                            #    $rowType
-                            #);
                             $primaryKey = $table->createRow(
                                 $record,
                                 $foreignKey,
@@ -560,24 +549,6 @@ class RedCapEtl
         }
     }
 
-
-#    /**
-#     * See 'transform' function for explanation of variables.
-#     */
-#    protected function createRowAndRecurse($table, $records, $foreignKey, $suffix, $rowType)
-#    {
-#        // Create Row using 1st Record
-#        $calcFieldIgnorePattern = $this->configuration->getCalcFieldIgnorePattern();
-#        $primaryKey = $table->createRow($records[0], $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
-#
-#        // If primary key generated, recurse for child tables
-#        if ($primaryKey) {
-#            // Foreach child table
-#            foreach ($table->getChildren() as $childTable) {
-#                $this->transform($childTable, $records, $primaryKey, $suffix);
-#            }
-#        }
-#    }
 
 
     /**
