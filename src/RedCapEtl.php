@@ -57,6 +57,13 @@ class RedCapEtl
 
     private $configuration;
 
+    /** @var array map where the keys represent root tables that have
+     *     fields that have multiple rows of data per record ID.
+     *     Root tables are intended for fields that have a 1:1 mapping
+     *     with the record ID.
+     */
+    private $rootTablesWithMultiValues;
+
 
     /**
      * Constructor.
@@ -75,6 +82,8 @@ class RedCapEtl
         $redcapProjectClass = null
     ) {
         $this->app = $logger->getApp();
+
+        $this->rootTablesWithMultiValues = array();
 
         $this->configuration = new Configuration(
             $logger,
@@ -425,6 +434,7 @@ class RedCapEtl
      */
     protected function transform($table, $records, $foreignKey, $suffix)
     {
+        $tableName = $table->getName();
         $calcFieldIgnorePattern = $this->configuration->getCalcFieldIgnorePattern();
 
         foreach ($table->rowsType as $rowType) {
@@ -442,15 +452,35 @@ class RedCapEtl
                     # For the child tables, which, in general, have a m:1 relationship
                     # with the record ID, process all records for this record ID.
                     #------------------------------------------------------------------------
+                    $rootRecordFound = false;
                     foreach ($records as $record) {
                         $primaryKey =
                             $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
 
                         if ($primaryKey) {
-                            foreach ($table->getChildren() as $childTable) {
-                                $this->transform($childTable, $records, $primaryKey, $suffix);
+                            if (!$rootRecordFound) {
+                                $rootRecordFound = true;
+                                foreach ($table->getChildren() as $childTable) {
+                                    $this->transform($childTable, $records, $primaryKey, $suffix);
+                                }
+                                if ($table->isRecordIdTable()) {
+                                    # If this is a record ID table, break out of the loop;
+                                    # don't store multiple rows
+                                    break;
+                                }
+                            } else {
+                                # A record with values for the root table was already found,
+                                # so there are multiple values per record ID for at least one
+                                # field in the root table.
+                                if (!array_key_exists($tableName, $this->rootTablesWithMultiValues)) {
+                                    $message = 'WARNING: ROOT table "'.$tableName.'" has fields'
+                                        .' that have multiple values per record ID in REDCap.'
+                                        .' ROOT tables are intended for fields that only have'
+                                        .' one value per record ID';
+                                    $this->logger->log($message);
+                                    $this->rootTablesWithMultiValues[$tableName] = true;
+                                }
                             }
-                            break;
                         }
                     }
                     break;
