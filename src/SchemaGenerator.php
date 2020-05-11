@@ -56,6 +56,7 @@ class SchemaGenerator
         $this->configuration = $configuration;
         $this->tablePrefix   = $configuration->getTablePrefix();
         $this->logger        = $logger;
+        $this->projectInfoTable = new ProjectInfoTable($this->tablePrefix /* , $name */);
     }
 
 
@@ -105,6 +106,9 @@ class SchemaGenerator
             }
         }
 
+        #----------------------------------------------------------------
+        # Create lookup table that maps multiple choice values to labels
+        #----------------------------------------------------------------
         $this->lookupChoices = $this->dataProject->getLookupChoices();
         $keyType = $this->configuration->getGeneratedKeyType();
         $lookupTableName = $this->configuration->getLookupTableName();
