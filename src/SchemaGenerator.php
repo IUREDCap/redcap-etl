@@ -75,6 +75,7 @@ class SchemaGenerator
         $projectInfo       = $this->dataProject->exportProjectInfo();
         $recordIdFieldName = $this->dataProject->getRecordIdFieldName();
         $fieldNames        = $this->dataProject->getFieldNames();
+        $metadata          = $this->dataProject->getMetadata();
 
         $formInfo = $this->dataProject->exportInstruments();
         $formNames = array_keys($formInfo);
@@ -349,6 +350,15 @@ class SchemaGenerator
         }
 
         $schema->setLookupTable($this->lookupTable);
+
+        foreach ($schema->getTables() as $table) {
+            print "TABLE: {$table->getName()}\n";
+            foreach ($table->getFields() as $field) {
+                print "    FIELD: {$field->name} -> {$field->dbName}\n";
+            }
+        }
+
+        print_r($metadata);
         
         return array($schema, $messages);
     }
