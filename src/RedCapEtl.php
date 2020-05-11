@@ -8,6 +8,7 @@ namespace IU\REDCapETL;
 
 use IU\PHPCap\PhpCapException;
 use IU\PHPCap\RedCap;
+use IU\RedCapEtl\Database\CsvDbConnection;
 use IU\REDCapETL\Database\DbConnectionFactory;
 use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Schema;
@@ -37,6 +38,8 @@ class RedCapEtl
 
     /** @var EtlRedCapProject the project that has the data to extract */
     protected $dataProject;
+
+    protected $projectInfoTable;
     
     protected $logger;
 
@@ -550,11 +553,21 @@ class RedCapEtl
             $this->log($msg);
         }
 
+        #-----------------------------------------------------------------------------------
+        # If configured, create the lookup table that maps multiple choice values to labels
+        #-----------------------------------------------------------------------------------
         if ($this->configuration->getCreateLookupTable()) {
             $lookupTable = $this->schema->getLookupTable();
             $this->dbcon->replaceTable($lookupTable);
             $this->loadTableRows($lookupTable);
         }
+
+        #-----------------------------------------------------------
+        # Create the project info table
+        #-----------------------------------------------------------
+        $this->projectInfoTable = new ProjectInfoTable($this->configuration->getTablePrefix() /* , $name */);
+        $this->dbcon->replaceTable($this->projectInfoTable);
+        $this->loadTableRows($this->projectInfoTable);
     }
 
 
@@ -666,6 +679,24 @@ class RedCapEtl
             throw new EtlException($message, EtlException::INPUT_ERROR);
         } else {
             $this->createLoadTables();
+
+            #----------------------------------------------------------------------
+            # Project Info table (eventually will have possible multiple projects)
+            #----------------------------------------------------------------------
+            if (!($this->dbcon instanceof CsvDbConnection)) {
+                $projectInfo = $this->dataProject->exportProjectInfo();
+                $row = $this->projectInfoTable->getRowData(
+                    $this->configuration->getRedCapApiUrl(),
+                    $projectInfo['project_id'],
+                    $projectInfo['project_title'],
+                    $projectInfo['project_language']
+                );
+                $this->dbcon->insertRow($row);
+            }
+
+            #------------------------
+            # Run ETL process
+            #------------------------
             $numberOfRecordIds = $this->extractTransformLoad();
                 
             #----------------------------------------

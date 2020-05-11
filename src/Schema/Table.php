@@ -57,6 +57,9 @@ class Table
      *    name to use as the synthetic primary key. Otherwise it
      *    should be the table's parent Table object.
      *
+     * @param FieldTypeSpecifier $keyType Field parameter for describing the field type
+     *     for the primary key for the table.
+     *
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
      *
