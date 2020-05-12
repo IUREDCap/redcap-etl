@@ -92,8 +92,11 @@ class Configuration
     private $labelViewSuffix;
     private $lookupTableName;
 
+    private $preProcessingSql;
+    private $preProcessingSqlFile;
     private $postProcessingSql;
     private $postProcessingSqlFile;
+    
     private $projectId;
     private $printLogging;
     private $redcapApiUrl;
@@ -396,6 +399,27 @@ class Configuration
             }
         }
 
+        #---------------------------------------------
+        # Get the pre-processing SQL (if any)
+        #---------------------------------------------
+        $this->preProcessingSql = null;
+        if (array_key_exists(ConfigProperties::PRE_PROCESSING_SQL, $this->properties)) {
+            $sql = $this->properties[ConfigProperties::PRE_PROCESSING_SQL];
+            if (!empty($sql)) {
+                $this->preProcessingSql = $sql;
+            }
+        }
+
+        #---------------------------------------------
+        # Get the pre-processing SQL file (if any)
+        #---------------------------------------------
+        $this->preProcessingSqlFile = null;
+        if (array_key_exists(ConfigProperties::PRE_PROCESSING_SQL_FILE, $this->properties)) {
+            $file = $this->properties[ConfigProperties::PRE_PROCESSING_SQL_FILE];
+            if (!empty($file)) {
+                $this->preProcessingSqlFile = $this->processFile($file, $fileShouldExist = false);
+            }
+        }
 
         #---------------------------------------------
         # Get the post-processing SQL (if any)
@@ -1103,6 +1127,16 @@ class Configuration
     public function getLookupTableName()
     {
         return $this->lookupTableName;
+    }
+
+    public function getPreProcessingSql()
+    {
+        return $this->preProcessingSql;
+    }
+
+    public function getPreProcessingSqlFile()
+    {
+        return $this->preProcessingSqlFile;
     }
 
     public function getPostProcessingSql()

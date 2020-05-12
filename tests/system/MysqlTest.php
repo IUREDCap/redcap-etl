@@ -653,7 +653,7 @@ class DatabasesTest extends TestCase
         fclose($fh);
 
         $exceptionCaught8 = false;
-        $expectedMessage8 = 'Post-processing query 1 failed:';
+        $expectedMessage8 = 'SQL query 1 failed:';
 
         try {
             $mysqlDbConnection->processQueryFile($emptyFile);
@@ -674,7 +674,7 @@ class DatabasesTest extends TestCase
 
         $this->assertEquals(
             $expectedMessage8,
-            substr($exception->getMessage(), 0, 31),
+            substr($exception->getMessage(), 0, strlen($expectedMessage8)),
             'DatabasesTest, mysqlsDbConnection processQueryFile file error message check'
         );
 
@@ -694,7 +694,7 @@ class DatabasesTest extends TestCase
         fclose($fh);
 
         $exceptionCaught9 = false;
-        $expectedMessage9 = 'Post-processing query 2 failed:';
+        $expectedMessage9 = 'SQL query 2 failed:';
 
         try {
             $mysqlDbConnection->processQueryFile($qFile3);
@@ -715,7 +715,7 @@ class DatabasesTest extends TestCase
 
         $this->assertEquals(
             $expectedMessage9,
-            substr($exception->getMessage(), 0, 31),
+            substr($exception->getMessage(), 0, strlen($expectedMessage9)),
             'DatabasesTest, mysqlDbConnection processQueryFile query error message check'
         );
 

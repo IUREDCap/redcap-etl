@@ -205,6 +205,20 @@ class Table
          return($this->children);
     }
 
+    /**
+     * @return array list of descendant tables in depth first order.
+     */
+    public function getDescendantsDepthFirst()
+    {
+        $descendants = array();
+        foreach ($this->children as $child) {
+            array_push($descendants, $child);
+            $childDescendants = $child->getDescendantsDepthFirst();
+            $descendants = array_merge($descendants, $childDescendants);
+        }
+        return $descendants;
+    }
+
     public function nextPrimaryKey()
     {
         $this->primaryKey += 1;

@@ -441,7 +441,7 @@ abstract class PdoDbConnection extends DbConnection
                 $result = $this->db->query($query);
             }
         } catch (\Exception $exception) {
-            $error = "Post-processing query failed: ".$exception->getMessage();
+            $error = "SQL query failed: ".$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         }

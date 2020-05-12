@@ -531,7 +531,7 @@ class MysqlDbConnection extends DbConnection
         $result = $this->mysqli->multi_query($queries);
         if ($result === false) {
             $mysqlError = $this->mysqli->error;
-            $error = "Post-processing query {$queryNumber} failed: {$mysqlError}.\n";
+            $error = "SQL query {$queryNumber} failed: {$mysqlError}.\n";
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         } else {
@@ -539,7 +539,7 @@ class MysqlDbConnection extends DbConnection
                 $result = $this->mysqli->next_result();
                 if ($result === false) {
                     $mysqlError = $this->mysqli->error;
-                    $error = "Post-processing query {$queryNumber} failed: {$mysqlError}.\n";
+                    $error = "SQL query {$queryNumber} failed: {$mysqlError}.\n";
                     $code = EtlException::DATABASE_ERROR;
                     throw new EtlException($error, $code);
                 } else {

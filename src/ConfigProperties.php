@@ -58,8 +58,11 @@ class ConfigProperties
     const LOG_FILE                 = 'log_file';
     const LOOKUP_TABLE_NAME        = 'lookup_table_name';
 
+    const PRE_PROCESSING_SQL       = 'pre_processing_sql';
+    const PRE_PROCESSING_SQL_FILE  = 'pre_processing_sql_file';
     const POST_PROCESSING_SQL      = 'post_processing_sql';
     const POST_PROCESSING_SQL_FILE = 'post_processing_sql_file';
+    
     const PRINT_LOGGING            = 'print_logging';   # true/false indicates if log messages should be printed
     const PROJECT_ID               = 'project_id';  # optional ID of REDCap project from which data are being extracted
     const RECORD_ID                = 'record_id';

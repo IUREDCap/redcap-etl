@@ -696,32 +696,54 @@ class RedCapEtl
             $message = "Transformation rules not parsed. Processing stopped.";
             throw new EtlException($message, EtlException::INPUT_ERROR);
         } else {
+            $this->runPreProcessingSql();
+
             $this->createLoadTables();
             $numberOfRecordIds = $this->extractTransformLoad();
+
+            $this->runPostProcessingSql();
                 
-            #----------------------------------------
-            # Post-processing SQL
-            #----------------------------------------
-            try {
-                $sql = $this->configuration->getPostProcessingSql();
-                if (!empty($sql)) {
-                    $this->dbcon->processQueries($sql);
-                }
-
-                $sqlFile = $this->configuration->getPostProcessingSqlFile();
-                if (!empty($sqlFile)) {
-                    $this->dbcon->processQueryFile($sqlFile);
-                }
-            } catch (\Exception $exception) {
-                $message = 'Post-processing SQL error: '.$exception->getMessage();
-                throw new EtlException($message, EtlException::INPUT_ERROR);
-            }
-
             $this->log(self::PROCESSING_COMPLETE);
             $this->logger->logEmailSummary();
         }
 
         return $numberOfRecordIds;
+    }
+
+    protected function runPreProcessingSql()
+    {
+        try {
+            $sql = $this->configuration->getPreProcessingSql();
+            if (!empty($sql)) {
+                $this->dbcon->processQueries($sql);
+            }
+
+            $sqlFile = $this->configuration->getPreProcessingSqlFile();
+            if (!empty($sqlFile)) {
+                $this->dbcon->processQueryFile($sqlFile);
+            }
+        } catch (\Exception $exception) {
+            $message = 'Pre-processing SQL error: '.$exception->getMessage();
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+    }
+
+    protected function runPostProcessingSql()
+    {
+        try {
+            $sql = $this->configuration->getPostProcessingSql();
+            if (!empty($sql)) {
+                $this->dbcon->processQueries($sql);
+            }
+
+            $sqlFile = $this->configuration->getPostProcessingSqlFile();
+            if (!empty($sqlFile)) {
+                $this->dbcon->processQueryFile($sqlFile);
+            }
+        } catch (\Exception $exception) {
+            $message = 'Post-processing SQL error: '.$exception->getMessage();
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
     }
 
 

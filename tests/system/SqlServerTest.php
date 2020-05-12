@@ -777,7 +777,7 @@ class SqlServerTest extends TestCase
         fclose($fh);
 
         $exceptionCaught8 = false;
-        $expectedMessage8 = 'Post-processing query failed:';
+        $expectedMessage8 = 'SQL query failed:';
 
         try {
             $sqlServerDbConnection->processQueryFile($emptyFile);
@@ -798,7 +798,7 @@ class SqlServerTest extends TestCase
 
         $this->assertEquals(
             $expectedMessage8,
-            substr($exception->getMessage(), 0, 29),
+            substr($exception->getMessage(), 0, strlen($expectedMessage)),
             'SqlServerTest, SqlServerDbConnection processQueryFile file error message check'
         );
 
