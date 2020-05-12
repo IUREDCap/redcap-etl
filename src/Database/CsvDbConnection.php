@@ -59,7 +59,7 @@ class CsvDbConnection extends DbConnection
         return file_exists($this->getLabelViewFile($table));
     }
 
-    protected function dropTable($table, $ifExists = false)
+    public function dropTable($table, $ifExists = false)
     {
         if (!$ifExists || ($ifExists && $this->existsTable($table))) {
             $file = $this->getTableFile($table);

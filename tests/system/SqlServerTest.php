@@ -798,7 +798,7 @@ class SqlServerTest extends TestCase
 
         $this->assertEquals(
             $expectedMessage8,
-            substr($exception->getMessage(), 0, strlen($expectedMessage)),
+            substr($exception->getMessage(), 0, strlen($expectedMessage8)),
             'SqlServerTest, SqlServerDbConnection processQueryFile file error message check'
         );
 

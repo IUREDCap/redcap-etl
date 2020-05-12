@@ -562,13 +562,27 @@ class RedCapEtl
     {
         // foreach table, replace it with an empty table
         $tables = $this->schema->getTables();
-        foreach ($tables as $table) {
+
+        #---------------------------------------------------------------------
+        # Drop tables in the reverse order of how they were defined, and drop
+        # the label view (if any) for a table before dropping the table
+        #---------------------------------------------------------------------
+        foreach (array_reverse($tables) as $table) {
             if ($table->usesLookup === true) {
                 $ifExists = true;
                 $this->dbcon->dropLabelView($table, $ifExists);
             }
 
-            $this->dbcon->replaceTable($table);
+            $ifExists = true;
+            $this->dbcon->dropTable($table, $ifExists);
+        }
+
+        #------------------------------------------------------
+        # Create the tables in the order they were defined
+        #------------------------------------------------------
+        foreach ($tables as $table) {
+            $ifExists = false;
+            $this->dbcon->createTable($table, $ifExists);
 
             $msg = "Created table '".$table->name."'";
 

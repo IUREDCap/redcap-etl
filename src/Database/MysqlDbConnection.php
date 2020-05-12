@@ -122,7 +122,7 @@ class MysqlDbConnection extends DbConnection
      * @param Table $table the table object corresponding to the table in
      *     the database that will be deleted.
      */
-    protected function dropTable($table, $ifExists = false)
+    public function dropTable($table, $ifExists = false)
     {
         // Define query
         if ($ifExists) {
