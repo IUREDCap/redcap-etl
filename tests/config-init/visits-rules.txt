@@ -1,5 +1,4 @@
-TABLE,Demography,record_id,ROOT
-FIELD,record_id,int,
+TABLE,Demography,demography_id,ROOT
 FIELD,fruit,int,
 FIELD,name,varchar(100),
 FIELD,phone,char(24),
@@ -7,8 +6,7 @@ FIELD,dob,date,birthdate
 FIELD,color,int,
 FIELD,rooms,checkbox,
 
-TABLE,BMI,record_id,ROOT
-FIELD,record_id,int,
+TABLE,BMI,bmi_id,ROOT
 FIELD,height,float,
 FIELD,weight,float,
 

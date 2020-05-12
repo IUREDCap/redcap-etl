@@ -384,11 +384,11 @@ class SchemaGenerator
         # specified), so a value can be entered that the
         # database will not be able to handle.
         #---------------------------------------------------------
-        if ($table->primary === $recordIdFieldName) {
-            $error = 'Primary key field has same name as REDCap record id "'
+        if ($table->primary->dbName === $recordIdFieldName) {
+            $errorMessage = 'Primary key field has same name as REDCap record id "'
                 .$recordIdFieldName.'" on line '
                 .$rule->getLineNumber().': "'.$rule->getLine().'"';
-            return table;   // try to fix
+            throw new EtlException($errorMessage, EtlException::INPUT_ERROR);
         } else {
             $fieldTypeSpecifier = $this->configuration->getGeneratedRecordIdType();
             $field = new Field(
