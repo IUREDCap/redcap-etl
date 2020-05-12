@@ -561,7 +561,7 @@ class RedCapEtl
     protected function createLoadTables()
     {
         // foreach table, replace it with an empty table
-        $tables = $this->schema->getTables();
+        $tables = $this->schema->getTablesTopDown();
 
         #---------------------------------------------------------------------
         # Drop tables in the reverse order of how they were defined, and drop
