@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\EtlRedCapProject;
 use IU\REDCapETL\Schema\Table;
 
-class SchemaGeneratorGenerateSchemaTest extends TestCase
+class SchemaGenerationTest extends TestCase
 {
     private static $logger;
 
