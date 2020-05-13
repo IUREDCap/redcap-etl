@@ -231,6 +231,40 @@ class MysqlDbConnection extends DbConnection
         return(1);
     }
 
+    public function addPrimaryKeyConstraint($table)
+    {
+        $query = 'ALTER TABLE ' . $this->escapeName($table->getName())
+            . ' ADD PRIMARY KEY('.$this->escapeName($table->primary->dbName).')';
+
+        $result = $this->mysqli->query($query);
+
+        if ($result === false) {
+            $message = 'MySQL error in query "'.$query.'"'
+                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($message, $code);
+        }
+    }
+
+    public function addForeignKeyConstraint($table)
+    {
+        if ($table->isChildTable()) {
+            $query = 'ALTER TABLE ' . $this->escapeName($table->getName())
+                . ' ADD FOREIGN KEY('.$this->escapeName($table->foreign->dbName).')'
+                . ' REFERENCES '.$this->escapeName($table->parent->getName())
+                .'('.$this->escapeName($table->parent->primary->dbName).')';
+
+            $result = $this->mysqli->query($query);
+
+            if ($result === false) {
+                $message = 'MySQL error in query "'.$query.'"'
+                    .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
+            }
+        }
+    }
+
 
     public function dropLabelView($table, $ifExists = false)
     {

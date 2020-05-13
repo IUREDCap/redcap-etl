@@ -107,6 +107,18 @@ class Table
         return $field;
     }
 
+    /**
+     * Indicates if the table is a child table (i.e., is NOT a root table).
+     */
+    public function isChildTable()
+    {
+        $isChild = false;
+        if (isset($this->parent) && $this->parent instanceof Table) {
+            $isChild = true;
+        }
+        return $isChild;
+    }
+
 
     public function setForeign($parentTable)
     {

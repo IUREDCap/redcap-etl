@@ -560,11 +560,15 @@ class RedCapEtl
      */
     protected function createLoadTables()
     {
-        // foreach table, replace it with an empty table
+        #-------------------------------------------------------------
+        # Get the tables in top-down order, so that each parent table
+        # will always come before its child tables
+        #-------------------------------------------------------------
         $tables = $this->schema->getTablesTopDown();
 
         #---------------------------------------------------------------------
-        # Drop tables in the reverse order of how they were defined, and drop
+        # Drop tables in the reverse order (bottom-up), so that child tables
+        # will always be dropped before their parent table. And drop
         # the label view (if any) for a table before dropping the table
         #---------------------------------------------------------------------
         foreach (array_reverse($tables) as $table) {
@@ -583,10 +587,15 @@ class RedCapEtl
         foreach ($tables as $table) {
             $ifExists = false;
             $this->dbcon->createTable($table, $ifExists);
+            // $this->dbcon->addPrimaryKeyConstraint($table);
 
             $msg = "Created table '".$table->name."'";
 
-            // If this table uses the Lookup table, create a view
+            #--------------------------------------------------------------------------
+            # If this table uses the Lookup table (i.e., has multiple-choice values),
+            # Create a view of the table that has multiple-choice labels instead of
+            # multiple-choice values.
+            #--------------------------------------------------------------------------
             if ($table->usesLookup === true) {
                 $this->dbcon->replaceLookupView($table, $this->schema->getLookupTable());
                 $msg .= '; Lookup table created';
@@ -599,6 +608,26 @@ class RedCapEtl
             $lookupTable = $this->schema->getLookupTable();
             $this->dbcon->replaceTable($lookupTable);
             $this->loadTableRows($lookupTable);
+        }
+    }
+
+    protected function createKeys()
+    {
+        #-------------------------------------------------------------
+        # Get the tables in top-down order, so that each parent table
+        # will always come before its child tables
+        #-------------------------------------------------------------
+        $tables = $this->schema->getTablesTopDown();
+
+        #------------------------------------------------------
+        # Create tables
+        #------------------------------------------------------
+        foreach ($tables as $table) {
+            $this->dbcon->addPrimaryKeyConstraint($table);
+        }
+
+        foreach ($tables as $table) {
+            $this->dbcon->addForeignKeyConstraint($table);
         }
     }
 
@@ -714,6 +743,7 @@ class RedCapEtl
 
             $this->createLoadTables();
             $numberOfRecordIds = $this->extractTransformLoad();
+            $this->createKeys();
 
             $this->runPostProcessingSql();
                 
