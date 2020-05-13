@@ -24,11 +24,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
      */
     public function testGenerateSchemaUsingBasicDemography()
     {
-        ##########################################################################
-        # Test using basic demography test files
-        ##########################################################################
-
-        #create an EtlRecCapProject object from which a schema will be generated
+        # create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/basic-demography.ini';
         $configuration = new Configuration(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
@@ -37,6 +33,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         $caCertificateFile = null;
         $errorHandler = null;
         $connection = null;
+
         $etlRedCapProject = new EtlRedCapProject(
             $apiUrl,
             $apiToken,
@@ -51,13 +48,22 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
 
         # Generate the schema
         $rulesText = $configuration->getTransformationRules();
-        $result = $schemaGenerator->generateSchema($rulesText);
+        list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
         # Test that the schema object was created
-        $this->assertNotNull($result, 'SchemaGenerator, generateSchema object not null');
+        $this->assertNotNull($schema, 'SchemaGenerator, generateSchema object not null');
+
+        $expectedTableNames = ['Demography'];
+
+        $tables = $schema->getTables();
+        $actualTableNames = array();
+        foreach ($tables as $table) {
+            array_push($actualTableNames, $table->getName());
+        }
+        $this->assertEquals($expectedTableNames, $actualTableNames, 'Get tables test');
 
         # Put the returned schema into a string format for comparison purposes
-        $output = print_r($result[0], true);
+        $output = print_r($schema, true);
 
         # Retrieve what the output text string should resemble
         $file = 'tests/data/schema_generator_output1.txt';
