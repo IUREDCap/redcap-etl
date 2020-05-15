@@ -31,6 +31,9 @@ class ConfigProperties
     const DB_SSL                 = 'db_ssl';
     const DB_SSL_VERIFY          = 'db_ssl_verify';
 
+    const DB_PRIMARY_KEYS        = 'db_primary_keys';
+    const DB_FOREIGN_KEYS        = 'db_foreign_keys';
+
     const DB_LOGGING             = 'db_logging';
     const DB_LOG_TABLE           = 'db_log_table';
     const DB_EVENT_LOG_TABLE     = 'db_event_log_table';

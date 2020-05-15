@@ -611,7 +611,11 @@ class RedCapEtl
         }
     }
 
-    protected function createKeys()
+    /**
+     * Creates primary and foreign keys for the database tables if they
+     * have been specified (note: unsupported for CSV and SQLite).
+     */
+    protected function createDatabaseKeys()
     {
         #-------------------------------------------------------------
         # Get the tables in top-down order, so that each parent table
@@ -622,12 +626,16 @@ class RedCapEtl
         #------------------------------------------------------
         # Create tables
         #------------------------------------------------------
-        foreach ($tables as $table) {
-            $this->dbcon->addPrimaryKeyConstraint($table);
+        if ($this->configuration->getDbPrimaryKeys()) {
+            foreach ($tables as $table) {
+                $this->dbcon->addPrimaryKeyConstraint($table);
+            }
         }
 
-        foreach ($tables as $table) {
-            $this->dbcon->addForeignKeyConstraint($table);
+        if ($this->configuration->getDbForeignKeys()) {
+            foreach ($tables as $table) {
+                $this->dbcon->addForeignKeyConstraint($table);
+            }
         }
     }
 
@@ -733,23 +741,28 @@ class RedCapEtl
         $this->logJobInfo();
         $this->log("Starting processing.");
 
+        # Parse the transformation rules
         list($parseStatus, $result) = $this->processTransformationRules();
-
         if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
             $message = "Transformation rules not parsed. Processing stopped.";
             throw new EtlException($message, EtlException::INPUT_ERROR);
-        } else {
-            $this->runPreProcessingSql();
-
-            $this->createLoadTables();
-            $numberOfRecordIds = $this->extractTransformLoad();
-            $this->createKeys();
-
-            $this->runPostProcessingSql();
-                
-            $this->log(self::PROCESSING_COMPLETE);
-            $this->logger->logEmailSummary();
         }
+
+        $this->runPreProcessingSql();
+
+        # Create the database tables where the extracted and
+        # transformed data from REDCap will be loaded
+        $this->createLoadTables();
+
+        # ETL
+        $numberOfRecordIds = $this->extractTransformLoad();
+
+        $this->createDatabaseKeys(); // create primary and foreign keys, if configured
+
+        $this->runPostProcessingSql();
+                
+        $this->log(self::PROCESSING_COMPLETE);
+        $this->logger->logEmailSummary();
 
         return $numberOfRecordIds;
     }

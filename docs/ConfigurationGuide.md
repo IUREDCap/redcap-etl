@@ -245,21 +245,41 @@ is loaded.</td>
 
 <tr>
 <td>db_ssl</td>
-<td><ul>
-        <li>MySQL: Flag that indicates if SSL should be used for MySQL database accesses
-(true by default). Note: on Linux systems, having this set to true
+<td>
+Flag that indicates if SSL should be used for database
+connection (true by default). This property is not applicable to CSV files
+or the SQLite database.
+Note: on Linux systems when using MySQL, having this set to true
 may cause the database connection to fail when the database host is specified
 as "localhost". To fix this problem, set db_ssl to 'false' (or 0), or specify
-        "127.0.0.1" for the database host instead of "localhost".</li>
-        <li>SQL Server: Flag for the 'encrypt' option of the PHP SQL Server Driver. It indicates whether the connection to the database server should be encrypted (false by default). Uses the self-signed certificate in the SQL Server database instance.</li></ul>
-        </td>
+"127.0.0.1" for the database host instead of "localhost".
+</td>
 </tr>
 
 <tr>
 <td>db_ssl_verify</td>
-<td><ul>
-        <li>MySQL: Flag that indicates if the SSL certificate of the database server should be verified. For this to work, a valid ca_cert_file (certificate authority certificate file) needs to be specified.</li>
-        <li>SQL Server: Flag for the TrustServerCertificate option for the PHP SQL Server Driver. It indicates whether the certificate on the SQL Server instance should be trusted (default is false.) For this to work, a valid ca_cert_file (certificate authority certificate file) needs to be specified.</li></ul>
+<td>
+Flag that indicates if the SSL certificate of the database server should be verified. For this to work, a valid ca_cert_file (certificate authority certificate file) needs to be specified. This property is not applicable to CSV files or SQLite databases.
+</td>
+</tr>
+
+<tr>
+<td>db_primary_keys</td>
+<td>
+Flag that indicates if primary key constraints should be created for
+database tables (true by default).
+This functionality is not avaiable for CSV files or
+SQLite databases.
+</td>
+</tr>
+
+<tr>
+<td>db_foreign_keys</td>
+<td>
+Flag that indicates if foreign key constraints should be created for
+database tables that are specified as having parent tables in the
+transformation rules (true by default). This functionality is not
+avaiable for CSV files or SQLite databases.
 </td>
 </tr>
 
