@@ -13,20 +13,23 @@ class VisitsTestUtility
     public static function dropTablesAndViews($dbh)
     {
         try {
-            $dbh->exec("DROP TABLE IF EXISTS BMI");
-            $dbh->exec("DROP TABLE IF EXISTS Contact");
-            $dbh->exec("DROP VIEW  IF EXISTS Contact_label_view");
-            $dbh->exec("DROP TABLE IF EXISTS Demography");
-            $dbh->exec("DROP VIEW  IF EXISTS Demography_label_view");
-            $dbh->exec("DROP TABLE IF EXISTS Followup");
+            # Note: order of drops is important due to key constriants
             $dbh->exec("DROP VIEW  IF EXISTS Followup_label_view");
-            $dbh->exec("DROP TABLE IF EXISTS Labs");
-            $dbh->exec("DROP TABLE IF EXISTS Lookup");
-            $dbh->exec("DROP TABLE IF EXISTS Recipients");
-            $dbh->exec("DROP TABLE IF EXISTS Sent");
-            $dbh->exec("DROP TABLE IF EXISTS VisitInfo");
+            $dbh->exec("DROP VIEW  IF EXISTS Contact_label_view");
             $dbh->exec("DROP VIEW  IF EXISTS VisitInfo_label_view");
+            $dbh->exec("DROP VIEW  IF EXISTS Demography_label_view");
+
+            $dbh->exec("DROP TABLE IF EXISTS Followup");
+            $dbh->exec("DROP TABLE IF EXISTS Sent");
+            $dbh->exec("DROP TABLE IF EXISTS Recipients");
+            $dbh->exec("DROP TABLE IF EXISTS Labs");
+            $dbh->exec("DROP TABLE IF EXISTS Contact");
             $dbh->exec("DROP TABLE IF EXISTS VisitResults");
+            $dbh->exec("DROP TABLE IF EXISTS VisitInfo");
+            $dbh->exec("DROP TABLE IF EXISTS BMI");
+            $dbh->exec("DROP TABLE IF EXISTS Demography");
+
+            $dbh->exec("DROP TABLE IF EXISTS Lookup");
         } catch (Exception $exception) {
             print "ERROR - table deletion: ".$exception->getMessage()."\n";
         }
@@ -127,18 +130,16 @@ class VisitsTestUtility
             array(
                 'visitresults_id' => 1,
                 'record_id' => 1,
-                'sleep_hours' => 7.5,
-                'sleep_minutes' => 450
+                'sleep_hours' => 7.5
             ),
             array(
                 'visitresults_id' => 2,
                 'record_id' => 1,
-                'sleep_hours' => 8.5,
-                'sleep_minutes' => 510
+                'sleep_hours' => 8.5
             )
         );
 
-        $sql = 'SELECT visitresults_id, record_id, sleep_hours, sleep_minutes'
+        $sql = 'SELECT visitresults_id, record_id, sleep_hours'
             .' FROM VisitResults ORDER BY visitresults_id';
 
         $statement  = $dbh->query($sql);

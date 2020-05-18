@@ -231,10 +231,14 @@ class MysqlDbConnection extends DbConnection
         return(1);
     }
 
+    /**
+     * Adds a primary key to the table (note: MySQL ignores the constraint name
+     * as of when this method was implemented).
+     */
     public function addPrimaryKeyConstraint($table)
     {
         $query = 'ALTER TABLE ' . $this->escapeName($table->getName())
-            . ' ADD PRIMARY KEY('.$this->escapeName($table->primary->dbName).')';
+            . ' ADD PRIMARY KEY ('.$this->escapeName($table->primary->dbName).')';
 
         $result = $this->mysqli->query($query);
 
