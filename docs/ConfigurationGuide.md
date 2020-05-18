@@ -268,7 +268,7 @@ Flag that indicates if the SSL certificate of the database server should be veri
 <td>
 Flag that indicates if primary key constraints should be created for
 database tables (true by default).
-This functionality is not avaiable for CSV files or
+This functionality is not available for CSV files or
 SQLite databases.
 </td>
 </tr>
@@ -279,7 +279,7 @@ SQLite databases.
 Flag that indicates if foreign key constraints should be created for
 database tables that are specified as having parent tables in the
 transformation rules (true by default). This functionality is not
-avaiable for CSV files or SQLite databases.
+available for CSV files or SQLite databases.
 </td>
 </tr>
 
@@ -403,7 +403,7 @@ Note:
 <tr>
 <td>pre_processing_sql_file</td>
 <td>File with SQL statements to execute on the database before the ETL process
-runs. This can be useful for dropping indexes and views created using post-processin SQL.
+runs. This can be useful for dropping indexes and views created using post-processing SQL.
 </td>
 </tr>
 
