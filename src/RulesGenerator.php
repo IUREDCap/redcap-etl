@@ -118,6 +118,9 @@ class RulesGenerator
             #--------------------------------------------------------
             $rootTable = $rootForm . '_root';
             $primaryKey = strtolower($rootTable) . '_id';
+            if (strcasecmp($primaryKey, $this->recordId) === 0) {
+                $primaryKey = strtolower($rootTable) . '_row_id';
+            }
             $rules .= "TABLE,{$rootTable},{$primaryKey},".RulesParser::ROOT."\n";
             if ($this->addDagFields) {
                 $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
@@ -130,6 +133,9 @@ class RulesGenerator
         
         foreach ($this->instruments as $formName => $formLabel) {
             $primaryKey = strtolower($formName) . '_id';
+            if (strcasecmp($primaryKey, $this->recordId) === 0) {
+                $primaryKey = strtolower($rootTable) . '_row_id';
+            }
             
             if (in_array($formName, $repeatingForms)) {
                 $rules .= "TABLE,{$formName},{$rootTable},".RulesParser::REPEATING_INSTRUMENTS."\n";
@@ -152,7 +158,12 @@ class RulesGenerator
         # same record ID is in multiple arms
         #-------------------------------------------------------------
         $rootTable = 'root';
-        $rules .= 'TABLE,'.$rootTable.',root_id,'.RulesParser::ROOT."\n";
+        $primaryKey = 'root_id';
+        if (strcasecmp($primaryKey, $this->recordId) === 0) {
+            $primaryKey = 'root_row_id';
+        }
+
+        $rules .= 'TABLE,'.$rootTable.','.$primaryKey.','.RulesParser::ROOT."\n";
         if ($this->addDagFields) {
             $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
             $rules .= "FIELD,".RedCapEtl::COLUMN_DAG.",{$type}\n";

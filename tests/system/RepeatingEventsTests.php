@@ -28,12 +28,12 @@ abstract class RepeatingEventsTests extends TestCase
         $dbh->exec("DROP TABLE IF EXISTS re_baseline");
         $dbh->exec("DROP TABLE IF EXISTS re_baseline_and_home_visits");
         $dbh->exec("DROP TABLE IF EXISTS re_baseline_and_visits");
-        $dbh->exec("DROP VIEW  IF EXISTS re_enrollment_label_view");
-        $dbh->exec("DROP TABLE IF EXISTS re_enrollment");
         $dbh->exec("DROP TABLE IF EXISTS re_home_cardiovascular_visits");
         $dbh->exec("DROP TABLE IF EXISTS re_home_weight_visits");
         $dbh->exec("DROP TABLE IF EXISTS re_visits");
         $dbh->exec("DROP TABLE IF EXISTS re_visits_and_home_visits");
+        $dbh->exec("DROP VIEW  IF EXISTS re_enrollment_label_view");
+        $dbh->exec("DROP TABLE IF EXISTS re_enrollment");
     }
 
 
@@ -87,7 +87,9 @@ abstract class RepeatingEventsTests extends TestCase
             .', systolic1 '
             .', systolic2 '
             .', systolic3 '
-            .' FROM re_all_visits ORDER BY record_id';
+            .' FROM re_all_visits '
+            .' ORDER BY re_all_visits_id '
+            ;
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -120,7 +122,8 @@ abstract class RepeatingEventsTests extends TestCase
             .', systolic1 '
             .', systolic2 '
             .', systolic3 '
-            .' FROM re_baseline ORDER BY record_id';
+            .' FROM re_baseline '
+            .' ORDER BY re_baseline_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -156,7 +159,8 @@ abstract class RepeatingEventsTests extends TestCase
             .', systolic1 '
             .', systolic2 '
             .', systolic3 '
-            .' FROM re_baseline_and_home_visits ORDER BY record_id';
+            .' FROM re_baseline_and_home_visits '
+            .' ORDER BY re_baseline_and_home_visits_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -191,7 +195,8 @@ abstract class RepeatingEventsTests extends TestCase
             .', systolic1 '
             .', systolic2 '
             .', systolic3 '
-            .' FROM re_baseline_and_visits ORDER BY record_id';
+            .' FROM re_baseline_and_visits '
+            .' ORDER BY re_baseline_and_visits_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -210,7 +215,8 @@ abstract class RepeatingEventsTests extends TestCase
             .' enrollment_id, record_id, registration_date, first_name, last_name, '
             .' birthdate, registration_age, gender, '
             .' race___0, race___1, race___2, race___3, race___4, race___5'
-            .' FROM re_enrollment ORDER BY record_id';
+            .' FROM re_enrollment '
+            .' ORDER BY enrollment_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -229,7 +235,8 @@ abstract class RepeatingEventsTests extends TestCase
             .' enrollment_id, record_id, registration_date, first_name, last_name, '
             .' birthdate, registration_age, gender, '
             .' race___0, race___1, race___2, race___3, race___4, race___5'
-            .' FROM re_enrollment_label_view ORDER BY record_id';
+            .' FROM re_enrollment_label_view '
+            .' ORDER BY enrollment_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -261,7 +268,8 @@ abstract class RepeatingEventsTests extends TestCase
             .', systolic1 '
             .', systolic2 '
             .', systolic3 '
-            .' FROM re_home_cardiovascular_visits ORDER BY record_id';
+            .' FROM re_home_cardiovascular_visits '
+            .' ORDER BY re_home_cardiovascular_visits_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -286,7 +294,8 @@ abstract class RepeatingEventsTests extends TestCase
             .", ".static::WEIGHT_TIME_FIELD_DECLARATION." "
             .', weight_kg '
             .', height_m '
-            .' FROM re_home_weight_visits ORDER BY record_id';
+            .' FROM re_home_weight_visits '
+            .' ORDER BY re_home_weight_visits_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -320,7 +329,8 @@ abstract class RepeatingEventsTests extends TestCase
             .', systolic1 '
             .', systolic2 '
             .', systolic3 '
-            .' FROM re_visits ORDER BY record_id';
+            .' FROM re_visits '
+            .' ORDER BY re_visits_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -358,7 +368,8 @@ abstract class RepeatingEventsTests extends TestCase
             .', systolic2 '
             .', systolic3 '
             .', cardiovascular_complete '
-            .' FROM re_visits_and_home_visits ORDER BY record_id';
+            .' FROM re_visits_and_home_visits '
+            .' ORDER BY re_visits_and_home_visits_id';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);

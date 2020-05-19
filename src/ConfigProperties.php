@@ -34,6 +34,9 @@ class ConfigProperties
     const DB_SSL                 = 'db_ssl';
     const DB_SSL_VERIFY          = 'db_ssl_verify';
 
+    const DB_PRIMARY_KEYS        = 'db_primary_keys';
+    const DB_FOREIGN_KEYS        = 'db_foreign_keys';
+
     const DB_LOGGING             = 'db_logging';
     const DB_LOG_TABLE           = 'db_log_table';
     const DB_EVENT_LOG_TABLE     = 'db_event_log_table';
@@ -61,8 +64,11 @@ class ConfigProperties
     const LOG_FILE                 = 'log_file';
     const LOOKUP_TABLE_NAME        = 'lookup_table_name';
 
+    const PRE_PROCESSING_SQL       = 'pre_processing_sql';
+    const PRE_PROCESSING_SQL_FILE  = 'pre_processing_sql_file';
     const POST_PROCESSING_SQL      = 'post_processing_sql';
     const POST_PROCESSING_SQL_FILE = 'post_processing_sql_file';
+    
     const PRINT_LOGGING            = 'print_logging';   # true/false indicates if log messages should be printed
     const PROJECT_ID               = 'project_id';  # optional ID of REDCap project from which data are being extracted
     const RECORD_ID                = 'record_id';

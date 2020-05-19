@@ -62,6 +62,20 @@ abstract class DbConnection
     abstract public function createTable($table, $ifNotExists = false);
 
     /**
+     * Adds a primary key constraint to the specified table.
+     *
+     * @param IU\REDCap\Schema\Table $table the table to create the primary key for.
+     */
+    abstract public function addPrimaryKeyConstraint($table);
+
+    /**
+     * Adds foriegn key constraint on specified table for its parent table (if any).
+     *
+     * @param IU\REDCap\Schema\Table $table the table to create the foreign key for.
+     */
+    abstract public function addForeignKeyConstraint($table);
+
+    /**
      * Drops the specified label view.
      *
      * @param IU\REDCapETL\Schema\Table $table table object corresponding

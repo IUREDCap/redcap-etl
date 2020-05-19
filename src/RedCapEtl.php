@@ -60,6 +60,13 @@ class RedCapEtl
 
     private $configuration;
 
+    /** @var array map where the keys represent root tables that have
+     *     fields that have multiple rows of data per record ID.
+     *     Root tables are intended for fields that have a 1:1 mapping
+     *     with the record ID.
+     */
+    private $rootTablesWithMultiValues;
+
 
     /**
      * Constructor.
@@ -78,6 +85,8 @@ class RedCapEtl
         $redcapProjectClass = null
     ) {
         $this->app = $logger->getApp();
+
+        $this->rootTablesWithMultiValues = array();
 
         $this->configuration = new Configuration(
             $logger,
@@ -428,35 +437,72 @@ class RedCapEtl
      */
     protected function transform($table, $records, $foreignKey, $suffix)
     {
+        $tableName = $table->getName();
+        $calcFieldIgnorePattern = $this->configuration->getCalcFieldIgnorePattern();
+
         foreach ($table->rowsType as $rowType) {
             // Look at row_event for this table
             switch ($rowType) {
-                // If root
+                #-------------------------------------------------------------------
+                # ROOT Table - this case should only occur for non-recursive calls,
+                # since a root table can't be a child of another table
+                #-------------------------------------------------------------------
                 case RowsType::ROOT:
-                    $this->createRowAndRecurse($table, $records, $foreignKey, $suffix, $rowType);
+                    #------------------------------------------------------------------------
+                    # Root tables are for fields that have a 1:1 mapping with the record ID,
+                    # so stop processing once a record for the record ID being processed is
+                    # found that has at least some data for the root table.
+                    # For the child tables, which, in general, have a m:1 relationship
+                    # with the record ID, process all records for this record ID.
+                    #------------------------------------------------------------------------
+                    $rootRecordFound = false;
+                    foreach ($records as $record) {
+                        $primaryKey =
+                            $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
+
+                        # If row creation succeeded:
+                        if ($primaryKey) {
+                            if (!$rootRecordFound) {
+                                $rootRecordFound = true;
+                                foreach ($table->getChildren() as $childTable) {
+                                    $this->transform($childTable, $records, $primaryKey, $suffix);
+                                }
+                                if ($table->isRecordIdTable()) {
+                                    # If this is a record ID table stop processing; don't store multiple rows
+                                    break;
+                                }
+                            } else {
+                                # A record with values for the root table was already found,
+                                # so there are multiple values per record ID for at least one
+                                # field in the root table.
+                                if (!array_key_exists($tableName, $this->rootTablesWithMultiValues)) {
+                                    # Only print warning message once for each table
+                                    $message = 'WARNING: ROOT table "'.$tableName.'" has fields'
+                                        .' that have multiple values per record ID in REDCap.'
+                                        .' ROOT tables are intended for fields that only have'
+                                        .' one value per record ID.';
+                                    $this->logger->log($message);
+                                    $this->rootTablesWithMultiValues[$tableName] = true;
+                                }
+                            }
+                        }
+                    }
                     break;
 
-                // If events
+                // If events or repeatable forms or repeating events
                 case RowsType::BY_EVENTS:
-                    // Foreach Record (i.e., foreach event)
-                    foreach ($records as $record) {
-                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix, $rowType);
-                    }
-                    break;
-
-                // If repeatable forms
                 case RowsType::BY_REPEATING_INSTRUMENTS:
-                    // Foreach Record (i.e., foreach repeatable form)
-                    foreach ($records as $record) {
-                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix, $rowType);
-                    }
-                    break;
-
-                // If repeatable events
                 case RowsType::BY_REPEATING_EVENTS:
-                    // Foreach Record (i.e., foreach repeatable event)
+                    // Foreach Record (i.e., foreach event or repeatable form or repeatable event)
                     foreach ($records as $record) {
-                        $this->createRowAndRecurse($table, array($record), $foreignKey, $suffix, $rowType);
+                        $primaryKey =
+                            $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
+
+                        if ($primaryKey) {
+                            foreach ($table->getChildren() as $childTable) {
+                                $this->transform($childTable, array($record), $primaryKey, $suffix);
+                            }
+                        }
                     }
                     break;
 
@@ -464,7 +510,19 @@ class RedCapEtl
                 case RowsType::BY_SUFFIXES:
                     // Foreach Suffix
                     foreach ($table->rowsSuffixes as $newSuffix) {
-                        $this->createRowAndRecurse($table, $records, $foreignKey, $suffix.$newSuffix, $rowType);
+                        $primaryKey = $table->createRow(
+                            $records[0],
+                            $foreignKey,
+                            $suffix.$newSuffix,
+                            $rowType,
+                            $calcFieldIgnorePattern
+                        );
+
+                        if ($primaryKey) {
+                            foreach ($table->getChildren() as $childTable) {
+                                $this->transform($childTable, $records, $primaryKey, $suffix.$newSuffix);
+                            }
+                        }
                     }
                     break;
 
@@ -474,13 +532,19 @@ class RedCapEtl
                     foreach ($records as $record) {
                         // Foreach Suffix
                         foreach ($table->rowsSuffixes as $newSuffix) {
-                            $this->createRowAndRecurse(
-                                $table,
-                                array($record),
+                            $primaryKey = $table->createRow(
+                                $record,
                                 $foreignKey,
                                 $suffix.$newSuffix,
-                                $rowType
+                                $rowType,
+                                $calcFieldIgnorePattern
                             );
+
+                            if ($primaryKey) {
+                                foreach ($table->getChildren() as $childTable) {
+                                    $this->transform($childTable, array($record), $primaryKey, $suffix.$newSuffix);
+                                }
+                            }
                         }
                     }
                     break;
@@ -488,24 +552,6 @@ class RedCapEtl
         }
     }
 
-
-    /**
-     * See 'transform' function for explanation of variables.
-     */
-    protected function createRowAndRecurse($table, $records, $foreignKey, $suffix, $rowType)
-    {
-        // Create Row using 1st Record
-        $calcFieldIgnorePattern = $this->configuration->getCalcFieldIgnorePattern();
-        $primaryKey = $table->createRow($records[0], $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
-
-        // If primary key generated, recurse for child tables
-        if ($primaryKey) {
-            // Foreach child table
-            foreach ($table->getChildren() as $childTable) {
-                $this->transform($childTable, $records, $primaryKey, $suffix);
-            }
-        }
-    }
 
 
     /** WORK IN PROGRESS
@@ -532,19 +578,42 @@ class RedCapEtl
      */
     protected function createLoadTables()
     {
-        // foreach table, replace it with an empty table
-        $tables = $this->schema->getTables();
-        foreach ($tables as $table) {
+        #-------------------------------------------------------------
+        # Get the tables in top-down order, so that each parent table
+        # will always come before its child tables
+        #-------------------------------------------------------------
+        $tables = $this->schema->getTablesTopDown();
+
+        #---------------------------------------------------------------------
+        # Drop tables in the reverse order (bottom-up), so that child tables
+        # will always be dropped before their parent table. And drop
+        # the label view (if any) for a table before dropping the table
+        #---------------------------------------------------------------------
+        foreach (array_reverse($tables) as $table) {
             if ($table->usesLookup === true) {
                 $ifExists = true;
                 $this->dbcon->dropLabelView($table, $ifExists);
             }
 
-            $this->dbcon->replaceTable($table);
+            $ifExists = true;
+            $this->dbcon->dropTable($table, $ifExists);
+        }
+
+        #------------------------------------------------------
+        # Create the tables in the order they were defined
+        #------------------------------------------------------
+        foreach ($tables as $table) {
+            $ifExists = false;
+            $this->dbcon->createTable($table, $ifExists);
+            // $this->dbcon->addPrimaryKeyConstraint($table);
 
             $msg = "Created table '".$table->name."'";
 
-            // If this table uses the Lookup table, create a view
+            #--------------------------------------------------------------------------
+            # If this table uses the Lookup table (i.e., has multiple-choice values),
+            # Create a view of the table that has multiple-choice labels instead of
+            # multiple-choice values.
+            #--------------------------------------------------------------------------
             if ($table->usesLookup === true) {
                 $this->dbcon->replaceLookupView($table, $this->schema->getLookupTable());
                 $msg .= '; Lookup table created';
@@ -568,6 +637,34 @@ class RedCapEtl
         $this->projectInfoTable = new ProjectInfoTable($this->configuration->getTablePrefix() /* , $name */);
         $this->dbcon->replaceTable($this->projectInfoTable);
         $this->loadTableRows($this->projectInfoTable);
+    }
+
+    /**
+     * Creates primary and foreign keys for the database tables if they
+     * have been specified (note: unsupported for CSV and SQLite).
+     */
+    protected function createDatabaseKeys()
+    {
+        #-------------------------------------------------------------
+        # Get the tables in top-down order, so that each parent table
+        # will always come before its child tables
+        #-------------------------------------------------------------
+        $tables = $this->schema->getTablesTopDown();
+
+        #------------------------------------------------------
+        # Create tables
+        #------------------------------------------------------
+        if ($this->configuration->getDbPrimaryKeys()) {
+            foreach ($tables as $table) {
+                $this->dbcon->addPrimaryKeyConstraint($table);
+            }
+        }
+
+        if ($this->configuration->getDbForeignKeys()) {
+            foreach ($tables as $table) {
+                $this->dbcon->addForeignKeyConstraint($table);
+            }
+        }
     }
 
 
@@ -672,56 +769,80 @@ class RedCapEtl
         $this->logJobInfo();
         $this->log("Starting processing.");
 
+        # Parse the transformation rules
         list($parseStatus, $result) = $this->processTransformationRules();
-
         if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
             $message = "Transformation rules not parsed. Processing stopped.";
             throw new EtlException($message, EtlException::INPUT_ERROR);
-        } else {
-            $this->createLoadTables();
-
-            #----------------------------------------------------------------------
-            # Project Info table (eventually will have possible multiple projects)
-            #----------------------------------------------------------------------
-            if (!($this->dbcon instanceof CsvDbConnection)) {
-                $projectInfo = $this->dataProject->exportProjectInfo();
-                $row = $this->projectInfoTable->getRowData(
-                    $this->configuration->getRedCapApiUrl(),
-                    $projectInfo['project_id'],
-                    $projectInfo['project_title'],
-                    $projectInfo['project_language']
-                );
-                $this->dbcon->insertRow($row);
-            }
-
-            #------------------------
-            # Run ETL process
-            #------------------------
-            $numberOfRecordIds = $this->extractTransformLoad();
-                
-            #----------------------------------------
-            # Post-processing SQL
-            #----------------------------------------
-            try {
-                $sql = $this->configuration->getPostProcessingSql();
-                if (!empty($sql)) {
-                    $this->dbcon->processQueries($sql);
-                }
-
-                $sqlFile = $this->configuration->getPostProcessingSqlFile();
-                if (!empty($sqlFile)) {
-                    $this->dbcon->processQueryFile($sqlFile);
-                }
-            } catch (\Exception $exception) {
-                $message = 'Post-processing SQL error: '.$exception->getMessage();
-                throw new EtlException($message, EtlException::INPUT_ERROR);
-            }
-
-            $this->log(self::PROCESSING_COMPLETE);
-            $this->logger->logEmailSummary();
         }
 
+        $this->runPreProcessingSql();
+
+        # Create the database tables where the extracted and
+        # transformed data from REDCap will be loaded
+        $this->createLoadTables();
+
+        #----------------------------------------------------------------------
+        # Project Info table (eventually will have possible multiple projects)
+        #----------------------------------------------------------------------
+        if (!($this->dbcon instanceof CsvDbConnection)) {
+            $projectInfo = $this->dataProject->exportProjectInfo();
+            $row = $this->projectInfoTable->getRowData(
+                $this->configuration->getRedCapApiUrl(),
+                $projectInfo['project_id'],
+                $projectInfo['project_title'],
+                $projectInfo['project_language']
+            );
+            $this->dbcon->insertRow($row);
+        }
+
+        # ETL
+        $numberOfRecordIds = $this->extractTransformLoad();
+
+        $this->createDatabaseKeys(); // create primary and foreign keys, if configured
+
+        $this->runPostProcessingSql();
+                
+        $this->log(self::PROCESSING_COMPLETE);
+        $this->logger->logEmailSummary();
+
         return $numberOfRecordIds;
+    }
+
+    protected function runPreProcessingSql()
+    {
+        try {
+            $sql = $this->configuration->getPreProcessingSql();
+            if (!empty($sql)) {
+                $this->dbcon->processQueries($sql);
+            }
+
+            $sqlFile = $this->configuration->getPreProcessingSqlFile();
+            if (!empty($sqlFile)) {
+                $this->dbcon->processQueryFile($sqlFile);
+            }
+        } catch (\Exception $exception) {
+            $message = 'Pre-processing SQL error: '.$exception->getMessage();
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+    }
+
+    protected function runPostProcessingSql()
+    {
+        try {
+            $sql = $this->configuration->getPostProcessingSql();
+            if (!empty($sql)) {
+                $this->dbcon->processQueries($sql);
+            }
+
+            $sqlFile = $this->configuration->getPostProcessingSqlFile();
+            if (!empty($sqlFile)) {
+                $this->dbcon->processQueryFile($sqlFile);
+            }
+        } catch (\Exception $exception) {
+            $message = 'Post-processing SQL error: '.$exception->getMessage();
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
     }
 
 

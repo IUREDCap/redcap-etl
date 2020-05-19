@@ -144,6 +144,39 @@ abstract class PdoDbConnection extends DbConnection
         return $query;
     }
 
+    public function addPrimaryKeyConstraint($table)
+    {
+        $query = 'ALTER TABLE ' . $this->escapeName($table->getName())
+            . ' ADD PRIMARY KEY('.$table->primary->dbName.')';
+
+        try {
+            $result = $this->db->query($query);
+        } catch (\Exception $exception) {
+            $message = 'Database error in query "'.$query.'": '.$exception->getMessage();
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($message, $code);
+        }
+    }
+
+    public function addForeignKeyConstraint($table)
+    {
+        if ($table->isChildTable()) {
+            $query = 'ALTER TABLE ' . $this->escapeName($table->getName())
+                . ' ADD FOREIGN KEY('.$this->escapeName($table->foreign->dbName).')'
+                . ' REFERENCES '.$this->escapeName($table->parent->getName())
+                .'('.$this->escapeName($table->parent->primary->dbName).')';
+
+            try {
+                $result = $this->db->query($query);
+            } catch (\Exception $exception) {
+                $message = 'Database error in query "'.$query.'": '.$exception->getMessage();
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
+            }
+        }
+    }
+
+
     public function dropLabelView($table, $ifExists = false)
     {
         $view = ($table->name).($this->labelViewSuffix);
@@ -441,7 +474,7 @@ abstract class PdoDbConnection extends DbConnection
                 $result = $this->db->query($query);
             }
         } catch (\Exception $exception) {
-            $error = "Post-processing query failed: ".$exception->getMessage();
+            $error = "SQL query failed: ".$exception->getMessage();
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         }

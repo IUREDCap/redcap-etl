@@ -11,11 +11,12 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\TestProject;
 
 /**
- * PHPUnit tests for the Logger class.
+ * PHPUnit tests for the Configuration class.
  */
 class ConfigurationTest extends TestCase
 {
     private $properties;
+    private $logger;
     
     public function setUp()
     {
@@ -25,13 +26,74 @@ class ConfigurationTest extends TestCase
             ConfigProperties::TRANSFORM_RULES_SOURCE => '3',
             ConfigProperties::DB_CONNECTION => 'CSV:./'
         ];
+        $this->logger = new Logger('config-test-app');
     }
 
     public function testConstructor()
     {
+        $config = new Configuration($this->logger, $this->properties);
 
-        $propertiesTemplate = array('transform_rules_source' => '3');
+        $this->assertNotNull($config, 'Configuration not null');
+        $this->assertTrue($config  instanceof Configuration, 'Configuration type test');
 
+        $expectedApiUrl = $this->properties[ConfigProperties::REDCAP_API_URL];
+        $this->assertEquals($expectedApiUrl, $config->getRedCapApiUrl(), 'API URL check');
+
+        $expectedApiToken = $this->properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
+        $this->assertEquals($expectedApiToken, $config->getDataSourceApiToken(), 'API token check');
+    }
+
+    public function testDbConfiguration()
+    {
+        $properties = $this->properties;
+        $configuration = new Configuration($this->logger, $properties);
+        $this->assertEquals(
+            Configuration::DEFAULT_DB_SSL,
+            $configuration->getDbSsl(),
+            'Db ssl set to true by default'
+        );
+        $this->assertEquals(
+            Configuration::DEFAULT_DB_PRIMARY_KEYS,
+            $configuration->getDbPrimaryKeys(),
+            'Db primary keys set to true by default'
+        );
+        $this->assertEquals(
+            Configuration::DEFAULT_DB_FOREIGN_KEYS,
+            $configuration->getDbPrimaryKeys(),
+            'Db foreign keys set to true by default'
+        );
+
+        # Db primary and foreign keys set to false
+        $properties = $this->properties;
+        $properties[ConfigProperties::DB_PRIMARY_KEYS] = 0;
+        $properties[ConfigProperties::DB_FOREIGN_KEYS] = 0;
+        $configuration = new Configuration($this->logger, $properties);
+        $this->assertFalse($configuration->getDbPrimaryKeys(), 'Db primary keys set to false');
+        $this->assertFalse($configuration->getDbForeignKeys(), 'Db foreign keys set to false');
+
+        # Db primary keys set to true, db foreign keys set to false
+        $properties = $this->properties;
+        $properties[ConfigProperties::DB_PRIMARY_KEYS] = 1;
+        $properties[ConfigProperties::DB_FOREIGN_KEYS] = 0;
+        $configuration = new Configuration($this->logger, $properties);
+        $this->assertTrue($configuration->getDbPrimaryKeys(), 'Db primary keys set to true');
+        $this->assertFalse($configuration->getDbForeignKeys(), 'Db foreign keys set to false when pk true');
+
+        # Db primary keys set to false, db foreign keys set to true (ERROR)
+        $properties = $this->properties;
+        $properties[ConfigProperties::DB_PRIMARY_KEYS] = 0;
+        $properties[ConfigProperties::DB_FOREIGN_KEYS] = 1;
+        $exceptionCaught = false;
+        try {
+            $configuration = new Configuration($this->logger, $properties);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'Foreign keys without primary keys check');
+    }
+
+    public function testInvalidJsonConfigurationFile()
+    {
         // Bad .json file
         $logger = new Logger('test-app');
 
@@ -64,7 +126,11 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor Bad .json exception message check'
         );
+    }
 
+    public function testStuff2()
+    {
+        $propertiesTemplate = array('transform_rules_source' => '3');
 
         // No API URL
         $properties = $propertiesTemplate;
@@ -73,7 +139,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No "redcap_api_url" property was defined.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -106,7 +172,7 @@ class ConfigurationTest extends TestCase
         $expectedMessage = 'Unrecognized value "'.$badSSLVerify.
             '" for ssl_verify property; a true or false value should be specified.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -137,7 +203,7 @@ class ConfigurationTest extends TestCase
         $expectedMessage = 'Unrecognized value "'.$badExtractedRecordCountCheck.
             '" for extracted_record_count_check property; a true or false value should be specified.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -164,7 +230,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No data source API token was found.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -196,7 +262,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'Invalid batch_size property. This property must be an integer greater than 0.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -226,7 +292,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'Invalid batch_size property. This property must be an integer greater than 0.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -257,7 +323,7 @@ class ConfigurationTest extends TestCase
         $expectedMessage =
             'Invalid table_prefix property. This property may only contain letters, numbers, and underscores.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -288,7 +354,7 @@ class ConfigurationTest extends TestCase
         $expectedMessage =
             'Invalid label_view_suffix property. This property may only contain letters, numbers, and underscores.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -316,7 +382,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No database connection was specified in the configuration.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -345,7 +411,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No database connection was specified in the configuration.';
         try {
-            $config = new Configuration($logger, $properties);
+            $config = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -370,12 +436,6 @@ class ConfigurationTest extends TestCase
         // For various assertions that don't require an error to be caught
         $properties = $propertiesTemplate;
 
-        $useWebScriptLogFile = true;
-        $webScriptLogFile = 'web-script-log-file';
-        $expectedWebScriptLogFile =
-            realpath(__DIR__.'/../../src').'/'.$webScriptLogFile;
-        $properties['web_script_log_file'] = $webScriptLogFile;
-
         $sslVerify = 'true';
         $expectedSslVerify = true;
         $properties['ssl_verify'] = $sslVerify;
@@ -391,7 +451,7 @@ class ConfigurationTest extends TestCase
         $properties['table_prefix'] = $expectedTablePrefix;
 
         $config =
-            new Configuration($logger, $properties);
+            new Configuration($this->logger, $properties);
 
 
         $sslVerify = $config->getSslVerify();
@@ -718,7 +778,6 @@ class ConfigurationTest extends TestCase
 
     public function testProperties()
     {
-
         // Invalid property
         // Property not defined
         // Property defined in file
@@ -778,27 +837,26 @@ class ConfigurationTest extends TestCase
         $expectedDbEventLogTable = Configuration::DEFAULT_DB_EVENT_LOG_TABLE;
         $dbEventLogTable = $config->getDbEventLogTable();
         $this->assertEquals($expectedDbEventLogTable, $dbEventLogTable, 'Db event log table check');
-        
-        #---------------------------------------
-        # Property defined in array
-        #---------------------------------------
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
+    }
 
-        $expectedProperties = array(
-            'redcap_api_url' => 'https://redcap.someplace.edu/api/',
-            'transform_rules_source' => '2');
-        $configMock->setProperties($expectedProperties);
-        $properties = $configMock->getProperties();
+    public function testPropertiesInArray()
+    {
+        $properties = $this->properties;
+        $properties[ConfigProperties::REDCAP_API_URL] = 'https://redcap.someplace.edu/api/';
+        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+
+        $configuration = new Configuration($this->logger, $this->properties);
+        $configuration->setProperties($properties);
+        $getProperties = $configuration->getProperties();
         $this->assertEquals(
-            $expectedProperties,
             $properties,
+            $getProperties,
             'Get Properties check'
         );
 
-        $property = 'transform_rules_source';
-        $expectedInfo = '2 - defined in array argument';
-        $info = $configMock->getPropertyInfo($property);
+        $property = ConfigProperties::TRANSFORM_RULES_SOURCE;
+        $expectedInfo = '3 - defined in array argument';
+        $info = $configuration->getPropertyInfo($property);
         $this->assertEquals(
             $expectedInfo,
             $info,
@@ -806,43 +864,19 @@ class ConfigurationTest extends TestCase
         );
     }
 
-    public function testProcessTransformationRules()
+    public function testProcessTransformationRulesWithEmptyText()
     {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $method = $reflection->getMethod('processTransformationRules');
-        $method->setAccessible(true);
-        $configMock = $reflection->newInstanceWithoutConstructor();
-
-        // Source: _TEXT
-        // Property TRANSFORM_RULES_TEXT exists
-        $expectedRules = 'non-empty';
-        $properties = array(
-            ConfigProperties::TRANSFORM_RULES_SOURCE =>
-            Configuration::TRANSFORM_RULES_TEXT,
-            ConfigProperties::TRANSFORM_RULES_TEXT =>
-            $expectedRules);
-        $method->invokeArgs($configMock, array($properties));
-        $rules = $configMock->getTransformationRules();
-        $this->assertEquals(
-            $expectedRules,
-            $rules,
-            'ProcessTransformationRules property check'
-        );
-
         // Source: _TEXT
         // Property TRANSFORM_RULES_TEXT is empty
-        $expectedRules = '';
-        $properties = array(
-            ConfigProperties::TRANSFORM_RULES_SOURCE =>
-            Configuration::TRANSFORM_RULES_TEXT,
-            ConfigProperties::TRANSFORM_RULES_TEXT =>
-            $expectedRules);
+        $properties = $this->properties;
+        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_TEXT;
+        $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
         $exceptionCaught = false;
         $expectedCode = EtlException::FILE_ERROR;
         $expectedMessage = 'No transformation rules were entered.';
         try {
-            $method->invokeArgs($configMock, array($properties));
+            $configuration = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -861,18 +895,20 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'ProcessTransformationRules TEXT empty exception message check'
         );
-
+    }
+ 
+    public function testProcessTransformationRulesWithMissingText()
+    {
         // Source: _TEXT
         // Property TRANSFORM_RULES_TEXT is missing
-        $properties = array(
-            ConfigProperties::TRANSFORM_RULES_SOURCE =>
-            Configuration::TRANSFORM_RULES_TEXT);
+        $properties = $this->properties;
+        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_TEXT;
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No transformation rules text was defined.';
         try {
-            $method->invokeArgs($configMock, array($properties));
+            $configuration = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -891,34 +927,39 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'ProcessTransformationRules TEXT no property exception message check'
         );
+    }
 
+    public function testProcessTransformationRulesWithFileSource()
+    {
         // Source: _FILE
         // Local File.
-        $expectedRules = "RULES PLACEHOLDER\n";
         $file = __DIR__.'/../data/rules-test.txt';
 
-        $properties = array(
-            ConfigProperties::TRANSFORM_RULES_SOURCE =>
-            Configuration::TRANSFORM_RULES_FILE,
-            ConfigProperties::TRANSFORM_RULES_FILE => $file);
-        $method->invokeArgs($configMock, array($properties));
-        $rules = $configMock->getTransformationRules();
+        $properties = $this->properties;
+        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_FILE;
+        $properties[ConfigProperties::TRANSFORM_RULES_FILE] = $file;
+        $configuration = new Configuration($this->logger, $properties);
+
+        $expectedRules = file_get_contents($file);
+
+        $rules = $configuration->getTransformationRules();
         $this->assertEquals(
             $expectedRules,
             $rules,
             'ProcessTransformationRules local file check'
         );
+    }
 
-        // Source: Unknown
-        $properties = array(
-            ConfigProperties::TRANSFORM_RULES_SOURCE => 'foo'
-            );
+    public function testProcessTransformationRulesWithInvalidSource()
+    {
+        $properties = $this->properties;
+        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = 'foo';
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'Unrecognized transformation rules rouce.';
+        $expectedMessage = 'Unrecognized transformation rules source.';
         try {
-            $method->invokeArgs($configMock, array($properties));
+            $configuration = new Configuration($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -942,36 +983,25 @@ class ConfigurationTest extends TestCase
 
     public function testProcessTransformationRulesDefault()
     {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $method = $reflection->getMethod('processTransformationRules');
-        $method->setAccessible(true);
-        $configMock = $reflection->newInstanceWithoutConstructor();
+        $properties = $this->properties;
+        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
 
-        // Source: _DEFAULT
-        $expectedRules = '';
+        $configuration = new Configuration($this->logger, $this->properties);
 
-        $properties = array(
-            ConfigProperties::TRANSFORM_RULES_SOURCE =>
-            Configuration::TRANSFORM_RULES_DEFAULT
-        );
-        $method->invokeArgs($configMock, array($properties));
-        $rules = $configMock->getTransformationRules();
+        $expectedRulesSource = Configuration::TRANSFORM_RULES_DEFAULT;
+        $rulesSource = $configuration->getTransformRulesSource();
         $this->assertEquals(
-            $expectedRules,
-            $rules,
-            'ProcessTransformationRules DEFAULT check'
+            $expectedRulesSource,
+            $rulesSource,
+            'ProcessTransformationRules DEFAULT rule source check'
         );
     }
 
 
     public function testProcessFile()
     {
-        $logger = new Logger('configuration-test');
-        $configuration = new Configuration($logger, $this->properties);
+        $configuration = new Configuration($this->logger, $this->properties);
         
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
-
         // File is null
         // Relative path
         // Properties file is empty
@@ -984,45 +1014,6 @@ class ConfigurationTest extends TestCase
         $realFile = $configuration->processFile($file, true);
         $this->assertEquals($expectedFile, $realFile, 'ProcessFile null check');
 
-        // Non-existing directory
-        // Relative path
-        // Properties file is not empty
-        // fileShouldExist is false
-        // Result: Should throw exception because directory doesn't exist
-        $method = $reflection->getMethod('setPropertiesFile');
-        $method->setAccessible(true);
-        $method->invokeArgs(
-            $configMock,
-            array(__DIR__.'/ConfigurationTest.php')
-        );
-
-        $file = 'foo/bar.log';
-
-        $exceptionCaught = false;
-        $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'Directory for file ';
-        try {
-            $configMock->processFile($file, false);
-        } catch (EtlException $exception) {
-            $exceptionCaught = true;
-        }
-
-        $this->assertTrue(
-            $exceptionCaught,
-            'ProcessFile bad dir exception caught'
-        );
-        $this->assertEquals(
-            $expectedCode,
-            $exception->getCode(),
-            'ProcessFile bad dir exception code check'
-        );
-        $this->assertEquals(
-            substr($expectedMessage, 0, 15),
-            substr($exception->getMessage(), 0, 15),
-            'ProcessFile bad dir exception message check'
-        );
-
-
         // File doesn't exist
         // Absolute path
         // Properties file is irrelevant
@@ -1034,7 +1025,7 @@ class ConfigurationTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'File "/foo/bar.log" ';
         try {
-            $configMock->processFile($file, true);
+            $configuration->processFile($file, true);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -1054,13 +1045,12 @@ class ConfigurationTest extends TestCase
             'ProcessFile bad file exception message check'
         );
 
-
         // File doesn't exist, but directory does
         // Absolute path
         // Properties file is irrelevant
         // fileShouldExist is false
         $expectedFile = realpath(__DIR__.'/../../src/').'foo.log';
-        $realFile = $configMock->processFile($expectedFile, false);
+        $realFile = $configuration->processFile($expectedFile, false);
         $this->assertEquals(
             $expectedFile,
             $realFile,
@@ -1068,10 +1058,44 @@ class ConfigurationTest extends TestCase
         );
     }
 
-    public function testProcessDirectory()
+    public function testProcessFile2()
     {
-        $logger = new Logger('configuration-test');
-        $configuration = new Configuration($logger, $this->properties);
+        $configuration = new Configuration($this->logger, $this->properties);
+        // Non-existing directory
+        // Relative path
+        // Properties file is not empty
+        // fileShouldExist is false
+        // Result: Should throw exception because directory doesn't exist
+        $file = 'foo/bar.log';
+
+        $exceptionCaught = false;
+        $expectedCode = EtlException::INPUT_ERROR;
+        $expectedMessage = 'Directory for file ';
+        try {
+            $configuration->processFile($file, false);
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue(
+            $exceptionCaught,
+            'ProcessFile bad dir exception caught'
+        );
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'ProcessFile bad dir exception code check'
+        );
+        $this->assertEquals(
+            substr($expectedMessage, 0, 15),
+            substr($exception->getMessage(), 0, 15),
+            'ProcessFile bad dir exception message check'
+        );
+    }
+
+    public function testProcessDirectoryWithNulArgument()
+    {
+        $configuration = new Configuration($this->logger, $this->properties);
 
         // Null argument
         $exceptionCaught = false;
@@ -1098,6 +1122,11 @@ class ConfigurationTest extends TestCase
             substr($exception->getMessage(), 0, 15),
             'ProcessDirectory null exception message check'
         );
+    }
+
+    public function testProcessDirectory()
+    {
+        $configuration = new Configuration($this->logger, $this->properties);
 
         // Non-string argument
         $exceptionCaught = false;
@@ -1172,7 +1201,10 @@ class ConfigurationTest extends TestCase
             substr($exception->getMessage(), 9, 0),
             'ProcessDirectory relative not found exception message check'
         );
+    }
 
+    public function testProcessDirectoryWithRelativePathUsingPropertiesFile()
+    {
         // Relative path argument, using properties file
         // NOTE: Because PHPUnit runs the test from the 'tests/unit'
         //       directory, the __DIR__ variable will include tests/unit
@@ -1180,61 +1212,50 @@ class ConfigurationTest extends TestCase
         //       properties file using __DIR_, too, then REDCapEtl will check
         //       for relative paths to the same directory as the properties
         //       file, effectively adding 'test/unit' to the relative path.
-        /*
-        $method = $reflection->getMethod('setPropertiesFile');
-        $method->setAccessible(true);
-        $method->invokeArgs($configMock, array(__DIR__.'/ConfigurationTest.php'));
+        $propertiesFile = __DIR__.'/../data/config-test.ini';
+        $configuration = new Configuration($this->logger, $propertiesFile);
 
-        $path = 'Database';
-        $expectedRealDir = __DIR__.'/Database';
-        $realDir = $configMock->processDirectory($path);
+        $path = '../output';
+        $expectedRealDir = realpath(__DIR__.'/../output');
+        $acutalDir = $configuration->processDirectory($path);
         $this->assertEquals(
             $expectedRealDir,
-            $realDir,
+            $acutalDir,
             'ProcessDirectory relative, properties file'
         );
-        */
     }
 
     public function testIsValidEmail()
     {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
+        $configuration = new Configuration($this->logger, $this->properties);
 
         $validEmail = 'foo@bar.com';
         $invalidEmail = 'foo-bar-bang';
 
-        $isValidEmail = $configMock->isValidEmail($validEmail);
+        $isValidEmail = $configuration->isValidEmail($validEmail);
         $this->assertTrue($isValidEmail, 'IsValidEmail true check');
 
-        $isValidEmail = $configMock->isValidEmail($invalidEmail);
+        $isValidEmail = $configuration->isValidEmail($invalidEmail);
         $this->assertFalse($isValidEmail, 'IsValidEmail false check');
     }
 
     public function testDbConnection()
     {
-        $reflection = new \ReflectionClass('IU\REDCapETL\Configuration');
-        $configMock = $reflection->newInstanceWithoutConstructor();
-
         $expectedMySqlConnectionInfo = array('foo','bar','bang');
-        $expectedDbConnection =
-            implode(
-                ':',
-                array_merge(
-                    array('MySQL'),
-                    $expectedMySqlConnectionInfo
-                )
-            );
-        $configMock->SetDbConnection($expectedDbConnection);
+        $expectedDbConnection = implode(':', array_merge(array('MySQL'), $expectedMySqlConnectionInfo));
 
-        $dbConnection = $configMock->GetDbConnection();
+        $properties = $this->properties;
+        $properties[ConfigProperties::DB_CONNECTION] = $expectedDbConnection;
+        $configuration = new Configuration($this->logger, $properties);
+
+        $dbConnection = $configuration->GetDbConnection();
         $this->assertEquals(
             $expectedDbConnection,
             $dbConnection,
             'GetDbConnection check'
         );
 
-        $mySqlConnectionInfo = $configMock->getMySqlConnectionInfo();
+        $mySqlConnectionInfo = $configuration->getMySqlConnectionInfo();
         $this->assertEquals(
             $expectedMySqlConnectionInfo,
             $mySqlConnectionInfo,

@@ -60,7 +60,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/RedCapEtlTest.php</file>
       <file>tests/integration/RepeatingEventsTest.php</file>
       <file>tests/integration/RulesGenerationTest.php</file>
-      <file>tests/integration/SchemaGeneratorGenerateSchemaTest.php</file>
+      <file>tests/integration/SchemaGeneration.php</file>
     </testsuite>
 
     <!--
@@ -81,8 +81,8 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/RepeatingEventsSqlServerTest.php</file>
       <file>tests/system/SqlServerTest.php</file>
       <file>tests/system/SqlServerAutoRulesTest.php</file>
-      <file>tests/system/VisitsTest.php</file>
-      <file>tests/system/VisitsCodeTest.php</file>
+      <file>tests/system/VisitsMysqlTest.php</file>
+      <file>tests/system/VisitsMysqlCodeTest.php</file>
       <file>tests/system/VisitsSqliteCodeTest.php</file>
     </testsuite>
 

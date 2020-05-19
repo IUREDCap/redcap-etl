@@ -110,6 +110,18 @@ class Table
         return $field;
     }
 
+    /**
+     * Indicates if the table is a child table (i.e., is NOT a root table).
+     */
+    public function isChildTable()
+    {
+        $isChild = false;
+        if (isset($this->parent) && $this->parent instanceof Table) {
+            $isChild = true;
+        }
+        return $isChild;
+    }
+
 
     public function setForeign($parentTable)
     {
@@ -206,6 +218,20 @@ class Table
     public function getChildren()
     {
          return($this->children);
+    }
+
+    /**
+     * @return array list of descendant tables in depth first order.
+     */
+    public function getDescendantsDepthFirst()
+    {
+        $descendants = array();
+        foreach ($this->children as $child) {
+            array_push($descendants, $child);
+            $childDescendants = $child->getDescendantsDepthFirst();
+            $descendants = array_merge($descendants, $childDescendants);
+        }
+        return $descendants;
     }
 
     public function nextPrimaryKey()
@@ -309,6 +335,7 @@ class Table
             if (isset($this->recordIdFieldName) && $field->name === $this->recordIdFieldName) {
                 $row->data[$field->dbName] = $data[$field->name];
 
+                /*
                 if (count($allFields) === 1) {
                     # If the record ID is the ONLY field in the table, (and it has been found if you get to here)
                     # consider the data to be found
@@ -317,6 +344,13 @@ class Table
                     # If the record ID and DAG (Data Access Group) are the only records in the table,
                     # consider the data to be found (e.g., this is a root table of auto-generation where the DAG
                     # fields option was selected)
+                    $dataFound = true;
+                }
+                 */
+                if ($this->isRecordIdTable()) {
+                    # If the record ID is the ONLY field in the table, (and it has been found if you get to here)
+                    # or if the record ID and DAG (Data Access Group) are the ONLY records in the table,
+                    # consider the data to be found
                     $dataFound = true;
                 }
             } elseif ($field->name === RedCapEtl::COLUMN_EVENT) {
@@ -452,6 +486,36 @@ class Table
         
         return($this->possibleSuffixes);
     }
+
+    /**
+     * Indicates if the table is a record ID table, i.e., it contains only the
+     * record ID field, or only the record ID field and the DAG (Data Access Group)
+     * field.
+     *
+     * @return boolean true if this is a record ID table, and false otherwise.
+     */
+    public function isRecordIdTable()
+    {
+        $isRecordIdTable = false;
+
+        $allFields = $this->getFields();
+        $fieldNames = array_column($allFields, 'name');
+
+        if (count($fieldNames) === 1) {
+            if (in_array($this->recordIdFieldName, $fieldNames)) {
+                # If the record ID is the ONLY field in the table
+                $isRecordIdTable = true;
+            }
+        } elseif (count($fieldNames) === 2) {
+            if (in_array($this->recordIdFieldName, $fieldNames) && in_array(RedCapEtl::COLUMN_DAG, $fieldNames)) {
+                # If the record ID and DAG (Data Access Group) are the only records in the table
+                $isRecordIdTable = true;
+            }
+        }
+        return $isRecordIdTable;
+    }
+
+
 
     /**
      * Returns a string representation of this table object (intended for

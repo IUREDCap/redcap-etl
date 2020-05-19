@@ -8,8 +8,9 @@ namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\EtlRedCapProject;
+use IU\REDCapETL\Schema\Table;
 
-class SchemaGeneratorGenerateSchemaTest extends TestCase
+class SchemaGenerationTest extends TestCase
 {
     private static $logger;
 
@@ -23,11 +24,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
      */
     public function testGenerateSchemaUsingBasicDemography()
     {
-        ##########################################################################
-        # Test using basic demography test files
-        ##########################################################################
-
-        #create an EtlRecCapProject object from which a schema will be generated
+        # create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/basic-demography.ini';
         $configuration = new Configuration(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
@@ -36,6 +33,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
         $caCertificateFile = null;
         $errorHandler = null;
         $connection = null;
+
         $etlRedCapProject = new EtlRedCapProject(
             $apiUrl,
             $apiToken,
@@ -50,13 +48,22 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
 
         # Generate the schema
         $rulesText = $configuration->getTransformationRules();
-        $result = $schemaGenerator->generateSchema($rulesText);
+        list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
         # Test that the schema object was created
-        $this->assertNotNull($result, 'SchemaGenerator, generateSchema object not null');
+        $this->assertNotNull($schema, 'SchemaGenerator, generateSchema object not null');
+
+        $expectedTableNames = ['Demography'];
+
+        $tables = $schema->getTables();
+        $actualTableNames = array();
+        foreach ($tables as $table) {
+            array_push($actualTableNames, $table->getName());
+        }
+        $this->assertEquals($expectedTableNames, $actualTableNames, 'Get tables test');
 
         # Put the returned schema into a string format for comparison purposes
-        $output = print_r($result[0], true);
+        $output = print_r($schema, true);
 
         # Retrieve what the output text string should resemble
         $file = 'tests/data/schema_generator_output1.txt';
@@ -110,7 +117,7 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
     /**
      *  Test using a classic project with repeating instruments
      */
-    public function testGenerateSchemaClassicProjectWithRepeatingInstruments()
+    public function testGenerateSchemaLongitudinalProjectWithoutRepeatingEvents()
     {
         #create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/visits.ini';
@@ -135,21 +142,32 @@ class SchemaGeneratorGenerateSchemaTest extends TestCase
 
         #Generate the schema
         $rulesText = $configuration->getTransformationRules();
-        $result = $schemaGenerator->generateSchema($rulesText);
+        list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
+        
+        $this->assertNotNull($schema, 'Schema not null');
+        
+        $this->assertEquals(2, count($schema->getRootTables()), 'Root tables check');
+        $this->assertEquals(9, count($schema->getTables()), 'Get tables check');
+        $this->assertEquals(9, count($schema->getTablesTopDown()), 'Get tables top-down check');
+        
+        $expectedTableNames = [
+            'Demography', 'BMI', 'VisitInfo', 'VisitResults', 'Contact', 'Labs', 'Recipients', 'Sent', 'Followup'
+        ];
+        
+        $tables = $schema->getTables();
+        $actualTableNames = array();
+        foreach ($tables as $table) {
+            array_push($actualTableNames, $table->getName());
+        }
+        $this->assertEquals($expectedTableNames, $actualTableNames, 'Table check');
+ 
+        $labsTable = $schema->getTable('Labs');
+        $this->assertTrue($labsTable instanceof Table, 'Labs table class check');
 
-        #Put the returned schema into a string format for comparison purposes
-        $output = print_r($result[0], true);
-
-        #Retrieve what the output text string should resemble
-        $file='tests/data/schema_generator_output5.txt';
-        $expected = file_get_contents($file);
-
-        #test that the generated output matches what is expected
-        $this->assertEquals(
-            $expected,
-            $output,
-            'SchemaGenerator, generateSchema classic project, repeating instruments output'
-        );
+        $expectedLabsFieldNames = ['record_id', 'redcap_suffix', 'lab'];
+        $labsFields = $labsTable->getFields();
+        $actualLabsFieldNames = array_column($labsFields, 'name');
+        $this->assertEquals($expectedLabsFieldNames, $actualLabsFieldNames, 'Labs field names check');
     }
 
     /**
