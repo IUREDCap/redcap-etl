@@ -432,34 +432,31 @@ class ConfigurationTest extends TestCase
         );
 
         $propertiesTemplate['db_connection'] = 'CSV:/tmp';
+    }
 
+
+    public function testValidPropertyValues()
+    {
         // For various assertions that don't require an error to be caught
-        $properties = $propertiesTemplate;
+        $properties = $this->properties;
 
-        $sslVerify = 'true';
         $expectedSslVerify = true;
-        $properties['ssl_verify'] = $sslVerify;
+        $properties[ConfigProperties::SSL_VERIFY] = $expectedSslVerify;
 
-        $extractedRecordCountcheck = 'true';
         $expectedExtractedRecordCountCheck = true;
-        $properties['extracted_record_count_check'] =
-            $extractedRecordCountcheck;
-
-        $expectedLogProjectApiToken = null;
+        $properties[ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK] = $expectedExtractedRecordCountCheck;
 
         $expectedTablePrefix = 'tableprefix';
-        $properties['table_prefix'] = $expectedTablePrefix;
+        $properties[ConfigProperties::TABLE_PREFIX] = $expectedTablePrefix;
 
-        $config =
-            new Configuration($this->logger, $properties);
+        $expectedPrintLogging = true;
+        $properties[ConfigProperties::PRINT_LOGGING] = true;
+
+        $config = new Configuration($this->logger, $properties);
 
 
         $sslVerify = $config->getSslVerify();
-        $this->assertEquals(
-            $expectedSslVerify,
-            $sslVerify,
-            'Constructor ssl_verify set'
-        );
+        $this->assertEquals($expectedSslVerify, $sslVerify, 'Constructor ssl_verify set');
 
         $extractedRecordCountcheck = $config->getExtractedRecordCountCheck();
         $this->assertEquals(
@@ -469,11 +466,10 @@ class ConfigurationTest extends TestCase
         );
 
         $tablePrefix = $config->getTablePrefix();
-        $this->assertEquals(
-            $expectedTablePrefix,
-            $tablePrefix,
-            'Constructor table_prefix set'
-        );
+        $this->assertEquals($expectedTablePrefix, $tablePrefix, 'Constructor table_prefix set');
+
+        $printLogging = $config->getPrintLogging();
+        $this->assertEquals($expectedPrintLogging, $printLogging, 'Print logging check');
     }
 
     public function testConfig()
@@ -492,6 +488,9 @@ class ConfigurationTest extends TestCase
             $config->getApp(),
             'GetApp check'
         );
+
+        $configPropertiesFile = $config->getPropertiesFile();
+        $this->assertEquals($propertiesFile, $configPropertiesFile, 'Properties file check');
 
         $expectedDataSourceApiToken = '1111111122222222333333334444444';
         $dataSourceApiToken = $config->getDataSourceApiToken();
