@@ -952,11 +952,6 @@ class Configuration
         return $this->propertiesFile;
     }
 
-    private function setPropertiesFile($file)
-    {
-        $this->propertiesFile = $file;
-    }
-
     public function getProperties()
     {
         return $this->properties;

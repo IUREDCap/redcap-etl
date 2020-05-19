@@ -281,11 +281,13 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor No batch_size < 0 exception message check'
         );
+    }
 
-
+    public function testInvalidBatchSize()
+    {
         // Batch size not int or string
+        $properties = $this->properties;
         $badBatchSize = null;
-        $properties = $propertiesTemplate;
         $properties['batch_size'] = $badBatchSize;
 
         $exceptionCaught = false;
@@ -311,11 +313,13 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor No batch_size is not int or string exception message check'
         );
+    }
 
-
+    public function testInvalidTablePrefixCharacters()
+    {
         // Bad table_prefix char
+        $properties = $this->properties;
         $badTablePrefix = '+!-';
-        $properties = $propertiesTemplate;
         $properties['table_prefix'] = $badTablePrefix;
 
         $exceptionCaught = false;
@@ -342,11 +346,14 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor Bad table_prefix char exception message check'
         );
+    }
 
 
+    public function testInvalidLabelViewSuffixCharacters()
+    {
         // Bad label_view_suffix char
+        $properties = $this->properties;
         $badLabelViewSuffix = '+!-';
-        $properties = $propertiesTemplate;
         $properties['label_view_suffix'] = $badLabelViewSuffix;
 
         $exceptionCaught = false;
@@ -373,10 +380,14 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor Bad label_view_suffix char exception message check'
         );
+    }
 
 
+    public function testMissingDbConnection()
+    {
         // No db_connection property
-        $properties = $propertiesTemplate;
+        $properties = $this->properties;
+        unset($properties[ConfigProperties::DB_CONNECTION]);
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
@@ -401,10 +412,12 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor No db_connection property exception message check'
         );
+    }
 
-
+    public function testEmptyDbConnection()
+    {
         // db_connection property empty
-        $properties = $propertiesTemplate;
+        $properties = $this->properties;
         $properties['db_connection'] = '';
 
         $exceptionCaught = false;
@@ -430,8 +443,6 @@ class ConfigurationTest extends TestCase
             $exception->getMessage(),
             'Constructor db_connection property is empty exception message check'
         );
-
-        $propertiesTemplate['db_connection'] = 'CSV:/tmp';
     }
 
 
