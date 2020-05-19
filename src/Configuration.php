@@ -33,6 +33,9 @@ class Configuration
     const DEFAULT_DB_SSL             = true;
     const DEFAULT_DB_SSL_VERIFY      = false;
 
+    const DEFAULT_DB_PRIMARY_KEYS    = true;
+    const DEFAULT_DB_FOREIGN_KEYS    = true;
+
     const DEFAULT_DB_LOGGING         = true;
     const DEFAULT_DB_LOG_TABLE       = 'etl_log';
     const DEFAULT_DB_EVENT_LOG_TABLE = 'etl_event_log';
@@ -76,6 +79,9 @@ class Configuration
     private $dbSsl;
     private $dbSslVerify;
 
+    private $dbPrimaryKeys;
+    private $dbForeignKeys;
+
     private $dbLogging;
     private $dbLogTable;
     private $dbEventLogTable;
@@ -92,8 +98,11 @@ class Configuration
     private $labelViewSuffix;
     private $lookupTableName;
 
+    private $preProcessingSql;
+    private $preProcessingSqlFile;
     private $postProcessingSql;
     private $postProcessingSqlFile;
+    
     private $projectId;
     private $printLogging;
     private $redcapApiUrl;
@@ -115,6 +124,10 @@ class Configuration
     private $emailFromAddres;
     private $emailSubject;
     private $emailToList;
+    
+    /** @var string the base directory used for relative paths specified
+     *     in property values */
+    private $baseDir;
 
     /**
      * Creates a Configuration object from either an array or properties
@@ -122,6 +135,7 @@ class Configuration
      * configuration information found.
      *
      * @param Logger $logger logger for information and errors
+     *
      * @param mixed $properties if this is a string, it is assumed to
      *     be the name of the properties file to use, if it is an array,
      *     it is assumed to be a map from property names to values.
@@ -135,6 +149,9 @@ class Configuration
         $this->app = $this->logger->getApp();
         $this->propertiesFile = null;
 
+        #------------------------------------------------------------------------
+        # Process the properties, which could be specified as an array of a file
+        #------------------------------------------------------------------------
         if (empty($properties)) {
             # No properties specified
             $message = 'No properties or properties file was specified.';
@@ -146,54 +163,20 @@ class Configuration
         } elseif (is_string($properties)) {
             # Properties specified in a file
             $this->propertiesFile = trim($properties);
-
-            if (preg_match('/\.json$/i', $this->propertiesFile) === 1) {
-                #-----------------------------------------------------------------
-                # JSON configuration file
-                #-----------------------------------------------------------------
-                $propertiesFileContents = file_get_contents($this->propertiesFile);
-                if ($propertiesFileContents === false) {
-                    $message = 'The JSON properties file "'.$this->propertiesFile.'" could not be read.';
-                    $code    = EtlException::INPUT_ERROR;
-                    throw new EtlException($message, $code);
-                }
-
-                $this->properties = json_decode($propertiesFileContents, true);
-
-                if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $this->properties)) {
-                    $rulesText = $this->properties[ConfigProperties::TRANSFORM_RULES_TEXT];
-                    if (is_array($rulesText)) {
-                        $rulesText = implode("\n", $rulesText);
-                        $this->properties[ConfigProperties::TRANSFORM_RULES_TEXT] = $rulesText;
-                    }
-                }
-
-                if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL, $this->properties)) {
-                    $sql = $this->properties[ConfigProperties::POST_PROCESSING_SQL];
-                    if (is_array($sql)) {
-                        $sql = implode("\n", $sql);
-                        $this->properties[ConfigProperties::POST_PROCESSING_SQL] = $sql;
-                    }
-                }
-            } else {
-                #-------------------------------------------------------------
-                # .ini configuration file
-                #-------------------------------------------------------------
-
-                # suppress errors for this, because it should be
-                # handled by the check for $properties being false
-                @ $this->properties = parse_ini_file($this->propertiesFile);
-                if ($this->properties === false) {
-                    $error = error_get_last();
-                    $parseError = '';
-                    if (isset($error) && is_array($error) && array_key_exists('message', $error)) {
-                        $parseError = ': '.preg_replace('/\s+$/', '', $error['message']);
-                    }
-                    $message = 'The properties file "'.$this->propertiesFile.'" could not be read'.$parseError.'.';
-                    $code    = EtlException::INPUT_ERROR;
-                    throw new EtlException($message, $code);
-                }
-            }
+            $this->properties = self::getPropertiesFromFile($this->propertiesFile);
+        }
+        
+        #-----------------------------------------------------
+        # Set the base directory, wich is used for properties
+        # that contain relative paths
+        #-----------------------------------------------------
+        $baseDir = null; // eventually, this may be a parameter or property
+        if (isset($baseDir)) {
+            $this->baseDir = $baseDir;
+        } elseif (!empty($this->propertiesFile)) {
+            $this->baseDir = dirname($this->propertiesFile);
+        } else {
+            $this->baseDir = realpath(__DIR__);
         }
 
         #-------------------------------------------
@@ -422,6 +405,27 @@ class Configuration
             }
         }
 
+        #---------------------------------------------
+        # Get the pre-processing SQL (if any)
+        #---------------------------------------------
+        $this->preProcessingSql = null;
+        if (array_key_exists(ConfigProperties::PRE_PROCESSING_SQL, $this->properties)) {
+            $sql = $this->properties[ConfigProperties::PRE_PROCESSING_SQL];
+            if (!empty($sql)) {
+                $this->preProcessingSql = $sql;
+            }
+        }
+
+        #---------------------------------------------
+        # Get the pre-processing SQL file (if any)
+        #---------------------------------------------
+        $this->preProcessingSqlFile = null;
+        if (array_key_exists(ConfigProperties::PRE_PROCESSING_SQL_FILE, $this->properties)) {
+            $file = $this->properties[ConfigProperties::PRE_PROCESSING_SQL_FILE];
+            if (!empty($file)) {
+                $this->preProcessingSqlFile = $this->processFile($file, $fileShouldExist = false);
+            }
+        }
 
         #---------------------------------------------
         # Get the post-processing SQL (if any)
@@ -659,7 +663,119 @@ class Configuration
             }
         }
 
+        #-----------------------------------------
+        # Process the database primary keys flag
+        #-----------------------------------------
+        $this->dbPrimaryKeys = self::DEFAULT_DB_PRIMARY_KEYS;
+        if (array_key_exists(ConfigProperties::DB_PRIMARY_KEYS, $this->properties)) {
+            $primaryKeys = $this->properties[ConfigProperties::DB_PRIMARY_KEYS];
+            if ($primaryKeys === false|| strcasecmp($primaryKeys, 'false') === 0
+                || $primaryKeys === '0' || $primaryKeys === 0) {
+                $this->dbPrimaryKeys  = false;
+            }
+        }
+
+        #-----------------------------------------
+        # Process the database foreign keys flag
+        #-----------------------------------------
+        $this->dbForeignKeys = self::DEFAULT_DB_FOREIGN_KEYS;
+        if (array_key_exists(ConfigProperties::DB_FOREIGN_KEYS, $this->properties)) {
+            $foreignKeys = $this->properties[ConfigProperties::DB_FOREIGN_KEYS];
+            if ($foreignKeys === false|| strcasecmp($foreignKeys, 'false') === 0
+                || $foreignKeys === '0' || $foreignKeys == 0) {
+                $this->dbForeignKeys  = false;
+            }
+        }
+
+        if ($this->dbForeignKeys && !$this->dbPrimaryKeys) {
+            $message = 'The configuration was set to generate foreign keys in the database, but not primary keys.';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+
         return true;
+    }
+
+    /**
+     * Gets properties from a configuration file.
+     *
+     * @return array that maps property names to property values.
+     */
+    public static function getPropertiesFromFile($configurationFile)
+    {
+        $properties = array();
+             
+        if (!isset($configurationFile) || !is_string($configurationFile) || empty(trim($configurationFile))) {
+            # No properties specified
+            $message = 'No configuration file was specified.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        } else {
+            if (preg_match('/\.json$/i', $configurationFile) === 1) {
+                #-----------------------------------------------------------------
+                # JSON configuration file
+                #-----------------------------------------------------------------
+                $configurationFileContents = file_get_contents($configurationFile);
+                if ($configurationFileContents === false) {
+                    $message = 'The JSON configuration file "'.$configurationFile.'" could not be read.';
+                    $code    = EtlException::INPUT_ERROR;
+                    throw new EtlException($message, $code);
+                }
+
+                $properties = json_decode($configurationFileContents, true);
+
+                if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $properties)) {
+                    $rulesText = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
+                    if (is_array($rulesText)) {
+                        $rulesText = implode("\n", $rulesText);
+                        $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = $rulesText;
+                    }
+                }
+
+                if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL, $properties)) {
+                    $sql = $properties[ConfigProperties::POST_PROCESSING_SQL];
+                    if (is_array($sql)) {
+                        $sql = implode("\n", $sql);
+                        $properties[ConfigProperties::POST_PROCESSING_SQL] = $sql;
+                    }
+                }
+            } else {
+                #-------------------------------------------------------------
+                # .ini configuration file
+                #-------------------------------------------------------------
+                # suppress errors for this, because it should be
+                # handled by the check for $properties being false
+                @ $properties = parse_ini_file($configurationFile);
+                if ($properties === false) {
+                    $error = error_get_last();
+                    $parseError = '';
+                    if (isset($error) && is_array($error) && array_key_exists('message', $error)) {
+                        $parseError = preg_replace('/\s+$/', '', $error['message']);
+                    }
+                    $message = 'The configuration file "'.$configurationFile.'" could not be read: '.$parseError.'.';
+                    $code    = EtlException::INPUT_ERROR;
+                    throw new EtlException($message, $code);
+                }
+            }
+        }
+        
+        //$baseDir = dirname(realpath($configurationFile));
+
+        return $properties;
+    }
+    
+    /**
+     * Overrides properties in $properties with those defined in $propertyOverrides.
+     *
+     * @return array the overridden properties.
+     */
+    public static function overrideProperties($properties, $propertyOverrides)
+    {
+        if (!empty($propertyOverrides) && is_array($propertyOverrides)) {
+            foreach ($propertyOverrides as $propertyName => $propertyValue) {
+                $properties[$propertyName] = $propertyValue;
+            }
+        }
+        return $properties;
     }
 
 
@@ -718,36 +834,18 @@ class Configuration
             $file = trim($file);
         }
 
-        if ($this->isAbsolutePath($file)) {
-            if ($fileShouldExist) {
-                $realFile = realpath($file);
-            } else {
-                $dirName  = dirname($file);
-                $realDir  = realpath($dirName);
-                $fileName = basename($file);
-                $realFile = $realDir.'/'.$fileName;
-            }
-        } else { // Relative path
-            # take path relative to properties file, if it exists, or
-            # relative to the directory of this file if it does not
-            if (empty($this->propertiesFile)) {
-                $baseDir = realpath(__DIR__);
-            } else {
-                $baseDir = dirname(realpath($this->propertiesFile));
-            }
-
-            if ($fileShouldExist) {
-                $realFile = realpath($baseDir.'/'.$file);
-            } else {
-                # File may not exist (e.g., a log file)
-                $dirName  = dirname($file);
-                $fileName = basename($file);
-                $realDir  = realpath($baseDir.'/'.$dirName);
-                $realFile = $realDir.'/'.$fileName;
-            }
+        if (!FileUtil::isAbsolutePath($file)) {
+            $file = $this->baseDir . '/' . $file;
         }
+        
+        $dirName  = dirname($file);
+        $realDir  = realpath($dirName);
+        $fileName = basename($file);
+        $realFile = $realDir.'/'.$fileName;
+
 
         if ($fileShouldExist) {
+            $realFile = realpath($realFile);
             if ($realFile === false) {
                 $message = 'File "'.$file.'" not found.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -783,15 +881,10 @@ class Configuration
             $path = trim($path);
         }
 
-        if ($this->isAbsolutePath($path)) {
+        if (FileUtil::isAbsolutePath($path)) {
             $realDir  = realpath($path);
         } else { // Relative path
-            if (empty($this->propertiesFile)) {
-                $baseDir = dirname(realpath(__DIR__));
-            } else {
-                $baseDir = dirname(realpath($this->propertiesFile));
-            }
-            $realDir = realpath($baseDir.'/'.$path);
+            $realDir = realpath(realpath($this->baseDir).'/'.$path);
         }
 
         if ($realDir === false) {
@@ -854,29 +947,6 @@ class Configuration
         }
 
         return $connectionInfo;
-    }
-    /**
-     * Indicates is the specified path is an absolute path.
-     *
-     * @param string $path the path to check.
-     *
-     * @return boolean returns true of the path is an absoulte path,
-     *     and false otherwise.
-     */
-    private function isAbsolutePath($path)
-    {
-        $isAbsolute = false;
-        $path = trim($path);
-        if (DIRECTORY_SEPARATOR === '/') {
-            if (preg_match('/^\/.*/', $path) === 1) {
-                $isAbsolute = true;
-            }
-        } else {  // Windows
-            if (preg_match('/^(\/|\\\|[a-zA-Z]:(\/|\\\)).*/', $path) === 1) {
-                $isAbsolute = true;
-            }
-        }
-        return $isAbsolute;
     }
 
     public function getPropertiesFile()
@@ -1004,6 +1074,16 @@ class Configuration
         return $this->dbSslVerify;
     }
 
+    public function getDbPrimaryKeys()
+    {
+        return $this->dbPrimaryKeys;
+    }
+
+    public function getDbForeignKeys()
+    {
+        return $this->dbForeignKeys;
+    }
+
     public function getDbLogging()
     {
         return $this->dbLogging;
@@ -1092,6 +1172,16 @@ class Configuration
     public function getLookupTableName()
     {
         return $this->lookupTableName;
+    }
+
+    public function getPreProcessingSql()
+    {
+        return $this->preProcessingSql;
+    }
+
+    public function getPreProcessingSqlFile()
+    {
+        return $this->preProcessingSqlFile;
     }
 
     public function getPostProcessingSql()

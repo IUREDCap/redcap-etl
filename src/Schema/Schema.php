@@ -48,6 +48,31 @@ class Schema
     }
 
     /**
+     * Get the tables in top-down, depth-first order, i.e., parents before children
+     */
+    public function getTablesTopDown()
+    {
+        $tables = array();
+        foreach ($this->rootTables as $table) {
+            array_push($tables, $table);
+            $descendants = $table->getDescendantsDepthFirst();
+            $tables = array_merge($tables, $descendants);
+        }
+        return $tables;
+    }
+
+    /**
+     * Returns tables always listing children before parents. This is useful
+     * for table deletion so that foreign key constraints won't be violated.
+     */
+    public function getTablesBottomUp()
+    {
+        $tables = $this->getTablesTopDown();
+        return array_reverse($tables);
+    }
+
+
+    /**
      * Gets all the tables in the schema.
      *
      * @return array an array of Table objects for all the

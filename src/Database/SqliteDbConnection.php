@@ -53,4 +53,23 @@ class SqliteDbConnection extends PdoDbConnection
         }
         return $pdoConnection;
     }
+
+    /**
+     * UNSUPPORTED
+     */
+    public function addPrimaryKeyConstraint($table)
+    {
+        // Using ALTER TABLE to add a primary key is not supported by SQLite.
+        // One approach that might  be used is to create a new table with
+        // the primary key and then copy the values from the original table
+        // and then drop the original table and rename the new one
+    }
+
+    /**
+     * UNSUPPORTED
+     */
+    public function addForeignKeyConstraint($table)
+    {
+        // Using ALTER TABLE to add foreign keys is not supported by SQLite.
+    }
 }

@@ -122,7 +122,7 @@ class MysqlDbConnection extends DbConnection
      * @param Table $table the table object corresponding to the table in
      *     the database that will be deleted.
      */
-    protected function dropTable($table, $ifExists = false)
+    public function dropTable($table, $ifExists = false)
     {
         // Define query
         if ($ifExists) {
@@ -229,6 +229,44 @@ class MysqlDbConnection extends DbConnection
         }
 
         return(1);
+    }
+
+    /**
+     * Adds a primary key to the table (note: MySQL ignores the constraint name
+     * as of when this method was implemented).
+     */
+    public function addPrimaryKeyConstraint($table)
+    {
+        $query = 'ALTER TABLE ' . $this->escapeName($table->getName())
+            . ' ADD PRIMARY KEY ('.$this->escapeName($table->primary->dbName).')';
+
+        $result = $this->mysqli->query($query);
+
+        if ($result === false) {
+            $message = 'MySQL error in query "'.$query.'"'
+                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+            $code = EtlException::DATABASE_ERROR;
+            throw new EtlException($message, $code);
+        }
+    }
+
+    public function addForeignKeyConstraint($table)
+    {
+        if ($table->isChildTable()) {
+            $query = 'ALTER TABLE ' . $this->escapeName($table->getName())
+                . ' ADD FOREIGN KEY('.$this->escapeName($table->foreign->dbName).')'
+                . ' REFERENCES '.$this->escapeName($table->parent->getName())
+                .'('.$this->escapeName($table->parent->primary->dbName).')';
+
+            $result = $this->mysqli->query($query);
+
+            if ($result === false) {
+                $message = 'MySQL error in query "'.$query.'"'
+                    .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
+            }
+        }
     }
 
 
@@ -531,7 +569,7 @@ class MysqlDbConnection extends DbConnection
         $result = $this->mysqli->multi_query($queries);
         if ($result === false) {
             $mysqlError = $this->mysqli->error;
-            $error = "Post-processing query {$queryNumber} failed: {$mysqlError}.\n";
+            $error = "SQL query {$queryNumber} failed: {$mysqlError}.\n";
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         } else {
@@ -539,7 +577,7 @@ class MysqlDbConnection extends DbConnection
                 $result = $this->mysqli->next_result();
                 if ($result === false) {
                     $mysqlError = $this->mysqli->error;
-                    $error = "Post-processing query {$queryNumber} failed: {$mysqlError}.\n";
+                    $error = "SQL query {$queryNumber} failed: {$mysqlError}.\n";
                     $code = EtlException::DATABASE_ERROR;
                     throw new EtlException($error, $code);
                 } else {

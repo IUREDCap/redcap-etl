@@ -445,7 +445,7 @@ For more information, see: [REDCap-ETL Software Architecture](SoftwareArchitectu
 
 ### Adding a New Database Type
 
-If you want to add a new database type (e.g., Oracle, PostgreSQL) to REDCap-ETL you need to
+If you want to add a new database type (e.g., Oracle) to REDCap-ETL you need to
 do the following:
 
 * Create a new database connection class for the new database type that:

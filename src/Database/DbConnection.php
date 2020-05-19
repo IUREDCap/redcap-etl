@@ -49,7 +49,7 @@ abstract class DbConnection
      * @param boolean $ifExists if true, the table will only be dropped if it
      *     already exists
      */
-    abstract protected function dropTable($table, $ifExists = false);
+    abstract public function dropTable($table, $ifExists = false);
 
     /**
      * Creates the specified table.
@@ -60,6 +60,20 @@ abstract class DbConnection
      *     does not already exist.
      */
     abstract public function createTable($table, $ifNotExists = false);
+
+    /**
+     * Adds a primary key constraint to the specified table.
+     *
+     * @param IU\REDCap\Schema\Table $table the table to create the primary key for.
+     */
+    abstract public function addPrimaryKeyConstraint($table);
+
+    /**
+     * Adds foriegn key constraint on specified table for its parent table (if any).
+     *
+     * @param IU\REDCap\Schema\Table $table the table to create the foreign key for.
+     */
+    abstract public function addForeignKeyConstraint($table);
 
     /**
      * Drops the specified label view.

@@ -59,7 +59,7 @@ class CsvDbConnection extends DbConnection
         return file_exists($this->getLabelViewFile($table));
     }
 
-    protected function dropTable($table, $ifExists = false)
+    public function dropTable($table, $ifExists = false)
     {
         if (!$ifExists || ($ifExists && $this->existsTable($table))) {
             $file = $this->getTableFile($table);
@@ -93,6 +93,16 @@ class CsvDbConnection extends DbConnection
             fwrite($fh, '"'.$field->dbName.'"');
         }
         fwrite($fh, PHP_EOL);
+    }
+
+    public function addPrimaryKeyConstraint($table)
+    {
+        ; // CSV doesn't support primary keys, so this is not supported
+    }
+
+    public function addForeignKeyConstraint($table)
+    {
+        ; // CSV doesn't support foreign keys, so this is not supported
     }
 
     public function dropLabelView($table, $ifExists = false)

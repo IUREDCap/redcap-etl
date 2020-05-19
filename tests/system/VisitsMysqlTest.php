@@ -8,7 +8,12 @@ namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
 
-class VisitsTest extends TestCase
+/**
+ * Test of the REDCap-ETL script on the visits project. As a result, line
+ * coverage statistics will not be collected for these tests, and a corresponsing test
+ * that runs using methods calls was created to get line coverage.
+ */
+class VisitsMysqlTest extends TestCase
 {
     const CONFIG_FILE = __DIR__.'/../config/visits.ini';
     const BIN_DIR     = __DIR__.'/../../bin';
@@ -22,9 +27,13 @@ class VisitsTest extends TestCase
 
         $configuration = new Configuration($logger, self::CONFIG_FILE);
 
+        $options = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+        ];
+
         list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
         $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
-        self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
+        self::$dbh = new \PDO($dsn, $dbUser, $dbPassword, $options);
         VisitsTestUtility::dropTablesAndViews(self::$dbh);
     }
 

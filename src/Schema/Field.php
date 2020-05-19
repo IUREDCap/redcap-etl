@@ -34,6 +34,24 @@ class Field
     */
     public $usesLookup = false;
 
+    /**
+     * Creates a Field object that is used to describe a field in REDCap and
+     * mapping information for that field to the database where the extraced
+     * and transformed REDCap data is loaded.
+     *
+     * @param string $name the name of the field in REDCap, and the default name of
+     *     the field in the database (where the extracted REDCap data is loaded).
+     *
+     * @param string $type the database type for the field (e.g., char, int, varchar).
+     *
+     * @param integer $size the database type size for the field, e.g., 255 for the a
+     *     "varchar(255)" field
+     *
+     * @param string $dbName the name to use for the field in the database. If this is not
+     *     specified, then the REDCap field name is used for the database field name.
+     *
+     * @param string $redcapType the REDCap type for the field, e.g., "radio".
+     */
     public function __construct($name, $type, $size = null, $dbName = '', $redcapType = '')
     {
         $this->name       = $name;

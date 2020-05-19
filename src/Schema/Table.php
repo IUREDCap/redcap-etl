@@ -13,11 +13,18 @@ use IU\REDCapETL\RedCapEtl;
  */
 class Table
 {
-    public $name = '';
+    /** @var string the name of the table, including the table name prefix, if any. */
+    public $name;
 
+    /** @var string the table name prefix, if any */
+    public $namePrefix;
+
+    /** @var mixed the parent table if not a root table, or the primary key name, if it is a root table */
     public $parent = '';        // Table
 
-    public $primary = '';       // Field used as primary key
+    /** @var Field field used as the primary key */
+    public $primary = '';
+
     public $foreign = '';       // Field used as foreign key to parent
 
     protected $children = array();   // Child tables
@@ -52,6 +59,9 @@ class Table
      *
      * @param string $recordIdFieldName the field name of the record ID
      *     in the REDCap data project.
+     *
+     * @param string $namePrefix the table name prefix.
+     *
      */
     public function __construct(
         $name,
@@ -59,12 +69,14 @@ class Table
         $keyType,
         $rowsType = array(),
         $suffixes = array(),
-        $recordIdFieldName = null
+        $recordIdFieldName = null,
+        $namePrefix = null
     ) {
         $this->recordIdFieldName = $recordIdFieldName;
         $this->keyType = $keyType;
         
         $this->name = str_replace(' ', '_', $name);
+        $this->namePrefix = $namePrefix;
         $this->parent = $parent;
 
         $this->rowsType = $rowsType;
@@ -79,21 +91,32 @@ class Table
             $this->primary = $field;
         } else {
             // Otherwise, create a new synthetic primary key
-            $this->createPrimary();
+            $this->primary = $this->createPrimary();
         }
     }
 
     /**
-     * Creates primary key field using the table name with
-     * '_id' appended to it as the field's name.
+     * Creates default primary key field using the table name
+     * (without prefix, if any) with * '_id' appended to it as the field's name.
      */
     public function createPrimary()
     {
-        $primaryId = strtolower($this->name).'_id';
-    
+        $primaryId = strtolower($this->getNameWithoutPrefix()).'_id';
         $field = new Field($primaryId, $this->keyType->getType(), $this->keyType->getSize());
 
-        $this->primary = $field;
+        return $field;
+    }
+
+    /**
+     * Indicates if the table is a child table (i.e., is NOT a root table).
+     */
+    public function isChildTable()
+    {
+        $isChild = false;
+        if (isset($this->parent) && $this->parent instanceof Table) {
+            $isChild = true;
+        }
+        return $isChild;
     }
 
 
@@ -194,6 +217,20 @@ class Table
          return($this->children);
     }
 
+    /**
+     * @return array list of descendant tables in depth first order.
+     */
+    public function getDescendantsDepthFirst()
+    {
+        $descendants = array();
+        foreach ($this->children as $child) {
+            array_push($descendants, $child);
+            $childDescendants = $child->getDescendantsDepthFirst();
+            $descendants = array_merge($descendants, $childDescendants);
+        }
+        return $descendants;
+    }
+
     public function nextPrimaryKey()
     {
         $this->primaryKey += 1;
@@ -202,7 +239,9 @@ class Table
 
 
     /**
-     * Creates a row with the specified data in the table.
+     * Creates a row with the specified data in the table. This method contains the logic
+     * that determines whether a data row extracted from REDCap will be stored in the
+     * table.
      *
      * @param array $data the data values used to create the rowi; represented as a map from
      *     field names to field values.
@@ -293,6 +332,7 @@ class Table
             if (isset($this->recordIdFieldName) && $field->name === $this->recordIdFieldName) {
                 $row->data[$field->dbName] = $data[$field->name];
 
+                /*
                 if (count($allFields) === 1) {
                     # If the record ID is the ONLY field in the table, (and it has been found if you get to here)
                     # consider the data to be found
@@ -301,6 +341,13 @@ class Table
                     # If the record ID and DAG (Data Access Group) are the only records in the table,
                     # consider the data to be found (e.g., this is a root table of auto-generation where the DAG
                     # fields option was selected)
+                    $dataFound = true;
+                }
+                 */
+                if ($this->isRecordIdTable()) {
+                    # If the record ID is the ONLY field in the table, (and it has been found if you get to here)
+                    # or if the record ID and DAG (Data Access Group) are the ONLY records in the table,
+                    # consider the data to be found
                     $dataFound = true;
                 }
             } elseif ($field->name === RedCapEtl::COLUMN_EVENT) {
@@ -372,11 +419,11 @@ class Table
                     }
 
                     #----------------------------------------------------------
-                    # If this is a checkbox or complete field, ignore zeroes
+                    # If this is a checkbox, ignore zeroes
                     # when determining if data was found in the REDCap record,
                     # Else, only ignore blank strings
                     #----------------------------------------------------------
-                    if ($isCheckbox || $isCompleteField) {
+                    if ($isCheckbox) {
                         if ($value != '' && $value !== 0 && $value !== '0') {
                             # Zero (int and string) values are also ignored
                             $dataFound = true;
@@ -436,6 +483,36 @@ class Table
         
         return($this->possibleSuffixes);
     }
+
+    /**
+     * Indicates if the table is a record ID table, i.e., it contains only the
+     * record ID field, or only the record ID field and the DAG (Data Access Group)
+     * field.
+     *
+     * @return boolean true if this is a record ID table, and false otherwise.
+     */
+    public function isRecordIdTable()
+    {
+        $isRecordIdTable = false;
+
+        $allFields = $this->getFields();
+        $fieldNames = array_column($allFields, 'name');
+
+        if (count($fieldNames) === 1) {
+            if (in_array($this->recordIdFieldName, $fieldNames)) {
+                # If the record ID is the ONLY field in the table
+                $isRecordIdTable = true;
+            }
+        } elseif (count($fieldNames) === 2) {
+            if (in_array($this->recordIdFieldName, $fieldNames) && in_array(RedCapEtl::COLUMN_DAG, $fieldNames)) {
+                # If the record ID and DAG (Data Access Group) are the only records in the table
+                $isRecordIdTable = true;
+            }
+        }
+        return $isRecordIdTable;
+    }
+
+
 
     /**
      * Returns a string representation of this table object (intended for
@@ -522,5 +599,17 @@ class Table
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Get's the table's name without the table prefix.
+     */
+    public function getNameWithoutPrefix()
+    {
+        $tableNameWithoutPrefix = $this->name;
+        if (!empty($this->namePrefix)) {
+            $tableNameWithoutPrefix = substr($tableNameWithoutPrefix, strlen($this->namePrefix));
+        }
+        return $tableNameWithoutPrefix;
     }
 }

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * Runs the "Visits" tests in code, so that code coverage
  * statistics will pick up these tests.
  */
-class VisitsCodeTest extends TestCase
+class VisitsMysqlCodeTest extends TestCase
 {
     const CONFIG_FILE = __DIR__.'/../config/visits.ini';
 
@@ -25,10 +25,15 @@ class VisitsCodeTest extends TestCase
 
         $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
+        $options = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+        ];
+
+
         list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
         $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
         try {
-            self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
+            self::$dbh = new \PDO($dsn, $dbUser, $dbPassword, $options);
         } catch (Exception $exception) {
             print "ERROR - database connection error: ".$exception->getMessage()."\n";
         }
