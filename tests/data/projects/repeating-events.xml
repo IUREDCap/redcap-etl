@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="REDCap-ETL Repeating Events" AsOfDateTime="2018-11-20T16:27:52" CreationDateTime="2018-11-20T16:27:52" SourceSystem="REDCap" SourceSystemVersion="8.1.10">
-<Study OID="Project.REDCapETLRepeatingEvents">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Repeating Events" AsOfDateTime="2020-05-20T17:12:36" CreationDateTime="2020-05-20T17:12:36" SourceSystem="REDCap" SourceSystemVersion="9.1.3">
+<Study OID="Project.RepeatingEvents">
 <GlobalVariables>
-	<StudyName>REDCap-ETL Repeating Events</StudyName>
-	<StudyDescription>This file contains the metadata, events, and data for REDCap project "REDCap-ETL Repeating Events".</StudyDescription>
-	<ProtocolName>REDCap-ETL Repeating Events</ProtocolName>
+	<StudyName>Repeating Events</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Repeating Events".</StudyDescription>
+	<ProtocolName>Repeating Events</ProtocolName>
 	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
 	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
 	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
 	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:SurveysEnabled>0</redcap:SurveysEnabled>
+	<redcap:SurveyInvitationEmailField></redcap:SurveyInvitationEmailField>
 	<redcap:Purpose>0</redcap:Purpose>
 	<redcap:PurposeOther></redcap:PurposeOther>
 	<redcap:ProjectNotes></redcap:ProjectNotes>
@@ -30,7 +32,7 @@
 		</redcap:RepeatingInstruments>
 	</redcap:RepeatingInstrumentsAndEvents>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.REDCapETLRepeatingEvents_2018-11-20_1627" Name="REDCap-ETL Repeating Events" redcap:RecordIdField="record_id">
+<MetaDataVersion OID="Metadata.RepeatingEvents_2020-05-20_1712" Name="Repeating Events" redcap:RecordIdField="record_id">
 	<Protocol>
 		<StudyEventRef StudyEventOID="Event.enrollment_arm_1" OrderNumber="1" Mandatory="No"/>
 		<StudyEventRef StudyEventOID="Event.baseline_arm_1" OrderNumber="2" Mandatory="No"/>
@@ -291,22 +293,22 @@
 		<Question><TranslatedText>Weight (kg)</TranslatedText></Question>
 		<RangeCheck Comparator="GE" SoftHard="Soft">
 			<CheckValue>0</CheckValue>
-			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 500). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 500). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 		<RangeCheck Comparator="LE" SoftHard="Soft">
 			<CheckValue>500</CheckValue>
-			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 500). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 500). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 	</ItemDef>
 	<ItemDef OID="height_m" Name="height_m" DataType="float" Length="999" redcap:Variable="height_m" redcap:FieldType="text" redcap:TextValidationType="number_2dp">
 		<Question><TranslatedText>Height (m)</TranslatedText></Question>
 		<RangeCheck Comparator="GE" SoftHard="Soft">
 			<CheckValue>0.00</CheckValue>
-			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0.00 - 3.00). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0.00 - 3.00). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 		<RangeCheck Comparator="LE" SoftHard="Soft">
 			<CheckValue>3.00</CheckValue>
-			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0.00 - 3.00). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0.00 - 3.00). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 	</ItemDef>
 	<ItemDef OID="weight_complete" Name="weight_complete" DataType="text" Length="1" redcap:Variable="weight_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
@@ -323,11 +325,11 @@
 		<Question><TranslatedText>LDL (mg/dL)</TranslatedText></Question>
 		<RangeCheck Comparator="GE" SoftHard="Soft">
 			<CheckValue>0</CheckValue>
-			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 1000). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 1000). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 		<RangeCheck Comparator="LE" SoftHard="Soft">
 			<CheckValue>1000</CheckValue>
-			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 1000). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 1000). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 	</ItemDef>
 	<ItemDef OID="triglycerides_mg_dl" Name="triglycerides_mg_dl" DataType="integer" Length="999" redcap:Variable="triglycerides_mg_dl" redcap:FieldType="text" redcap:TextValidationType="int">

@@ -1,36 +1,29 @@
 {
+    "redCapVersion": "9.1.3",
     "projectInfo": {
-        "project_id": "16",
-        "project_title": "REDCap-ETL Visits",
-        "creation_time": "2018-05-16 12:37:48",
+        "project_id": 23,
+        "project_title": "Visits",
+        "creation_time": "2019-08-07 11:21:29",
         "production_time": "",
-        "in_production": "0",
+        "in_production": 0,
         "project_language": "English",
-        "purpose": "0",
+        "purpose": 0,
         "purpose_other": "",
         "project_notes": "",
         "custom_record_label": "",
         "secondary_unique_field": "",
         "is_longitudinal": 1,
-        "surveys_enabled": "0",
-        "scheduling_enabled": "0",
-        "record_autonumbering_enabled": "1",
-        "randomization_enabled": "0",
-        "ddp_enabled": "0",
+        "surveys_enabled": 0,
+        "scheduling_enabled": 0,
+        "record_autonumbering_enabled": 1,
+        "randomization_enabled": 0,
+        "ddp_enabled": 0,
         "project_irb_number": "",
         "project_grant_number": "",
         "project_pi_firstname": "",
         "project_pi_lastname": "",
-        "display_today_now_button": "1",
+        "display_today_now_button": 1,
         "has_repeating_instruments_or_events": 0
-    },
-    "instruments": {
-        "demography": "Demography",
-        "demographyextras": "DemographyExtras",
-        "visit": "Visit",
-        "visitsurvey": "VisitSurvey",
-        "visitresults": "VisitResults",
-        "followup": "Followup"
     },
     "metadata": [
         {
@@ -594,6 +587,206 @@
             "field_annotation": ""
         }
     ],
+    "fieldNames": [
+        {
+            "original_field_name": "record_id",
+            "choice_value": "",
+            "export_field_name": "record_id"
+        },
+        {
+            "original_field_name": "name",
+            "choice_value": "",
+            "export_field_name": "name"
+        },
+        {
+            "original_field_name": "fruit",
+            "choice_value": "",
+            "export_field_name": "fruit"
+        },
+        {
+            "original_field_name": "height",
+            "choice_value": "",
+            "export_field_name": "height"
+        },
+        {
+            "original_field_name": "weight",
+            "choice_value": "",
+            "export_field_name": "weight"
+        },
+        {
+            "original_field_name": "email1",
+            "choice_value": "",
+            "export_field_name": "email1"
+        },
+        {
+            "original_field_name": "email2",
+            "choice_value": "",
+            "export_field_name": "email2"
+        },
+        {
+            "original_field_name": "echeck1",
+            "choice_value": "1",
+            "export_field_name": "echeck1___1"
+        },
+        {
+            "original_field_name": "echeck1",
+            "choice_value": "2",
+            "export_field_name": "echeck1___2"
+        },
+        {
+            "original_field_name": "echeck2",
+            "choice_value": "1",
+            "export_field_name": "echeck2___1"
+        },
+        {
+            "original_field_name": "echeck2",
+            "choice_value": "2",
+            "export_field_name": "echeck2___2"
+        },
+        {
+            "original_field_name": "recip1",
+            "choice_value": "",
+            "export_field_name": "recip1"
+        },
+        {
+            "original_field_name": "sent1a",
+            "choice_value": "",
+            "export_field_name": "sent1a"
+        },
+        {
+            "original_field_name": "sent1b",
+            "choice_value": "",
+            "export_field_name": "sent1b"
+        },
+        {
+            "original_field_name": "recip2",
+            "choice_value": "",
+            "export_field_name": "recip2"
+        },
+        {
+            "original_field_name": "sent2a",
+            "choice_value": "",
+            "export_field_name": "sent2a"
+        },
+        {
+            "original_field_name": "sent2b",
+            "choice_value": "",
+            "export_field_name": "sent2b"
+        },
+        {
+            "original_field_name": "color",
+            "choice_value": "",
+            "export_field_name": "color"
+        },
+        {
+            "original_field_name": "rooms",
+            "choice_value": "1",
+            "export_field_name": "rooms___1"
+        },
+        {
+            "original_field_name": "rooms",
+            "choice_value": "22",
+            "export_field_name": "rooms___22"
+        },
+        {
+            "original_field_name": "rooms",
+            "choice_value": "303",
+            "export_field_name": "rooms___303"
+        },
+        {
+            "original_field_name": "workat1",
+            "choice_value": "",
+            "export_field_name": "workat1"
+        },
+        {
+            "original_field_name": "workat2",
+            "choice_value": "",
+            "export_field_name": "workat2"
+        },
+        {
+            "original_field_name": "demography_complete",
+            "choice_value": "",
+            "export_field_name": "demography_complete"
+        },
+        {
+            "original_field_name": "phone",
+            "choice_value": "",
+            "export_field_name": "phone"
+        },
+        {
+            "original_field_name": "dob",
+            "choice_value": "",
+            "export_field_name": "dob"
+        },
+        {
+            "original_field_name": "demographyextras_complete",
+            "choice_value": "",
+            "export_field_name": "demographyextras_complete"
+        },
+        {
+            "original_field_name": "visit_date",
+            "choice_value": "",
+            "export_field_name": "visit_date"
+        },
+        {
+            "original_field_name": "sleep_hours",
+            "choice_value": "",
+            "export_field_name": "sleep_hours"
+        },
+        {
+            "original_field_name": "visit_complete",
+            "choice_value": "",
+            "export_field_name": "visit_complete"
+        },
+        {
+            "original_field_name": "satisfaction",
+            "choice_value": "",
+            "export_field_name": "satisfaction"
+        },
+        {
+            "original_field_name": "visitsurvey_complete",
+            "choice_value": "",
+            "export_field_name": "visitsurvey_complete"
+        },
+        {
+            "original_field_name": "lab1",
+            "choice_value": "",
+            "export_field_name": "lab1"
+        },
+        {
+            "original_field_name": "lab2",
+            "choice_value": "",
+            "export_field_name": "lab2"
+        },
+        {
+            "original_field_name": "visitresults_complete",
+            "choice_value": "",
+            "export_field_name": "visitresults_complete"
+        },
+        {
+            "original_field_name": "impression1",
+            "choice_value": "",
+            "export_field_name": "impression1"
+        },
+        {
+            "original_field_name": "impression2",
+            "choice_value": "",
+            "export_field_name": "impression2"
+        },
+        {
+            "original_field_name": "followup_complete",
+            "choice_value": "",
+            "export_field_name": "followup_complete"
+        }
+    ],
+    "instruments": {
+        "demography": "Demography",
+        "demographyextras": "DemographyExtras",
+        "visit": "Visit",
+        "visitsurvey": "VisitSurvey",
+        "visitresults": "VisitResults",
+        "followup": "Followup"
+    },
     "instrumentEventMappings": [
         {
             "arm_num": 1,
@@ -644,6 +837,131 @@
             "arm_num": 1,
             "unique_event_name": "event_2_arm_1",
             "form": "followup"
+        }
+    ],
+    "records": [
+        {
+            "record_id": "1",
+            "redcap_event_name": "initial_arm_1",
+            "name": "John Doe",
+            "fruit": "2",
+            "height": "72",
+            "weight": "203.5",
+            "email1": "johndoe@iu.edu",
+            "email2": "johndoe@gmail.com",
+            "echeck1___1": "0",
+            "echeck1___2": "1",
+            "echeck2___1": "1",
+            "echeck2___2": "0",
+            "recip1": "Spouse",
+            "sent1a": "2016-08-05",
+            "sent1b": "2016-08-09",
+            "recip2": "Parent",
+            "sent2a": "2016-09-05",
+            "sent2b": "2016-09-09",
+            "color": "3",
+            "rooms___1": "0",
+            "rooms___22": "1",
+            "rooms___303": "1",
+            "workat1": "2",
+            "workat2": "3",
+            "demography_complete": "0",
+            "phone": "123-456-7890",
+            "dob": "1980-10-05",
+            "demographyextras_complete": "0",
+            "visit_date": "",
+            "sleep_hours": "",
+            "visit_complete": "",
+            "satisfaction": "",
+            "visitsurvey_complete": "",
+            "lab1": "",
+            "lab2": "",
+            "visitresults_complete": "",
+            "impression1": "",
+            "impression2": "",
+            "followup_complete": ""
+        },
+        {
+            "record_id": "1",
+            "redcap_event_name": "event_1_arm_1",
+            "name": "",
+            "fruit": "",
+            "height": "",
+            "weight": "",
+            "email1": "",
+            "email2": "",
+            "echeck1___1": "",
+            "echeck1___2": "",
+            "echeck2___1": "",
+            "echeck2___2": "",
+            "recip1": "",
+            "sent1a": "",
+            "sent1b": "",
+            "recip2": "",
+            "sent2a": "",
+            "sent2b": "",
+            "color": "",
+            "rooms___1": "",
+            "rooms___22": "",
+            "rooms___303": "",
+            "workat1": "",
+            "workat2": "",
+            "demography_complete": "",
+            "phone": "",
+            "dob": "",
+            "demographyextras_complete": "",
+            "visit_date": "2016-10-01",
+            "sleep_hours": "7.5",
+            "visit_complete": "0",
+            "satisfaction": "1",
+            "visitsurvey_complete": "0",
+            "lab1": "5",
+            "lab2": "6.5",
+            "visitresults_complete": "0",
+            "impression1": "1",
+            "impression2": "2",
+            "followup_complete": "0"
+        },
+        {
+            "record_id": "1",
+            "redcap_event_name": "event_2_arm_1",
+            "name": "",
+            "fruit": "",
+            "height": "",
+            "weight": "",
+            "email1": "",
+            "email2": "",
+            "echeck1___1": "",
+            "echeck1___2": "",
+            "echeck2___1": "",
+            "echeck2___2": "",
+            "recip1": "",
+            "sent1a": "",
+            "sent1b": "",
+            "recip2": "",
+            "sent2a": "",
+            "sent2b": "",
+            "color": "",
+            "rooms___1": "",
+            "rooms___22": "",
+            "rooms___303": "",
+            "workat1": "",
+            "workat2": "",
+            "demography_complete": "",
+            "phone": "",
+            "dob": "",
+            "demographyextras_complete": "",
+            "visit_date": "2016-10-08",
+            "sleep_hours": "8.5",
+            "visit_complete": "0",
+            "satisfaction": "5",
+            "visitsurvey_complete": "0",
+            "lab1": "7.5",
+            "lab2": "9",
+            "visitresults_complete": "0",
+            "impression1": "3",
+            "impression2": "4",
+            "followup_complete": "0"
         }
     ]
 }
