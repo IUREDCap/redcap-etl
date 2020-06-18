@@ -127,14 +127,4 @@ class RedCapEtlTest extends TestCase
             'RedCapEtlTest, testAutogenerateRulesException error message check'
         );
     }
-
-    public function testTransformRepeatingEvents()
-    {
-        $configFile = __DIR__.'/../config/repeating-events.ini';
-#$configFile = __DIR__.'/../config/visits.ini';
-#$configFile = __DIR__.'/../config/basic-demography.ini';
-        $redCapEtl = new RedCapEtl(self::$logger, $configFile);
-        $numberOfRecordIds = $redCapEtl->run();
-        $this->assertGreaterThan(0, $numberOfRecordIds);
-    }
 }

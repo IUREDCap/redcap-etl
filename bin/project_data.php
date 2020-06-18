@@ -72,19 +72,31 @@ try {
     #-------------------------------------
     $data = array();
 
+    $redCapVersion = $project->exportRedCapVersion();
+    $data['redCapVersion'] = $redCapVersion;
+
     $projectInfo = $project->exportProjectInfo();
     $data['projectInfo'] = $projectInfo;
 
-    $instruments = $project->exportInstruments();
-    $data['instruments'] = $instruments;
-
     $metadata = $project->exportMetadata();
     $data['metadata'] = $metadata;
+
+    $fieldNames = $project->exportFieldNames();
+    $data['fieldNames'] = $fieldNames;
+
+    $instruments = $project->exportInstruments();
+    $data['instruments'] = $instruments;
 
     if ($projectInfo['is_longitudinal']) {
         $instrumentEventMappings = $project->exportInstrumentEventMappings();
         $data['instrumentEventMappings'] = $instrumentEventMappings;
     }
+
+    $records = $project->exportRecordsAp(
+        ['exportSurveyFields' => true, 'exportDataAccessGroups' => true]
+    );
+    $data['records'] = $records;
+
 
     $json = json_encode($data, JSON_PRETTY_PRINT)."\n";
 

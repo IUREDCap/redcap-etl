@@ -626,12 +626,11 @@ class CsvDbConnectionTest extends TestCase
         $fileCreationTime = filemtime($fileName);
 
         # Execute the tests for this method
-        sleep(1); /* need to check the timestamp of when the file was dropped and replaced. */
         $result = $csvDbConnection->replaceTable($rootTable);
         $fileReplaceTime = filemtime($fileName);
 
         $this->assertNull($result, 'csvDbConnection existsTable and dropTable return check');
-        $this->assertLessThan(
+        $this->assertLessThanOrEqual(
             $fileReplaceTime,
             $fileCreationTime,
             'csvDbConnection existsTable and dropTable file was dropped and recreated check'
