@@ -421,7 +421,7 @@ class Configuration
             if (isset($caCertFile)) {
                 $caCertFile = trim($caCertFile);
                 if ($caCertFile !== '') {
-                    $this->caCertFile = $caCertFile;
+                    $this->caCertFile = $this->processFile($caCertFile);
                 }
             }
         }
@@ -444,7 +444,7 @@ class Configuration
         if (array_key_exists(ConfigProperties::PRE_PROCESSING_SQL_FILE, $this->properties)) {
             $file = $this->properties[ConfigProperties::PRE_PROCESSING_SQL_FILE];
             if (!empty($file)) {
-                $this->preProcessingSqlFile = $this->processFile($file, $fileShouldExist = false);
+                $this->preProcessingSqlFile = $this->processFile($file);
             }
         }
 
@@ -466,7 +466,7 @@ class Configuration
         if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL_FILE, $this->properties)) {
             $file = $this->properties[ConfigProperties::POST_PROCESSING_SQL_FILE];
             if (!empty($file)) {
-                $this->postProcessingSqlFile = $this->processFile($file, $fileShouldExist = false);
+                $this->postProcessingSqlFile = $this->processFile($file);
             }
         }
 
@@ -798,6 +798,31 @@ class Configuration
         return $properties;
     }
 
+    /**
+     * Gets version of properties where any relative paths specified for
+     * file properties are modified to absolute paths.
+     */
+    public static function makeFilePropertiesAbsolute($properties, $baseDir)
+    {
+        foreach ($properties as $name => $value) {
+            if (ConfigProperties::isFileProperty($name)) {
+                print "\nName: {$name} - Value: {$value}\n";
+                if ($name === ConfigProperties::LOG_FILE) {
+                    $properties[$name] = self::processFileProperty($value, $baseDir, false);
+                } else {
+                    $properties[$name] = self::processFileProperty($value, $baseDir);
+                }
+            } elseif ($name === ConfigProperties::DB_CONNECTION) {
+                list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($value);
+                if ($dbType === DbConnectionFactory::DBTYPE_CSV) {
+                    $dbString = self::processDirectorySpecification($dbString, $baseDir);
+                    $properties[$name] = DbConnectionFactory::createConnectionString($dbType, $dbString);
+                }
+            }
+        }
+        return $properties;
+    }
+
 
     /**
      * Processes the transformation rules.
@@ -834,19 +859,26 @@ class Configuration
     }
 
 
+    public function processFile($file, $fileShouldExist = true)
+    {
+        $baseDir = $this->baseDir;
+        return self::processFileProperty($file, $baseDir, $fileShouldExist);
+    }
+
     /**
      * Processes a file and returns the absolute pathname for the file.
      * Relative file paths in the configuration file are considered
      * to be relative to the directory of the configuration file.
      *
-     * @param string $file Relative or absolute path for file to be
-     *     processed.
+     * @param string $file The file property value, which should be a relative or absolute path
+     *     to a file for file.
+     *
      * @param boolean $fileShouldExist if true, the file should already
      *    exists, so an exception will be thrown if it does nore.
      *
      * @return string absolute path for file to use.
      */
-    public function processFile($file, $fileShouldExist = true)
+    public static function processFileProperty($file, $baseDir, $fileShouldExist = true)
     {
         if ($file == null) {
             $file = '';
@@ -855,7 +887,7 @@ class Configuration
         }
 
         if (!FileUtil::isAbsolutePath($file)) {
-            $file = $this->baseDir . '/' . $file;
+            $file = $baseDir . '/' . $file;
         }
         
         $dirName  = dirname($file);
@@ -891,6 +923,11 @@ class Configuration
      */
     public function processDirectory($path)
     {
+        return self::processDirectorySpecification($path, $this->baseDir);
+    }
+
+    public static function processDirectorySpecification($path, $baseDir)
+    {
         if ($path == null) {
             $message = 'Null path specified as argument to '.__METHOD__;
             throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -904,7 +941,7 @@ class Configuration
         if (FileUtil::isAbsolutePath($path)) {
             $realDir  = realpath($path);
         } else { // Relative path
-            $realDir = realpath(realpath($this->baseDir).'/'.$path);
+            $realDir = realpath(realpath($baseDir).'/'.$path);
         }
 
         if ($realDir === false) {
@@ -914,6 +951,7 @@ class Configuration
 
         return $realDir;
     }
+
 
 
     /**

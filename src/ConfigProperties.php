@@ -14,7 +14,6 @@ class ConfigProperties
     #----------------------------------------------------------------
     # Configuration properties
     #----------------------------------------------------------------
-    const ALLOWED_SERVERS        = 'allowed_servers';
     const BATCH_SIZE             = 'batch_size';
     
     const CA_CERT_FILE              = 'ca_cert_file';
@@ -114,6 +113,28 @@ class ConfigProperties
         return $isValid;
     }
 
+
+    /**
+     * Indicates if the specified property is a property
+     * that specifies (the path of) a file.
+     */
+    public static function isFileProperty($property)
+    {
+        $isFile = false;
+        switch ($property) {
+            case self::CA_CERT_FILE:                # all these
+            case self::CONFIG_FILE:                 # cases
+            case self::LOG_FILE:                    # are
+            case self::PRE_PROCESSING_SQL_FILE:     # file
+            case self::POST_PROCESSING_SQL_FILE:    # property
+            case self::TRANSFORM_RULES_FILE:        # names
+                $isFile = true;
+                break;
+            default:
+                break;
+        }
+        return $isFile;
+    }
 
     /**
      * Gets the property names and values.

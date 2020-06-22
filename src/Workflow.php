@@ -59,6 +59,8 @@ class Workflow
         } else {
             $this->configurationFile = trim($configurationFile);
 
+            $baseDir = realpath(dirname($this->configurationFile));
+
             if (preg_match('/\.ini/i', $this->configurationFile) === 1) {
                 #---------------------------
                 # .ini configuration file
@@ -86,6 +88,8 @@ class Workflow
 
     public function parseIniWorkflowFile($configurationFile)
     {
+        $baseDir = realpath(dirname($configurationFile));
+
         $processSections = true;
         $config = parse_ini_file($configurationFile, $processSections);
 
@@ -96,12 +100,26 @@ class Workflow
                 if (is_array($propertyValue)) {
                     # Section (that defines a configuration)
                     $section = $propertyName;
-                    $properties = $propertyValue;
+                    $sectionProperties = $propertyValue;
+                    $sectionProperties = Configuration::makeFilePropertiesAbsolute($sectionProperties, $baseDir);
                     $configFile = null;
+
+                    $properties = $this->globalProperties;
+                    $properties = Configuration::makeFilePropertiesAbsolute($properties, $baseDir);
+
                     if (array_key_exists(ConfigProperties::CONFIG_FILE, $properties)) {
+                        # Config file property
                         $configFile = $properties[ConfigProperties::CONFIG_FILE];
                         unset($properties[ConfigProperties::CONFIG_FILE]);
+                        $fileProperties = Configuration::getPropertiesFromFile($configFile);
+                        $fileProperties = Configuration::makeFilePropertiesAbsolute($fileProperties, $baseDir);
+                        $properties = Configuration::overrideProperties($properties, $fileProperties);
                     }
+
+                    $properties = Configuration::overrideProperties($properties, $sectionProperties);
+                    
+                    # Properties used from lowest to highest precedence:
+                    # global properties, config file properties, properties defined in section
                     $this->configurations[$section] = new Configuration($this->logger, $properties);
                 } else {
                     # Global property

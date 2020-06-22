@@ -533,10 +533,10 @@ class ConfigurationTest extends TestCase
         $batchSize = $config->getBatchSize();
         $this->assertEquals($expectedBatchSize, $batchSize, 'BatchSize check');
 
-        $expectedCaCertFile = 'test_cacert_file_path';
+        $expectedCaCertFileEnding = 'test-cert-file';
         $caCertFile = $config->getCaCertFile();
-        $this->assertEquals(
-            $expectedCaCertFile,
+        $this->assertContains(
+            $expectedCaCertFileEnding,
             $caCertFile,
             'CaCertFile check'
         );
@@ -684,10 +684,10 @@ class ConfigurationTest extends TestCase
             'LookupTableName check'
         );
 
-        $expectedPostProcessingSqlFile = '/tmp/postsql';
+        $expectedPostProcessingSqlFileEnding = 'post.sql';
         $postProcessingSqlFile = $config->getPostProcessingSqlFile();
-        $this->assertEquals(
-            $expectedPostProcessingSqlFile,
+        $this->assertContains(
+            $expectedPostProcessingSqlFileEnding,
             $postProcessingSqlFile,
             'PostProcessingSqlFile check'
         );
@@ -803,15 +803,6 @@ class ConfigurationTest extends TestCase
             $expectedInfo,
             $info,
             'GetProperyInfo invalid test'
-        );
-
-        $property = 'allowed_servers';
-        $expectedInfo = 'undefined';
-        $info = $config->getPropertyInfo($property);
-        $this->assertEquals(
-            $expectedInfo,
-            $info,
-            'GetProperyInfo undefined test'
         );
 
         $property = 'transform_rules_source';
