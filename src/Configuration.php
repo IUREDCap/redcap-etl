@@ -806,7 +806,6 @@ class Configuration
     {
         foreach ($properties as $name => $value) {
             if (ConfigProperties::isFileProperty($name)) {
-                print "\nName: {$name} - Value: {$value}\n";
                 if ($name === ConfigProperties::LOG_FILE) {
                     $properties[$name] = self::processFileProperty($value, $baseDir, false);
                 } else {

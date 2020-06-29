@@ -45,19 +45,23 @@ class Workflow
      *     to be a JSON file if the file name ends with .json, and a
      *     .ini file otherwise.
      */
-    public function __construct(& $logger, $configurationFile)
+    public function __construct(& $logger, $properties)
     {
         $this->logger = $logger;
 
         $this->globalProperties = array();
         $this->configurations = array();
 
-        if (empty($configurationFile)) {
-            $message = 'No configuration file was specified.';
+        if (empty($properties)) {
+            $message = 'No configuration was specified.';
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
-        } else {
-            $this->configurationFile = trim($configurationFile);
+        } elseif (is_array($properties)) {
+            # Configuration specified as an arrat of properties
+            $configuration = new Configuration($logger, $properties);
+            $this->configurations[] = $configuration;
+        } elseif (is_string($properties)) {
+            $this->configurationFile = trim($properties);
 
             $baseDir = realpath(dirname($this->configurationFile));
 
@@ -83,6 +87,7 @@ class Workflow
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
             }
+        } else {
         }
     }
 
@@ -117,7 +122,7 @@ class Workflow
                     }
 
                     $properties = Configuration::overrideProperties($properties, $sectionProperties);
-                    
+
                     # Properties used from lowest to highest precedence:
                     # global properties, config file properties, properties defined in section
                     $this->configurations[$section] = new Configuration($this->logger, $properties);
@@ -141,10 +146,6 @@ class Workflow
                 $properties[$key] = $value;
             }
         }
-        #print "SECTIONS:\n";
-        #print_r($sections);
-        #print "\n\nPROPERTIES:\n";
-        #print_r($properties);
     }
 
 
@@ -169,7 +170,32 @@ class Workflow
     public function generateJson()
     {
         $data = [$this->globalProperties, $this->configurations];
-        $json = json_encode($data, JSON_PRETTY_PRINT);
+        $json = json_encode($data);
+        #$json = json_encode($this, JSON_FORCE_OBJECT); // | JSON_PRETTY_PRINT);
         return $json;
+    }
+
+    /*
+    public function toString()
+    {
+        $string = '';
+        $string .= "Global Properties [\n";
+        foreach ($this->globalProperties as $name => $value) {
+            $string .= "    {$name}: {$value}\n";
+        }
+        $string .= "]\n";
+        foreach ($this->configurations as $name => $configuration) {
+            $string .= "Configuration \"{$name}\": [\n";
+            $string .= print_r($configuration, true);
+            $string .= "]\n";
+        }
+
+        return $string;
+    }
+    */
+
+    public function getConfigurations()
+    {
+        return $this->configurations;
     }
 }

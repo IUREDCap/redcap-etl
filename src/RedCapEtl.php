@@ -36,21 +36,12 @@ class RedCapEtl
     # when the process completes.
     const PROCESSING_COMPLETE = 'Processing complete.';
 
-    /** @var EtlRedCapProject the project that has the data to extract */
-    protected $dataProject;
-
     protected $projectInfoTable;
     
     protected $logger;
 
-    protected $schema;
-
     protected $rowsLoadedForTable = array();
   
-    protected $dbcon;
-
-    private $logFile;
-
     private $errorHandler;
 
     private $app;
@@ -58,7 +49,7 @@ class RedCapEtl
     private $recordIdFieldName;   // The field name for the record ID
                                   // for the data project in REDCap
 
-    private $configuration;
+    private $workflow;       // parsed (possibly multiple) configuration
 
     /** @var array map where the keys represent root tables that have
      *     fields that have multiple rows of data per record ID.
@@ -67,6 +58,9 @@ class RedCapEtl
      */
     private $rootTablesWithMultiValues;
 
+    private $redcapProjectClass;
+
+    private $etlProcesses;
 
     /**
      * Constructor.
@@ -86,585 +80,36 @@ class RedCapEtl
     ) {
         $this->app = $logger->getApp();
 
-        $this->rootTablesWithMultiValues = array();
-
-        $this->configuration = new Configuration(
-            $logger,
-            $properties
-        );
-
+        $this->workflow = new Workflow($logger, $properties);
         $this->logger = $logger;
-        $this->logger->setConfiguration($this->configuration);
-        
-        #---------------------------------------------------------
-        # Set time limit
-        #---------------------------------------------------------
-        $timeLimit = $this->configuration->getTimeLimit();
-        if (isset($timeLimit) && trim($timeLimit) !== '') {
-            set_time_limit($timeLimit);
-        } else {
-            set_time_limit(0);   # no time limit
-        }
+        $this->redcapProjectClass = $redcapProjectClass;
 
-        #---------------------------------------------------------
-        # Set timezone if one was specified
-        #---------------------------------------------------------
-        $timezone = $this->configuration->getTimezone();
-        if (isset($timezone) && trim($timezone) !== '') {
-            date_default_timezone_set($timezone);
-        }
+        $this->etlProcesses = array();
 
-
-        #-----------------------------------------------------------
-        # Create RedCap object to use for getting REDCap projects
-        #-----------------------------------------------------------
-        $apiUrl = $this->configuration->getRedCapApiUrl();
-        $superToken = null; // There is no need to create projects, so this is not needed
-        $sslVerify  = $this->configuration->getSslVerify();
-        $caCertFile = $this->configuration->getCaCertFile();
-
-        if (empty($redcapProjectClass)) {
-            $redcapProjectClass = EtlRedCapProject::class;
-        }
-
-        # Callback function for use in the RedCap class so
-        # that project objects retrieved will have class
-        # EtlRedCapProject, which has extensions for REDCapETL.
-        $callback = function (
-            $apiUrl,
-            $apiToken,
-            $sslVerify = false,
-            $caCertificateFile = null,
-            $errorHandler = null,
-            $connection = null
-        ) use ($redcapProjectClass) {
-            return new $redcapProjectClass(
-                $apiUrl,
-                $apiToken,
-                $sslVerify,
-                $caCertificateFile,
-                $errorHandler,
-                $connection
-            );
-        };
-        
-        try {
-            $redCap = new RedCap($apiUrl, $superToken, $sslVerify, $caCertFile);
-            $redCap->setProjectConstructorCallback($callback);
-        } catch (PhpCapException $exception) {
-            $message = 'Unable to set up RedCap object.';
-            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-
-        #----------------------------------------------------------------
-        # Get the project that has the actual data
-        #----------------------------------------------------------------
-        $dataToken = $this->configuration->getDataSourceApiToken();
-        try {
-            $this->dataProject = $redCap->getProject($dataToken);
-        } catch (PhpCapException $exception) {
-            $message = 'Could not get data project.';
-            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-        #-----------------------------------------
-        # Initialize the schema
-        #-----------------------------------------
-        $this->schema = new Schema();
-                
-
-        #---------------------------------------------------
-        # Create a database connection for the database
-        # where the transformed REDCap data will be stored
-        #---------------------------------------------------
-        $dbconfactory = new DbConnectionFactory();
-        $this->dbcon = $dbconfactory->createDbConnection(
-            $this->configuration->getDbConnection(),
-            $this->configuration->getDbSsl(),
-            $this->configuration->getDbSslVerify(),
-            $this->configuration->getCaCertFile(),
-            $this->configuration->getTablePrefix(),
-            $this->configuration->getLabelViewSuffix()
-        );
-
-        #-------------------------------------------------
-        # Set up database logging
-        #-------------------------------------------------
-        if ($this->configuration->getDbLogging()) {
-            $this->logger->setDbConnection($this->dbcon);
-            $this->logger->setDbLogging(true);
-            
-            # Add information to logger that is used by database logging
-            
-        
-            #----------------------------------------
-            # (Main) database log table
-            #----------------------------------------
-            $name = $this->configuration->getDbLogTable();
-            $dbLogTable = new EtlLogTable($name);
-            $this->logger->setDbLogTable($dbLogTable);
-            
-            $this->dbcon->createTable($dbLogTable, true);
-                
-            $this->schema->setDbLogTable($dbLogTable);
-            
-            $this->logger->logToDatabase();
-            
-            #------------------------------
-            # Database event log table
-            #------------------------------
-            $name = $this->configuration->getDbEventLogTable();
-            $dbEventLogTable = new EtlEventLogTable($name);
-            $this->logger->setDbEventLogTable($dbEventLogTable);
-            
-            $this->dbcon->createTable($dbEventLogTable, true);
-            
-            $this->schema->setDbEventLogTable($dbEventLogTable);
+        #---------------------------------------------
+        # Set up the ETL processes
+        #---------------------------------------------
+        foreach ($this->workflow->getConfigurations() as $configName => $configuration) {
+            $etlProcess = new EtlProcess();
+            $etlProcess->initialize($this->logger, $configuration, $this->redcapProjectClass);
+            $this->etlProcesses[$configName] = $etlProcess;
         }
     }
 
 
     /**
-     * Parses the transformation rules, and creates a Schema object that describes
-     * the schema of the database where the extracted data will be loaded.
-     *
-     * @return array The first element is the parse result code, and the second
-     *     is a string that contains any info, warning and error messages that
-     *     were generated by the parsing.
+     * Creates the project info table that has information on the project(s) used in
+     * the ETL configuration(s). Only one of these tables is created for each ETL
+     * run, regardless of how many individual configurations are used.
      */
-    public function processTransformationRules()
+    public function createProjectInfoTable()
     {
-        $rulesText = '';
-
-        #-----------------------------------------------------------------------------
-        # If auto-generated rules were specified, generate the rules,
-        # otherwise, get the from the configuration
-        #-----------------------------------------------------------------------------
-        if ($this->configuration->getTransformRulesSource() === Configuration::TRANSFORM_RULES_DEFAULT) {
-            $rulesText = $this->autoGenerateRules();
-        } else {
-            $rulesText = $this->configuration->getTransformationRules();
-        }
-        
-        $tablePrefix = $this->configuration->getTablePrefix();
-        $schemaGenerator = new SchemaGenerator($this->dataProject, $this->configuration, $this->logger);
-
-        list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
-
-        ###print "\n".($schema->toString())."\n";
-
-        $this->schema      = $schema;
-
-        return $parseResult;
-    }
-
-    /**
-     * Automatically generates the data transformation rules.
-     *
-     * @param boolean $addFormCompleteFields indicates if a form complete field should be added to each table.
-     *
-     * @param boolean $addDagFields indicates if a DAG (Data Access Group) field should be added to each table.
-     *
-     * @param boolean $addFileFields indicates if file fields should be added.
-     *
-     * @return string the rules text
-     */
-    public function autoGenerateRules($addFormCompleteFields = false, $addDagFields = false, $addFileFields = false)
-    {
-        if (!isset($this->dataProject)) {
-            $message = 'No data project was found.';
-            throw new EtlException($message, EtlException::INPUT_ERROR);
-        }
-
-        $rulesGenerator = new RulesGenerator();
-        $rulesText = $rulesGenerator->generate(
-            $this->dataProject,
-            $addFormCompleteFields,
-            $addDagFields,
-            $addFileFields
-        );
-        return $rulesText;
-    }
-
-
-    /**
-     * Reads all records from the RedCapEtl project, transforms them
-     * into Rows, and loads the rows into the target database.
-     *
-     * Reads records out of REDCap in batches in order to reduce the likelihood
-     * of causing memory issues on the Application server or Database server.
-     *
-     * These three steps are joined together at this level so that
-     * the data from REDCap can be worked on in batches.
-     *
-     * @return int the number of record IDs processed.
-     */
-    public function extractTransformLoad()
-    {
-        $startEtlTime = microtime(true);
-
-        $extractTime   = 0.0;
-        $transformTime = 0.0;
-        $loadTime      = 0.0;
-
-        #--------------------------------------------------
-        # Extract the record ID batches
-        #--------------------------------------------------
-        $startExtractTime = microtime(true);
-        $recordIdBatches = $this->dataProject->getRecordIdBatches(
-            (int) $this->configuration->getBatchSize()
-        );
-        $endExtractTime = microtime(true);
-        $extractTime += $endExtractTime - $startExtractTime;
-
-        # Count and log the number of record IDs found
-        $recordIdCount = 0;
-        foreach ($recordIdBatches as $recordIdBatch) {
-            $recordIdCount += count($recordIdBatch);
-        }
-        $this->log("Number of record_ids found: ". $recordIdCount);
-
-        #--------------------------------------------------------------
-        # Foreach record_id, get all REDCap records for that record_id.
-        # There will be one record for each event for each record_id
-        #--------------------------------------------------------------
-        $recordEventsCount = 0;
-                   
-        #-------------------------------------------------------
-        # For each batch of data, extract, transform, and load
-        #-------------------------------------------------------
-        foreach ($recordIdBatches as $recordIdBatch) {
-            #---------------------------------
-            # Extract the data from REDCap
-            #---------------------------------
-            $startExtractTime = microtime(true);
-            $recordBatch = $this->dataProject->getRecordBatch($recordIdBatch);
-            $endExtractTime = microtime(true);
-            $extractTime += $endExtractTime - $startExtractTime;
-
-            if ($this->configuration->getExtractedRecordCountCheck()) {
-                if (count($recordBatch) < count($recordIdBatch)) {
-                    $message = "Attempted to retrieve ".count($recordIdBatch)." records, but only "
-                        .count($recordBatch)." were actually retrieved."
-                        ." This error can be caused by a very large batch size. If you are using a large"
-                        ." batch size (1,000 or greater), try reducing it to 500 or less."
-                        ." This error could also be caused by records being deleted while the ETL process"
-                        ." is running."
-                        ." You can turn this error check off by setting the "
-                        .ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK." to false.";
-                    $code =  EtlException::INPUT_ERROR;
-                    throw new EtlException($message, $code);
-                } elseif (count($recordBatch) > count($recordIdBatch)) {
-                    $message = "Attempted to retrieve ".count($recordIdBatch)." records, but "
-                        .count($recordBatch)." were actually retrieved."
-                        ." This error could be caused by records being added while the"
-                        ." ETL process is running."
-                        ." You can turn this error check off by setting the "
-                        .ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK." to false.";
-                    $code =  EtlException::INPUT_ERROR;
-                    throw new EtlException($message, $code);
-                }
-            }
-
-            foreach ($recordBatch as $recordId => $records) {
-                $recordEventsCount += count($records);
-
-                #-----------------------------------
-                # Transform the data
-                #-----------------------------------
-                $startTransformTime = microtime(true);
-                # For each root table, because processing will be done
-                # recursively to the child tables
-                foreach ($this->schema->getRootTables() as $rootTable) {
-                    // Transform the records for this record_id into rows
-                    $this->transform($rootTable, $records, '', '');
-                }
-                $endTransformTime = microtime(true);
-                $transformTime += $endTransformTime - $startTransformTime;
-            }
-
-            #print("\n\n===============================================================\n");
-            #print("\n\nSCHEMA MAP\n{$this->schema->toString()}\n\n");
-            #print("\n\n===============================================================\n");
-            
-            #-------------------------------------
-            # Load the data into the database
-            #-------------------------------------
-            $startLoadTime = microtime(true);
-            foreach ($this->schema->getTables() as $table) {
-                # Single row storage (stores one row at a time):
-                # foreach row, load it
-                ### $this->loadTableRows($table);
-                $this->loadTableRowsEfficiently($table);
-            }
-            #####$this->loadRows();
-            $endLoadTime = microtime(true);
-            $loadTime += $endLoadTime - $startLoadTime;
-        }
-
-        $endEtlTime = microtime(true);
-        $this->logToFile('Extract time:   '.$extractTime.' seconds');
-        $this->logToFile('Transform time: '.$transformTime.' seconds');
-        $this->logToFile('Load time:      '.$loadTime.' seconds');
-        $this->logToFile('ETL total time: '.($endEtlTime - $startEtlTime).' seconds');
-
-        $this->reportRows();
-
-        $this->log("Number of record events transformed: ". $recordEventsCount);
-    
-        return $recordIdCount;
-    }
-
-
-    /**
-     * Transform the values from REDCap in the specified records into
-     * values in the specified table and its child tables objects.
-     * The rows are added to the Table objects as data rows, and NOT
-     * stored in the database at this point.
-     *
-     * @param Table $table the table (and its child tables) in which the
-     *        records values are being stored.
-     *
-     * @param array $records array of records for a single record_id. If there
-     *     is more than one record, they represent multiple
-     *     events or repeating instruments (forms).
-     *
-     * @param string $foreignKey if set, represents the value to use as the
-     *     foreign key for any records created.
-     *
-     * @param string $suffix If set, represents the suffix used for the parent table.
-     */
-    protected function transform($table, $records, $foreignKey, $suffix)
-    {
-        $tableName = $table->getName();
-        $calcFieldIgnorePattern = $this->configuration->getCalcFieldIgnorePattern();
-
-        foreach ($table->rowsType as $rowType) {
-            // Look at row_event for this table
-            switch ($rowType) {
-                #-------------------------------------------------------------------
-                # ROOT Table - this case should only occur for non-recursive calls,
-                # since a root table can't be a child of another table
-                #-------------------------------------------------------------------
-                case RowsType::ROOT:
-                    #------------------------------------------------------------------------
-                    # Root tables are for fields that have a 1:1 mapping with the record ID,
-                    # so stop processing once a record for the record ID being processed is
-                    # found that has at least some data for the root table.
-                    # For the child tables, which, in general, have a m:1 relationship
-                    # with the record ID, process all records for this record ID.
-                    #------------------------------------------------------------------------
-                    $rootRecordFound = false;
-                    foreach ($records as $record) {
-                        $primaryKey =
-                            $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
-
-                        # If row creation succeeded:
-                        if ($primaryKey) {
-                            if (!$rootRecordFound) {
-                                $rootRecordFound = true;
-                                foreach ($table->getChildren() as $childTable) {
-                                    $this->transform($childTable, $records, $primaryKey, $suffix);
-                                }
-                                if ($table->isRecordIdTable()) {
-                                    # If this is a record ID table stop processing; don't store multiple rows
-                                    break;
-                                }
-                            } else {
-                                # A record with values for the root table was already found,
-                                # so there are multiple values per record ID for at least one
-                                # field in the root table.
-                                if (!array_key_exists($tableName, $this->rootTablesWithMultiValues)) {
-                                    # Only print warning message once for each table
-                                    $message = 'WARNING: ROOT table "'.$tableName.'" has fields'
-                                        .' that have multiple values per record ID in REDCap.'
-                                        .' ROOT tables are intended for fields that only have'
-                                        .' one value per record ID.';
-                                    $this->logger->log($message);
-                                    $this->rootTablesWithMultiValues[$tableName] = true;
-                                }
-                            }
-                        }
-                    }
-                    break;
-
-                // If events or repeatable forms or repeating events
-                case RowsType::BY_EVENTS:
-                case RowsType::BY_REPEATING_INSTRUMENTS:
-                case RowsType::BY_REPEATING_EVENTS:
-                    // Foreach Record (i.e., foreach event or repeatable form or repeatable event)
-                    foreach ($records as $record) {
-                        $primaryKey =
-                            $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
-
-                        if ($primaryKey) {
-                            foreach ($table->getChildren() as $childTable) {
-                                $this->transform($childTable, array($record), $primaryKey, $suffix);
-                            }
-                        }
-                    }
-                    break;
-
-                // If suffix
-                case RowsType::BY_SUFFIXES:
-                    // Foreach Suffix
-                    foreach ($table->rowsSuffixes as $newSuffix) {
-                        $primaryKey = $table->createRow(
-                            $records[0],
-                            $foreignKey,
-                            $suffix.$newSuffix,
-                            $rowType,
-                            $calcFieldIgnorePattern
-                        );
-
-                        if ($primaryKey) {
-                            foreach ($table->getChildren() as $childTable) {
-                                $this->transform($childTable, $records, $primaryKey, $suffix.$newSuffix);
-                            }
-                        }
-                    }
-                    break;
-
-                // If events and suffix
-                case RowsType::BY_EVENTS_SUFFIXES:
-                    // Foreach Record (i.e., foreach event)
-                    foreach ($records as $record) {
-                        // Foreach Suffix
-                        foreach ($table->rowsSuffixes as $newSuffix) {
-                            $primaryKey = $table->createRow(
-                                $record,
-                                $foreignKey,
-                                $suffix.$newSuffix,
-                                $rowType,
-                                $calcFieldIgnorePattern
-                            );
-
-                            if ($primaryKey) {
-                                foreach ($table->getChildren() as $childTable) {
-                                    $this->transform($childTable, array($record), $primaryKey, $suffix.$newSuffix);
-                                }
-                            }
-                        }
-                    }
-                    break;
-            }
-        }
-    }
-
-
-
-    /** WORK IN PROGRESS
-     *
-     * Need to split of drop and create for workflows
-     */
-    public function dropLoadTables()
-    {
-        $tables = $this->schema->getTables();
-        foreach ($tables as $table) {
-            if ($table->usesLookup === true) {
-                $ifExists = true;
-                $this->dbcon->dropLabelView($table, $ifExists);
-            }
-        }
-    }
-
-    /**
-     * Creates the database tables where the data will be loaded, and
-     * creates views for the tables that have multiple choice
-     * fields that have labels, instead of values, for those fields.
-     * If there are existing
-     * tables, then those tables are dropped first.
-     */
-    protected function createLoadTables()
-    {
-        #-------------------------------------------------------------
-        # Get the tables in top-down order, so that each parent table
-        # will always come before its child tables
-        #-------------------------------------------------------------
-        $tables = $this->schema->getTablesTopDown();
-
-        #---------------------------------------------------------------------
-        # Drop tables in the reverse order (bottom-up), so that child tables
-        # will always be dropped before their parent table. And drop
-        # the label view (if any) for a table before dropping the table
-        #---------------------------------------------------------------------
-        foreach (array_reverse($tables) as $table) {
-            if ($table->usesLookup === true) {
-                $ifExists = true;
-                $this->dbcon->dropLabelView($table, $ifExists);
-            }
-
-            $ifExists = true;
-            $this->dbcon->dropTable($table, $ifExists);
-        }
-
-        #------------------------------------------------------
-        # Create the tables in the order they were defined
-        #------------------------------------------------------
-        foreach ($tables as $table) {
-            $ifExists = false;
-            $this->dbcon->createTable($table, $ifExists);
-            // $this->dbcon->addPrimaryKeyConstraint($table);
-
-            $msg = "Created table '".$table->name."'";
-
-            #--------------------------------------------------------------------------
-            # If this table uses the Lookup table (i.e., has multiple-choice values),
-            # Create a view of the table that has multiple-choice labels instead of
-            # multiple-choice values.
-            #--------------------------------------------------------------------------
-            if ($table->usesLookup === true) {
-                $this->dbcon->replaceLookupView($table, $this->schema->getLookupTable());
-                $msg .= '; Lookup table created';
-            }
-
-            $this->log($msg);
-        }
-
-        #-----------------------------------------------------------------------------------
-        # If configured, create the lookup table that maps multiple choice values to labels
-        #-----------------------------------------------------------------------------------
-        if ($this->configuration->getCreateLookupTable()) {
-            $lookupTable = $this->schema->getLookupTable();
-            $this->dbcon->replaceTable($lookupTable);
-            $this->loadTableRows($lookupTable);
-        }
-
         #-----------------------------------------------------------
         # Create the project info table
         #-----------------------------------------------------------
-        $this->projectInfoTable = new ProjectInfoTable($this->configuration->getTablePrefix() /* , $name */);
-        $this->dbcon->replaceTable($this->projectInfoTable);
-        $this->loadTableRows($this->projectInfoTable);
-    }
-
-    /**
-     * Creates primary and foreign keys for the database tables if they
-     * have been specified (note: unsupported for CSV and SQLite).
-     */
-    protected function createDatabaseKeys()
-    {
-        #-------------------------------------------------------------
-        # Get the tables in top-down order, so that each parent table
-        # will always come before its child tables
-        #-------------------------------------------------------------
-        $tables = $this->schema->getTablesTopDown();
-
-        #------------------------------------------------------
-        # Create tables
-        #------------------------------------------------------
-        if ($this->configuration->getDbPrimaryKeys()) {
-            foreach ($tables as $table) {
-                $this->dbcon->addPrimaryKeyConstraint($table);
-            }
-        }
-
-        if ($this->configuration->getDbForeignKeys()) {
-            foreach ($tables as $table) {
-                $this->dbcon->addForeignKeyConstraint($table);
-            }
-        }
+        #$this->projectInfoTable = new ProjectInfoTable($this->configuration->getTablePrefix() /* , $name */);
+        #$this->dbcon->replaceTable($this->projectInfoTable);
+        #$this->loadTableRows($this->projectInfoTable);
     }
 
 
@@ -764,122 +209,54 @@ class RedCapEtl
      */
     public function run()
     {
-        $this->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-        $this->log('REDCap version '.$this->dataProject->exportRedCapVersion());
-        $this->logJobInfo();
-        $this->log("Starting processing.");
+        $numberOfRecordIds = 0;
 
-        # Parse the transformation rules
-        list($parseStatus, $result) = $this->processTransformationRules();
-        if ($parseStatus === SchemaGenerator::PARSE_ERROR) {
-            $message = "Transformation rules not parsed. Processing stopped.";
-            throw new EtlException($message, EtlException::INPUT_ERROR);
+        # Create the project info table that stores information
+        # on all the REDCap projects that are accessed
+        ##### $this->createProjectInfoTable();
+
+        #----------------------------------------------
+        # Drop old load tables if they exist
+        #----------------------------------------------
+        foreach ($this->etlProcesses as $configName => $etlProcess) {
+            $etlProcess->dropLoadTables();
         }
 
-        $this->runPreProcessingSql();
+        #-----------------------------------------
+        # Run ETL for each ETL process
+        #-----------------------------------------
+        foreach ($this->etlProcesses as $configName => $etlProcess) {
+            $logger = $etlProcess->getLogger();
 
-        # Create the database tables where the extracted and
-        # transformed data from REDCap will be loaded
-        $this->createLoadTables();
+            $logger->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
+            $logger->log('REDCap version '.$etlProcess->getDataProject()->exportRedCapVersion());
+            $etlProcess->logJobInfo();
+            $logger->log("Starting processing.");
 
-        #----------------------------------------------------------------------
-        # Project Info table (eventually will have possible multiple projects)
-        #----------------------------------------------------------------------
-        if (!($this->dbcon instanceof CsvDbConnection)) {
-            $projectInfo = $this->dataProject->exportProjectInfo();
-            $row = $this->projectInfoTable->getRowData(
-                $this->configuration->getRedCapApiUrl(),
-                $projectInfo['project_id'],
-                $projectInfo['project_title'],
-                $projectInfo['project_language']
-            );
-            $this->dbcon->insertRow($row);
-        }
+            $etlProcess->runPreProcessingSql();
 
-        # ETL
-        $numberOfRecordIds = $this->extractTransformLoad();
+            # Create the database tables where the extracted and
+            # transformed data from REDCap will be loaded
+            $etlProcess->createLoadTables();
 
-        $this->createDatabaseKeys(); // create primary and foreign keys, if configured
+            #----------------------------------------------------------------------
+            # Project Info table (eventually will have possible multiple projects)
+            #----------------------------------------------------------------------
+            $etlProcess->createProjectInfoTable();
 
-        $this->runPostProcessingSql();
+            # ETL
+            $numberOfRecordIds += $etlProcess->extractTransformLoad();
+
+            $etlProcess->createDatabaseKeys(); // create primary and foreign keys, if configured
+
+            $etlProcess->runPostProcessingSql();
                 
-        $this->log(self::PROCESSING_COMPLETE);
-        $this->logger->logEmailSummary();
+            $logger->log(self::PROCESSING_COMPLETE);
+            $logger->logEmailSummary();
+        }
 
         return $numberOfRecordIds;
     }
-
-    protected function runPreProcessingSql()
-    {
-        try {
-            $sql = $this->configuration->getPreProcessingSql();
-            if (!empty($sql)) {
-                $this->dbcon->processQueries($sql);
-            }
-
-            $sqlFile = $this->configuration->getPreProcessingSqlFile();
-            if (!empty($sqlFile)) {
-                $this->dbcon->processQueryFile($sqlFile);
-            }
-        } catch (\Exception $exception) {
-            $message = 'Pre-processing SQL error: '.$exception->getMessage();
-            throw new EtlException($message, EtlException::INPUT_ERROR);
-        }
-    }
-
-    protected function runPostProcessingSql()
-    {
-        try {
-            $sql = $this->configuration->getPostProcessingSql();
-            if (!empty($sql)) {
-                $this->dbcon->processQueries($sql);
-            }
-
-            $sqlFile = $this->configuration->getPostProcessingSqlFile();
-            if (!empty($sqlFile)) {
-                $this->dbcon->processQueryFile($sqlFile);
-            }
-        } catch (\Exception $exception) {
-            $message = 'Post-processing SQL error: '.$exception->getMessage();
-            throw new EtlException($message, EtlException::INPUT_ERROR);
-        }
-    }
-
-
-    /**
-     * Logs job info from configuration, if any
-     */
-    public function logJobInfo()
-    {
-        if (!empty($this->configuration)) {
-            $redcapApiUrl = $this->configuration->getRedCapApiUrl();
-            $this->log("REDCap API URL: ".$redcapApiUrl);
-            
-            $projectInfo = $this->dataProject->exportProjectInfo();
-            if (!empty($projectInfo)) {
-                $this->log("Project ID: ".$projectInfo['project_id']);
-                $this->log("Project title: ".$projectInfo['project_title']);
-            }
-            
-            $configName  = $this->configuration->getConfigName();
-            $configFile  = $this->configuration->getPropertiesFile();
-            if (!empty($configName)) {
-                $this->log("Configuration: ".$configName);
-            } elseif (!empty($configFile)) {
-                $this->log("Configuration: ".$configFile);
-            }
-                        
-            $cronJob = $this->configuration->getCronJob();
-            if (!empty($cronJob)) {
-                if (strcasecmp($cronJob, 'true') === 0) {
-                    $this->log('Job type: scheduled');
-                } else {
-                    $this->log('Job type: on demand');
-                }
-            }
-        }
-    }
-
 
     public function getLogger()
     {
@@ -893,16 +270,39 @@ class RedCapEtl
 
     public function logToFile($message)
     {
-        $this->logger->logToFile($message, $this->logFile);
+        $this->logger->logToFile($message);
     }
 
-    public function getConfiguration()
+    public function getEtlProcesses()
     {
-        return $this->configuration;
+        return $this->etlProcesses;
+    }
+
+    public function getConfiguration($index)
+    {
+        $configuration = null;
+        $i = 0;
+        foreach ($this->etlProcesses as $configName => $etlProcess) {
+            if ($i === $index) {
+                $configuration = $etlProcess->getConfiguration();
+                break;
+            }
+            $i++;
+        }
+        return $configuration;
     }
     
-    public function getDataProject()
+    public function getDataProject($index)
     {
-        return $this->dataProject;
+        $dataProject = null;
+        $i = 0;
+        foreach ($this->etlProcesses as $configName => $etlProcess) {
+            if ($i === $index) {
+                $dataProject = $etlProcess->getDataProject();
+                break;
+            }
+            $i++;
+        }
+        return $dataProject;
     }
 }

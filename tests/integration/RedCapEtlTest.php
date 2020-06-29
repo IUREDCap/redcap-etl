@@ -83,11 +83,12 @@ class RedCapEtlTest extends TestCase
         );
     }
 
-    /* This tests the exception condition of the autogenerateRules method
+    /**
+     * This tests the exception condition of the autogenerateRules method
      * by using PHPUnit Reflection to create the condition by setting
      * the RedCapEtl->dataProject object to null.
      */
-
+    /* NEEDS TO BE REWRITEN:
     public function testAutogenerateRulesException()
     {
         $configFile = __DIR__.'/../config/basic-demography.ini';
@@ -109,7 +110,7 @@ class RedCapEtlTest extends TestCase
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
-        
+
         $this->assertTrue(
             $exceptionCaught,
             'RedCapEtlTest, testAutogenerateRulesException exception caught'
@@ -127,4 +128,5 @@ class RedCapEtlTest extends TestCase
             'RedCapEtlTest, testAutogenerateRulesException error message check'
         );
     }
+    */
 }
