@@ -278,6 +278,20 @@ class RedCapEtl
         return $this->etlProcesses;
     }
 
+    public function getEtlProcess($index)
+    {
+        $proc = null;
+        $i = 0;
+        foreach ($this->etlProcesses as $configName => $etlProcess) {
+            if ($i === $index) {
+                $proc = $etlProcess;
+                break;
+            }
+            $i++;
+        }
+        return $proc;
+    }
+    
     public function getConfiguration($index)
     {
         $configuration = null;

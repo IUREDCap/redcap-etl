@@ -29,7 +29,8 @@ class RulesGenerationTest extends TestCase
         $addDagFields = false;
         $addFileFields = false;
 
-        $rules = self::$redCapEtl->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
+        $etlProcess = self::$redCapEtl->getEtlProcess(0);
+        $rules = $etlProcess->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
         $this->assertNotContains('redcap_data_access_group', $rules, 'DAG field check');
@@ -42,7 +43,8 @@ class RulesGenerationTest extends TestCase
         $addDagFields = true;
         $addFileFields = false;
 
-        $rules = self::$redCapEtl->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
+        $etlProcess = self::$redCapEtl->getEtlProcess(0);
+        $rules = $etlProcess->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
         $this->assertContains('redcap_data_access_group', $rules, 'DAG field check');
@@ -55,7 +57,8 @@ class RulesGenerationTest extends TestCase
         $addDagFields = false;
         $addFileFields = false;
 
-        $rules = self::$redCapEtl->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
+        $etlProcess = self::$redCapEtl->getEtlProcess(0);
+        $rules = $etlProcess->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
         $this->assertNotContains('redcap_data_access_group', $rules, 'DAG field check');

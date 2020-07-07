@@ -57,10 +57,11 @@ class Workflow
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         } elseif (is_array($properties)) {
-            # Configuration specified as an arrat of properties
+            # Configuration specified as an array of properties
             $configuration = new Configuration($logger, $properties);
             $this->configurations[] = $configuration;
         } elseif (is_string($properties)) {
+            # Configuration is in a file (properties is the name/path of the file)
             $this->configurationFile = trim($properties);
 
             $baseDir = realpath(dirname($this->configurationFile));
@@ -88,7 +89,13 @@ class Workflow
                 throw new EtlException($message, $code);
             }
         } else {
+            $message = 'Unrecognized configuration type "'.gettype($properties).'" was specified.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
         }
+
+        // Need to get projects for this workflow:
+        // ...
     }
 
     public function parseIniWorkflowFile($configurationFile)
