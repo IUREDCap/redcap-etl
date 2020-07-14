@@ -13,10 +13,11 @@ are shown in the diagram below, and described in the text below.
 process. A single REDCap-ETL instance can have multiple configuration files that describe
 different ETL processes.
 * **REDCap Project.** The REDCap project that contains the data to be extracted.
-* **REDCap-ETL.** The software that actually does the Extract Transform and Load.
-* **Database.** There needs to be some kind of database where the extracted and transformed data
-can be loaded, such as a MySQL database, although this could be as simple as a directory for CSV files.
-REDCap-ETL can also log information about its processes to the database.
+* **REDCap-ETL.** The software that actually does the Extract, Transform and Load.
+* **Database.** REDCap-ETL needs a place where the extracted and transformed data
+can be loaded. You can specify a database or, for CSV file output, a directory where the
+CSV files are to be stored.
+REDCap-ETL can also log information about its processes to a database.
 * **E-mail Server.** This is optional, and if set up, is used for e-mailing error
 notifications and logging summaries to designated users.
 * **Log File.** An optional log file can be set up where REDCap-ETL will log the results of its ETL processes.
@@ -40,10 +41,34 @@ Example commands for setting up an Ubuntu 16 system:
     sudo apt install php php-curl
     sudo apt install git
 
-### Step 2 (Optional) - Set up a MySQL Database
+### Step 2 (Optional) - Set up a Database
 
-This needs to be set up if you want to load your extracted and transformed data into a
-MySQL database.
+If you want to store the extracted and transformed data in a database, instead of CSV files,
+you will need to have a database set up that can be accessed by REDCap-ETL.
+And, you need to have a user account for the database
+that supports at least the following permissions:
+
+* ALTER
+* CREATE
+* CREATE VIEW
+* DROP
+* INSERT
+* SELECT
+
+The following database systems are currently supported:
+
+* MySQL
+* PostgreSQL
+* SQL Server
+* SQLite
+
+**Note:** By default, REDCap-ETL requires databases to support SSL (secure) communication. This is set
+by the db_ssl configuration property, which defaults to true.  If your database does not support
+SSL communication, you will get a database error when you run REDCap-ETL.
+You can set the db_ssl property to 0 to turn off the database SSL requirement, but this is not
+generally recommended for security reasons.
+
+#### MySQL Database Setup Example
 
 Example commands for setting up MySQL on Ubuntu 16:
 
@@ -62,9 +87,7 @@ Create a database and database user that will be used as the place to store the 
     CREATE USER 'etl_user'@'localhost' IDENTIFIED BY 'etlPassword';
     GRANT ALL ON `etl`.* TO 'etl_user'@'localhost';
 
-### Step 3 (Optional) - Set up SQLite
-
-This needs to be set up if you want to load your extracted data into a SQLite database.
+#### SQLite Setup Example
 
 Example commands for setting up SQLite on Ubuntu 16:
 
@@ -78,7 +101,7 @@ To create a database, in the directory where you want the database, execute, for
     # then enter ".q" to exit SQLite
 
 
-### Step 4 - Get the REDCap-ETL Software
+### Step 3 - Get the REDCap-ETL Software
 
 The basic Git command to get the code is:
 
@@ -95,7 +118,7 @@ system:
     sudo chown -R etl:etl /opt/redcap-etl
 
 
-### Step 5 - Create a Configuration File
+### Step 4 - Create a Configuration File
 
 The configuration file can be used to specify your entire configuration, or it can
 be used in conjunction with a configuration project.
@@ -111,7 +134,7 @@ See this file, and the [Configuration Guide](ConfigurationGuide.md)
 for more information about the configuration properties.
 
 
-### Step 6 (Optional) - Set up an E-mail Server
+### Step 5 (Optional) - Set up an E-mail Server
 
 You can optionally set up an e-mail server that will be used for logging
 errors using e-mail to a specified list of users.
