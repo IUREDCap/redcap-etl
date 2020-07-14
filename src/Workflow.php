@@ -66,7 +66,7 @@ class Workflow
 
             $baseDir = realpath(dirname($this->configurationFile));
 
-            if (preg_match('/\.ini/i', $this->configurationFile) === 1) {
+            if (preg_match('/\.ini$/i', $this->configurationFile) === 1) {
                 #---------------------------
                 # .ini configuration file
                 #---------------------------
@@ -75,14 +75,7 @@ class Workflow
                 #-----------------------------------------------------------------
                 # JSON configuration file
                 #-----------------------------------------------------------------
-                $configurationFileContents = file_get_contents($this->configurationFile);
-                if ($configurationFileContents === false) {
-                    $message = 'The workflow file "'.$this->configurationFile.'" could not be read.';
-                    $code    = EtlException::INPUT_ERROR;
-                    throw new EtlException($message, $code);
-                }
-
-                $workflowJson = json_decode($configurationFileContents, true);
+                $this->parseJsonWorkflowFile($this->configurationFile);
             } else {
                 $message = 'Non-JSON workflow file specified.';
                 $code    = EtlException::INPUT_ERROR;
@@ -96,6 +89,31 @@ class Workflow
 
         // Need to get projects for this workflow:
         // ...
+    }
+
+    public function parseJsonWorkflowFile($configurationFile)
+    {
+        $baseDir = realpath(dirname($configurationFile));
+
+        print "CONFIGURATION FILE: {$configurationFile}\n\n";
+        $configurationFileContents = file_get_contents($configurationFile);
+        if ($configurationFileContents === false) {
+            $message = 'The workflow file "'.$this->configurationFile.'" could not be read.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        }
+
+        print "\n\n{$configurationFileContents}\n\n";
+
+        $config = json_decode($configurationFileContents, true);
+        if ($config == null && json_last_error() !== JSON_ERROR_NONE) {
+            $message = 'Error parsing JSON configuration file "'.$this->configurationFile.'": '.json_last_error();
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        }
+        print "\n\n******************************* CONFIG:\n";
+        print_r($config);
+        print "******************************* END CONFIG\n";
     }
 
     public function parseIniWorkflowFile($configurationFile)
