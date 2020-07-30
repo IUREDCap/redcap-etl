@@ -112,9 +112,13 @@ abstract class PdoDbConnection extends DbConnection
 
                 case FieldType::STRING:
                 default:
-                      $fieldDef .= 'TEXT';
+                    $fieldDef .= 'TEXT';
                     break;
             } // switch
+
+            if ($field->name === $table->primary->dbName && $field->type !== FieldType::AUTO_INCREMENT) {
+                $fieldDef .= ' NOT NULL';
+            }
 
             // Add field_def to array of field_defs
             array_push($fieldDefs, $fieldDef);
