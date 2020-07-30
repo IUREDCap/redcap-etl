@@ -42,16 +42,26 @@ abstract class RepeatingEventsTests extends TestCase
         try {
             $redCapEtl = new RedCapEtl($logger, $configFile);
             $redCapEtl->run();
-        } catch (EtlException $exception) {
+        } catch (Exception $exception) {
             $logger->logException($exception);
             $logger->log('Processing failed.');
+            throw $exception; // re-throw the exception
         }
     }
 
     public function testRepeatingEvents()
     {
         $this->dropTablesAndViews(static::$dbh);
-        $this->runEtl(static::$logger, static::CONFIG_FILE);
+
+        $hasException = false;
+        $exceptionMessage = '';
+        try {
+            $this->runEtl(static::$logger, static::CONFIG_FILE);
+        } catch (EtlException $exception) {
+            $hasException = true;
+            $exceptionMessage = $exception->getMessage();
+        }
+        $this->assertFalse($hasException, 'Run ETL exception check: '.$exceptionMessage);
         
         $this->checkAllVisitsTable();
         $this->checkBaselineTable();
