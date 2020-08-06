@@ -348,6 +348,7 @@ class Configuration
             if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0' || $sslVerify === 0) {
                 $this->sslVerify = false;
             } elseif (!isset($sslVerify) || $sslVerify === '' || $sslVerify === '1'
+                || strcasecmp($sslVerify, 'true') === 0
                 || $sslVerify === 1 || $sslVerify === true) {
                 $this->sslVerify = true;
             } else {
@@ -372,7 +373,9 @@ class Configuration
 
             if (strcasecmp($countCheck, 'false') === 0 || $countCheck === '0' || $countCheck === '') {
                 $this->extractedRecordCountCheck = false;
-            } elseif (!isset($countCheck) || $countCheck === true || $countCheck === 1 || $countCheck === '1') {
+            } elseif (!isset($countCheck) || $countCheck === true
+                || strcasecmp($countCheck, 'true') === 0
+                || $countCheck === 1 || $countCheck === '1') {
                 $this->extractedRecordCountCheck = true;
             } else {
                 $message = 'Unrecognized value "'.$countCheck.'" for '
