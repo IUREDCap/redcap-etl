@@ -473,7 +473,7 @@ abstract class PdoDbConnection extends DbConnection
     public function processQueries($queries)
     {
         try {
-            $querySet = $this->parseSqlQueries($queries);
+            $querySet = DbConnection::parseSqlQueries($queries);
             foreach ($querySet as $query) {
                 $result = $this->db->query($query);
             }

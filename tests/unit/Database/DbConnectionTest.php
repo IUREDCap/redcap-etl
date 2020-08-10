@@ -8,47 +8,69 @@ namespace IU\REDCapETL\Database;
 
 use PHPUnit\Framework\TestCase;
 
+use IU\REDCapETL\EtlException;
+
 /**
  * PHPUnit tests for the DbConnection class.
+ * This is an abstract class, so only its static methods can be tested.
  */
 class DbConnectionTest extends TestCase
 {
-    public function testConnectionString()
+    public function testParseSqlQueriesWithSingleQuery()
     {
-        $host     = 'localhost';
-        $username = 'etl_user';
-        $password = 'This:is:a\:test: \\test\abc\\';
-        $dbname   = 'etl_test';
-        $port     = '1234';
-        
-        $values = [$host, $username, $password, $dbname, $port];
-        
-        $connectionString = DbConnection::createConnectionString($values);
-        
-        $this->assertNotNull($connectionString, 'Not null connection string');
-        $this->assertTrue(is_string($connectionString), 'Connection string is string');
-        
+        $queries = 'select * from test;';
+        $expectedResult = [rtrim($queries, ';')];
 
-        #---------------------------------------------------------------
-        # Check that the parsed values from the connection string
-        # match the original values.
-        #---------------------------------------------------------------
-        list($parsedHost, $parsedUsername, $parsedPassword, $parsedDbname, $parsedPort)
-            = DbConnection::parseConnectionString($connectionString);
-            
-        $this->assertEquals($host, $parsedHost, 'Host check');
-        $this->assertEquals($username, $parsedUsername, 'Username check');
-        $this->assertEquals($password, $parsedPassword, 'Password check');
-        $this->assertEquals($dbname, $parsedDbname, 'Dbname check');
-        $this->assertEquals($port, $parsedPort, 'Port check');
-        
-        #----------------------------------------------------------------
-        # Check that a connection string created from the parsed values
-        # matches the original connection string.
-        #----------------------------------------------------------------
-        $createdConnectionString = DbConnection::createConnectionString(
-            [$parsedHost, $parsedUsername, $parsedPassword, $parsedDbname, $parsedPort]
-        );
-        $this->assertEquals($connectionString, $createdConnectionString, 'Connection string equals check');
+        $result = DbConnection::parseSqlQueries($queries);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function testParseSqlQueriesWithSingleQueryWithoutSemiColon()
+    {
+        $queries = 'drop table test_db.test';
+        $expectedResult = [$queries];
+
+        $result = DbConnection::parseSqlQueries($queries);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function testParseSqlQueriesWithTwoQueriesOnSameLine()
+    {
+        $expectedResult = ['select * from test', 'select * from test2'];
+        $queries = $expectedResult[0] . ';' . $expectedResult[1] . ';';
+
+        $result = DbConnection::parseSqlQueries($queries);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function testParseSqlQueriesWithTwoQueriesOnSameLineWithoutEndingSemicolon()
+    {
+        $expectedResult = ['select * from test', 'select * from test2'];
+        $queries = $expectedResult[0] . ';' . $expectedResult[1];
+
+        $result = DbConnection::parseSqlQueries($queries);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function testParseSqlQueriesWithTwoQueriesAndComments()
+    {
+        $expectedResult = ['select * from test', 'select * from test2'];
+        $queries = "-- This is a comment\n" . $expectedResult[0] . ";\n"
+            . "-- This is another comment\n"
+            . $expectedResult[1] . ';';
+
+        $result = DbConnection::parseSqlQueries($queries);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function testParseSqlQueriesWithTwoQueriesAndCommentsWithoutEndingSemicolon()
+    {
+        $expectedResult = ['select * from test', 'select * from test2'];
+        $queries = "-- This is a comment\n" . $expectedResult[0] . ";\n"
+            . "-- This is another comment\n"
+            . $expectedResult[1];
+
+        $result = DbConnection::parseSqlQueries($queries);
+        $this->assertEquals($expectedResult, $result);
     }
 }
