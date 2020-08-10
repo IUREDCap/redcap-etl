@@ -73,4 +73,29 @@ class DbConnectionTest extends TestCase
         $result = DbConnection::parseSqlQueries($queries);
         $this->assertEquals($expectedResult, $result);
     }
+
+    public function testParseSqlQueriesWithSingleQueryWithQuotedValue()
+    {
+        $expectedResult = ["insert into test (record_id, bmi) values ('12345678', 22.0)"];
+        $queries = $expectedResult[0] . ";";
+
+        $result = DbConnection::parseSqlQueries($queries);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function testParseSqlQueriesWithComplexQueries()
+    {
+        $expectedResult = [
+            "insert into test (record_id, bmi) values ('12345678', 22.0)"
+            , "insert into test (record_id, last_name) values ('O''Brien')"
+        ];
+        $queries = "-- Complex query\n"
+            .$expectedResult[0] . ";\n"
+            ."-- Another comment\n"
+            .$expectedResult[1] . "-- ending end-of-line comment";
+            ;
+
+        $result = DbConnection::parseSqlQueries($queries);
+        $this->assertEquals($expectedResult, $result);
+    }
 }

@@ -259,6 +259,7 @@ abstract class DbConnection
 
             if ($quoteStarted) {
                 # In quote
+                $query .= $char;
                 if ($quoteEnded) {
                     if ($char === "'") {
                         # quote wasn't actually ended,
@@ -300,19 +301,20 @@ abstract class DbConnection
                     $inComment = true;
                 } elseif ($char === "\n" || $char === "\r" || $char === "\t") {
                     $query .= ' ';
-                } elseif ($atEnd) {
-                    # End of text reached; save the last query if it is not empty
-                    $query .= $char;
-                    $query = trim($query);
-                    if (!empty($query)) {
-                        $queries[] = $query; // NEW
-                    }
-                    $query = '';
                 } else {
                     $query .= $char;
                 }
             }
             $lastChar = $char;
+        }
+
+        #-------------------------------------------------------
+        # Check for ending query not terminated by semi-colon,
+        # or ended by comment on same line
+        #-------------------------------------------------------
+        $query = trim($query);
+        if (!empty($query)) {
+            $queries[] = $query;
         }
 
         return $queries;
