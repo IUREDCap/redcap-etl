@@ -119,24 +119,24 @@ class Workflow
             if (is_array($rulesText)) {
                 $rulesText = implode("\n", $rulesText);
                 $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = $rulesText;
-                }
             }
+        }
 
-                if (array_key_exists(ConfigProperties::PRE_PROCESSING_SQL, $properties)) {
-                    $sql = $properties[ConfigProperties::PRE_PROCESSING_SQL];
-                    if (is_array($sql)) {
-                        $sql = implode("\n", $sql);
-                        $properties[ConfigProperties::PRE_PROCESSING_SQL] = $sql;
-                    }
-                }
+        if (array_key_exists(ConfigProperties::PRE_PROCESSING_SQL, $properties)) {
+            $sql = $properties[ConfigProperties::PRE_PROCESSING_SQL];
+            if (is_array($sql)) {
+                $sql = implode("\n", $sql);
+                $properties[ConfigProperties::PRE_PROCESSING_SQL] = $sql;
+            }
+        }
 
-                if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL, $properties)) {
-                    $sql = $properties[ConfigProperties::POST_PROCESSING_SQL];
-                    if (is_array($sql)) {
-                        $sql = implode("\n", $sql);
-                        $properties[ConfigProperties::POST_PROCESSING_SQL] = $sql;
-                    }
-                }
+        if (array_key_exists(ConfigProperties::POST_PROCESSING_SQL, $properties)) {
+            $sql = $properties[ConfigProperties::POST_PROCESSING_SQL];
+            if (is_array($sql)) {
+                $sql = implode("\n", $sql);
+                $properties[ConfigProperties::POST_PROCESSING_SQL] = $sql;
+            }
+        }
     }
 
     public function parseIniWorkflowFile($configurationFile)
