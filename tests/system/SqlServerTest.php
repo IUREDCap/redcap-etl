@@ -785,6 +785,12 @@ class SqlServerTest extends TestCase
             $exceptionCaught8 = true;
         }
 
+        $this->assertFalse(
+            $exceptionCaught8,
+            'Empty query file is OK check'
+        );
+ 
+        /* (An empty file should not be an exception)
         $this->assertTrue(
             $exceptionCaught8,
             'DatabasesTest, SqlServerTest, SqlServerDbConnection processQueryFile file exception caught'
@@ -801,6 +807,7 @@ class SqlServerTest extends TestCase
             substr($exception->getMessage(), 0, strlen($expectedMessage8)),
             'SqlServerTest, SqlServerDbConnection processQueryFile file error message check'
         );
+         */
 
         ###Test with an error condition in a query other than the first on by sending
         ###a bad third query

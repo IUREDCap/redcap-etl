@@ -1061,7 +1061,7 @@ class DatabasesTest extends TestCase
         );
 
         $sql = 'create table test01 (rec_id int, title varchar(255) primary key (rec_id));';
-        $sql .= "insert into test01 (rec_id, title) values (0, 'some text & a \ and a /'";
+        $sql .= "insert into test01 (rec_id, title) values (0, 'some text & a \ and a /')";
         $sql .= '--this is a comment' . chr(10) .'--and another comment';
 
         $queryResults = $mysqlDbConnection->parseSqlQueries($sql);
@@ -1071,8 +1071,7 @@ class DatabasesTest extends TestCase
         );
 
         $expected[0] = 'create table test01 (rec_id int, title varchar(255) primary key (rec_id))';
-        $expected[1] = "insert into test01 (rec_id, title) values (0, 'some text & a \ and a /'";
-        $expected[1] .= '--this is a comment --and another comment';
+        $expected[1] = "insert into test01 (rec_id, title) values (0, 'some text & a \ and a /')";
 
         $i = 0;
         foreach ($queryResults as $query) {
