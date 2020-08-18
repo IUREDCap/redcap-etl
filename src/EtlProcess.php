@@ -68,7 +68,7 @@ class EtlProcess
     {
         $this->app = $logger->getApp();
         $this->logger = $logger;
-        $this->logger->setConfiguration($this->configuration);
+        $this->logger->setConfiguration($configuration);
 
         $this->rootTablesWithMultiValues = array();
 
@@ -717,14 +717,14 @@ class EtlProcess
         # Project Info table (eventually will have possible multiple projects)
         #----------------------------------------------------------------------
         if (!($this->dbcon instanceof CsvDbConnection)) {
-            $projectInfo = $this->dataProject->exportProjectInfo();
-            $row = $this->projectInfoTable->getRowData(
-                $this->configuration->getRedCapApiUrl(),
-                $projectInfo['project_id'],
-                $projectInfo['project_title'],
-                $projectInfo['project_language']
-            );
-            $this->dbcon->insertRow($row);
+            #$projectInfo = $this->dataProject->exportProjectInfo();
+            #$row = $this->projectInfoTable->getRowData(
+            #    $this->configuration->getRedCapApiUrl(),
+            #    $projectInfo['project_id'],
+            #    $projectInfo['project_title'],
+            #    $projectInfo['project_language']
+            #);
+            #$this->dbcon->insertRow($row);
         }
     }
 

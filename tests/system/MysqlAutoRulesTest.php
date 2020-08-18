@@ -63,7 +63,7 @@ class MysqlAutoRulesTest extends TestCase
             $properties = $configuration->getProperties();
             $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
-                    
+
             $redCapEtl = new RedCapEtl(self::$logger, $properties);
             $redCapEtl->run();
         } catch (EtlException $exception) {

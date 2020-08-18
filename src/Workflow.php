@@ -24,6 +24,11 @@ use IU\REDCapETL\Schema\FieldTypeSpecifier;
  */
 class Workflow
 {
+    # Keys used in JSON workflow arrays that are the result of parsing a JSON file or string
+    const JSON_WORKFLOW_KEY          = 'workflow';
+    const JSON_GLOBAL_PROPERTIES_KEY = 'global_properties';
+    const JSON_CONFIGURATIONS_KEY    = 'configurations';
+
     private $logger;
 
     /** @var array array of global properties (as map from property name to property value) */
@@ -108,11 +113,55 @@ class Workflow
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         }
-        
-        print_r($config);
+
+        if (array_key_exists(self::JSON_WORKFLOW_KEY, $config)) {
+            # Workflow
+            if (count($config) > 1) {
+                throw new \Exception("Non-workflow properties at top-level of workflow.");
+            }
+
+            $workflow = $config[self::JSON_WORKFLOW_KEY];
+            if (array_key_exists(self::JSON_GLOBAL_PROPERTIES_KEY, $workflow)) {
+                $this->globalProperties = $workflow[self::JSON_GLOBAL_PROPERTIES_KEY];
+                $this->globalProperties = $this->processJsonProperties($this->globalProperties);
+                $this->globalProperties = Configuration::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
+            }
+
+            if (array_key_exists(self::JSON_CONFIGURATIONS_KEY, $workflow)) {
+                $configurations = $workflow[self::JSON_CONFIGURATIONS_KEY];
+                foreach ($configurations as $properties) {
+                    $properties = $this->processJsonProperties($properties);
+                    $properties = Configuration::makeFilePropertiesAbsolute($properties, $baseDir);
+                    $properties = Configuration::overrideProperties($this->globalProperties, $properties);
+                    #print "\n\nPROPERTIES:\n";
+                    #print_r($properties);
+                    $configuration = new Configuration($this->logger, $properties);
+                    $this->configurations[] = $configuration;
+                }
+            } else {
+                throw new \Exception("No configurations defined for workflow.");
+            }
+        } {
+            # Single configuration
+            $properties = $this->processJsonProperties($config);
+            $properties = Configuration::makeFilePropertiesAbsolute($properties, $baseDir);
+
+            #print "\n\nPROPERTIES:\n";
+            #print_r($properties);
+
+            $configuration = new Configuration($this->logger, $properties);
+            $this->configurations[] = $configuration;
+        }
     }
     
-    public function processJsonProperty(& $properties)
+    /**
+     * Processes the specified JSON property by combining array values into a single
+     * value for properties that have multi-line values, and by converting boolean
+     * properties to string values.
+     *
+     * @parameter array $properties map from property name to property value(s).
+     */
+    public function processJsonProperties($properties)
     {
         if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $properties)) {
             $rulesText = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
@@ -137,6 +186,17 @@ class Workflow
                 $properties[ConfigProperties::POST_PROCESSING_SQL] = $sql;
             }
         }
+
+        foreach ($properties as $key => $value) {
+            if (is_bool($value)) {
+                if ($key) {
+                    $properties[$key] = 'true';
+                } else {
+                    $properties[$key] = 'false';
+                }
+            }
+        }
+        return $properties;
     }
 
     public function parseIniWorkflowFile($configurationFile)
@@ -146,7 +206,7 @@ class Workflow
         $processSections = true;
         $config = parse_ini_file($configurationFile, $processSections);
 
-        $isWorkflow = $this->isWorkflow($config);
+        $isWorkflow = $this->isIniWorkflow($config);
 
         if ($isWorkflow) {
             foreach ($config as $propertyName => $propertyValue) {
@@ -200,7 +260,7 @@ class Workflow
     /**
      * @return true if this is a workflow configuration, false otherwise
      */
-    public function isWorkflow($config)
+    public function isIniWorkflow($config)
     {
         $isWorkflow = false;
         $numArrays = 0;

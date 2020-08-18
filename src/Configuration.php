@@ -816,7 +816,7 @@ class Configuration
     public static function makeFilePropertiesAbsolute($properties, $baseDir)
     {
         foreach ($properties as $name => $value) {
-            if (ConfigProperties::isFileProperty($name)) {
+            if (ConfigProperties::isFileProperty($name) && !empty($value)) {
                 if ($name === ConfigProperties::LOG_FILE) {
                     $properties[$name] = self::processFileProperty($value, $baseDir, false);
                 } else {
@@ -843,7 +843,7 @@ class Configuration
     {
         $this->transformRulesSource = $properties[ConfigProperties::TRANSFORM_RULES_SOURCE];
 
-        if ($this->transformRulesSource === self::TRANSFORM_RULES_TEXT) {
+        if ($this->transformRulesSource == self::TRANSFORM_RULES_TEXT) {
             if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $properties)) {
                 $this->transformationRules = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
                 if ($this->transformationRules == '') {
@@ -854,11 +854,11 @@ class Configuration
                 $error = 'No transformation rules text was defined.';
                 throw new EtlException($error, EtlException::INPUT_ERROR);
             }
-        } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_FILE) {
+        } elseif ($this->transformRulesSource == self::TRANSFORM_RULES_FILE) {
             $file = $properties[ConfigProperties::TRANSFORM_RULES_FILE];
             $file = $this->processFile($file);
             $this->transformationRules = file_get_contents($file);
-        } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_DEFAULT) {
+        } elseif ($this->transformRulesSource == self::TRANSFORM_RULES_DEFAULT) {
             # The actual rules are not part of the configuration and will need
             # to be generate later after the data project has been set up.
             $this->transformationRules == '';
