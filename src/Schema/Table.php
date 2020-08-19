@@ -98,6 +98,31 @@ class Table
         }
     }
 
+    public function merge($table)
+    {
+        # Check the table name (tables with different names should not be merged in the first place,
+        # so this error would tend to indicate some kind of logic error in the calling code).
+        if ($this->name !== $table->name) {
+            $message = 'Cannot merge tables; names are different: "'.$this->name.'" and "'.$table->name.'".';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+        
+        # Check the table name prefix (tables with different name prefixes should not be merged in the first place,
+        # so this error would tend to indicate some kind of logic error in the calling code).
+        if ($this->namePrefix !== $table->namePrefix) {
+            $message = 'Cannot merge tables; name prefixes are different: "'.$this->namePrefix.'"'
+                .' and "'.$table->namePrefix.'".';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+        
+        # Check the rows type (ROOT, EVENTS, etc.)
+        if ($this->rowsType != $table->rowsType) {
+            $messqge = 'Cannot merge tables; rows type are different: "'.$this->getRowsTypeString()
+                .'" and "'.$table->getRowsTypeString().'".';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+    }
+
     /**
      * Creates default primary key field using the table name
      * (without prefix, if any) with * '_id' appended to it as the field's name.
@@ -614,5 +639,23 @@ class Table
             $tableNameWithoutPrefix = substr($tableNameWithoutPrefix, strlen($this->namePrefix));
         }
         return $tableNameWithoutPrefix;
+    }
+
+    public function getRowsTypeString()
+    {
+        $string = '';
+        if ($this->rowsType != null) {
+            if (!is_array($this->rowsType)) {
+                $string .= "{$this->rowsType}\n";
+            } else {
+                for ($i = 0; $i < count($this->rowsType); $i++) {
+                    if ($i > 0) {
+                        $string .= " & ";
+                    }
+                    $string .= $this->rowsType[$i];
+                }
+            }
+        }
+        return $string;
     }
 }

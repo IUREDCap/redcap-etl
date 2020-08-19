@@ -30,9 +30,12 @@ class Field
     /** @var mixed the lookup field name (string) if this field uses the lookup table,
              i.e., it is a multiple-choice field, and as a results will
              have a value to label mapping entry in the lookup table. And false, if
-             this field is not a multiple-choise field.
+             this field is not a multiple-choice field.
     */
     public $usesLookup = false;
+    
+    /** @var array map from values to labels for multiple-choice fields. */
+    public $lookupMap;
 
     /**
      * Creates a Field object that is used to describe a field in REDCap and
@@ -72,6 +75,27 @@ class Field
         }
     }
 
+    /**
+     * Indicates if the specified field is equal to the field on which this method is invoked
+     * for the field that will be generated in the database.
+     */
+    public function isDatabaseEquivalent($field, $lookupTable)
+    {
+        $matches = false;
+        if ($this->dbName === $field->dbName && $this->type === $field->type && $this->size === $field->size) {
+            if ($this->usesLookup && $field->usesLookup) {
+                # If both fields use lookup, i.e., are multiple choice fields
+                # Compare choice values...
+                # Need the lookup table here
+                //$lt1 = $lookupTable->getValueLabelMap($tableName, $fieldName);
+            } elseif (!$this->usesLookup && !$field->usesLookup) {
+                # If both fields do NOT use lookup, i.e., are NOT multiple choice fields
+                $matches = true;
+            }
+        }
+        return $matches;
+    }
+    
     public function toString($indent)
     {
         $in = str_repeat(' ', $indent);

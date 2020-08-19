@@ -17,7 +17,10 @@ namespace IU\REDCapETL\Schema;
 class Schema
 {
 
+    /** @var array array of Table objects for all tables in schema (including root tables) */
     private $tables = array();
+
+    /** @var array array of table objects for only the root tables in the schema */
     private $rootTables = array();
     
     /** @var LookupTable table for mapping multiple choice codes to values */
@@ -29,6 +32,11 @@ class Schema
     public function __construct()
     {
         return true;
+    }
+
+    public function merge($schema)
+    {
+        // WORK IN PROGRESS
     }
 
     /**

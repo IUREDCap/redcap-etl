@@ -647,6 +647,10 @@ class EtlProcess
      */
     public function createLoadTables()
     {
+        print("\n\n===============================================================\n");
+        print("\n\nSCHEMA MAP\n{$this->schema->toString()}\n\n");
+        print("\n\n===============================================================\n");
+
         #-------------------------------------------------------------
         # Get the tables in top-down order, so that each parent table
         # will always come before its child tables
