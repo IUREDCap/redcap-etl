@@ -32,9 +32,12 @@ class SchemaGenerator
 
     private $rules;
 
+    /** @var array for multiple-choice fields, a map of field names to a map of values to labels
+     *  for the choices for that field name. */
     private $lookupChoices;
+
+    /** @var LookupTable a table object that maps multiple choice values to multiple choice labels */
     private $lookupTable;
-    private $lookupTableIn;
 
     private $dataProject;
     private $logger;

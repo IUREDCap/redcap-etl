@@ -30,6 +30,9 @@ class LookupTable extends Table
     private $lookupChoices;
     private $lookupTableIn;  // For efficiently checking if field was already inserted
     
+    /**
+     * @parameter string $tablePrefix the prefix for the tabale name, if any.
+     */
     public function __construct($lookupChoices, $tablePrefix, $keyType, $name = self::DEFAULT_NAME)
     {
         parent::__construct(

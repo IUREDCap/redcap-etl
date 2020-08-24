@@ -112,7 +112,7 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
     /**
      * Gets information on multiple choice options in a project.
      *
-     * @return array a map of field names to a map of categories to labels
+     * @return array a map of field names to a map of values to labels
      *     for that field name.
      *
      *     array($fieldName1 => array($value1 => $label1, ...), ...)
