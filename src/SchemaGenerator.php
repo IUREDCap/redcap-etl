@@ -542,6 +542,9 @@ class SchemaGenerator
             // Process a single field
             $redcapFieldType = $this->dataProject->getFieldType($fieldName);
             $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName, $redcapFieldType);
+            if (array_key_exists($fieldName, $this->lookupChoices)) {
+                $field->valueToLabelMap = $this->lookupChoices[$fieldName];
+            }
             $fields[$fieldName] = $field;
         }
 

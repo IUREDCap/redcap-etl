@@ -35,7 +35,10 @@ class Table
                                            //   combined with any suffixes
                                            //   allowed for its parent table
 
+    /** @var array array of Field objects that represent the fields of the table */
     protected $fields = array();
+
+    /** @var array array of Row objects used to store rows of data for the table */
     protected $rows = array();
 
     private $primaryKey = 1;
@@ -100,6 +103,8 @@ class Table
 
     public function merge($table)
     {
+        $mergedTable = $this;
+
         # Check the table name (tables with different names should not be merged in the first place,
         # so this error would tend to indicate some kind of logic error in the calling code).
         if ($this->name !== $table->name) {
@@ -121,6 +126,11 @@ class Table
                 .'" and "'.$table->getRowsTypeString().'".';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
+
+        foreach ($this->fields as $field) {
+        }
+
+        return $mergedTable;
     }
 
     /**

@@ -35,7 +35,7 @@ class Field
     public $usesLookup = false;
     
     /** @var array map from values to labels for multiple-choice fields. */
-    public $lookupMap;
+    public $valueToLabelMap;
 
     /**
      * Creates a Field object that is used to describe a field in REDCap and
@@ -63,6 +63,8 @@ class Field
         $this->type = $type;
         $this->size = $size;
 
+        $this->valueToLabelMap = array();
+
         #-------------------------------------------------
         # If a database field name was specified, use it;
         # otherwise, use the REDCap field name as the
@@ -78,6 +80,8 @@ class Field
     /**
      * Indicates if the specified field is equal to the field on which this method is invoked
      * for the field that will be generated in the database.
+     *
+     * @return boolean returns true if the fields have equivalent database types.
      */
     public function isDatabaseEquivalent($field, $lookupTable)
     {
@@ -91,9 +95,49 @@ class Field
             } elseif (!$this->usesLookup && !$field->usesLookup) {
                 # If both fields do NOT use lookup, i.e., are NOT multiple choice fields
                 $matches = true;
+            } else {
             }
         }
         return $matches;
+    }
+
+    /**
+     * Returns a merged field if possible, or throws an exception if not.
+     * The merged field will have the greater of the 2 fields sizes, if the
+     * fields ihave sizes set and match on values other than size.
+     */
+    public function merge($field)
+    {
+        $mergedField = $this;
+
+        if ($this->dbName !== $field->dbName) {
+            $message = 'Database field names "'.$this->dbName.'" and "'.$field->dbName.'" do not match.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        } elseif ($this->type !== $field->type) {
+            $message = 'Database field types "'.$this->type.'" and "'.$field->type.'"'
+                .' for field "'.$this->dbName.'" do not match.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        }
+        
+        if ($this->usesLookup !== $field->usesLookup) {
+            $message = 'Mismatch for multiple-choice options for field "'.$this->dbName.'".';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        } elseif ($this->usesLookup && $field->usesLookup) {
+            if ($this->valueLabelMap !== $field->valueLabelMap) {
+                $message = 'Mismatch for multiple-choice options for field "'.$this->dbName.'".';
+                $code    = EtlException::INPUT_ERROR;
+                throw new EtlException($message, $code);
+            }
+        }
+        
+        if (isset($this->size) || isset($field->size)) {
+            $mergedField->size = max($this->size, $field->size);
+        }
+
+        return $mergedField;
     }
     
     public function toString($indent)
@@ -103,10 +147,26 @@ class Field
 
         $string .= "{$in}{$this->name} {$this->redcapType} : {$this->dbName} ";
         if (isset($this->size)) {
-            $string .= "{$this->type}({$this->size})\n";
+            $string .= "{$this->type}({$this->size})";
         } else {
-            $string .= "{$this->type}\n";
+            $string .= "{$this->type}";
         }
+
+        if (!empty($this->valueToLabelMap)) {
+            $string .= ' [';
+            $isFirst = true;
+            foreach ($this->valueToLabelMap as $value => $label) {
+                if ($isFirst) {
+                    $isFirst = false;
+                } else {
+                    $string .= ', ';
+                }
+                $string .= "{$value} => {$label}";
+            }
+            $string .= ']';
+        }
+
+        $string .= "\n";
         return $string;
     }
 }

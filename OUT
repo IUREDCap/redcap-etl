@@ -1,0 +1,2684 @@
+PHPUnit 6.5.8 by Sebastian Bergmann and contributors.
+
+...............................................................  63 / 156 ( 40%)
+............................................
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 1
+Number of root tables: 1
+
+Root tables
+    Demography [primary_key]
+    primary key: primary_key  : primary_key int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        first_name text : first_name varchar(40)
+        last_name text : last_name varchar(40)
+        address notes : address string
+        telephone text : phone char(24)
+        email text : email varchar(80)
+        dob text : birthdate string
+        ethnicity radio : ethnicity int [0 => Hispanic or Latino, 1 => NOT Hispanic or Latino, 2 => Unknown / Not Reported]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+        sex radio : sex int [0 => Female, 1 => Male]
+        height text : height float
+        weight text : weight float
+        bmi calc : bmi float
+        comments notes : comments string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+
+Tables
+    Demography [primary_key]
+    primary key: primary_key  : primary_key int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        first_name text : first_name varchar(40)
+        last_name text : last_name varchar(40)
+        address notes : address string
+        telephone text : phone char(24)
+        email text : email varchar(80)
+        dob text : birthdate string
+        ethnicity radio : ethnicity int [0 => Hispanic or Latino, 1 => NOT Hispanic or Latino, 2 => Unknown / Not Reported]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+        sex radio : sex int [0 => Female, 1 => Male]
+        height text : height float
+        weight text : weight float
+        bmi calc : bmi float
+        comments notes : comments string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+
+
+
+
+======================================================
+.
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 1
+Number of root tables: 1
+
+Root tables
+    demographics [demographics_id]
+    primary key: demographics_id  : demographics_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        first_name text : first_name string
+        last_name text : last_name string
+        address notes : address string
+        telephone text : telephone string
+        email text : email string
+        dob text : dob date
+        ethnicity radio : ethnicity varchar(255) [0 => Hispanic or Latino, 1 => NOT Hispanic or Latino, 2 => Unknown / Not Reported]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+        sex radio : sex varchar(255) [0 => Female, 1 => Male]
+        height text : height float
+        weight text : weight varchar(255)
+        bmi calc : bmi string
+        comments notes : comments string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+
+Tables
+    demographics [demographics_id]
+    primary key: demographics_id  : demographics_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        first_name text : first_name string
+        last_name text : last_name string
+        address notes : address string
+        telephone text : telephone string
+        email text : email string
+        dob text : dob date
+        ethnicity radio : ethnicity varchar(255) [0 => Hispanic or Latino, 1 => NOT Hispanic or Latino, 2 => Unknown / Not Reported]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+        sex radio : sex varchar(255) [0 => Female, 1 => Male]
+        height text : height float
+        weight text : weight varchar(255)
+        bmi calc : bmi string
+        comments notes : comments string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+
+
+
+
+======================================================
+.
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 1
+Number of root tables: 1
+
+Root tables
+    Demography_json [primary_key]
+    primary key: primary_key  : primary_key int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        first_name text : first_name varchar(40)
+        last_name text : last_name varchar(40)
+        address notes : address string
+        telephone text : phone char(24)
+        email text : email varchar(80)
+        dob text : birthdate string
+        ethnicity radio : ethnicity int [0 => Hispanic or Latino, 1 => NOT Hispanic or Latino, 2 => Unknown / Not Reported]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+        sex radio : sex int [0 => Female, 1 => Male]
+        height text : height float
+        weight text : weight float
+        bmi calc : bmi float
+        comments notes : comments string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+
+Tables
+    Demography_json [primary_key]
+    primary key: primary_key  : primary_key int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        first_name text : first_name varchar(40)
+        last_name text : last_name varchar(40)
+        address notes : address string
+        telephone text : phone char(24)
+        email text : email varchar(80)
+        dob text : birthdate string
+        ethnicity radio : ethnicity int [0 => Hispanic or Latino, 1 => NOT Hispanic or Latino, 2 => Unknown / Not Reported]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+        sex radio : sex int [0 => Female, 1 => Male]
+        height text : height float
+        weight text : weight float
+        bmi calc : bmi float
+        comments notes : comments string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+
+
+
+
+======================================================
+.
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 9
+Number of root tables: 1
+
+Root tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+
+Tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+    re_baseline [re_enrollment]
+    primary key: re_baseline_id  : re_baseline_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_weight_visits [re_enrollment]
+    primary key: re_home_weight_visits_id  : re_home_weight_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_cardiovascular_visits [re_enrollment]
+    primary key: re_home_cardiovascular_visits_id  : re_home_cardiovascular_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits [re_enrollment]
+    primary key: re_visits_id  : re_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_visits [re_enrollment]
+    primary key: re_baseline_and_visits_id  : re_baseline_and_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_home_visits [re_enrollment]
+    primary key: re_baseline_and_home_visits_id  : re_baseline_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits_and_home_visits [re_enrollment]
+    primary key: re_visits_and_home_visits_id  : re_visits_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5 & 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        weight_complete  : weight_complete int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+        cardiovascular_complete  : cardiovascular_complete int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_all_visits [re_enrollment]
+    primary key: re_all_visits_id  : re_all_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+
+
+
+======================================================
+.............
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 10
+Number of root tables: 1
+
+Root tables
+    root [root_id]
+    primary key: root_id  : root_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+    Rows:
+    Children:
+        enrollment
+        contact_information
+        emergency_contacts
+        weight
+        weight_repeating_events
+        weight_repeating_instruments
+        cardiovascular
+        cardiovascular_repeating_events
+        cardiovascular_repeating_instruments
+    primary key value: 1
+    uses lookup: 
+
+
+Tables
+    root [root_id]
+    primary key: root_id  : root_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+    Rows:
+    Children:
+        enrollment
+        contact_information
+        emergency_contacts
+        weight
+        weight_repeating_events
+        weight_repeating_instruments
+        cardiovascular
+        cardiovascular_repeating_events
+        cardiovascular_repeating_instruments
+    primary key value: 1
+    uses lookup: 
+
+    enrollment [root]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name string
+        last_name text : last_name string
+        birthdate text : birthdate date
+        registration_age calc : registration_age string
+        gender radio : gender varchar(255) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    contact_information [root]
+    primary key: contact_information_id  : contact_information_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        home_address text : home_address string
+        phone1 text : phone1 string
+        phone_type1 dropdown : phone_type1 varchar(255) [0 => cell, 1 => home, 2 => work, 3 => other]
+        phone2 text : phone2 string
+        phone_type2 dropdown : phone_type2 varchar(255) [0 => cell, 1 => home, 2 => work, 3 => other]
+        phone3 text : phone3 string
+        phone_type3 dropdown : phone_type3 varchar(255) [0 => cell, 1 => home, 2 => work, 3 => other]
+        email text : email string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    emergency_contacts [root]
+    primary key: emergency_contacts_id  : emergency_contacts_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        em_contact1 text : em_contact1 string
+        em_contact_phone1a text : em_contact_phone1a string
+        em_contact_phone1b text : em_contact_phone1b string
+        em_contact2 text : em_contact2 string
+        em_contact_phone2a text : em_contact_phone2a string
+        em_contact_phone2b text : em_contact_phone2b string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight [root]
+    primary key: weight_id  : weight_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight_repeating_events [root]
+    primary key: weight_repeating_events_id  : weight_repeating_events_id int
+    foreign key: root_id  : root_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight_repeating_instruments [root]
+    primary key: weight_repeating_instruments_id  : weight_repeating_instruments_id int
+    foreign key: root_id  : root_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular [root]
+    primary key: cardiovascular_id  : cardiovascular_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl varchar(255)
+        ldl_mg_dl text : ldl_mg_dl varchar(255)
+        triglycerides_mg_dl text : triglycerides_mg_dl varchar(255)
+        diastolic1 text : diastolic1 varchar(255)
+        diastolic2 text : diastolic2 varchar(255)
+        diastolic3 text : diastolic3 varchar(255)
+        systolic1 text : systolic1 varchar(255)
+        systolic2 text : systolic2 varchar(255)
+        systolic3 text : systolic3 varchar(255)
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular_repeating_events [root]
+    primary key: cardiovascular_repeating_events_id  : cardiovascular_repeating_events_id int
+    foreign key: root_id  : root_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl varchar(255)
+        ldl_mg_dl text : ldl_mg_dl varchar(255)
+        triglycerides_mg_dl text : triglycerides_mg_dl varchar(255)
+        diastolic1 text : diastolic1 varchar(255)
+        diastolic2 text : diastolic2 varchar(255)
+        diastolic3 text : diastolic3 varchar(255)
+        systolic1 text : systolic1 varchar(255)
+        systolic2 text : systolic2 varchar(255)
+        systolic3 text : systolic3 varchar(255)
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular_repeating_instruments [root]
+    primary key: cardiovascular_repeating_instruments_id  : cardiovascular_repeating_instruments_id int
+    foreign key: root_id  : root_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl varchar(255)
+        ldl_mg_dl text : ldl_mg_dl varchar(255)
+        triglycerides_mg_dl text : triglycerides_mg_dl varchar(255)
+        diastolic1 text : diastolic1 varchar(255)
+        diastolic2 text : diastolic2 varchar(255)
+        diastolic3 text : diastolic3 varchar(255)
+        systolic1 text : systolic1 varchar(255)
+        systolic2 text : systolic2 varchar(255)
+        systolic3 text : systolic3 varchar(255)
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+
+
+
+======================================================
+... 126 / 156 ( 80%)
+.............
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 9
+Number of root tables: 1
+
+Root tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+
+Tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+    re_baseline [re_enrollment]
+    primary key: re_baseline_id  : re_baseline_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_weight_visits [re_enrollment]
+    primary key: re_home_weight_visits_id  : re_home_weight_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_cardiovascular_visits [re_enrollment]
+    primary key: re_home_cardiovascular_visits_id  : re_home_cardiovascular_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits [re_enrollment]
+    primary key: re_visits_id  : re_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_visits [re_enrollment]
+    primary key: re_baseline_and_visits_id  : re_baseline_and_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_home_visits [re_enrollment]
+    primary key: re_baseline_and_home_visits_id  : re_baseline_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits_and_home_visits [re_enrollment]
+    primary key: re_visits_and_home_visits_id  : re_visits_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5 & 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        weight_complete  : weight_complete int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+        cardiovascular_complete  : cardiovascular_complete int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_all_visits [re_enrollment]
+    primary key: re_all_visits_id  : re_all_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+
+
+
+======================================================
+.
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 9
+Number of root tables: 1
+
+Root tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+
+Tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+    re_baseline [re_enrollment]
+    primary key: re_baseline_id  : re_baseline_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_weight_visits [re_enrollment]
+    primary key: re_home_weight_visits_id  : re_home_weight_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_cardiovascular_visits [re_enrollment]
+    primary key: re_home_cardiovascular_visits_id  : re_home_cardiovascular_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits [re_enrollment]
+    primary key: re_visits_id  : re_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_visits [re_enrollment]
+    primary key: re_baseline_and_visits_id  : re_baseline_and_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_home_visits [re_enrollment]
+    primary key: re_baseline_and_home_visits_id  : re_baseline_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits_and_home_visits [re_enrollment]
+    primary key: re_visits_and_home_visits_id  : re_visits_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5 & 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        weight_complete  : weight_complete int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+        cardiovascular_complete  : cardiovascular_complete int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_all_visits [re_enrollment]
+    primary key: re_all_visits_id  : re_all_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+
+
+
+======================================================
+.
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 9
+Number of root tables: 1
+
+Root tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+
+Tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+    re_baseline [re_enrollment]
+    primary key: re_baseline_id  : re_baseline_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_weight_visits [re_enrollment]
+    primary key: re_home_weight_visits_id  : re_home_weight_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_cardiovascular_visits [re_enrollment]
+    primary key: re_home_cardiovascular_visits_id  : re_home_cardiovascular_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits [re_enrollment]
+    primary key: re_visits_id  : re_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_visits [re_enrollment]
+    primary key: re_baseline_and_visits_id  : re_baseline_and_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_home_visits [re_enrollment]
+    primary key: re_baseline_and_home_visits_id  : re_baseline_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits_and_home_visits [re_enrollment]
+    primary key: re_visits_and_home_visits_id  : re_visits_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5 & 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        weight_complete  : weight_complete int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+        cardiovascular_complete  : cardiovascular_complete int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_all_visits [re_enrollment]
+    primary key: re_all_visits_id  : re_all_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+
+
+
+======================================================
+.
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 9
+Number of root tables: 1
+
+Root tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+
+Tables
+    re_enrollment [enrollment_id]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name varchar(100)
+        last_name text : last_name varchar(100)
+        birthdate text : birthdate date
+        registration_age calc : registration_age varchar(4)
+        gender radio : gender varchar(4) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+        re_baseline
+        re_home_weight_visits
+        re_home_cardiovascular_visits
+        re_visits
+        re_baseline_and_visits
+        re_baseline_and_home_visits
+        re_visits_and_home_visits
+        re_all_visits
+    primary key value: 1
+    uses lookup: 1
+
+    re_baseline [re_enrollment]
+    primary key: re_baseline_id  : re_baseline_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_weight_visits [re_enrollment]
+    primary key: re_home_weight_visits_id  : re_home_weight_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_home_cardiovascular_visits [re_enrollment]
+    primary key: re_home_cardiovascular_visits_id  : re_home_cardiovascular_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits [re_enrollment]
+    primary key: re_visits_id  : re_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_visits [re_enrollment]
+    primary key: re_baseline_and_visits_id  : re_baseline_and_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_baseline_and_home_visits [re_enrollment]
+    primary key: re_baseline_and_home_visits_id  : re_baseline_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_visits_and_home_visits [re_enrollment]
+    primary key: re_visits_and_home_visits_id  : re_visits_and_home_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 5 & 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        weight_complete  : weight_complete int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+        cardiovascular_complete  : cardiovascular_complete int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    re_all_visits [re_enrollment]
+    primary key: re_all_visits_id  : re_all_visits_id int
+    foreign key: enrollment_id  : enrollment_id int
+    rows type: 1 & 5 & 4
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl int
+        ldl_mg_dl text : ldl_mg_dl int
+        triglycerides_mg_dl text : triglycerides_mg_dl int
+        diastolic1 text : diastolic1 int
+        diastolic2 text : diastolic2 int
+        diastolic3 text : diastolic3 int
+        systolic1 text : systolic1 int
+        systolic2 text : systolic2 int
+        systolic3 text : systolic3 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+
+
+
+======================================================
+.........
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 10
+Number of root tables: 1
+
+Root tables
+    root [root_id]
+    primary key: root_id  : root_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+    Rows:
+    Children:
+        enrollment
+        contact_information
+        emergency_contacts
+        weight
+        weight_repeating_events
+        weight_repeating_instruments
+        cardiovascular
+        cardiovascular_repeating_events
+        cardiovascular_repeating_instruments
+    primary key value: 1
+    uses lookup: 
+
+
+Tables
+    root [root_id]
+    primary key: root_id  : root_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+    Rows:
+    Children:
+        enrollment
+        contact_information
+        emergency_contacts
+        weight
+        weight_repeating_events
+        weight_repeating_instruments
+        cardiovascular
+        cardiovascular_repeating_events
+        cardiovascular_repeating_instruments
+    primary key value: 1
+    uses lookup: 
+
+    enrollment [root]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name string
+        last_name text : last_name string
+        birthdate text : birthdate date
+        registration_age calc : registration_age string
+        gender radio : gender varchar(255) [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    contact_information [root]
+    primary key: contact_information_id  : contact_information_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        home_address text : home_address string
+        phone1 text : phone1 string
+        phone_type1 dropdown : phone_type1 varchar(255) [0 => cell, 1 => home, 2 => work, 3 => other]
+        phone2 text : phone2 string
+        phone_type2 dropdown : phone_type2 varchar(255) [0 => cell, 1 => home, 2 => work, 3 => other]
+        phone3 text : phone3 string
+        phone_type3 dropdown : phone_type3 varchar(255) [0 => cell, 1 => home, 2 => work, 3 => other]
+        email text : email string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    emergency_contacts [root]
+    primary key: emergency_contacts_id  : emergency_contacts_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        em_contact1 text : em_contact1 string
+        em_contact_phone1a text : em_contact_phone1a string
+        em_contact_phone1b text : em_contact_phone1b string
+        em_contact2 text : em_contact2 string
+        em_contact_phone2a text : em_contact_phone2a string
+        em_contact_phone2b text : em_contact_phone2b string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight [root]
+    primary key: weight_id  : weight_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight_repeating_events [root]
+    primary key: weight_repeating_events_id  : weight_repeating_events_id int
+    foreign key: root_id  : root_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight_repeating_instruments [root]
+    primary key: weight_repeating_instruments_id  : weight_repeating_instruments_id int
+    foreign key: root_id  : root_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg float
+        height_m text : height_m float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular [root]
+    primary key: cardiovascular_id  : cardiovascular_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl varchar(255)
+        ldl_mg_dl text : ldl_mg_dl varchar(255)
+        triglycerides_mg_dl text : triglycerides_mg_dl varchar(255)
+        diastolic1 text : diastolic1 varchar(255)
+        diastolic2 text : diastolic2 varchar(255)
+        diastolic3 text : diastolic3 varchar(255)
+        systolic1 text : systolic1 varchar(255)
+        systolic2 text : systolic2 varchar(255)
+        systolic3 text : systolic3 varchar(255)
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular_repeating_events [root]
+    primary key: cardiovascular_repeating_events_id  : cardiovascular_repeating_events_id int
+    foreign key: root_id  : root_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl varchar(255)
+        ldl_mg_dl text : ldl_mg_dl varchar(255)
+        triglycerides_mg_dl text : triglycerides_mg_dl varchar(255)
+        diastolic1 text : diastolic1 varchar(255)
+        diastolic2 text : diastolic2 varchar(255)
+        diastolic3 text : diastolic3 varchar(255)
+        systolic1 text : systolic1 varchar(255)
+        systolic2 text : systolic2 varchar(255)
+        systolic3 text : systolic3 varchar(255)
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular_repeating_instruments [root]
+    primary key: cardiovascular_repeating_instruments_id  : cardiovascular_repeating_instruments_id int
+    foreign key: root_id  : root_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl varchar(255)
+        ldl_mg_dl text : ldl_mg_dl varchar(255)
+        triglycerides_mg_dl text : triglycerides_mg_dl varchar(255)
+        diastolic1 text : diastolic1 varchar(255)
+        diastolic2 text : diastolic2 varchar(255)
+        diastolic3 text : diastolic3 varchar(255)
+        systolic1 text : systolic1 varchar(255)
+        systolic2 text : systolic2 varchar(255)
+        systolic3 text : systolic3 varchar(255)
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+
+
+
+======================================================
+....
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 9
+Number of root tables: 2
+
+Root tables
+    Demography [demography_id]
+    primary key: demography_id  : demography_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        fruit dropdown : fruit int [1 => apple, 2 => pear, 3 => banana]
+        name text : name varchar(100)
+        phone text : phone char(24)
+        dob text : birthdate date
+        color radio : color int [1 => red, 2 => yellow, 3 => blue]
+        rooms___1 checkbox : rooms___1 int
+        rooms___22 checkbox : rooms___22 int
+        rooms___303 checkbox : rooms___303 int
+    Rows:
+    Children:
+        VisitInfo
+        VisitResults
+        Contact
+        Recipients
+        Followup
+    primary key value: 1
+    uses lookup: 1
+
+    BMI [bmi_id]
+    primary key: bmi_id  : bmi_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        height text : height float
+        weight text : weight float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+Tables
+    Demography [demography_id]
+    primary key: demography_id  : demography_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        fruit dropdown : fruit int [1 => apple, 2 => pear, 3 => banana]
+        name text : name varchar(100)
+        phone text : phone char(24)
+        dob text : birthdate date
+        color radio : color int [1 => red, 2 => yellow, 3 => blue]
+        rooms___1 checkbox : rooms___1 int
+        rooms___22 checkbox : rooms___22 int
+        rooms___303 checkbox : rooms___303 int
+    Rows:
+    Children:
+        VisitInfo
+        VisitResults
+        Contact
+        Recipients
+        Followup
+    primary key value: 1
+    uses lookup: 1
+
+    BMI [bmi_id]
+    primary key: bmi_id  : bmi_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        height text : height float
+        weight text : weight float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    VisitInfo [Demography]
+    primary key: visitinfo_id  : visitinfo_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        visit_date text : visit_date date
+        satisfaction dropdown : satisfaction int [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5]
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    VisitResults [Demography]
+    primary key: visitresults_id  : visitresults_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        sleep_hours text : sleep_hours float
+    Rows:
+    Children:
+        Labs
+    primary key value: 1
+    uses lookup: 
+
+    Contact [Demography]
+    primary key: contact_id  : contact_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 2
+    Rows Suffixes: 1 2
+    Possible Suffixes: 1 2
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        email  : email string
+        echeck___1  : echeck___1 int
+        echeck___2  : echeck___2 int
+        workat  : workat int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    Labs [VisitResults]
+    primary key: labs_id  : labs_id int
+    foreign key: visitresults_id  : visitresults_id int
+    rows type: 2
+    Rows Suffixes: 1 2
+    Possible Suffixes: 1 2
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        lab  : lab float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    Recipients [Demography]
+    primary key: recipients_id  : recipients_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 2
+    Rows Suffixes: 1 2
+    Possible Suffixes: 1 2
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        recip  : recipient string
+    Rows:
+    Children:
+        Sent
+    primary key value: 1
+    uses lookup: 
+
+    Sent [Recipients]
+    primary key: sent_id  : sent_id int
+    foreign key: recipients_id  : recipients_id int
+    rows type: 2
+    Rows Suffixes: a b
+    Possible Suffixes: 1a 1b 2a 2b
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        sent  : sent date
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    Followup [Demography]
+    primary key: followup_id  : followup_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 3
+    Rows Suffixes: 1 2
+    Possible Suffixes: 1 2
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        impression  : impression int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+
+
+
+
+======================================================
+.                                  156 / 156 (100%)
+
+======================================================
+
+
+SCHEMA MAP
+Number of tables: 9
+Number of root tables: 2
+
+Root tables
+    Demography [demography_id]
+    primary key: demography_id  : demography_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        fruit dropdown : fruit int [1 => apple, 2 => pear, 3 => banana]
+        name text : name varchar(100)
+        phone text : phone char(24)
+        dob text : birthdate date
+        color radio : color int [1 => red, 2 => yellow, 3 => blue]
+        rooms___1 checkbox : rooms___1 int
+        rooms___22 checkbox : rooms___22 int
+        rooms___303 checkbox : rooms___303 int
+    Rows:
+    Children:
+        VisitInfo
+        VisitResults
+        Contact
+        Recipients
+        Followup
+    primary key value: 1
+    uses lookup: 1
+
+    BMI [bmi_id]
+    primary key: bmi_id  : bmi_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        height text : height float
+        weight text : weight float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+Tables
+    Demography [demography_id]
+    primary key: demography_id  : demography_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        fruit dropdown : fruit int [1 => apple, 2 => pear, 3 => banana]
+        name text : name varchar(100)
+        phone text : phone char(24)
+        dob text : birthdate date
+        color radio : color int [1 => red, 2 => yellow, 3 => blue]
+        rooms___1 checkbox : rooms___1 int
+        rooms___22 checkbox : rooms___22 int
+        rooms___303 checkbox : rooms___303 int
+    Rows:
+    Children:
+        VisitInfo
+        VisitResults
+        Contact
+        Recipients
+        Followup
+    primary key value: 1
+    uses lookup: 1
+
+    BMI [bmi_id]
+    primary key: bmi_id  : bmi_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        height text : height float
+        weight text : weight float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    VisitInfo [Demography]
+    primary key: visitinfo_id  : visitinfo_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        visit_date text : visit_date date
+        satisfaction dropdown : satisfaction int [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5]
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    VisitResults [Demography]
+    primary key: visitresults_id  : visitresults_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        sleep_hours text : sleep_hours float
+    Rows:
+    Children:
+        Labs
+    primary key value: 1
+    uses lookup: 
+
+    Contact [Demography]
+    primary key: contact_id  : contact_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 2
+    Rows Suffixes: 1 2
+    Possible Suffixes: 1 2
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        email  : email string
+        echeck___1  : echeck___1 int
+        echeck___2  : echeck___2 int
+        workat  : workat int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    Labs [VisitResults]
+    primary key: labs_id  : labs_id int
+    foreign key: visitresults_id  : visitresults_id int
+    rows type: 2
+    Rows Suffixes: 1 2
+    Possible Suffixes: 1 2
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        lab  : lab float
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    Recipients [Demography]
+    primary key: recipients_id  : recipients_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 2
+    Rows Suffixes: 1 2
+    Possible Suffixes: 1 2
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        recip  : recipient string
+    Rows:
+    Children:
+        Sent
+    primary key value: 1
+    uses lookup: 
+
+    Sent [Recipients]
+    primary key: sent_id  : sent_id int
+    foreign key: recipients_id  : recipients_id int
+    rows type: 2
+    Rows Suffixes: a b
+    Possible Suffixes: 1a 1b 2a 2b
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        sent  : sent date
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    Followup [Demography]
+    primary key: followup_id  : followup_id int
+    foreign key: demography_id  : demography_id int
+    rows type: 3
+    Rows Suffixes: 1 2
+    Possible Suffixes: 1 2
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_suffix  : redcap_suffix varchar(255)
+        impression  : impression int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+
+
+
+
+======================================================
+
+
+Time: 1.78 minutes, Memory: 20.00MB
+
+OK (156 tests, 609 assertions)
