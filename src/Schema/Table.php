@@ -127,8 +127,36 @@ class Table
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
+
+        # Create a field map that combines both tables that maps
+        # from database fields name to an array of 2 fields.
+        $fieldMap = array();
         foreach ($this->fields as $field) {
+            $fieldMap[$field->dbName] = [$field, null];
         }
+
+        foreach ($table->fields as $field) {
+            if (array_key_exists($field->dbName, $fieldMap)) {
+                $fields = $fieldMap[$field->dbName];
+                $field[1] = $field;
+                $fieldMap[$field->dbName] = $fields;
+            } else {
+                $fieldMap[$field->dbName] = [null, $field];
+            }
+        }
+
+        $mergedFields = array();
+        foreach ($fieldMap as $dbName => $fields) {
+            if (empty($fields[0])) {
+                $mergedFields = $fields[1];
+            } elseif (empty($fields[1])) {
+                $mergedFields = $fields[0];
+            } else {
+                $mergedFields = ($fields[0])->merge($fields[1]);
+            }
+        }
+
+        $mergedTable->fields = $mergedFields;
 
         return $mergedTable;
     }

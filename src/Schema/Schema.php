@@ -34,10 +34,44 @@ class Schema
         return true;
     }
 
+    /**
+     * Merges the specified schema into this one.
+     */
     public function merge($schema)
     {
-        // WORK IN PROGRESS
+        $mergedSchema = new Schema();
+
+        # Create a table map that combines both tables that maps
+        # from database fields name to an array of 2 fields.
+        $tableMap = array();
+        foreach ($this->tables as $table) {
+            $tableMap[$table->getName()] = [$table, null];
+        }
+
+        foreach ($schme->tables as $table) {
+            if (array_key_exists($table->getName(), $tableMap)) {
+                $tables = $tableMap[$table->getName()];
+                $tables[1] = $table;
+                $tableMap[$table->getName()] = $tables;
+            } else {
+                $tableMap[$table->getName()] = [null, $table];
+            }
+        }
+
+        $mergedTables = array();
+        foreach ($tableMap as $name => $tables) {
+            if (empty($tables[0])) {
+                $mergedTables = $tables[1];
+            } elseif (empty($fields[1])) {
+                $mergedTables = $tables[0];
+            } else {
+                $mergedTables = ($tables[0])->merge($tables[1]);
+            }
+        }
+
+        return $mergedSchems;
     }
+
 
     /**
      * Adds the specified table to the schema.
