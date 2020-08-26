@@ -865,4 +865,9 @@ class EtlProcess
     {
         return $this->schema;
     }
+
+    public function getDbConnection()
+    {
+        return $this->dbcon;
+    }
 }
