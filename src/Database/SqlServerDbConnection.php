@@ -19,6 +19,8 @@ class SqlServerDbConnection extends PdoDbConnection
 {
     const AUTO_INCREMENT_TYPE = 'INT NOT NULL IDENTITY(0,1) PRIMARY KEY';
 
+    private $id;
+
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
@@ -26,6 +28,22 @@ class SqlServerDbConnection extends PdoDbConnection
         // Initialize error string
         $this->errorString = '';
         $this->db = self::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
+
+        #------------------------------------------
+        # Set ID
+        #------------------------------------------
+        $dbValues = DbConnection::parseConnectionString($dbString);
+        $idValues = array();
+
+        if (count($dbValues) == 4) {
+            list($host,$username,$password,$database) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_SQLSERVER, $host, $database);
+        } elseif (count($dbValues) == 5) {
+            list($host,$username,$password,$database,$port) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_SQLSERVER, $host, $database, $port);
+        }
+
+        $this->id = DbConnection::createConnectionString($idValues);
     }
 
     public static function getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile)
@@ -36,6 +54,7 @@ class SqlServerDbConnection extends PdoDbConnection
         $driver  = 'sqlsrv';
 
         $dbValues = DbConnection::parseConnectionString($dbString);
+
 
         $port = null;
         if (count($dbValues) == 4) {
@@ -53,7 +72,7 @@ class SqlServerDbConnection extends PdoDbConnection
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
-      
+
         if (empty($port)) {
             $port = null;
             #$port = 1433; not using the default port for SQL Server; allowing it to be null
@@ -89,6 +108,11 @@ class SqlServerDbConnection extends PdoDbConnection
         }
 
         return $pdoConnection;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
  
 

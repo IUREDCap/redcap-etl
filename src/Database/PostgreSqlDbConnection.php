@@ -20,6 +20,8 @@ class PostgreSqlDbConnection extends PdoDbConnection
     const AUTO_INCREMENT_TYPE = 'SERIAL PRIMARY KEY';
     const DATETIME_TYPE       = 'timestamptz';
 
+    private $id;
+
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
@@ -28,6 +30,24 @@ class PostgreSqlDbConnection extends PdoDbConnection
         $this->errorString = '';
         
         $this->db = self::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
+
+        #--------------------------------------
+        # Set ID
+        #--------------------------------------
+        $dbValues = DbConnection::parseConnectionString($dbString);
+
+        if (count($dbValues) == 4) {
+            list($host,$username,$password,$database) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database);
+        } elseif (count($dbValues) == 5) {
+            list($host,$username,$password,$database,$schema) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database, $schema);
+        } elseif (count($dbValues) == 6) {
+            list($host,$username,$password,$database,$schema, $port) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database, $schema, $port);
+        }
+
+        $this->id = DbConnection::createConnectionString($idValues);
     }
  
     public static function getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile)
@@ -46,10 +66,13 @@ class PostgreSqlDbConnection extends PdoDbConnection
 
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database);
         } elseif (count($dbValues) == 5) {
             list($host,$username,$password,$database,$schema) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database, $schema);
         } elseif (count($dbValues) == 6) {
             list($host,$username,$password,$database,$schema, $port) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database, $schema, $port);
             $port = intval($port);
         } else {
             $message = 'The database connection is not correctly formatted: ';
@@ -61,7 +84,7 @@ class PostgreSqlDbConnection extends PdoDbConnection
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
-      
+
         if (empty($port)) {
             $port = null;
         } else {
@@ -105,6 +128,11 @@ class PostgreSqlDbConnection extends PdoDbConnection
         }
         
         return $pdoConnection;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
     
     protected function escapeName($name)

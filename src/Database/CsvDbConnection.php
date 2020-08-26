@@ -23,6 +23,7 @@ class CsvDbConnection extends DbConnection
     private $directory;
     private $lookup;
     private $lookupTable;
+    private $id;
 
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
@@ -30,10 +31,18 @@ class CsvDbConnection extends DbConnection
 
         $this->directory = $dbString;
 
+        $idValues = array(DbConnectionFactory::DBTYPE_CSV, $dbString);
+        $this->id = DbConnection::createConnectionString($idValues);
+
         # If the directory doesn't end with a separator, add one
         if (substr($dbString, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
             $this->directory .= DIRECTORY_SEPARATOR;
         }
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     private function getTableFile($table)

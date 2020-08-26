@@ -42,6 +42,14 @@ abstract class DbConnection
     }
 
     /**
+     * Gets a string identifer for the database. This is used for checking databases
+     * for equivalance, but will only work if database connection strings are
+     * specified consistently.
+     */
+    abstract public function getId();
+
+
+    /**
      * Drops the specified table from the database.
      *
      * @param IU\REDCapETL\Schema\Table $table table object corresponding

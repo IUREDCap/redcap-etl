@@ -60,7 +60,11 @@ class RedCapEtl
 
     private $redcapProjectClass;
 
+    /** @var array map from configuration name to ETL process.
+     */
     private $etlProcesses;
+
+    private $etlProcessMap; // Map from database to $etlProcess (merge schemas based on this);
 
     /**
      * Constructor.

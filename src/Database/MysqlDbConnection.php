@@ -19,6 +19,8 @@ class MysqlDbConnection extends DbConnection
 {
     private $mysqli;
 
+    private $id;
+
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
@@ -30,11 +32,14 @@ class MysqlDbConnection extends DbConnection
         # Get the database connection values
         #--------------------------------------------------------------
         $dbValues = DbConnection::parseConnectionString($dbString);
+        $idValues = array();
         $port = null;
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_MYSQL, $host, $database);
         } elseif (count($dbValues) == 5) {
             list($host,$username,$password,$database,$port) = $dbValues;
+            $idValues = array(DbConnectionFactory::DBTYPE_MYSQL, $host, $database, $port);
             $port = intval($port);
         } else {
             $message = 'The database connection is not correctly formatted: ';
@@ -46,6 +51,8 @@ class MysqlDbConnection extends DbConnection
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
+
+        $this->id = DbConnection::createConnectionString($idValues);
 
         // Get MySQL connection
         // NOTE: Could add error checking
@@ -113,6 +120,12 @@ class MysqlDbConnection extends DbConnection
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
         }
+    }
+
+
+    public function getId()
+    {
+        $this->id;
     }
 
 

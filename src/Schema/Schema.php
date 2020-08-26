@@ -16,7 +16,6 @@ namespace IU\REDCapETL\Schema;
  */
 class Schema
 {
-
     /** @var array array of Table objects for all tables in schema (including root tables) */
     private $tables = array();
 
@@ -39,7 +38,7 @@ class Schema
      */
     public function merge($schema)
     {
-        $mergedSchema = new Schema();
+        $mergedSchema = $this;
 
         # Create a table map that combines both tables that maps
         # from database fields name to an array of 2 fields.
@@ -68,6 +67,8 @@ class Schema
                 $mergedTables = ($tables[0])->merge($tables[1]);
             }
         }
+
+        $mergedSchema->tables = $mergedTables;
 
         return $mergedSchems;
     }
