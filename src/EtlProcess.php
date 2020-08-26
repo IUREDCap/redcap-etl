@@ -204,6 +204,20 @@ class EtlProcess
         $this->processTransformationRules();
     }
 
+    /**
+     * Get the database ID string. This method depends on database connections
+     * being specified consistently in configurations. For example, for a given
+     * database that uses the default port number, either all references to
+     * that database should not include a port number, or all should include
+     * the default port number.
+     *
+     * @return string a database ID that is used to check for database equivalence.
+     */
+    public function getDbId()
+    {
+        return $this->dbcon->getId();
+    }
+
 
     /**
      * Parses the transformation rules, and creates a Schema object that describes

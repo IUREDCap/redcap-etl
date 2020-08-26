@@ -125,7 +125,7 @@ class MysqlDbConnection extends DbConnection
 
     public function getId()
     {
-        $this->id;
+        return $this->id;
     }
 
 
