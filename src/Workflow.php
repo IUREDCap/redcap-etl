@@ -141,7 +141,7 @@ class Workflow
             } else {
                 throw new \Exception("No configurations defined for workflow.");
             }
-        } {
+        } else {
             # Single configuration
             $properties = $this->processJsonProperties($config);
             $properties = Configuration::makeFilePropertiesAbsolute($properties, $baseDir);
