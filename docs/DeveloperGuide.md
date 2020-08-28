@@ -347,18 +347,8 @@ __ETL Configuration File Setup.__ The next thing you need to do is to create the
     modify the __db_connection__ property appropriately in file
     __tests/config/repeating-events-mysql.ini__.
 
-You can check the setup so far for the visits tests by running
-the following command in the
-top-level directory of you REDCap-ETL installation:
-
-        ./bin/project_info.php tests/config/visits.ini 
-    
-If things have been set up correctly, you should see the correct
-project names displayed for the configuration, data and logging
-projects.
-
-You can also check the configuration for errors with the following
-command:
+You can check the configurations for errors using the config_check.php
+command, for example:
 
         ./bin/config_check.php tests/config/visits.ini 
 
