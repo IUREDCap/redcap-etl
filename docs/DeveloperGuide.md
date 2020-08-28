@@ -366,8 +366,11 @@ To run all of the automated test, in the top-level directory run:
 
     ./vendor/bin/phpunit
 
-The system tests use the REDCap-ETL scripts, so the DET web script
-will need to be set up.
+
+If the output from the above command indicates that there were tests that were skipped,
+you can get more information by running the above command with the verbose option:
+
+    ./vendor/bin/phpunit -v
 
 
 #### Generating test coverage
