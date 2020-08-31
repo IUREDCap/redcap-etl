@@ -12,26 +12,10 @@ $configDir     = __DIR__.'/../tests/config/';
 #---------------------------------------------------------------------
 # Configuration files (map from configuration file name to database)
 #---------------------------------------------------------------------
-$configFiles = [
-    'basic-demography-2.ini'                           => '',
-    'basic-demography-3.ini'                           => '',
-    'basic-demography-bad-field-name.ini'              => '',
-    'basic-demography-bad-rule.ini'                    => '',
-    'basic-demography-duplicate-primary-key-name.ini'  => '',
-    'basic-demography.ini'                             => '',
-    'basic-demography.json'                            => '',
-    'repeating-events.ini'                             => '',
-    'repeating-events-mysql.ini'                       => 'mysql',
-    'repeating-events-mysql-ssl.ini'                   => 'mysql-with-ssl',
-    'repeating-events-postgresql.ini'                  => 'postgresql',
-    'repeating-events-sqlite.ini'                      => 'sqlite',
-    'repeating-events-sqlserver.ini'                   => 'sql-server',
-    'repeating-events-sqlserver-ssl.ini'               => 'sql-server-with-ssl',
-    'visits-empty-rules.ini'                           => 'mysql',
-    'visits.ini'                                       => 'mysql',
-    'visits-missing-suffix.ini'                        => '',
-    'visits-sqlite.ini'                                => 'sqlite'
-];
+$configFiles = array_merge(glob($configInitDir.'*.ini'), glob($configInitDir.'*.json'));
+for ($i = 0; $i < count($configFiles); $i++) {
+    $configFiles[$i] = basename($configFiles[$i]);
+}
 
 $rulesFiles = [
     'basic-demography-rules-badFieldName.txt',
@@ -44,11 +28,18 @@ $rulesFiles = [
     'visits-missing-suffix-rules.txt',
     'visits-rules.txt'
 ];
+$rulesFiles = glob($configInitDir.'*.txt');
+for ($i = 0; $i < count($rulesFiles); $i++) {
+    $rulesFiles[$i] = basename($rulesFiles[$i]);
+}
 
 $sqlFiles = [
     'visits.sql'
 ];
-
+$sqlFiles = glob($configInitDir.'*.sql');
+for ($i = 0; $i < count($sqlFiles); $i++) {
+    $sqlFiles[$i] = basename($sqlFiles[$i]);
+}
 
 #----------------------------------------------
 # Parse the test setup configuration file
@@ -64,11 +55,11 @@ $repeatingEventsApiToken  = $properties['repeating-events']['data_source_api_tok
 $visitsApiUrl    = $properties['visits']['redcap_api_url'];
 $visitsApiToken  = $properties['visits']['data_source_api_token'];
 
-$dbConnection['mysql']               = $properties['mysql']['db_connection'];
-$dbConnection['mysql-with-ssl']      = $properties['mysql-with-ssl']['db_connection'];
-$dbConnection['postgresql']          = $properties['postgresql']['db_connection'];
-$dbConnection['sql-server']          = $properties['sql-server']['db_connection'];
-$dbConnection['sql-server-with-ssl'] = $properties['sql-server-with-ssl']['db_connection'];
+$dbConnection['mysql']         = $properties['mysql']['db_connection'];
+$dbConnection['mysql-ssl']     = $properties['mysql-ssl']['db_connection'];
+$dbConnection['postgresql']    = $properties['postgresql']['db_connection'];
+$dbConnection['sqlserver']     = $properties['sqlserver']['db_connection'];
+$dbConnection['sqlserver-ssl'] = $properties['sqlserver-ssl']['db_connection'];
 
 #-----------------------------------------------------------------------------------
 # Copy the rules and SQL files that are not already in the test condig directory
@@ -94,9 +85,24 @@ foreach (array_merge($rulesFiles, $sqlFiles) as $configFile) {
 # For each configuration file, update the API URL and token,
 # and, where applicable, the database connection
 #------------------------------------------------------------
-foreach ($configFiles as $configFile => $db) {
+foreach ($configFiles as $configFile) {
     $fromPath = realpath($configInitDir . $configFile);
     $toPath   = $configDir . $configFile;
+
+    $db = null;
+    if (preg_match('/mysql-ssl/', $configFile)) {
+        $db = 'mysql-ssl';
+    } elseif (preg_match('/mysql/', $configFile)) {
+        $db = 'mysql';
+    } elseif (preg_match('/postgresql/', $configFile)) {
+        $db = 'postgresql';
+    } elseif (preg_match('/sqlserver-ssl/', $configFile)) {
+        $db = 'sqlserver-ssl';
+    } elseif (preg_match('/sqlserver/', $configFile)) {
+        $db = 'sqlserver';
+    } elseif (preg_match('/sqlite/', $configFile)) {
+        $db = 'sqlite';
+    }
 
     if (!file_exists($fromPath)) {
         print "ERROR - required configuration file \"{$fromPath}\" could not be found.\n";

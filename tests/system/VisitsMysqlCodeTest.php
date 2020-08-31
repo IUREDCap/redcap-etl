@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 class VisitsMysqlCodeTest extends TestCase
 {
-    const CONFIG_FILE = __DIR__.'/../config/visits.ini';
+    const CONFIG_FILE = __DIR__.'/../config/visits-mysql.ini';
 
     private static $dbh;
     private static $logger;

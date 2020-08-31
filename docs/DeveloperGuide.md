@@ -296,6 +296,33 @@ The output
 could be stored in a different directory, but directory tests/coverage
 has been set up to be ignored by Git.
 
+### Writing new tests
+
+ETL configuration files, transformation rules files, and SQL files for
+tests need to be placed in the following directory:
+
+    ./tests/config-init
+
+The name of each configuration file needs to include the project name it accesses, e.g.,
+"basic-demography", "repeating-events", or "visits". The test setup script (.bin/tests_setup.php)
+searches for this to know which API URL and token values to use from the test configuration file
+**./tests/config.ini**. The ETL configuration files are copied by the script to the
+**./tests/config** directory with the API URL, API token, and database connection
+values set to the values in the **./tests/config.ini** file.:
+
+The name of the configuration file also needs to contain the name of the database system used (if any).
+And "-ssl" is added to the database system name if is is used for tests that require the database
+to support SSL (secure) connection. Possible values include: 
+
+    mysql
+    mysql-ssl
+    postgresql
+    sqlite
+    sqlserver
+    sqlserver-ssl
+
+
+
 API Documentation
 -----------------------------------
 

@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 class VisitsMysqlTest extends TestCase
 {
-    const CONFIG_FILE = __DIR__.'/../config/visits.ini';
+    const CONFIG_FILE = __DIR__.'/../config/visits-mysql.ini';
     const BIN_DIR     = __DIR__.'/../../bin';
     const ETL_COMMAND = 'redcap_etl.php';
 
