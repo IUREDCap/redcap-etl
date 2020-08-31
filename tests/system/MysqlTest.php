@@ -42,6 +42,13 @@ class DatabasesTest extends TestCase
         self::$logger = new Logger('databases_integration_test');
     }
 
+    public function setUp()
+    {
+        if (!file_exists(self::$configFile)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
+        }
+    }
+
     /**
      * This test creates an empty table.
      */

@@ -23,18 +23,28 @@ class VisitsMysqlTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        $logger = new Logger('visits_test');
+        if (file_exists(self::CONFIG_FILE)) {
+            $logger = new Logger('visits_test');
 
-        $configuration = new Configuration($logger, self::CONFIG_FILE);
+            $configuration = new Configuration($logger, self::CONFIG_FILE);
 
-        $options = [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-        ];
+            $options = [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+            ];
 
-        list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
-        $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
-        self::$dbh = new \PDO($dsn, $dbUser, $dbPassword, $options);
-        VisitsTestUtility::dropTablesAndViews(self::$dbh);
+            list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
+            $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
+            self::$dbh = new \PDO($dsn, $dbUser, $dbPassword, $options);
+            VisitsTestUtility::dropTablesAndViews(self::$dbh);
+        }
+    }
+
+
+    public function setUp()
+    {
+        if (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
+        }
     }
 
 

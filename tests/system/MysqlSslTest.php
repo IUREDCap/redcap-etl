@@ -27,7 +27,8 @@ use IU\REDCapETL\Schema\Table;
 class MysqlSslTest extends TestCase
 {
     private static $logger;
-    private static $configFile = __DIR__.'/../config/repeating-events-mysql.ini';
+    const CA_CERT_FILE = __DIR__.'/../config/ca.crt';
+    const CONFIG_FILE  = __DIR__.'/../config/repeating-events-mysql-ssl.ini';
     private static $expectedCode = EtlException::DATABASE_ERROR;
 
     protected $ssl = null;
@@ -42,6 +43,16 @@ class MysqlSslTest extends TestCase
         self::$logger = new Logger('databases_integration_test');
     }
 
+
+    public function setUp()
+    {
+        if (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
+        } elseif (!file_exists(self::CA_CERT_FILE)) {
+            $this->markTestSkipped("Required CA (Certificate Authority) certificate file not set for this test.");
+        }
+    }
+
     /**
      * This tests the SSL MySQL connection option of the MysqlDbConnection class
      * using branch1 of the redcap MySQL database server. It depends on the
@@ -50,37 +61,25 @@ class MysqlSslTest extends TestCase
      */
     public function testMysqlDbConnectionConstructorWithSsl()
     {
-        $caCertFile = __DIR__.'/../config/ca.crt';
-        $configFile = __DIR__.'/../config/mysql-ssl.ini';
-        $skipTestMessage = "DatabasesTest, testMysqlDbConnectionConstructorWithSsl skipped.";
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $dbInfo = $configuration->getMySqlConnectionInfo();
+        $dbString = implode(":", $dbInfo);
 
-        if (file_exists($configFile)) {
-            $configuration = new Configuration(self::$logger, $configFile);
-            if (file_exists($caCertFile)) {
-                $dbInfo = $configuration->getMySqlConnectionInfo();
-                $dbString = implode(":", $dbInfo);
+        # Create the MysqlDbConnection
+        $sslVerify = true;
+        $mysqlDbConnection = new MysqlDbConnection(
+            $dbString,
+            $this->ssl,
+            $sslVerify,
+            self::CA_CERT_FILE,
+            $this->tablePrefix,
+            $this->labelViewSuffix
+        );
 
-                # Create the MysqlDbConnection
-                $sslVerify = true;
-                $mysqlDbConnection = new MysqlDbConnection(
-                    $dbString,
-                    $this->ssl,
-                    $sslVerify,
-                    $caCertFile,
-                    $this->tablePrefix,
-                    $this->labelViewSuffix
-                );
-
-                # verify object was created
-                $this->assertNotNull(
-                    $mysqlDbConnection,
-                    'DatabasesTest, mysqlDbConnection object created, ssl db user check'
-                );
-            } else {
-                $this->markTestSkipped($skipTestMessage . " {$caCertFile} not found.");
-            }
-        } else {
-            $this->markTestSkipped($skipTestMessage . " {$configFile} not found.");
-        }
+        # verify object was created
+        $this->assertNotNull(
+            $mysqlDbConnection,
+            'DatabasesTest, mysqlDbConnection object created, ssl db user check'
+        );
     }
 }
