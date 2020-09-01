@@ -14,30 +14,39 @@ use PHPUnit\Framework\TestCase;
  */
 class VisitsMysqlCodeTest extends TestCase
 {
-    const CONFIG_FILE = __DIR__.'/../config/visits.ini';
+    const CONFIG_FILE = __DIR__.'/../config/visits-mysql.ini';
 
     private static $dbh;
     private static $logger;
 
     public static function setUpBeforeClass()
     {
-        self::$logger = new Logger('visits_code_test');
+        if (file_exists(self::CONFIG_FILE)) {
+            self::$logger = new Logger('visits_code_test');
 
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
-        $options = [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-        ];
+            $options = [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+            ];
 
 
-        list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
-        $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
-        try {
-            self::$dbh = new \PDO($dsn, $dbUser, $dbPassword, $options);
-        } catch (Exception $exception) {
-            print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
+            $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
+            try {
+                self::$dbh = new \PDO($dsn, $dbUser, $dbPassword, $options);
+            } catch (Exception $exception) {
+                print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            }
+            VisitsTestUtility::dropTablesAndViews(self::$dbh);
         }
-        VisitsTestUtility::dropTablesAndViews(self::$dbh);
+    }
+
+    public function setUp()
+    {
+        if (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
+        }
     }
 
 

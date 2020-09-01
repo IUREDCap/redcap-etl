@@ -234,11 +234,14 @@ abstract class DbConnection
     /**
      * Parses the SQL queries in the specified text and
      * returns an array of queries.
+     *
+     * @return array list of single SQL query strings.
      */
-    public function parseSqlQueries($text)
+    public static function parseSqlQueries($text)
     {
         $queries = array();
 
+        $query = '';
         $separators = [];    // SQL query separators
         $lastChar = '';
         $quoteStarted = false;
@@ -256,6 +259,7 @@ abstract class DbConnection
 
             if ($quoteStarted) {
                 # In quote
+                $query .= $char;
                 if ($quoteEnded) {
                     if ($char === "'") {
                         # quote wasn't actually ended,
@@ -281,36 +285,34 @@ abstract class DbConnection
                 # If end of line reached, comment ends
                 if ($char === "\n") {
                     $inComment = false;
-                    $text[$i] = ' ';
                 }
             } else {
-                #--------------------------------
-                # Not in quote or comment
-                #--------------------------------
+                #------------------------------------------------
+                # Processing query, not in quote or comment
+                #------------------------------------------------
                 if ($char === ';') {
-                    $separators[] = $i;
+                    // $separators[] = $i;
+                    $queries[] = trim($query); // NEW
+                    $query = '';
                 } elseif ($char === "'") {
+                    $query .= $char;
                     $quoteStarted = true;
                 } elseif ($char === '-' && !$atEnd && $text[$i+1] === '-') {
                     $inComment = true;
                 } elseif ($char === "\n" || $char === "\r" || $char === "\t") {
-                    $text[$i] = ' ';
+                    $query .= ' ';
+                } else {
+                    $query .= $char;
                 }
             }
             $lastChar = $char;
         }
 
-        ###print_r($separators);
-
-        $startIndex = 0;
-        $query = '';
-        for ($i = 0; $i < count($separators); $i++) {
-            $query = substr($text, $startIndex, $separators[$i] - $startIndex);
-            $queries[] = trim($query);
-            $startIndex = $separators[$i] + 1;
-        }
-        $i = count($separators) - 1;
-        $query = trim(substr($text, $separators[$i] + 1));
+        #-------------------------------------------------------
+        # Check for ending query not terminated by semi-colon,
+        # or ended by comment on same line
+        #-------------------------------------------------------
+        $query = trim($query);
         if (!empty($query)) {
             $queries[] = $query;
         }

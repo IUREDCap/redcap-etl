@@ -29,12 +29,14 @@ class RepeatingEventsPostgreSqlTest extends RepeatingEventsTests
         # If it isn't loaded, all tests will be skipped.
         if (!extension_loaded('pdo_pgsql')) {
             $this->markTestSkipped('The pdo_pgsql driver is not available.');
+        } elseif (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
         }
     }
     
     public static function setUpBeforeClass()
     {
-        if (extension_loaded('pdo_pgsql')) {
+        if (extension_loaded('pdo_pgsql') && file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('repeating_events_postgresql_system_test');
 
             $configuration = new Configuration(self::$logger, self::CONFIG_FILE);

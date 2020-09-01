@@ -22,21 +22,30 @@ class MysqlAutoRulesTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$logger = new Logger('repeating_events_system_test');
+        if (file_exists(self::CONFIG_FILE)) {
+            self::$logger = new Logger('repeating_events_system_test');
 
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
-        list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
-        $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
-        try {
-            self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
-        } catch (Exception $exception) {
-            print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
+            $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
+            try {
+                self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
+            } catch (Exception $exception) {
+                print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            }
+
+            self::dropTablesAndViews(self::$dbh);
+
+            self::runEtl();
         }
+    }
 
-        self::dropTablesAndViews(self::$dbh);
-
-        self::runEtl();
+    public function setUp()
+    {
+        if (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
+        }
     }
 
     private static function dropTablesAndViews($dbh)

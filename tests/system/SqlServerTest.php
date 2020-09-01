@@ -27,7 +27,8 @@ use IU\REDCapETL\Schema\Table;
 class SqlServerTest extends TestCase
 {
     private static $logger;
-    private static $configFile = __DIR__.'/../config/sqlserver.ini';
+    const CONFIG_FILE     = __DIR__.'/../config/repeating-events-sqlserver.ini';
+    const CONFIG_FILE_SSL = __DIR__.'/../config/repeating-events-sqlserver-ssl.ini';
     private static $expectedCode = EtlException::DATABASE_ERROR;
 
     protected $ssl = null;
@@ -52,6 +53,8 @@ class SqlServerTest extends TestCase
         #print_r(get_loaded_extensions());
         if (!extension_loaded('sqlsrv') || !extension_loaded('pdo_sqlsrv')) {
             $this->markTestSkipped('The sqlsrv and pdo_sqlsrv drivers are not available.');
+        } elseif (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
         }
     }
 
@@ -101,8 +104,7 @@ class SqlServerTest extends TestCase
 
     public function testConnectorValidConnectionWithSsl()
     {
-        $configFile = __DIR__.'/../config/sqlserver-ssl.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE_SSL);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
  
@@ -135,7 +137,7 @@ class SqlServerTest extends TestCase
      */
     public function testSqlServerDbConnectionCreateTableWithPortAndEncryption()
     {
-        $configuration = new Configuration(self::$logger, self::$configFile);
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
@@ -338,7 +340,7 @@ class SqlServerTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new Configuration(self::$logger, self::$configFile);
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -506,7 +508,7 @@ class SqlServerTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new Configuration(self::$logger, self::$configFile);
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -651,7 +653,7 @@ class SqlServerTest extends TestCase
     public function testPdoDbProcessQueryFile()
     {
         #Create the SqlServerDbConnection object
-        $configuration = new Configuration(self::$logger, self::$configFile);
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -785,6 +787,12 @@ class SqlServerTest extends TestCase
             $exceptionCaught8 = true;
         }
 
+        $this->assertFalse(
+            $exceptionCaught8,
+            'Empty query file is OK check'
+        );
+ 
+        /* (An empty file should not be an exception)
         $this->assertTrue(
             $exceptionCaught8,
             'DatabasesTest, SqlServerTest, SqlServerDbConnection processQueryFile file exception caught'
@@ -801,6 +809,7 @@ class SqlServerTest extends TestCase
             substr($exception->getMessage(), 0, strlen($expectedMessage8)),
             'SqlServerTest, SqlServerDbConnection processQueryFile file error message check'
         );
+         */
 
         ###Test with an error condition in a query other than the first on by sending
         ###a bad third query
@@ -904,7 +913,7 @@ class SqlServerTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new Configuration(self::$logger, self::$configFile);
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -1084,7 +1093,7 @@ class SqlServerTest extends TestCase
         #############################################################
         # create the data table in the database
         #############################################################
-        $configuration = new Configuration(self::$logger, self::$configFile);
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -1169,7 +1178,7 @@ class SqlServerTest extends TestCase
         );
 
         #create the SqlServerDbConnection
-        $configuration = new Configuration(self::$logger, self::$configFile);
+        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 

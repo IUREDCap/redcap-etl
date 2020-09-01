@@ -38,11 +38,10 @@ class RedCapEtlTest extends TestCase
 
     public function testConstructRedCapObjectError()
     {
-       
         $configFile = __DIR__.'/../config/basic-demography-3.ini';
 
-        #Check to see if an error will be generated because of the missing
-        #api token.
+        # Check to see if an error will be generated because of the missing
+        # api token.
         $exceptionCaught = false;
         $expectedMessage = "Could not get data project.";
         $expectedCode = EtlException::PHPCAP_ERROR;

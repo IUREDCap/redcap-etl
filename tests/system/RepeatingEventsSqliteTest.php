@@ -23,17 +23,26 @@ class RepeatingEventsSqliteTest extends RepeatingEventsTests
 
     public static function setUpBeforeClass()
     {
-        self::$logger = new Logger('repeating_events_sqlite_system_test');
+        if (file_exists(self::CONFIG_FILE)) {
+            self::$logger = new Logger('repeating_events_sqlite_system_test');
 
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
-        $dbConnection = $configuration->getDbConnection();
-        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
+            $dbConnection = $configuration->getDbConnection();
+            list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
-        if ($dbType !== DbConnectionFactory::DBTYPE_SQLITE) {
-            throw new \Exception('Incorrect database type "'.$dbType.'" SQLite test.');
+            if ($dbType !== DbConnectionFactory::DBTYPE_SQLITE) {
+                throw new \Exception('Incorrect database type "'.$dbType.'" SQLite test.');
+            }
+
+            self::$dbh = SqliteDbConnection::getPdoConnection($dbString);
         }
+    }
 
-        self::$dbh = SqliteDbConnection::getPdoConnection($dbString);
+    public function setUp()
+    {
+        if (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
+        }
     }
 }
