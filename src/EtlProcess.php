@@ -248,7 +248,7 @@ class EtlProcess
 
         ###print "\n".($schema->toString())."\n";
 
-        $this->schema      = $schema;
+        $this->schema = $schema;
 
         return $parseResult;
     }
@@ -391,6 +391,9 @@ class EtlProcess
                 # Single row storage (stores one row at a time):
                 # foreach row, load it
                 ### $this->loadTableRows($table);
+                #print "*** LOADING ROWS FOR TABLE: \n";
+                #print_r($table);
+                #print "\n\n";
                 $this->loadTableRowsEfficiently($table);
             }
             #####$this->loadRows();

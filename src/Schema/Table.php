@@ -101,9 +101,14 @@ class Table
         }
     }
 
+    /**
+     * Merges the specified table with this table and returns the result.
+     */
     public function merge($table)
     {
         $mergedTable = $this;
+
+        $mergedTable->usesLookup = $this->usesLookup || $table->usesLookup;
 
         # Check the table name (tables with different names should not be merged in the first place,
         # so this error would tend to indicate some kind of logic error in the calling code).
@@ -128,8 +133,11 @@ class Table
         }
 
 
+        #--------------------------------------------------------------
         # Create a field map that combines both tables that maps
-        # from database fields name to an array of 2 fields.
+        # from database field names to an array of 2 fields.
+        # dbName => [$this field, $table field]
+        #--------------------------------------------------------------
         $fieldMap = array();
         foreach ($this->fields as $field) {
             $fieldMap[$field->dbName] = [$field, null];
@@ -138,7 +146,7 @@ class Table
         foreach ($table->fields as $field) {
             if (array_key_exists($field->dbName, $fieldMap)) {
                 $fields = $fieldMap[$field->dbName];
-                $field[1] = $field;
+                $fields[1] = $field;
                 $fieldMap[$field->dbName] = $fields;
             } else {
                 $fieldMap[$field->dbName] = [null, $field];
@@ -148,11 +156,11 @@ class Table
         $mergedFields = array();
         foreach ($fieldMap as $dbName => $fields) {
             if (empty($fields[0])) {
-                $mergedFields = $fields[1];
+                $mergedFields[] = $fields[1];
             } elseif (empty($fields[1])) {
-                $mergedFields = $fields[0];
+                $mergedFields[] = $fields[0];
             } else {
-                $mergedFields = ($fields[0])->merge($fields[1]);
+                $mergedFields[] = ($fields[0])->merge($fields[1]);
             }
         }
 

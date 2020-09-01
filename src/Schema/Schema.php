@@ -40,14 +40,16 @@ class Schema
     {
         $mergedSchema = $this;
 
-        # Create a table map that combines both tables that maps
-        # from database fields name to an array of 2 fields.
+        # Create a table map that combines both schemas' tables that maps
+        # from table name to a 2-element array, where the first element
+        # is the table for this object, and the second for the $schema
+        # argument.
         $tableMap = array();
         foreach ($this->tables as $table) {
             $tableMap[$table->getName()] = [$table, null];
         }
 
-        foreach ($schme->tables as $table) {
+        foreach ($schema->tables as $table) {
             if (array_key_exists($table->getName(), $tableMap)) {
                 $tables = $tableMap[$table->getName()];
                 $tables[1] = $table;
@@ -60,17 +62,28 @@ class Schema
         $mergedTables = array();
         foreach ($tableMap as $name => $tables) {
             if (empty($tables[0])) {
-                $mergedTables = $tables[1];
+                # table not in $this, table in $schema
+                $mergedTables[] = $tables[1];
             } elseif (empty($fields[1])) {
-                $mergedTables = $tables[0];
+                # table in $this, not in $schema
+                $mergedTables[] = $tables[0];
             } else {
-                $mergedTables = ($tables[0])->merge($tables[1]);
+                # table in both $this and $schema
+                $mergedTables[] = ($tables[0])->merge($tables[1]);
             }
         }
 
         $mergedSchema->tables = $mergedTables;
 
-        return $mergedSchems;
+        $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
+
+
+        print "\n";
+        print $mergedSchema->toString();
+        print "\n";
+
+
+        return $mergedSchema;
     }
 
 
@@ -92,6 +105,8 @@ class Schema
 
     /**
      * Get the tables in top-down, depth-first order, i.e., parents before children
+     *
+     * @return array list of Table objects for the tables in the schema.
      */
     public function getTablesTopDown()
     {
@@ -213,6 +228,13 @@ class Schema
         $string = '';
         $string .= "${in}Number of tables: ".count($this->tables)."\n";
         $string .= "${in}Number of root tables: ".count($this->rootTables)."\n";
+
+        $string .= "\nLookup Table\n";
+        if (isset($this->lookupTable)) {
+            $string .= $this->lookupTable->toString($indent + 4)."\n";
+        }
+
+        $string .= "\n";
         $string .= "\n${in}Root tables\n";
         foreach ($this->rootTables as $table) {
             $string .= $table->toString($indent + 4)."\n";
