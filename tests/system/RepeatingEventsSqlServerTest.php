@@ -25,19 +25,22 @@ class RepeatingEventsSqlServerTest extends RepeatingEventsTests
 
     public function setUp()
     {
-        #These tests depend on the pdo_sqlsrv driver being installed.
-        #If it isn't loaded in PHP, all tests will be skipped.
-     
+        # These tests depend on the pdo_sqlsrv driver being installed and
+        # the configuration file existing.
+        # If that is not the case, all tests will be skipped.
         if (!extension_loaded('pdo_sqlsrv')) {
             $this->markTestSkipped('The pdo_sqlsrv driver is not available.');
+        } elseif (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
         }
     }
 
     public static function setUpBeforeClass()
     {
+
         self::$logger = new Logger('repeating_events_system_test_sql_server');
 
-        if (extension_loaded('pdo_sqlsrv')) {
+        if (extension_loaded('pdo_sqlsrv') && file_exists(self::CONFIG_FILE)) {
             $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
             $dbConnection = $configuration->getDbConnection();

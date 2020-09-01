@@ -21,24 +21,34 @@ class VisitsSqliteCodeTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$logger = new Logger('visits_sqlite_code_test');
+        if (file_exists(self::CONFIG_FILE)) {
+            self::$logger = new Logger('visits_sqlite_code_test');
 
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
 
-        $dbConnection = $configuration->getDbConnection();
-        list($type, $db) = explode(':', $dbConnection, 2);
+            $dbConnection = $configuration->getDbConnection();
+            list($type, $db) = explode(':', $dbConnection, 2);
 
-        $dsn = 'sqlite:'.realpath($db);
+            $dsn = 'sqlite:'.realpath($db);
 
-        try {
-            $dbUser = null;
-            $dbPassword = null;
-            self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
-            self::$dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch (Exception $exception) {
-            print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            try {
+                $dbUser = null;
+                $dbPassword = null;
+                self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
+                self::$dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            } catch (Exception $exception) {
+                print "ERROR - database connection error: ".$exception->getMessage()."\n";
+            }
+            VisitsTestUtility::dropTablesAndViews(self::$dbh);
         }
-        VisitsTestUtility::dropTablesAndViews(self::$dbh);
+    }
+
+
+    public function setUp()
+    {
+        if (!file_exists(self::CONFIG_FILE)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
+        }
     }
 
 

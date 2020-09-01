@@ -195,27 +195,9 @@ the data for the tests:
 The next thing you need to do is to create the configuration files
 for the tests:
 
-1. Copy the configuration and transformation rules
-   files from the tests/config-init directory to the tests/config
-   directory. From the top-level directory:
+1. Copy the file ./tests/config-example.ini to ./tests/config.ini
 
-        cp tests/config-init/basic-demography.ini tests/config
-        cp tests/config-init/basic-demography-rules.txt tests/config
-        cp tests/config-init/basic-demography.json tests/config
-        cp tests/config-init/basic-demography-2.ini tests/config
-        cp tests/config-init/basic-demography-bad-field-name.ini tests/config 
-        cp tests/config-init/basic-demography-rules-badFieldName.txt tests/config
-        cp tests/config-init/basic-demography-bad-rule.ini tests/config
-        cp tests/config-init/basic-demography-rules-badRule.txt tests/config
-        cp tests/config-init/repeating-events.ini tests/config
-        cp tests/config-init/repeating-events-rules.txt tests/config
-        cp tests/config-init/visits-empty-rules.ini tests/config
-        cp tests/config-init/visits-empty-rules.txt tests/config
-        cp tests/config-init/visits-missing-suffix.ini tests/config
-        cp tests/config-init/visits-missing-suffix-rules.txt tests/config
-
-2. Edit the .ini and .json configuration files that were copied to the tests/config/
-   directory, and set the following properties to appropriate values:
+2. Edit the ./tests/config.ini file:
    
     1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
        sure to set this to the URL for the _API_, which typically ends
@@ -227,17 +209,13 @@ for the tests:
        file, set it to the REDCap API token for the Repeating Events project
        created above.
        
-    3. **ssl_verify** - if you are using a REDCap instance for testing that has no,
-       or a self-signed, SSL certificate, you will also need to set the ssl_verify
-       property to 'false' (note: include the single quotes).
+After the above steps have been completed successfully, you need to run
+the test setup script to set up the individual test configuration files,
+which are stored in the ./tests/config directory:
 
+    php ./bin/test_setup.php
 
-3. Also copy the following file, but do not edit it. It is used for error testing.
-
-        cp tests/config-init/basic-demography-3.ini tests/config
-
-After the above steps have been completed successfully, you should be
-able to run the integration tests by executing the following command
+Finally, run the integration tests by executing the following command
 in the top-level directory of your REDCap-ETL installation:
 
     ./vendor/bin/phpunit --testsuite integration
@@ -269,98 +247,18 @@ __ETL Configuration File Setup.__ The next thing you need to do is to create the
  and "Visits" projects:
 
 
-1. Copy the visits configuration and SQL post-processing files from the 
-   tests/config-init directory to the tests/config
-   directory, for example, from the top-level directory:
+1. If you did not already do this as part of the integration tests setup,
+   then copy the file ./tests/config-example.ini to ./tests/config.ini
 
-        cp tests/config-init/repeating-events-mysql-rules.txt tests/config
-        cp tests/config-init/repeating-events-mysql.ini tests/config
-        cp tests/config-init/repeating-events-sqlite.ini tests/config
-        cp tests/config-init/visits.ini tests/config
-        cp tests/config-init/visits-sqlite.ini tests/config
-        cp tests/config-init/visits-rules.txt tests/config
-        cp tests/config-init/visits.sql tests/config
+2. Edit the file ./tests/config.ini. Set the **db_connection** properties for the
+   databases that you have set up. The "with-ssl" databases are databases
+   that support SSL. You can use the same database for the non-SSL and SSL
+   databasde configurations. If any db_connection properties are not set, then
+   the tests that use those properties will be skipped.
 
-2. If you have a MySQL database that supports SSL and has a certified SSL certificate, then also
-   copy the following configuration file:
-
-        cp tests/config-init/mysql-ssl.ini tests/config
-
-3. If you have a PostgreSQL database, then also
-   copy the following configuration files:
-
-        cp tests/config-init/repeating-events-postgresql.ini tests/config
-
-4. If you have a SQL Server database, then also
-   copy the following configuration files:
-
-        cp tests/config-init/sqlserver.ini tests/config
-        cp tests/config-init/sqlserver-ssl.ini tests/config
-        cp tests/config-init/repeating-events-sqlserver.ini tests/config
-
-5. Edit the __tests/config/visits.ini__ and __tests/config/visits-sqlite.ini__ files and set the 
-   following properties to appropriate values:
-   
-    1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
-       sure to set this to the URL for the _API_, which typically ends
-       with "/api/".
-
-    2. **data_source_api_token** - set this to the REDCap API token for
-       your REDCap Visits project created above.
-
-    3. **ssl_verify** - if you are using a REDCap instance for testing that has no,
-       or a self-signed, SSL certificate, you will also need to set the ssl_verify
-       property to 'false' (note: include the single quotes).
-
-6. Edit the __tests/config/repeating-events-mysql.ini__ and __tests/config/repeating-events-sqlite.ini__ files,
-   and set the following properties to appropriate values:
-   
-    1. **redcap_api_url** - set this to the URL for your REDCap's API. Be
-       sure to set this to the URL for the _API_, which typically ends
-       with "/api/".
-
-    2. **data_source_api_token** - set this to the REDCap API token for
-       your REDCap Repeating Events project created above.
-
-    3. **ssl_verify** - if you are using a REDCap instance for testing that has no,
-       or a self-signed, SSL certificate, you will also need to set the ssl_verify
-       property to 'false' (note: include the single quotes).
-
-7. If you are setting up the __mysql-ssl.ini__ file,
-   edit it and modify the values listed in the previous step.
-   In addition, set the **db_connection** property with the information
-   for your database that supports SSL and has a certified SSL certificate. In addition, you need
-   to create a **ca.crt** file in the __tests/config__ directory that is a valid certificate
+3. To run all of the database SSL tests, you also need to
+   create a file named **ca.crt** in the __tests/config__ directory that is a valid certificate
    authority certificate file. If this file is missing, the MySQL SSL tests will be skipped.
-
-8. If you are setting up the PostgreSQL tests, edit and set the **postgresql** configuration files
-   the sames as the **repeating-events** files set above, and then also set the **db_connection**
-   property to match the PostgreSQL database, login and user that you set up.
-
-8. If you are setting up the SQL Server tests, edit and set the **sqlserver** configuration files
-   the sames as the **repeating-events** files set above, and then also set the **db_connection**
-   property to match the SQL Server database, login and user that you set up.
-
-
-9. If you used different values than those used in the example
-    commands above for creating the MySQL database and user, you will need to
-    modify the __db_connection__ property appropriately in file
-    __tests/config/repeating-events-mysql.ini__.
-
-You can check the setup so far for the visits tests by running
-the following command in the
-top-level directory of you REDCap-ETL installation:
-
-        ./bin/project_info.php tests/config/visits.ini 
-    
-If things have been set up correctly, you should see the correct
-project names displayed for the configuration, data and logging
-projects.
-
-You can also check the configuration for errors with the following
-command:
-
-        ./bin/config_check.php tests/config/visits.ini 
 
 
 After the above steps have been completed successfully, you should be
@@ -376,8 +274,11 @@ To run all of the automated test, in the top-level directory run:
 
     ./vendor/bin/phpunit
 
-The system tests use the REDCap-ETL scripts, so the DET web script
-will need to be set up.
+
+If the output from the above command indicates that there were tests that were skipped,
+you can get more information by running the above command with the verbose option:
+
+    ./vendor/bin/phpunit -v
 
 
 #### Generating test coverage
@@ -394,6 +295,33 @@ Then with a browser, open the file:
 The output
 could be stored in a different directory, but directory tests/coverage
 has been set up to be ignored by Git.
+
+### Writing new tests
+
+ETL configuration files, transformation rules files, and SQL files for
+tests need to be placed in the following directory:
+
+    ./tests/config-init
+
+The name of each configuration file needs to include the project name it accesses, e.g.,
+"basic-demography", "repeating-events", or "visits". The test setup script (.bin/tests_setup.php)
+searches for this to know which API URL and token values to use from the test configuration file
+**./tests/config.ini**. The ETL configuration files are copied by the script to the
+**./tests/config** directory with the API URL, API token, and database connection
+values set to the values in the **./tests/config.ini** file.:
+
+The name of the configuration file also needs to contain the name of the database system used (if any).
+And "-ssl" is added to the database system name if is is used for tests that require the database
+to support SSL (secure) connection. Possible values include: 
+
+    mysql
+    mysql-ssl
+    postgresql
+    sqlite
+    sqlserver
+    sqlserver-ssl
+
+
 
 API Documentation
 -----------------------------------
