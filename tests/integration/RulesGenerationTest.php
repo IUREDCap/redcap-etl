@@ -29,8 +29,8 @@ class RulesGenerationTest extends TestCase
         $addDagFields = false;
         $addFileFields = false;
 
-        $etlProcess = self::$redCapEtl->getEtlProcess(0);
-        $rules = $etlProcess->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
+        $etlTask = self::$redCapEtl->getEtlTask(0);
+        $rules = $etlTask->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
         $this->assertNotContains('redcap_data_access_group', $rules, 'DAG field check');
@@ -43,8 +43,8 @@ class RulesGenerationTest extends TestCase
         $addDagFields = true;
         $addFileFields = false;
 
-        $etlProcess = self::$redCapEtl->getEtlProcess(0);
-        $rules = $etlProcess->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
+        $etlTask = self::$redCapEtl->getEtlTask(0);
+        $rules = $etlTask->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
         $this->assertContains('redcap_data_access_group', $rules, 'DAG field check');
@@ -57,8 +57,8 @@ class RulesGenerationTest extends TestCase
         $addDagFields = false;
         $addFileFields = false;
 
-        $etlProcess = self::$redCapEtl->getEtlProcess(0);
-        $rules = $etlProcess->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
+        $etlTask = self::$redCapEtl->getEtlTask(0);
+        $rules = $etlTask->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
         $this->assertNotContains('redcap_data_access_group', $rules, 'DAG field check');

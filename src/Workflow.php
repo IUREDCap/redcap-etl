@@ -43,14 +43,19 @@ class Workflow
      * Creates a Workflow object from a workflow file.
      *
      * @param Logger $logger logger for information and errors
+     *
      * @param mixed $properties if this is a string, it is assumed to
      *     be the name of the properties file to use, if it is an array,
      *     it is assumed to be a map from property names to values.
      *     If a properties file name string is used, then it is assumed
      *     to be a JSON file if the file name ends with .json, and a
      *     .ini file otherwise.
+     *
+     * @param string $redcapProjectClass fully qualified class name for class
+     *     to use as the RedcapProject class. By default the EtlRedCapProject
+     *     class is used.
      */
-    public function __construct(& $logger, $properties)
+    public function __construct(& $logger, $properties, $redcapProjectClass = null)
     {
         $this->logger = $logger;
 
@@ -91,9 +96,6 @@ class Workflow
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         }
-
-        // Need to get projects for this workflow:
-        // ...
     }
 
     public function parseJsonWorkflowFile($configurationFile)

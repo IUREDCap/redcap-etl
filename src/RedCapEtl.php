@@ -62,9 +62,9 @@ class RedCapEtl
 
     /** @var array map from configuration name to ETL process.
      */
-    private $etlProcesses;
+    private $etlTasks;
 
-    private $etlProcessMap; // Map from database to $etlProcess (merge schemas based on this);
+    private $etlTaskMap; // Map from database to $etlTask (merge schemas based on this);
 
     /** @var array map of database ID's (strings) to merged schemas for configurations for that database */
     private $dbToSchemaMap;
@@ -90,12 +90,13 @@ class RedCapEtl
     ) {
         $this->app = $logger->getApp();
 
-        $this->workflow = new Workflow($logger, $properties);
+        $this->workflow = new Workflow($logger, $properties, $redcapProjectClass);
+        
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;
 
-        $this->etlProcesses  = array();
-        $this->etlProcessMap = array();
+        $this->etlTasks  = array();
+        $this->etlTaskMap = array();
 
         $this->dbToSchemaMap       = array();
         $this->dbIdToConnectionMap = array();
@@ -104,26 +105,26 @@ class RedCapEtl
         # Set up the ETL processes
         #---------------------------------------------
         foreach ($this->workflow->getConfigurations() as $configName => $configuration) {
-            $etlProcess = new EtlProcess();
-            $etlProcess->initialize($this->logger, $configuration, $this->redcapProjectClass);
-            $this->etlProcesses[$configName] = $etlProcess;
+            $etlTask = new EtlTask();
+            $etlTask->initialize($this->logger, $configuration, $this->redcapProjectClass);
+            $this->etlTasks[$configName] = $etlTask;
 
-            $dbId = $etlProcess->getDbId();
+            $dbId = $etlTask->getDbId();
 
-            if (array_key_exists($dbId, $this->etlProcessMap)) {
-                $value = $this->etlProcessMap[$dbId];
-                $value[] = $etlProcess;
-                $this->etlProcessMap[$dbId] = $value;
+            if (array_key_exists($dbId, $this->etlTaskMap)) {
+                $value = $this->etlTaskMap[$dbId];
+                $value[] = $etlTask;
+                $this->etlTaskMap[$dbId] = $value;
             } else {
-                $this->etlProcessMap[$dbId] = array($etlProcess);
+                $this->etlTaskMap[$dbId] = array($etlTask);
             }
 
             # Set database (ID) to Schema map, and database ID to connection map
             if (array_key_exists($dbId, $this->dbToSchemaMap)) {
-                $this->dbToSchemaMap[$dbId] = $this->dbToSchemaMap[$dbId]->merge($etlProcess->getSchema());
+                $this->dbToSchemaMap[$dbId] = $this->dbToSchemaMap[$dbId]->merge($etlTask->getSchema());
             } else {
-                $this->dbToSchemaMap[$dbId] = $etlProcess->getSchema();
-                $this->dbIdToConnectionMap[$dbId] = $etlProcess->getDbConnection();
+                $this->dbToSchemaMap[$dbId] = $etlTask->getSchema();
+                $this->dbIdToConnectionMap[$dbId] = $etlTask->getDbConnection();
             }
         }
     }
@@ -255,44 +256,41 @@ class RedCapEtl
             $this->dropLoadTables($dbConnection, $schema);
             $this->createLoadTables($dbConnection, $schema);
         }
-        #foreach ($this->etlProcesses as $configName => $etlProcess) {
-        #    $etlProcess->dropLoadTables();
-        #}
 
         #-----------------------------------------
         # Run ETL for each ETL process
         #-----------------------------------------
-        foreach ($this->etlProcesses as $configName => $etlProcess) {
-            $logger = $etlProcess->getLogger();
+        foreach ($this->etlTasks as $configName => $etlTask) {
+            $logger = $etlTask->getLogger();
 
             $logger->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-            $logger->log('REDCap version '.$etlProcess->getDataProject()->exportRedCapVersion());
-            $etlProcess->logJobInfo();
-            $logger->log('Number of load databases: '.count($this->etlProcessMap));
+            $logger->log('REDCap version '.$etlTask->getDataProject()->exportRedCapVersion());
+            $etlTask->logJobInfo();
+            $logger->log('Number of load databases: '.count($this->etlTaskMap));
             $i = 1;
-            foreach (array_keys($this->etlProcessMap) as $dbId) {
+            foreach (array_keys($this->etlTaskMap) as $dbId) {
                 $logger->log("Load database {$i}: {$dbId}");
                 $i++;
             }
             $logger->log("Starting processing.");
 
-            $etlProcess->runPreProcessingSql();
+            $etlTask->runPreProcessingSql();
 
             ## Create the database tables where the extracted and
             ## transformed data from REDCap will be loaded
-            #$etlProcess->createLoadTables();
+            #$etlTask->createLoadTables();
 
             #----------------------------------------------------------------------
             # Project Info table (eventually will have possible multiple projects)
             #----------------------------------------------------------------------
-            $etlProcess->createProjectInfoTable();
+            $etlTask->createProjectInfoTable();
 
             # ETL
-            $numberOfRecordIds += $etlProcess->extractTransformLoad();
+            $numberOfRecordIds += $etlTask->extractTransformLoad();
 
-            $etlProcess->createDatabaseKeys(); // create primary and foreign keys, if configured
+            $etlTask->createDatabaseKeys(); // create primary and foreign keys, if configured
 
-            $etlProcess->runPostProcessingSql();
+            $etlTask->runPostProcessingSql();
                 
             $logger->log(self::PROCESSING_COMPLETE);
             $logger->logEmailSummary();
@@ -391,18 +389,18 @@ class RedCapEtl
         $this->logger->logToFile($message);
     }
 
-    public function getEtlProcesses()
+    public function getEtlTasks()
     {
-        return $this->etlProcesses;
+        return $this->etlTasks;
     }
 
-    public function getEtlProcess($index)
+    public function getEtlTask($index)
     {
         $proc = null;
         $i = 0;
-        foreach ($this->etlProcesses as $configName => $etlProcess) {
+        foreach ($this->etlTasks as $configName => $etlTask) {
             if ($i === $index) {
-                $proc = $etlProcess;
+                $proc = $etlTask;
                 break;
             }
             $i++;
@@ -414,9 +412,9 @@ class RedCapEtl
     {
         $configuration = null;
         $i = 0;
-        foreach ($this->etlProcesses as $configName => $etlProcess) {
+        foreach ($this->etlTasks as $configName => $etlTask) {
             if ($i === $index) {
-                $configuration = $etlProcess->getConfiguration();
+                $configuration = $etlTask->getConfiguration();
                 break;
             }
             $i++;
@@ -428,9 +426,9 @@ class RedCapEtl
     {
         $dataProject = null;
         $i = 0;
-        foreach ($this->etlProcesses as $configName => $etlProcess) {
+        foreach ($this->etlTasks as $configName => $etlTask) {
             if ($i === $index) {
-                $dataProject = $etlProcess->getDataProject();
+                $dataProject = $etlTask->getDataProject();
                 break;
             }
             $i++;

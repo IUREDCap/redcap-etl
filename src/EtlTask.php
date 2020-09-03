@@ -15,9 +15,10 @@ use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
 
 /**
- * REDCap-ETL process; contains a configuration, database connection, schema, etc...
+ * REDCap-ETL task representing a single configuration that contains a single data source (REDCap project)
+ * and destination (database).
  */
-class EtlProcess
+class EtlTask
 {
     /** @var EtlRedCapProject the project that has the data to extract */
     protected $dataProject;
@@ -52,18 +53,24 @@ class EtlProcess
     /**
      * Constructor.
      *
-     * @param Logger $logger logger for information and errors
-     * @param mixed $properties if this is a string, it is assumed to
-     *     be the name of the properties file to use, if it is an array,
-     *     it is assumed to be a map from property names to values.
-     * @param string $redcapProjectClass fully qualified class name for class
-     *     to use as the RedcapProject class. By default the EtlRedCapProject
-     *     class is used.
      */
     public function __construct()
     {
     }
 
+    /**
+     * Initializes the ETL task.
+     *
+     * @param Logger $logger logger for information and errors
+     *
+     * @param mixed $properties if this is a string, it is assumed to
+     *     be the name of the properties file to use, if it is an array,
+     *     it is assumed to be a map from property names to values.
+     *
+     * @param string $redcapProjectClass fully qualified class name for class
+     *     to use as the RedcapProject class. By default the EtlRedCapProject
+     *     class is used.
+     */
     public function initialize($logger, $configuration, $redcapProjectClass = null)
     {
         $this->app = $logger->getApp();
