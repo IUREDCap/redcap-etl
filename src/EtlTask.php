@@ -29,7 +29,12 @@ class EtlTask
     
     protected $logger;
 
+    /** @var Schema schema based on tasks configuration */
     protected $schema;
+    
+    /** @var Schema schema for entire database represented by all tasks in the workflow that access
+     * the same database as this task. */
+    protected $dbSchema;
 
     protected $rowsLoadedForTable = array();
   
@@ -666,83 +671,6 @@ class EtlTask
     }
 
 
-    /**
-     * Creates the database tables where the data will be loaded, and
-     * creates views for the tables that have multiple choice
-     * fields that have labels, instead of values, for those fields.
-     * If there are existing
-     * tables, then those tables are dropped first.
-     */
-    public function createLoadTables()
-    {
-        #print("\n\n======================================================\n");
-        #print("\n\nSCHEMA MAP\n{$this->schema->toString()}\n\n");
-        #print("\n\n======================================================\n");
-
-        #-------------------------------------------------------------
-        # Get the tables in top-down order, so that each parent table
-        # will always come before its child tables
-        #-------------------------------------------------------------
-        $tables = $this->schema->getTablesTopDown();
-
-        #------------------------------------------------------
-        # Create the tables in the order they were defined
-        #------------------------------------------------------
-        foreach ($tables as $table) {
-            $ifNotExists = true;   // same table could be created by 2 different configurations
-            $this->dbcon->createTable($table, $ifNotExists);
-            // $this->dbcon->addPrimaryKeyConstraint($table);
-
-            $msg = "Created table '".$table->name."'";
-
-            #--------------------------------------------------------------------------
-            # If this table uses the Lookup table (i.e., has multiple-choice values),
-            # Create a view of the table that has multiple-choice labels instead of
-            # multiple-choice values.
-            #--------------------------------------------------------------------------
-            if ($table->usesLookup === true) {
-                $this->dbcon->replaceLookupView($table, $this->schema->getLookupTable());
-                $msg .= '; Lookup table created';
-            }
-
-            $this->logger->log($msg);
-        }
-
-        #-----------------------------------------------------------------------------------
-        # If configured, create the lookup table that maps multiple choice values to labels
-        #-----------------------------------------------------------------------------------
-        if ($this->configuration->getCreateLookupTable()) {
-            $lookupTable = $this->schema->getLookupTable();
-            $this->dbcon->replaceTable($lookupTable);
-            $this->loadTableRows($lookupTable);
-        }
-    }
-
-    public function dropLoadTables()
-    {
-        #-------------------------------------------------------------
-        # Get the tables in top-down order, so that each parent table
-        # will always come before its child tables
-        #-------------------------------------------------------------
-        $tables = $this->schema->getTablesTopDown();
-
-        #---------------------------------------------------------------------
-        # Drop tables in the reverse order (bottom-up), so that child tables
-        # will always be dropped before their parent table. And drop
-        # the label view (if any) for a table before dropping the table
-        #---------------------------------------------------------------------
-        foreach (array_reverse($tables) as $table) {
-            if ($table->usesLookup === true) {
-                $ifExists = true;
-                $this->dbcon->dropLabelView($table, $ifExists);
-            }
-
-            $ifExists = true;
-            $this->dbcon->dropTable($table, $ifExists);
-        }
-    }
-
-
     public function createProjectInfoTable()
     {
         #----------------------------------------------------------------------
@@ -887,5 +815,15 @@ class EtlTask
     public function getDbConnection()
     {
         return $this->dbcon;
+    }
+    
+    public function getDbSchema()
+    {
+        return $this->dbSchema;
+    }
+    
+    public function setDbSchema($dbSchema)
+    {
+        $this->dbSchema = $dbSchema;
     }
 }

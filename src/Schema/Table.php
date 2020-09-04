@@ -41,7 +41,7 @@ class Table
     /** @var array array of Row objects used to store rows of data for the table */
     protected $rows = array();
 
-    private $primaryKey = 1;
+    private $primaryKeyValue = 1;
 
     public $usesLookup = false;   // Are fields in this table represented
                                   // in the Lookup table?
@@ -307,8 +307,8 @@ class Table
 
     public function nextPrimaryKey()
     {
-        $this->primaryKey += 1;
-        return($this->primaryKey - 1);
+        $this->primaryKeyValue += 1;
+        return($this->primaryKeyValue - 1);
     }
 
 
@@ -520,13 +520,13 @@ class Table
 
         if ($dataFound) {
             // Get and set primary key
-            $primaryKey = $this->nextPrimaryKey();
-            $row->data[$this->primary->name] = $primaryKey;
+            $primaryKeyValue = $this->nextPrimaryKey();
+            $row->data[$this->primary->name] = $primaryKeyValue;
 
             // Add Row
             $this->addRow($row);
 
-            return($primaryKey);
+            return($primaryKeyValue);
         }
 
         return(false);
@@ -658,7 +658,7 @@ class Table
             $string .= "{$in}    ".$child->name."\n";
         }
 
-        $string .= "{$in}primary key value: ".$this->primaryKey."\n";
+        $string .= "{$in}primary key value: ".$this->primaryKeyValue."\n";
 
         $string .= "{$in}uses lookup: ".$this->usesLookup."\n";
 

@@ -244,7 +244,10 @@ class RedCapEtl
             # ETL
             $numberOfRecordIds += $etlTask->extractTransformLoad();
 
-            $etlTask->createDatabaseKeys(); // create primary and foreign keys, if configured
+// FIX!!!!!!!!!! Try to create when table created - if at end,
+// need to wait for all tasks for a given database to finish:
+
+            //$etlTask->createDatabaseKeys(); // create primary and foreign keys, if configured
 
             $etlTask->runPostProcessingSql();
                 

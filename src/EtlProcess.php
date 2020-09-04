@@ -70,6 +70,12 @@ class EtlProcess
             
             $i++;
         }
+        
+        foreach ($this->tasks as $task) {
+            $dbId = $task->getDbId();
+            $dbSchema = $this->dbSchemas[$dbId];
+            $task->setDbSchema($dbSchema);
+        }
     }
 
     public function dropAllLoadTables()
