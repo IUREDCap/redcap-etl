@@ -62,18 +62,6 @@ class RedCapEtl
 
     /** @var EtlProcess */
     private $etlProcess;
-    
-    /** @var array map from configuration name to ETL process.
-     */
-    private $etlTasks;
-
-    private $etlTaskMap; // Map from database to $etlTask (merge schemas based on this);
-
-    /** @var array map of database ID's (strings) to merged schemas for configurations for that database */
-    private $dbToSchemaMap;
-
-    /** @var array map of database ID to database connection. */
-    private $dbIdToConnectionMap;
 
     /**
      * Constructor.
@@ -99,35 +87,6 @@ class RedCapEtl
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;
-
-/*
-        $this->etlTasks  = array();
-        $this->etlTaskMap = array();
-
-        $this->dbToSchemaMap       = array();
-        $this->dbIdToConnectionMap = array();
-
-        #---------------------------------------------
-        # Set up the ETL processes
-        #---------------------------------------------
-        foreach ($this->workflow->getConfigurations() as $configName => $configuration) {
-            $etlTask = new EtlTask();
-            $etlTask->initialize($this->logger, $configName, $configuration, $this->redcapProjectClass);
-            $this->etlTasks[$configName] = $etlTask;
-
-            $dbId = $etlTask->getDbId();
-
-            //$this->etlTasks[] = $etlTask;
-
-            # Set database (ID) to Schema map, and database ID to connection map
-            if (array_key_exists($dbId, $this->dbToSchemaMap)) {
-                $this->dbToSchemaMap[$dbId] = $this->dbToSchemaMap[$dbId]->merge($etlTask->getSchema());
-            } else {
-                $this->dbToSchemaMap[$dbId] = $etlTask->getSchema();
-                $this->dbIdToConnectionMap[$dbId] = $etlTask->getDbConnection();
-            }
-        }
-*/
     }
 
 
@@ -253,11 +212,8 @@ class RedCapEtl
         # Drop old load tables if they exist,
         # and then create the load tables
         #----------------------------------------------
-        foreach ($this->etlProcess->getDbSchemas() as $dbId => $schema) {
-            $dbConnection = $this->etlProcess->getDbConnection($dbId);
-            $this->dropLoadTables($dbConnection, $schema);
-            $this->createLoadTables($dbConnection, $schema);
-        }
+        $this->etlProcess->dropAllLoadTables();
+        $this->etlProcess->createAllLoadTables();
 
         #-----------------------------------------
         # Run ETL for each ETL task
@@ -280,10 +236,6 @@ class RedCapEtl
 
             $etlTask->runPreProcessingSql();
 
-            ## Create the database tables where the extracted and
-            ## transformed data from REDCap will be loaded
-            #$etlTask->createLoadTables();
-
             #----------------------------------------------------------------------
             # Project Info table (eventually will have possible multiple projects)
             #----------------------------------------------------------------------
@@ -301,80 +253,6 @@ class RedCapEtl
         }
 
         return $numberOfRecordIds;
-    }
-
-
-    /**
-     * Drop all the tables in the specified schema in the specified database.
-     *
-     * @parameter DbConnection $dbConnection the database connection to use.
-     * @parameter Schema $schema the schema from which to drop the tables.
-     */
-    public function dropLoadTables($dbConnection, $schema)
-    {
-        #-------------------------------------------------------------
-        # Get the tables in top-down order, so that each parent table
-        # will always come before its child tables
-        #-------------------------------------------------------------
-        $tables = $schema->getTablesTopDown();
-
-        #---------------------------------------------------------------------
-        # Drop tables in the reverse order (bottom-up), so that child tables
-        # will always be dropped before their parent table. And drop
-        # the label view (if any) for a table before dropping the table
-        #---------------------------------------------------------------------
-        foreach (array_reverse($tables) as $table) {
-            if ($table->usesLookup === true) {
-                $ifExists = true;
-                $dbConnection->dropLabelView($table, $ifExists);
-            }
-
-            $ifExists = true;
-            $dbConnection->dropTable($table, $ifExists);
-        }
-    }
-
-
-    public function createLoadTables($dbConnection, $schema)
-    {
-        #-------------------------------------------------------------
-        # Get the tables in top-down order, so that each parent table
-        # will always come before its child tables
-        #-------------------------------------------------------------
-        $tables = $schema->getTablesTopDown();
-
-        #------------------------------------------------------
-        # Create the tables in the order they were defined
-        #------------------------------------------------------
-        foreach ($tables as $table) {
-            $ifNotExists = true;   // same table could be created by 2 different configurations
-            $dbConnection->createTable($table, $ifNotExists);
-            // $this->dbcon->addPrimaryKeyConstraint($table);
-
-            $msg = "Created table '".$table->name."'";
-
-            #--------------------------------------------------------------------------
-            # If this table uses the Lookup table (i.e., has multiple-choice values),
-            # Create a view of the table that has multiple-choice labels instead of
-            # multiple-choice values.
-            #--------------------------------------------------------------------------
-            if ($table->usesLookup === true) {
-                $dbConnection->replaceLookupView($table, $schema->getLookupTable());
-                $msg .= '; Lookup table created';
-            }
-
-            $this->logger->log($msg);
-        }
-
-        # FIX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        #-----------------------------------------------------------------------------------
-        # If configured, create the lookup table that maps multiple choice values to labels
-        #-----------------------------------------------------------------------------------
-        #if ($this->configuration->getCreateLookupTable()) {
-        #    $lookupTable = $schema->getLookupTable();
-        #    $dbConnection->replaceTable($lookupTable);
-        #    $this->loadTableRows($lookupTable);
-        #}
     }
 
 

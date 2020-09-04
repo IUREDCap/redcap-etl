@@ -20,16 +20,19 @@ use IU\REDCapETL\Schema\Table;
  */
 class EtlProcess
 {
+    /*@var array array of task objects that represent the tasks of the workflow. */
     private $tasks;
     
-    /** @var array map from database ID to database schema (a merged schema for all tasks that
-     * load data to the database.
+    /** @var array map from database ID to database schema, which merges the schemas for all
+     *             the tasks that load data to the database.
      */
     private $dbSchemas;
     
+    /** @var array map from database ID to database connection. */
     private $dbConnections;
     
     private $logger;
+
     /**
      * Constructor.
      *
@@ -68,7 +71,98 @@ class EtlProcess
             $i++;
         }
     }
-    
+
+    public function dropAllLoadTables()
+    {
+        foreach ($this->dbSchemas as $dbId => $schema) {
+            $dbConnection = $this->dbConnections[$dbId];
+            $this->dropLoadTables($dbConnection, $schema);
+        }
+    }
+
+
+    public function createAllLoadTables()
+    {
+        foreach ($this->dbSchemas as $dbId => $schema) {
+            $dbConnection = $this->dbConnections[$dbId];
+            $this->createLoadTables($dbConnection, $schema);
+        }
+    }
+        
+    /**
+     * Drop all the tables in the specified schema in the specified database.
+     *
+     * @parameter DbConnection $dbConnection the database connection to use.
+     * @parameter Schema $schema the schema from which to drop the tables.
+     */
+    public function dropLoadTables($dbConnection, $schema)
+    {
+        #-------------------------------------------------------------
+        # Get the tables in top-down order, so that each parent table
+        # will always come before its child tables
+        #-------------------------------------------------------------
+        $tables = $schema->getTablesTopDown();
+
+        #---------------------------------------------------------------------
+        # Drop tables in the reverse order (bottom-up), so that child tables
+        # will always be dropped before their parent table. And drop
+        # the label view (if any) for a table before dropping the table
+        #---------------------------------------------------------------------
+        foreach (array_reverse($tables) as $table) {
+            if ($table->usesLookup === true) {
+                $ifExists = true;
+                $dbConnection->dropLabelView($table, $ifExists);
+            }
+
+            $ifExists = true;
+            $dbConnection->dropTable($table, $ifExists);
+        }
+    }
+
+
+
+    public function createLoadTables($dbConnection, $schema)
+    {
+        #-------------------------------------------------------------
+        # Get the tables in top-down order, so that each parent table
+        # will always come before its child tables
+        #-------------------------------------------------------------
+        $tables = $schema->getTablesTopDown();
+
+        #------------------------------------------------------
+        # Create the tables in the order they were defined
+        #------------------------------------------------------
+        foreach ($tables as $table) {
+            $ifNotExists = true;   // same table could be created by 2 different configurations
+            $dbConnection->createTable($table, $ifNotExists);
+            // $this->dbcon->addPrimaryKeyConstraint($table);
+
+            $msg = "Created table '".$table->name."'";
+
+            #--------------------------------------------------------------------------
+            # If this table uses the Lookup table (i.e., has multiple-choice values),
+            # Create a view of the table that has multiple-choice labels instead of
+            # multiple-choice values.
+            #--------------------------------------------------------------------------
+            if ($table->usesLookup === true) {
+                $dbConnection->replaceLookupView($table, $schema->getLookupTable());
+                $msg .= '; Lookup table created';
+            }
+
+            $this->logger->log($msg);
+        }
+
+        # FIX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #-----------------------------------------------------------------------------------
+        # If configured, create the lookup table that maps multiple choice values to labels
+        #-----------------------------------------------------------------------------------
+        #if ($this->configuration->getCreateLookupTable()) {
+        #    $lookupTable = $schema->getLookupTable();
+        #    $dbConnection->replaceTable($lookupTable);
+        #    $this->loadTableRows($lookupTable);
+        #}
+    }
+        
     public function getDbIds()
     {
         $dbIds = array_keys($this->dbSchemas);
