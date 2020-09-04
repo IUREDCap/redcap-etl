@@ -60,6 +60,9 @@ class RedCapEtl
 
     private $redcapProjectClass;
 
+    /** @var EtlProcess */
+    private $etlProcess;
+    
     /** @var array map from configuration name to ETL process.
      */
     private $etlTasks;
@@ -92,9 +95,12 @@ class RedCapEtl
 
         $this->workflow = new Workflow($logger, $properties, $redcapProjectClass);
         
+        $this->etlProcess = new EtlProcess($this->workflow, $logger, $redcapProjectClass);
+        
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;
 
+/*
         $this->etlTasks  = array();
         $this->etlTaskMap = array();
 
@@ -106,18 +112,12 @@ class RedCapEtl
         #---------------------------------------------
         foreach ($this->workflow->getConfigurations() as $configName => $configuration) {
             $etlTask = new EtlTask();
-            $etlTask->initialize($this->logger, $configuration, $this->redcapProjectClass);
+            $etlTask->initialize($this->logger, $configName, $configuration, $this->redcapProjectClass);
             $this->etlTasks[$configName] = $etlTask;
 
             $dbId = $etlTask->getDbId();
 
-            if (array_key_exists($dbId, $this->etlTaskMap)) {
-                $value = $this->etlTaskMap[$dbId];
-                $value[] = $etlTask;
-                $this->etlTaskMap[$dbId] = $value;
-            } else {
-                $this->etlTaskMap[$dbId] = array($etlTask);
-            }
+            //$this->etlTasks[] = $etlTask;
 
             # Set database (ID) to Schema map, and database ID to connection map
             if (array_key_exists($dbId, $this->dbToSchemaMap)) {
@@ -127,6 +127,7 @@ class RedCapEtl
                 $this->dbIdToConnectionMap[$dbId] = $etlTask->getDbConnection();
             }
         }
+*/
     }
 
 
@@ -249,26 +250,29 @@ class RedCapEtl
         ##### $this->createProjectInfoTable();
 
         #----------------------------------------------
-        # Drop old load tables if they exist
+        # Drop old load tables if they exist,
+        # and then create the load tables
         #----------------------------------------------
-        foreach ($this->dbToSchemaMap as $dbId => $schema) {
-            $dbConnection = $this->dbIdToConnectionMap[$dbId];
+        foreach ($this->etlProcess->getDbSchemas() as $dbId => $schema) {
+            $dbConnection = $this->etlProcess->getDbConnection($dbId);
             $this->dropLoadTables($dbConnection, $schema);
             $this->createLoadTables($dbConnection, $schema);
         }
 
         #-----------------------------------------
-        # Run ETL for each ETL process
+        # Run ETL for each ETL task
         #-----------------------------------------
-        foreach ($this->etlTasks as $configName => $etlTask) {
+        foreach ($this->etlProcess->getTasks() as $etlTask) {
+            $taskName = $etlTask->getName();
+            
             $logger = $etlTask->getLogger();
 
             $logger->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
             $logger->log('REDCap version '.$etlTask->getDataProject()->exportRedCapVersion());
             $etlTask->logJobInfo();
-            $logger->log('Number of load databases: '.count($this->etlTaskMap));
+            $logger->log('Number of load databases: '.count($this->etlProcess->getDbIds()));
             $i = 1;
-            foreach (array_keys($this->etlTaskMap) as $dbId) {
+            foreach (array_keys($this->etlProcess->getDbIds()) as $dbId) {
                 $logger->log("Load database {$i}: {$dbId}");
                 $i++;
             }
@@ -408,31 +412,20 @@ class RedCapEtl
         return $proc;
     }
     
+    public function getEtlProcess()
+    {
+        return $this->etlProcess;
+    }
+    
     public function getConfiguration($index)
     {
-        $configuration = null;
-        $i = 0;
-        foreach ($this->etlTasks as $configName => $etlTask) {
-            if ($i === $index) {
-                $configuration = $etlTask->getConfiguration();
-                break;
-            }
-            $i++;
-        }
+        $configuration = $this->etlProcess->getConfiguration($index);
         return $configuration;
     }
     
     public function getDataProject($index)
     {
-        $dataProject = null;
-        $i = 0;
-        foreach ($this->etlTasks as $configName => $etlTask) {
-            if ($i === $index) {
-                $dataProject = $etlTask->getDataProject();
-                break;
-            }
-            $i++;
-        }
+        $dataProject = $this->etlProcess->getDataProject($index);
         return $dataProject;
     }
 }

@@ -20,6 +20,8 @@ use IU\REDCapETL\Schema\Table;
  */
 class EtlTask
 {
+    private $name;
+    
     /** @var EtlRedCapProject the project that has the data to extract */
     protected $dataProject;
 
@@ -56,6 +58,7 @@ class EtlTask
      */
     public function __construct()
     {
+        $this->name = '';
     }
 
     /**
@@ -71,10 +74,11 @@ class EtlTask
      *     to use as the RedcapProject class. By default the EtlRedCapProject
      *     class is used.
      */
-    public function initialize($logger, $configuration, $redcapProjectClass = null)
+    public function initialize($logger, $taskName, $configuration, $redcapProjectClass = null)
     {
         $this->app = $logger->getApp();
         $this->logger = $logger;
+        $this->name = $taskName;
         $this->logger->setConfiguration($configuration);
 
         $this->rootTablesWithMultiValues = array();
@@ -855,6 +859,10 @@ class EtlTask
         }
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
 
     public function getLogger()
     {
