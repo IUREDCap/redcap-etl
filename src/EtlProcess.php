@@ -41,6 +41,7 @@ class EtlProcess
     {
         $this->dbSchemas     = array();
         $this->dbConnections = array();
+        $this->dbTasks       = array();
         
         $this->tasks = array();
         
@@ -63,9 +64,11 @@ class EtlProcess
             # Set schema and connection information for the current database
             if (array_key_exists($dbId, $this->dbSchemas)) {
                 $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge($etlTask->getSchema());
+                $this->dbTasks[$dbId]   = array_merge($this->dbTasks[$dbId], [$etlTask]);
             } else {
                 $this->dbSchemas[$dbId]     = $etlTask->getSchema();
                 $this->dbConnections[$dbId] = $etlTask->getDbConnection();
+                $this->dbTasks[$dbId]       = [$etlTask];
             }
             
             $i++;
@@ -92,6 +95,13 @@ class EtlProcess
         foreach ($this->dbSchemas as $dbId => $schema) {
             $dbConnection = $this->dbConnections[$dbId];
             $this->createLoadTables($dbConnection, $schema);
+            $dbTasks = $this->dbTasks[$dbId];
+            
+            # reset task DB connections after the Lookup table information has been
+            # added from code above
+            foreach ($dbTasks as $task) {
+                $task->setDbConnection($dbConnection);
+            }
         }
     }
         
@@ -127,7 +137,7 @@ class EtlProcess
 
 
 
-    public function createLoadTables($dbConnection, $schema)
+    public function createLoadTables(& $dbConnection, $schema)
     {
         #-------------------------------------------------------------
         # Get the tables in top-down order, so that each parent table
@@ -158,15 +168,31 @@ class EtlProcess
             $this->logger->log($msg);
         }
 
-        # FIX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         #-----------------------------------------------------------------------------------
         # If configured, create the lookup table that maps multiple choice values to labels
         #-----------------------------------------------------------------------------------
-        #if ($this->configuration->getCreateLookupTable()) {
-        #    $lookupTable = $schema->getLookupTable();
-        #    $dbConnection->replaceTable($lookupTable);
-        #    $this->loadTableRows($lookupTable);
-        #}
+        # FIX!!!!!!! - still need to make sure that lookup tables are generated for
+        # all configurations if any have it set???
+        $lookupTable = $schema->getLookupTable();
+        if (isset($lookupTable)) {
+            $dbConnection->replaceTable($lookupTable);
+            $this->loadTableRows($dbConnection, $lookupTable);
+        }
+    }
+    
+    protected function loadTableRows($dbConnection, $table, $deleteRowsAfterLoad = true)
+    {
+        foreach ($table->getRows() as $row) {
+            $rc = $dbConnection->storeRow($row);
+            if (false === $rc) {
+                $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
+            }
+        }
+
+        if ($deleteRowsAfterLoad) {
+            // Empty the rows for this table
+            $table->emptyRows();
+        }
     }
         
     public function getDbIds()

@@ -387,7 +387,7 @@ class EtlTask
                 $startTransformTime = microtime(true);
                 # For each root table, because processing will be done
                 # recursively to the child tables
-                foreach ($this->schema->getRootTables() as $rootTable) {
+                foreach ($this->dbSchema->getRootTables() as $rootTable) {
                     // Transform the records for this record_id into rows
                     $this->transform($rootTable, $records, '', '');
                 }
@@ -396,14 +396,14 @@ class EtlTask
             }
 
             #print("\n\n===============================================================\n");
-            #print("\n\nSCHEMA MAP\n{$this->schema->toString()}\n\n");
+            #print("\n\nSCHEMA MAP\n{$this->dbSchema->toString()}\n\n");
             #print("\n\n===============================================================\n");
             
             #-------------------------------------
             # Load the data into the database
             #-------------------------------------
             $startLoadTime = microtime(true);
-            foreach ($this->schema->getTables() as $table) {
+            foreach ($this->dbSchema->getTables() as $table) {
                 # Single row storage (stores one row at a time):
                 # foreach row, load it
                 ### $this->loadTableRows($table);
@@ -577,7 +577,7 @@ class EtlTask
         # foreach table object, store it's rows in the database and
         # then remove them from the table object
         #--------------------------------------------------------------
-        foreach ($this->schema->getTables() as $table) {
+        foreach ($this->dbSchema->getTables() as $table) {
             $this->loadTableRows($table);
         }
 
@@ -698,7 +698,7 @@ class EtlTask
         # Get the tables in top-down order, so that each parent table
         # will always come before its child tables
         #-------------------------------------------------------------
-        $tables = $this->schema->getTablesTopDown();
+        $tables = $this->dbSchema->getTablesTopDown();
 
         #------------------------------------------------------
         # Create tables
@@ -815,6 +815,11 @@ class EtlTask
     public function getDbConnection()
     {
         return $this->dbcon;
+    }
+    
+    public function setDbConnection($dbConnection)
+    {
+        $this->dbcon = $dbConnection;
     }
     
     public function getDbSchema()

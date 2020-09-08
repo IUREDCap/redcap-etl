@@ -77,12 +77,6 @@ class Schema
 
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
-
-        print "\n";
-        print $mergedSchema->toString();
-        print "\n";
-
-
         return $mergedSchema;
     }
 
