@@ -28,6 +28,8 @@ class Schema
     private $dbLogTable      = null;
     private $dbEventLogTable = null;
 
+    private $projectInfoTable = null;
+
     public function __construct()
     {
         return true;
@@ -209,6 +211,15 @@ class Schema
         $this->dbEventLogTable = $dbEventLogTable;
     }
 
+    public function getProjectInfoTable()
+    {
+        return $this->projectInfoTable;
+    }
+
+    public function setProjectInfoTable($projectInfoTable)
+    {
+        $this->projectInfoTable = $projectInfoTable;
+    }
 
     /**
      * Returns a string representation of the schema.

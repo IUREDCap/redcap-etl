@@ -19,7 +19,7 @@ use IU\REDCapETL\Schema\Table;
  */
 class ProjectInfoTable extends Table
 {
-    const DEFAULT_NAME       = 'project_info';
+    const DEFAULT_NAME       = 'redcap_project_info';
     
     const FIELD_PRIMARY_ID       = 'redcap_project';
     const FIELD_API_URL          = 'api_url';

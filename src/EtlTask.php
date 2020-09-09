@@ -787,6 +787,24 @@ class EtlTask
         }
     }
 
+    public function getRedCapApiUrl()
+    {
+        $apiUrl = $this->configuration->getRedCapApiUrl();
+        return $apiUrl;
+    }
+
+    public function getRedCapProjectInfo()
+    {
+        $projectInfo = $this->dataProject->exportProjectInfo();
+        return $projectInfo;
+    }
+
+    public function getRedCapMetadata()
+    {
+        $metadata = $this->dataProject->exportMetadata();
+        return $metadata;
+    }
+
     public function getName()
     {
         return $this->name;

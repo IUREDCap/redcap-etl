@@ -20,9 +20,12 @@ use IU\REDCapETL\Schema\Table;
  */
 class EtlProcess
 {
-    /*@var array array of task objects that represent the tasks of the workflow. */
+    /** @var array array of task objects that represent the tasks of the workflow. */
     private $tasks;
-    
+
+    /** @var array map from database ID (string) to array of task objects. */
+    private $dbTasks;
+
     /** @var array map from database ID to database schema, which merges the schemas for all
      *             the tasks that load data to the database.
      */
@@ -32,6 +35,9 @@ class EtlProcess
     private $dbConnections;
     
     private $logger;
+
+    /** @var array map from synthetic REDCap source ID to REDCap API URL and project ID */
+    private $projectIds;
 
     /**
      * Constructor.
@@ -44,6 +50,8 @@ class EtlProcess
         $this->dbTasks       = array();
         
         $this->tasks = array();
+
+        $this->projectIds = array();
         
         $this->logger = $logger;
         
@@ -74,11 +82,45 @@ class EtlProcess
             $i++;
         }
         
+        #---------------------------------------------
+        # Set the DB (merged) schemas for the tasks
+        #---------------------------------------------
         foreach ($this->tasks as $task) {
             $dbId = $task->getDbId();
             $dbSchema = $this->dbSchemas[$dbId];
             $task->setDbSchema($dbSchema);
         }
+
+
+        $dataSource = 1;
+        foreach ($this->tasks as $task) {
+            $apiUrl      = $task->getRedCapApiUrl();
+            $projectInfo = $task->getRedCapProjectInfo();
+            $projectId   = $projectInfo['project_id'];
+            # $metadata    = $task->getRedCapMetadata();
+
+            $redcapDataSource = null;
+            foreach ($this->projectIds as $indexDataSource => list($redcapApiUrl, $redcapProjectId)) {
+                if ($apiUrl === $redcapApiUrl && $projectId === $redcapProjectId) {
+                    $redcapDataSource = $indexDataSource;
+                }
+            }
+
+            if (!isset($redcapDataSource)) {
+                $this->projectIds[$dataSource] = [$apiUrl, $projectId];
+                $dataSource++;
+            }
+
+            #print "\n\nPROJECT IDS\n----------------------------------------------------------\n";
+            #print_r($this->projectIds);
+
+            #print "\n\n------------------------------------------------\n";
+            #print "REDCap API URL: ".$task->getRedCapApiUrl()."\n";
+            #print_r( $task->getRedCapProjectInfo() );
+            #print_r( $task->getRedCapMetadata() );
+        }
+
+        //foreach ($this->projectIds as
     }
 
     public function dropAllLoadTables()
@@ -103,6 +145,8 @@ class EtlProcess
                 $task->setDbConnection($dbConnection);
             }
         }
+
+        # Create REDCap project info and metadata tables
     }
         
     /**
