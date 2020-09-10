@@ -51,6 +51,8 @@ class Configuration
     const DEFAULT_GENERATED_RECORD_ID_TYPE = 'varchar(255)';
     const DEFAULT_GENERATED_SUFFIX_TYPE    = 'varchar(255)';
 
+    const DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS = false;
+
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
     const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
     
@@ -524,7 +526,7 @@ class Configuration
         #--------------------------------------------------------
         # Ignore empty incomplete forms
         #--------------------------------------------------------
-        $this->ignoreEmptyIncompleteForms = false;
+        $this->ignoreEmptyIncompleteForms = self::DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS;
         if (array_key_exists(ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS, $this->properties)) {
             $ignore = $this->properties[ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS];
             if ($ignore === true || strcasecmp($ignore, 'true') === 0 || $ignore === '1') {

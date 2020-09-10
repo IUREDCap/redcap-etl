@@ -286,6 +286,14 @@ class ConfigurationTest extends TestCase
     public function testIgnoreEmptyIncompleteForms()
     {
         $properties = $this->properties;
+        $config = new Configuration($this->logger, $properties);
+        $ignore = $config->getIgnoreEmptyIncompleteForms();
+        $this->assertEquals(
+            Configuration::DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS,
+            $ignore,
+            'Set ignore empty incomplete fields to default'
+        );
+
         $properties[ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS] = 'true';
         $config = new Configuration($this->logger, $properties);
 
