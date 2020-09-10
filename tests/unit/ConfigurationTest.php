@@ -283,6 +283,22 @@ class ConfigurationTest extends TestCase
         );
     }
 
+    public function testIgnoreEmptyIncompleteForms()
+    {
+        $properties = $this->properties;
+        $properties[ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS] = 'true';
+        $config = new Configuration($this->logger, $properties);
+
+        $ignore = $config->getIgnoreEmptyIncompleteForms();
+        $this->assertTrue($ignore, 'Set ignore empty incomplete fields to true');
+
+        $properties[ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS] = 'false';
+        $config = new Configuration($this->logger, $properties);
+        $ignore = $config->getIgnoreEmptyIncompleteForms();
+        $this->assertFalse($ignore, 'Set ignore empty incomplete fields to false');
+    }
+
+
     public function testInvalidBatchSize()
     {
         // Batch size not int or string

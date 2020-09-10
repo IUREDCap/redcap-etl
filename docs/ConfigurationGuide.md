@@ -489,6 +489,7 @@ database.
 <td>create_lookup_table</td>
 <td>A true/false property that indicates whether or not a lookup table
 should be created in the database.
+</td>
 </tr>
 
 <tr>
@@ -519,6 +520,20 @@ that calculation field will be included in the table. If, however, you specified
 pattern '/^0$/' for this property, then REDCap-ETL would ignore calculation fields that
 are blank or zero when determining what REDCap data records should be
 included in the table.
+</td>
+</tr>
+
+<tr>
+<td>ignore_empty_incomplete_forms</td>
+<td>In certain situations, REDCap will set the form complete field for a form to 
+the "incomplete" value for a record, even though the form has never been edited or saved
+for that record.
+When this happens, by default, REDCap-ETL will store a row for that form for the record
+in the database.
+The row will have no values except for the form complete field, which will be set to zero.
+However, if this property is set to 1 or "true", then REDCap-ETL will ignore records for
+such forms.
+</td>
 </tr>
 
 <tr>
@@ -531,6 +546,7 @@ that it should due to an internal error, but does not notify REDCap-ETL of the e
 By default this check is turned on, but you might need to turn it off if
 records could be deleted or added when the ETL process runs, which could
 also cause the counts not to match.
+</td>
 </tr>
 
 <tr>

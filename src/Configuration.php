@@ -95,6 +95,8 @@ class Configuration
     private $generatedRecordIdType;
     private $generatedSuffixType;
 
+    private $ignoreEmptyIncompleteForms;
+    
     private $labelViewSuffix;
     private $lookupTableName;
 
@@ -518,7 +520,19 @@ class Configuration
         if (array_key_exists(ConfigProperties::CALC_FIELD_IGNORE_PATTERN, $this->properties)) {
             $this->calcFieldIgnorePattern = $this->properties[ConfigProperties::CALC_FIELD_IGNORE_PATTERN];
         }
-
+        
+        #--------------------------------------------------------
+        # Ignore empty incomplete forms
+        #--------------------------------------------------------
+        $this->ignoreEmptyIncompleteForms = false;
+        if (array_key_exists(ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS, $this->properties)) {
+            $ignore = $this->properties[ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS];
+            if ($ignore === true || strcasecmp($ignore, 'true') === 0 || $ignore === '1') {
+                $this->ignoreEmptyIncompleteForms = true;
+            } elseif ($ignore === false || strcasecmp($ignore, 'false') === 0 || $ignore === '0') {
+                $this->ignoreEmptyIncompleteForms = false;
+            }
+        }
 
         #----------------------------------------------------------------
         # Get the data source project API token
@@ -1168,6 +1182,11 @@ class Configuration
         return $this->labelViewSuffix;
     }
 
+    public function getIgnoreEmptyIncompleteForms()
+    {
+        return $this->ignoreEmptyIncompleteForms;
+    }
+    
     public function getLogFile()
     {
         return $this->logFile;

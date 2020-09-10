@@ -251,8 +251,14 @@ class Table
      *
      * @return bool|int TRUE if row was created, FALSE if ignored
      */
-    public function createRow($data, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern = '')
-    {
+    public function createRow(
+        $data,
+        $foreignKey,
+        $suffix,
+        $rowType,
+        $calcFieldIgnorePattern = '',
+        $ignoreEmptyIncompleteForms = false
+    ) {
         #---------------------------------------------------------------
         # If a row is being created for a repeating instrument, don't
         # include the data if it doesn't contain a repeating instrument
@@ -423,7 +429,7 @@ class Table
                     # when determining if data was found in the REDCap record,
                     # Else, only ignore blank strings
                     #----------------------------------------------------------
-                    if ($isCheckbox) {
+                    if ($isCheckbox || ($isCompleteField && $ignoreEmptyIncompleteForms)) {
                         if ($value != '' && $value !== 0 && $value !== '0') {
                             # Zero (int and string) values are also ignored
                             $dataFound = true;
