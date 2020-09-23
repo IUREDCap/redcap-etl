@@ -49,6 +49,9 @@ $properties = parse_ini_file(__DIR__.'/../tests/config.ini', true);
 $basicDemographyApiUrl    = $properties['basic-demography']['redcap_api_url'];
 $basicDemographyApiToken  = $properties['basic-demography']['data_source_api_token'];
 
+$dynamicRulesApiUrl    = $properties['dynamic-rules']['redcap_api_url'];
+$dynamicRulesApiToken  = $properties['dynamic-rules']['data_source_api_token'];
+
 $repeatingEventsApiUrl    = $properties['repeating-events']['redcap_api_url'];
 $repeatingEventsApiToken  = $properties['repeating-events']['data_source_api_token'];
 
@@ -174,7 +177,21 @@ foreach ($configFiles as $configFile) {
                 '"data_source_api_token" : "'.$basicDemographyApiToken.'",',
                 $contents
             );
-        } elseif (preg_match('/repeating-events.*\.ini/', $toPath) === 1) {
+        } elseif (preg_match('/dynamic-rules.*\.ini/', $toPath) === 1) {
+            #-------------------------------------
+            # Dynamic Rules files
+            #-------------------------------------
+            $contents = preg_replace(
+                '/redcap_api_url\s*=.*/',
+                "redcap_api_url = {$dynamicRulesApiUrl}",
+                $contents
+            );
+            $contents = preg_replace(
+                '/data_source_api_token\s*=.*/',
+                "data_source_api_token = {$dynamicRulesApiToken}",
+                $contents
+            );
+       } elseif (preg_match('/repeating-events.*\.ini/', $toPath) === 1) {
             #-------------------------------------
             # Repeating events files
             #-------------------------------------
