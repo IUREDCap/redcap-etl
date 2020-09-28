@@ -185,10 +185,17 @@ the data for the tests:
    following files from REDCap-ETL:
 
         tests/projects/BasicDemography.REDCap.xml
+        tests/projects/MultipleRootInstruments.REDCap.xml
         tests/projects/RepeatingEvents.REDCap.xml
+        tests/projects/RepeatingForms.REDCap.xml
         tests/projects/Visits.REDCap.xml
 
-2. Request API tokens for the projects you just created (or
+2. Additional steps for the project created using RepeatingForms.REDCap.xml.
+   This project has two Data Access Groups named 'dag1' and 'dag2'. After the project has been created:
+   * Assign records 1001 and 1002 to dag1.
+   * Assign records 1049 and 1050 to dag2.
+
+3. Request API tokens for the projects you just created (or
    create tokens if you are an admin). The tokens needs to have export
    permission.
 

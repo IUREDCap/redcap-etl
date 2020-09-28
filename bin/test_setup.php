@@ -52,6 +52,9 @@ $basicDemographyApiToken  = $properties['basic-demography']['data_source_api_tok
 $dynamicRulesApiUrl    = $properties['dynamic-rules']['redcap_api_url'];
 $dynamicRulesApiToken  = $properties['dynamic-rules']['data_source_api_token'];
 
+$dynamicRulesMultipleApiUrl = $properties['dynamic-rules-multiple']['redcap_api_url'];
+$dynamicRulesMultipleApiToken = $properties['dynamic-rules-multiple']['data_source_api_token'];
+
 $repeatingEventsApiUrl    = $properties['repeating-events']['redcap_api_url'];
 $repeatingEventsApiToken  = $properties['repeating-events']['data_source_api_token'];
 
@@ -177,6 +180,20 @@ foreach ($configFiles as $configFile) {
                 '"data_source_api_token" : "'.$basicDemographyApiToken.'",',
                 $contents
             );
+        } elseif (preg_match('/dynamic-rules-multiple.*\.ini/', $toPath) === 1) {
+            #-------------------------------------
+            # Dynamic Rules - Multiple root instrument files
+            #-------------------------------------
+            $contents = preg_replace(
+                '/redcap_api_url\s*=.*/',
+                "redcap_api_url = {$dynamicRulesMultipleApiUrl}",
+                $contents
+            );
+            $contents = preg_replace(
+                '/data_source_api_token\s*=.*/',
+                "data_source_api_token = {$dynamicRulesMultipleApiToken}",
+                $contents
+            );
         } elseif (preg_match('/dynamic-rules.*\.ini/', $toPath) === 1) {
             #-------------------------------------
             # Dynamic Rules files
@@ -191,7 +208,7 @@ foreach ($configFiles as $configFile) {
                 "data_source_api_token = {$dynamicRulesApiToken}",
                 $contents
             );
-       } elseif (preg_match('/repeating-events.*\.ini/', $toPath) === 1) {
+        } elseif (preg_match('/repeating-events.*\.ini/', $toPath) === 1) {
             #-------------------------------------
             # Repeating events files
             #-------------------------------------
