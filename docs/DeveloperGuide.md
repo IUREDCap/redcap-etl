@@ -177,7 +177,7 @@ the tests have much better code coverage when they are.
 
 #### Integration tests
 To set up the integration tests, you need to first set up
-the "Basic Demography" and "Repeating Events" REDCap projects that have
+the REDCap projects that have
 the data for the tests:
 
 1. In REDCap, create one project using the
