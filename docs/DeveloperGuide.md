@@ -325,18 +325,25 @@ to support SSL (secure) connection. Possible values include:
     sqlserver
     sqlserver-ssl
 
+#### Adding a new test project
+
 If possible, the existing REDCap projects should be used for tests. These projects are in:
 
     tests/projects/
 
-If you do need to add a new project, then it should be added to the directory above, and a section
+If you do need to add a new test project, then a REDCap XML download of the project
+should be added to the directory above, and a section
 should be added to the following file, where the section name corresponds to the project name:
 
     tests/config-example.ini
 
-In addition, the following script will need to be modified to handle the new project:
+The following script will need to be modified to handle the new project:
 
     bin/tests_setup.php
+
+Finally, new test setup information for this test project will need to be added to:
+
+    docs/DeveloperGuide.md
 
 
 API Documentation
