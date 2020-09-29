@@ -59,6 +59,8 @@ class Configuration
     const DEFAULT_GENERATED_RECORD_ID_TYPE = 'varchar(255)';
     const DEFAULT_GENERATED_SUFFIX_TYPE    = 'varchar(255)';
 
+    const DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS = false;
+
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
     const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
     
@@ -112,6 +114,8 @@ class Configuration
     private $generatedRecordIdType;
     private $generatedSuffixType;
 
+    private $ignoreEmptyIncompleteForms;
+    
     private $labelViewSuffix;
     private $lookupTableName;
 
@@ -535,7 +539,19 @@ class Configuration
         if (array_key_exists(ConfigProperties::CALC_FIELD_IGNORE_PATTERN, $this->properties)) {
             $this->calcFieldIgnorePattern = $this->properties[ConfigProperties::CALC_FIELD_IGNORE_PATTERN];
         }
-
+        
+        #--------------------------------------------------------
+        # Ignore empty incomplete forms
+        #--------------------------------------------------------
+        $this->ignoreEmptyIncompleteForms = self::DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS;
+        if (array_key_exists(ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS, $this->properties)) {
+            $ignore = $this->properties[ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS];
+            if ($ignore === true || strcasecmp($ignore, 'true') === 0 || $ignore === '1') {
+                $this->ignoreEmptyIncompleteForms = true;
+            } elseif ($ignore === false || strcasecmp($ignore, 'false') === 0 || $ignore === '0') {
+                $this->ignoreEmptyIncompleteForms = false;
+            }
+        }
 
         #----------------------------------------------------------------
         # Get the data source project API token
@@ -1185,6 +1201,11 @@ class Configuration
         return $this->labelViewSuffix;
     }
 
+    public function getIgnoreEmptyIncompleteForms()
+    {
+        return $this->ignoreEmptyIncompleteForms;
+    }
+    
     public function getLogFile()
     {
         return $this->logFile;
