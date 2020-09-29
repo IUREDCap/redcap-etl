@@ -210,11 +210,8 @@ for the tests:
        sure to set this to the URL for the _API_, which typically ends
        with "/api/".
 
-    2. **data_source_api_token** - for the basic demography configuration (.ini)
-       files, set this to the REDCap API token for your REDCap Basic Demography
-       project created above. And for the repeating events configuration (.ini)
-       file, set it to the REDCap API token for the Repeating Events project
-       created above.
+    2. **data_source_api_token** - set these API tokens to correspond
+       to the API tokens for the projects that are referenced.
        
 After the above steps have been completed successfully, you need to run
 the test setup script to set up the individual test configuration files,
