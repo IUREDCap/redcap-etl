@@ -210,11 +210,8 @@ for the tests:
        sure to set this to the URL for the _API_, which typically ends
        with "/api/".
 
-    2. **data_source_api_token** - for the basic demography configuration (.ini)
-       files, set this to the REDCap API token for your REDCap Basic Demography
-       project created above. And for the repeating events configuration (.ini)
-       file, set it to the REDCap API token for the Repeating Events project
-       created above.
+    2. **data_source_api_token** - set these API tokens to correspond
+       to the API tokens for the projects that are referenced.
        
 After the above steps have been completed successfully, you need to run
 the test setup script to set up the individual test configuration files,
@@ -328,6 +325,25 @@ to support SSL (secure) connection. Possible values include:
     sqlserver
     sqlserver-ssl
 
+#### Adding a new test project
+
+If possible, the existing REDCap projects should be used for tests. These projects are in:
+
+    tests/projects/
+
+If you do need to add a new test project, then a REDCap XML download of the project
+should be added to the directory above, and a section
+should be added to the following file, where the section name corresponds to the project name:
+
+    tests/config-example.ini
+
+The following script will need to be modified to handle the new project:
+
+    bin/tests_setup.php
+
+Finally, new test setup information for this test project will need to be added to:
+
+    docs/DeveloperGuide.md
 
 
 API Documentation

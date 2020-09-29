@@ -17,17 +17,6 @@ for ($i = 0; $i < count($configFiles); $i++) {
     $configFiles[$i] = basename($configFiles[$i]);
 }
 
-$rulesFiles = [
-    'basic-demography-rules-badFieldName.txt',
-    'basic-demography-rules-badRule.txt',
-    'basic-demography-rules-duplicate-primary-key-name.txt',
-    'basic-demography-rules.txt',
-    'repeating-events-mysql-rules.txt',
-    'repeating-events-rules.txt',
-    'visits-empty-rules.txt',
-    'visits-missing-suffix-rules.txt',
-    'visits-rules.txt'
-];
 $rulesFiles = glob($configInitDir.'*.txt');
 for ($i = 0; $i < count($rulesFiles); $i++) {
     $rulesFiles[$i] = basename($rulesFiles[$i]);
