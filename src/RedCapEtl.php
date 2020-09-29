@@ -454,8 +454,10 @@ class RedCapEtl
     protected function transform($table, $records, $foreignKey, $suffix)
     {
         $tableName = $table->getName();
-        $calcFieldIgnorePattern = $this->configuration->getCalcFieldIgnorePattern();
-
+        
+        $calcFieldIgnorePattern     = $this->configuration->getCalcFieldIgnorePattern();
+        $ignoreEmptyIncompleteForms = $this->configuration->getIgnoreEmptyIncompleteForms();
+        
         foreach ($table->rowsType as $rowType) {
             // Look at row_event for this table
             switch ($rowType) {
@@ -474,7 +476,14 @@ class RedCapEtl
                     $rootRecordFound = false;
                     foreach ($records as $record) {
                         $primaryKey =
-                            $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
+                            $table->createRow(
+                                $record,
+                                $foreignKey,
+                                $suffix,
+                                $rowType,
+                                $calcFieldIgnorePattern,
+                                $ignoreEmptyIncompleteForms
+                            );
 
                         # If row creation succeeded:
                         if ($primaryKey) {
@@ -512,7 +521,14 @@ class RedCapEtl
                     // Foreach Record (i.e., foreach event or repeatable form or repeatable event)
                     foreach ($records as $record) {
                         $primaryKey =
-                            $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
+                            $table->createRow(
+                                $record,
+                                $foreignKey,
+                                $suffix,
+                                $rowType,
+                                $calcFieldIgnorePattern,
+                                $ignoreEmptyIncompleteForms
+                            );
 
                         if ($primaryKey) {
                             foreach ($table->getChildren() as $childTable) {
@@ -531,7 +547,8 @@ class RedCapEtl
                             $foreignKey,
                             $suffix.$newSuffix,
                             $rowType,
-                            $calcFieldIgnorePattern
+                            $calcFieldIgnorePattern,
+                            $ignoreEmptyIncompleteForms
                         );
 
                         if ($primaryKey) {
@@ -553,7 +570,8 @@ class RedCapEtl
                                 $foreignKey,
                                 $suffix.$newSuffix,
                                 $rowType,
-                                $calcFieldIgnorePattern
+                                $calcFieldIgnorePattern,
+                                $ignoreEmptyIncompleteForms
                             );
 
                             if ($primaryKey) {
