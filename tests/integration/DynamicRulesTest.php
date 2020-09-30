@@ -551,10 +551,13 @@ class DynamicRulesTest extends TestCase
         );
     }
 
-   public function testCombineNonRepeatingFieldsException()
+    public function testCombineNonRepeatingFieldsException()
     {
         $exceptionCaught = false;
-        $expectedMessage = "Invalid autogen_non_repeating_fields_table property. This property must have a value if the  AUTOGEN_COMBINE_NON_REPEATING_FIELDS property is set to true.";
+        $expectedMessage = "Invalid autogen_non_repeating_fields_table property.";
+        $expectedMessage .= " This property must have a value if the";
+        $expectedMessage .= " AUTOGEN_COMBINE_NON_REPEATING_FIELDS property is";
+        $expectedMessage .= " set to true.";
         $expectedCode = EtlException::INPUT_ERROR;
 
         # test to see if an error is generated if the tablename is left blank
@@ -578,10 +581,10 @@ class DynamicRulesTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue(
-            $exceptionCaught,
-            'dynamicRulesTest, testCombineNonRepeatingFieldsException exception caught'
-        );
+         $this->assertTrue(
+             $exceptionCaught,
+             'dynamicRulesTest, testCombineNonRepeatingFieldsException exception caught'
+         );
 
         $this->assertEquals(
             $expectedCode,
@@ -594,8 +597,7 @@ class DynamicRulesTest extends TestCase
             $exception->getMessage(),
             'dynamicRulesTest, testCombineNonRepeatingFieldsException error message check'
         );
-
-    } 
+    }
 
     public function testAutoGenCombineNonRepeatingFields()
     {

@@ -91,10 +91,9 @@ if ($combineNonRepeatingFields) {
     }
 
 # check to see if the user left the table name off, but added a flag instead
-} elseif(!empty($nonRepeatingFieldsTable) && $nonRepeatingFieldsTable[0] === '-') {
+} elseif (!empty($nonRepeatingFieldsTable) && $nonRepeatingFieldsTable[0] === '-') {
     print $usage;
     exit(1);
-
 } else {
     $nonRepeatingFieldsTable = '';
 }
@@ -111,7 +110,6 @@ while ($i < $optind) {
             print $usage;
             exit(1);
         }
-
     } elseif (preg_match('/^-(.*)/', $opt, $matches) === 1) {
         # short options
         $shortOptions = $matches[1];
