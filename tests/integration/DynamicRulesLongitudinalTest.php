@@ -40,7 +40,7 @@ class DynamicRulesLongitudinalTest extends TestCase
     private static $cardiovascularRepeatingInstrumentsCsvFile;
     private static $cardiovascularRepeatingEventsCsvFile;
 
-    const CONFIG_FILE = __DIR__.'/../config/dynamic-rules-longitudinal.ini';
+    const CONFIG_FILE = __DIR__.'/../config/repeating-events-dynamic-rules.ini';
     const TEST_DATA_DIR   =__DIR__.'/../data/';
 
     public static function setUpBeforeClass()

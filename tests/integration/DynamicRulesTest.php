@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class DynamicRulesTest extends TestCase
 {
-    const CONFIG_FILE = __DIR__.'/../config/dynamic-rules.ini';
+    const CONFIG_FILE = __DIR__.'/../config/repeating-forms-dynamic-rules.ini';
     const TEST_DATA_DIR   = __DIR__.'/../data/';    # directory with test data comparison files
 
     private static $config;

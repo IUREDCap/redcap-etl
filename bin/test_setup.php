@@ -38,17 +38,14 @@ $properties = parse_ini_file(__DIR__.'/../tests/config.ini', true);
 $basicDemographyApiUrl    = $properties['basic-demography']['redcap_api_url'];
 $basicDemographyApiToken  = $properties['basic-demography']['data_source_api_token'];
 
-$dynamicRulesApiUrl    = $properties['dynamic-rules']['redcap_api_url'];
-$dynamicRulesApiToken  = $properties['dynamic-rules']['data_source_api_token'];
-
-$dynamicRulesLongitudinalApiUrl = $properties['dynamic-rules-longitudinal']['redcap_api_url'];
-$dynamicRulesLongitudinalApiToken = $properties['dynamic-rules-longitudinal']['data_source_api_token'];
-
-$dynamicRulesMultipleApiUrl = $properties['dynamic-rules-multiple']['redcap_api_url'];
-$dynamicRulesMultipleApiToken = $properties['dynamic-rules-multiple']['data_source_api_token'];
+$multipleRootInstrumentsApiUrl = $properties['multiple-root-instruments']['redcap_api_url'];
+$multipleRootInstrumentsApiToken = $properties['multiple-root-instruments']['data_source_api_token'];
 
 $repeatingEventsApiUrl    = $properties['repeating-events']['redcap_api_url'];
 $repeatingEventsApiToken  = $properties['repeating-events']['data_source_api_token'];
+
+$repeatingFormsApiUrl    = $properties['repeating-forms']['redcap_api_url'];
+$repeatingFormsApiToken  = $properties['repeating-forms']['data_source_api_token'];
 
 $visitsApiUrl    = $properties['visits']['redcap_api_url'];
 $visitsApiToken  = $properties['visits']['data_source_api_token'];
@@ -172,46 +169,18 @@ foreach ($configFiles as $configFile) {
                 '"data_source_api_token" : "'.$basicDemographyApiToken.'",',
                 $contents
             );
-        } elseif (preg_match('/dynamic-rules-longitudinal.*\.ini/', $toPath) === 1) {
+        } elseif (preg_match('/multiple-root-instruments.*\.ini/', $toPath) === 1) {
             #-------------------------------------
-            # Dynamic Rules - Multiple root instrument files
+            # Multiple root instrument files
             #-------------------------------------
             $contents = preg_replace(
                 '/redcap_api_url\s*=.*/',
-                "redcap_api_url = {$dynamicRulesLongitudinalApiUrl}",
+                "redcap_api_url = {$multipleRootInstrumentsApiUrl}",
                 $contents
             );
             $contents = preg_replace(
                 '/data_source_api_token\s*=.*/',
-                "data_source_api_token = {$dynamicRulesLongitudinalApiToken}",
-                $contents
-            );
-        } elseif (preg_match('/dynamic-rules-multiple.*\.ini/', $toPath) === 1) {
-            #-------------------------------------
-            # Dynamic Rules - Multiple root instrument files
-            #-------------------------------------
-            $contents = preg_replace(
-                '/redcap_api_url\s*=.*/',
-                "redcap_api_url = {$dynamicRulesMultipleApiUrl}",
-                $contents
-            );
-            $contents = preg_replace(
-                '/data_source_api_token\s*=.*/',
-                "data_source_api_token = {$dynamicRulesMultipleApiToken}",
-                $contents
-            );
-        } elseif (preg_match('/dynamic-rules.*\.ini/', $toPath) === 1) {
-            #-------------------------------------
-            # Dynamic Rules files
-            #-------------------------------------
-            $contents = preg_replace(
-                '/redcap_api_url\s*=.*/',
-                "redcap_api_url = {$dynamicRulesApiUrl}",
-                $contents
-            );
-            $contents = preg_replace(
-                '/data_source_api_token\s*=.*/',
-                "data_source_api_token = {$dynamicRulesApiToken}",
+                "data_source_api_token = {$multipleRootInstrumentsApiToken}",
                 $contents
             );
         } elseif (preg_match('/repeating-events.*\.ini/', $toPath) === 1) {
@@ -226,6 +195,20 @@ foreach ($configFiles as $configFile) {
             $contents = preg_replace(
                 '/data_source_api_token\s*=.*/',
                 "data_source_api_token = {$repeatingEventsApiToken}",
+                $contents
+            );
+        } elseif (preg_match('/repeating-forms.*\.ini/', $toPath) === 1) {
+            #-------------------------------------
+            # Repeating forms files
+            #-------------------------------------
+            $contents = preg_replace(
+                '/redcap_api_url\s*=.*/',
+                "redcap_api_url = {$repeatingFormsApiUrl}",
+                $contents
+            );
+            $contents = preg_replace(
+                '/data_source_api_token\s*=.*/',
+                "data_source_api_token = {$repeatingFormsApiToken}",
                 $contents
             );
         } elseif (preg_match('/visits.*\.ini/', $toPath) === 1) {
