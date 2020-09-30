@@ -551,9 +551,78 @@ class DynamicRulesTest extends TestCase
         );
     }
 
+   public function testCombineNonRepeatingFieldsException()
+    {
+        $exceptionCaught = false;
+        $expectedMessage = "Invalid autogen_non_repeating_fields_table property. This property must have a value if the  AUTOGEN_COMBINE_NON_REPEATING_FIELDS property is set to true.";
+        $expectedCode = EtlException::INPUT_ERROR;
+
+        # test to see if an error is generated if the tablename is left blank
+        try {
+            $properties = self::$config->getProperties();
+            $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
+
+            $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_INCLUDE_DAG_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_INCLUDE_FILE_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_REMOVE_NOTES_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_REMOVE_IDENTIFIER_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_COMBINE_NON_REPEATING_FIELDS] = 'true';
+            $properties[ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE] = '';
+
+            $redCapEtl = new RedCapEtl(self::$logger, $properties);
+            $redCapEtl->run();
+        } catch (EtlException $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue(
+            $exceptionCaught,
+            'dynamicRulesTest, testCombineNonRepeatingFieldsException exception caught'
+        );
+
+        $this->assertEquals(
+            $expectedCode,
+            $exception->getCode(),
+            'dynamicRulesTest, testCombineNonRepeatingFieldsException error code check'
+        );
+
+        $this->assertEquals(
+            $expectedMessage,
+            $exception->getMessage(),
+            'dynamicRulesTest, testCombineNonRepeatingFieldsException error message check'
+        );
+
+    } 
+
     public function testAutoGenCombineNonRepeatingFields()
     {
         self::deleteOldResultsFiles();
+
+        # test to see if an error is generated if the tablename is left blank
+        try {
+            $properties = self::$config->getProperties();
+            $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
+
+            $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_INCLUDE_DAG_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_INCLUDE_FILE_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_REMOVE_NOTES_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_REMOVE_IDENTIFIER_FIELDS] = 'false';
+            $properties[ConfigProperties::AUTOGEN_COMBINE_NON_REPEATING_FIELDS] = 'true';
+            $properties[ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE] = '';
+
+            $redCapEtl = new RedCapEtl(self::$logger, $properties);
+            $redCapEtl->run();
+        } catch (EtlException $exception) {
+            self::$logger->logException($exception);
+            self::$logger->log('Processing failed.');
+        }
+
 
         try {
             $properties = self::$config->getProperties();
