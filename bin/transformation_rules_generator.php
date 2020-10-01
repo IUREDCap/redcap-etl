@@ -12,17 +12,14 @@ use IU\PHPCap\RedCapProject;
 use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\Logger;
 
-$usage = "Usage: php ".basename(__FILE__)." [OPTIONS]".PHP_EOL
+$usage = "Usage: php ".basename(__FILE__)." [OPTIONS] <configuration-file>".PHP_EOL
     .PHP_EOL
-    ."    -g, --config-file         full configuration file path/name (required)".PHP_EOL
-    ."    -c, --complete-fields     include form complete fields".PHP_EOL
-    ."    -d, --dag-fields          include DAG (Data Access Group) fields".PHP_EOL
-    ."    -f, --file-fields         include file fields".PHP_EOL
-    ."    -n, --notes-fields        remove notes fields".PHP_EOL
-    ."    -i, --identifier-fields   remove identifier fields".PHP_EOL
-    ."    -r, --nonrepeating-fields combine non-repeating fields".PHP_EOL
-    ."    -t, --table-nonrepeating  table name (required when combining "
-    ."non-repeating fields)".PHP_EOL
+    ."    -c, --complete-fields                    include form complete fields".PHP_EOL
+    ."    -d, --dag-fields                         include DAG (Data Access Group) fields".PHP_EOL
+    ."    -f, --file-fields                        include file fields".PHP_EOL
+    ."    -n, --notes-fields                       remove notes fields".PHP_EOL
+    ."    -i, --identifier-fields                  remove identifier fields".PHP_EOL
+    ."    -t, --table-nonrepeating <table-name>    combine non-repeating fields into table 'table-name'".PHP_EOL
     .PHP_EOL
     ;
 
@@ -35,13 +32,30 @@ $removeIdentifierFields = false;
 $combineNonRepeatingFields = false;
 $nonRepeatingFieldsTable = '';
 
-$options  = 'g:cdfnirt:';
-$longopts = ['config-file:', 'complete-fields', 'dag-fields', 'file-fields',
-             'notes-fields', 'identifier-fields', 'nonrepeating-fields',
+$options  = 'cdfnit:';
+$longopts = ['complete-fields', 'dag-fields', 'file-fields',
+             'notes-fields', 'identifier-fields',
              'table-nonrepeating:'
             ];
 $optind = 0;
-$optsWithTextArguments = array('-g','-t','--config-file','--table-nonrepeating');
+$optsWithTextArguments = array('-t','--table-nonrepeating');
+
+#------------------------------------------------------------------------------
+# Check that a configuration file was specified, and, if so, remove it from
+# the command line arguments before the call to get the command line options.
+#------------------------------------------------------------------------------
+if (count($argv) <= 1) {
+    print "No configuration file specified".PHP_EOL.PHP_EOL;
+    print $usage;
+    exit(1);
+} else {
+    $configurationFile = array_pop($argv);
+    if ($configurationFile[0] === '-') {
+        print "No configuration file specified".PHP_EOL.PHP_EOL;
+        print $usage;
+        exit(1);
+    }
+}
 
 #--------------------------------------------------
 # Process the command link options
@@ -55,7 +69,6 @@ foreach ($opts as $opt => $value) {
         $configurationFile = $opts['config-file'];
     } elseif ($opt === 'c' || $opt === 'complete-fields') {
         $addCompleteFields = true;
-        print "\n\naddCompleteFields is $addCompleteFields\n\n";
     } elseif ($opt === 'd' || $opt === 'dag-fields') {
         $addDagFields = true;
     } elseif ($opt === 'f' || $opt === 'file-fields') {
@@ -64,36 +77,28 @@ foreach ($opts as $opt => $value) {
         $removeNotesFields = true;
     } elseif ($opt === 'i' || $opt === 'identifier-fields') {
         $removeIdentifierFields = true;
-    } elseif ($opt === 'r' || $opt === 'nonrepeating-fields') {
-        $combineNonRepeatingFields = true;
     } elseif ($opt === 't') {
         $nonRepeatingFieldsTable = $opts['t'];
+        $combineNonRepeatingFields = true;
     } elseif ($opt === 'table-nonrepeating') {
         $nonRepeatingFieldsTable = $opts['table-nonrepeating'];
+        $combineNonRepeatingFields = true;
     } else {
+        print 'Unrecognized option: "{$opt}"'.PHP_EOL.PHP_EOL;
         print $usage;
         exit(1);
     }
 }
 
-# Stop if there is no configuration file
-if (empty($configurationFile) || ($configurationFile[0] === '-')) {
-    print $usage;
-    exit(1);
-}
-
-# Stop if there is supposed to be a file/table name for combining non-repeating
-# fields or if the a flag accidental got sucked in as the file/table name
 if ($combineNonRepeatingFields) {
-    if (empty($nonRepeatingFieldsTable) || ($nonRepeatingFieldsTable[0] === '-')) {
+    # if the table name was not included and another option was placed after it,
+    # the table name will be set to the following option
+    if (empty($nonRepeatingFieldsTable) || $nonRepeatingFieldsTable[0] === '-'
+        || $nonRepeatingFieldsTable === $configurationFile) {
+        print "No non-repeating fields table name was specified".PHP_EOL.PHP_EOL;
         print $usage;
         exit(1);
     }
-
-# check to see if the user left the table name off, but added a flag instead
-} elseif (!empty($nonRepeatingFieldsTable) && $nonRepeatingFieldsTable[0] === '-') {
-    print $usage;
-    exit(1);
 } else {
     $nonRepeatingFieldsTable = '';
 }
@@ -107,6 +112,7 @@ while ($i < $optind) {
         # long option
         $longOption = $matches[1];
         if (!in_array($longOption, str_replace(":", "", $longopts))) {
+            print 'Unrecogimized option "{$longOption}"'.PHP_EOL.PHP_EOL;
             print $usage;
             exit(1);
         }
@@ -115,6 +121,7 @@ while ($i < $optind) {
         $shortOptions = $matches[1];
         for ($j = 0; $j < strlen($shortOptions); $j++) {
             if (strpos($options, $shortOptions[$j]) === false) {
+                print 'Unrecogimized option "'.$shortOptions[$j].'"'.PHP_EOL.PHP_EOL;
                 print $usage;
                 exit(1);
             }
@@ -136,6 +143,23 @@ while ($i < $optind) {
 try {
     $logger = new Logger($argv[0]);
     $redCapEtl = new RedCapEtl($logger, $configurationFile);
+
+    $configuration = $redCapEtl->getConfiguration();
+    $addCompleteFields         = $addCompleteFields         || $configuration->getAutogenIncludeCompleteFields();
+    $addDagFields              = $addDagFields              || $configuration->getAutogenIncludeDagFields();
+    $addFileFields             = $addFileFields             || $configuration->getAutogenIncludeFileFields();
+    $removeNotesFields         = $removeNotesFields         || $configuration->getAutogenRemoveNotesFields();
+    $removeIdentifierFields    = $removeIdentifierFields    || $configuration->getAutogenRemoveIdentifierFields();
+    $combineNonRepeatingFields = $combineNonRepeatingFields || $configuration->getAutogenCombineNonRepeatingFields();
+
+    if ($combineNonRepeatingFields) {
+        if (empty($nonRepeatingFieldsTable)) {
+            $nonRepeatingFieldsTable = $configuration->getAutogenNonRepeatingFieldsTable();
+        }
+    } else {
+        $nonRepeatingFieldsTable = '';
+    }
+
     $rules = $redCapEtl->autoGenerateRules(
         $addCompleteFields,
         $addDagFields,
