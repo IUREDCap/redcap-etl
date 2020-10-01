@@ -1427,7 +1427,7 @@ class Configuration
 
                 if (empty($nonRepeatingFieldsTable)) {
                     $message = "Invalid ".ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE." property."
-                        . " This property must have a value if the  AUTOGEN_COMBINE_NON_REPEATING_FIELDS property"
+                        . " This property must have a value if the AUTOGEN_COMBINE_NON_REPEATING_FIELDS property"
                         . " is set to true.";
                 } elseif (preg_match("/[^a-zA-Z0-9_]+/", $nonRepeatingFieldsTable) === 1) {
                     $message = "Invalid ".ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE." property."
