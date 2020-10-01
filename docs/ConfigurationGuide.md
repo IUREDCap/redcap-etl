@@ -65,13 +65,18 @@ config/test.ini configuration file:
 
     php bin/transformation_rules_generator.php config/test.ini > config/test-rules.txt
 
-The above script supports the following 3 options:
+The above script supports several options:
 
 1. **-c, --complete-fields** - includes form complete fields in the auto-generated transformation rules.
 2. **-d, --dag-fields** - includes DAG (Data Access Group) fields in the auto-generated transformation rules.
 3. **-f, --file-fields** - includes file fields in the auto-generated transformation rules. Note that if a file
     field is included in the rules, only a flag indicating that a document has been uploaded for this field
     will be exported from REDCap. The file contents will NOT be exported.
+4. **-n, --notes-fields** - remove notes fields.
+5. **-i, --identifier-fields** - remove identifier fields.
+6. **-t, --table-nonrepeating &lt;table-name&gt;** - combine non-repeating fields into table "table-name"
+    (for non-longitudinal projects).
+
 
 Examples:
 
