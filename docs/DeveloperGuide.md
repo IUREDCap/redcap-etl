@@ -257,7 +257,7 @@ __ETL Configuration File Setup.__ The next thing you need to do is to create the
 2. Edit the file ./tests/config.ini. Set the **db_connection** properties for the
    databases that you have set up. The "with-ssl" databases are databases
    that support SSL. You can use the same database for the non-SSL and SSL
-   databasde configurations. If any db_connection properties are not set, then
+   database configurations. If any db_connection properties are not set, then
    the tests that use those properties will be skipped.
 
 3. To run all of the database SSL tests, you also need to
