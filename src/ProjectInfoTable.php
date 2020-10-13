@@ -21,7 +21,7 @@ class ProjectInfoTable extends Table
 {
     const DEFAULT_NAME       = 'redcap_project_info';
     
-    const FIELD_PRIMARY_ID       = 'redcap_project';
+    const FIELD_PRIMARY_ID       = 'redcap_data_source';
     const FIELD_API_URL          = 'api_url';
     const FIELD_PROJECT_ID       = 'project_id';
     const FIELD_PROJECT_NAME     = 'project_name';
@@ -51,19 +51,6 @@ class ProjectInfoTable extends Table
         $this->addField($fieldProjectId);
         $this->addField($fieldProjectName);
         $this->addField($fieldProjectLanguage);
-    }
-    
-    
-    public function getRowData($apiUrl, $taskId, $projectName, $projectLanguage)
-    {
-        $row = new Row($this);
-        $row->addValue(self::FIELD_PRIMARY_ID, $taskId);
-        $row->addValue(self::FIELD_API_URL, $apiUrl);
-        $row->addValue(self::FIELD_PROJECT_ID, $projectId);
-        $row->addValue(self::FIELD_PROJECT_NAME, $projectName);
-        $row->addValue(self::FIELD_PROJECT_LANGUAGE, $projectLanguage);
-
-        return $row;
     }
     
         
