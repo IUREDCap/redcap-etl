@@ -22,6 +22,9 @@ class EtlTask
 {
     private $name;
     
+    /** @var int the task ID, which should be unique within a workflow */
+    private $id;
+    
     /** @var EtlRedCapProject the project that has the data to extract */
     protected $dataProject;
 
@@ -61,8 +64,9 @@ class EtlTask
      * Constructor.
      *
      */
-    public function __construct()
+    public function __construct($id)
     {
+        $this->id   = $id;
         $this->name = '';
     }
 
@@ -219,9 +223,17 @@ class EtlTask
 
         $this->processTransformationRules();
     }
+    
+    /**
+     * Gets the task ID.
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
-     * Get the database ID string. This method depends on database connections
+     * Gets the database ID string. This method depends on database connections
      * being specified consistently in configurations. For example, for a given
      * database that uses the default port number, either all references to
      * that database should not include a port number, or all should include

@@ -27,7 +27,7 @@ class ProjectInfoTable extends Table
     const FIELD_PROJECT_NAME     = 'project_name';
     const FIELD_PROJECT_LANGUAGE = 'project_language';
 
-    public function __construct($tablePrefix, $name = self::DEFAULT_NAME)
+    public function __construct($tablePrefix = '', $name = self::DEFAULT_NAME)
     {
         $fieldTypePrimary = new FieldTypeSpecifier(FieldType::AUTO_INCREMENT);
 
@@ -54,13 +54,27 @@ class ProjectInfoTable extends Table
     }
     
     
-    public function getRowData($apiUrl, $projectId, $projectName, $projectLanguage)
+    public function getRowData($apiUrl, $taskId, $projectName, $projectLanguage)
     {
         $row = new Row($this);
+        $row->addValue(self::FIELD_PRIMARY_ID, $taskId);
         $row->addValue(self::FIELD_API_URL, $apiUrl);
         $row->addValue(self::FIELD_PROJECT_ID, $projectId);
         $row->addValue(self::FIELD_PROJECT_NAME, $projectName);
         $row->addValue(self::FIELD_PROJECT_LANGUAGE, $projectLanguage);
+
+        return $row;
+    }
+    
+        
+    public function createDataRow($taskId, $apiUrl, $projectInfo)
+    {
+        $row = new Row($this);
+        $row->addValue(self::FIELD_PRIMARY_ID, $taskId);
+        $row->addValue(self::FIELD_API_URL, $apiUrl);
+        $row->addValue(self::FIELD_PROJECT_ID, $projectInfo['project_id']);
+        $row->addValue(self::FIELD_PROJECT_NAME, $projectInfo['project_title']);
+        $row->addValue(self::FIELD_PROJECT_LANGUAGE, $projectInfo['project_language']);
 
         return $row;
     }

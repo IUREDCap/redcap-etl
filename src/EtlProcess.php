@@ -36,8 +36,14 @@ class EtlProcess
     
     private $logger;
 
-    /** @var array map from synthetic REDCap source ID to REDCap API URL and project ID */
-    private $projectIds;
+    /** @var array map from synthetic REDCap source ID to REDCap project Information */
+    private $projectInfos;
+
+    /** @var array map from synthetic REDCap source ID to REDCap metadata information */
+    private $metadata;
+
+    /** @var array map from database ID to a ProjectInfoTable table with REDCap project information */
+    private $projectInfoTables;
 
     /**
      * Constructor.
@@ -51,17 +57,17 @@ class EtlProcess
         
         $this->tasks = array();
 
-        $this->projectIds = array();
+        $this->projectInfos = array();
         
         $this->logger = $logger;
         
         #---------------------------------------------
         # Create tasks and database information
         #---------------------------------------------
-        $i = 0;
+        $taskId = 1;
         foreach ($workflow->getConfigurations() as $configName => $configuration) {
             # Create task for this configuration
-            $etlTask = new EtlTask();
+            $etlTask = new EtlTask($taskId);
             $etlTask->initialize($this->logger, $configName, $configuration, $redcapProjectClass);
         
             $this->tasks[] = $etlTask;
@@ -79,7 +85,7 @@ class EtlProcess
                 $this->dbTasks[$dbId]       = [$etlTask];
             }
             
-            $i++;
+            $taskId++;
         }
         
         #---------------------------------------------
@@ -96,31 +102,23 @@ class EtlProcess
         foreach ($this->tasks as $task) {
             $apiUrl      = $task->getRedCapApiUrl();
             $projectInfo = $task->getRedCapProjectInfo();
-            $projectId   = $projectInfo['project_id'];
-            # $metadata    = $task->getRedCapMetadata();
+            $projectInfo['api_url'] = $apiUrl;
 
-            $redcapDataSource = null;
-            foreach ($this->projectIds as $indexDataSource => list($redcapApiUrl, $redcapProjectId)) {
-                if ($apiUrl === $redcapApiUrl && $projectId === $redcapProjectId) {
-                    $redcapDataSource = $indexDataSource;
-                }
-            }
+            $metadata    = $task->getRedCapMetadata();
 
-            if (!isset($redcapDataSource)) {
-                $this->projectIds[$dataSource] = [$apiUrl, $projectId];
-                $dataSource++;
-            }
+            $this->projectInfos[$dataSource] = $projectInfo;
+            $this->metadata[$dataSource]     = $metadata;
 
-            #print "\n\nPROJECT IDS\n----------------------------------------------------------\n";
-            #print_r($this->projectIds);
-
-            #print "\n\n------------------------------------------------\n";
-            #print "REDCap API URL: ".$task->getRedCapApiUrl()."\n";
-            #print_r( $task->getRedCapProjectInfo() );
-            #print_r( $task->getRedCapMetadata() );
+            $dataSource++;
         }
 
-        //foreach ($this->projectIds as
+        #---------------------------------------------
+        # Create the project info tables
+        #---------------------------------------------
+        $dbIds = $this->getDbIds();
+        foreach ($dbIds as $dbId) {
+            $this->projectInfoTables[$dbId] = new ProjectInfoTable();
+        }
     }
 
     public function dropAllLoadTables()
@@ -134,6 +132,7 @@ class EtlProcess
 
     public function createAllLoadTables()
     {
+        # For each of the load databases, create the load tables
         foreach ($this->dbSchemas as $dbId => $schema) {
             $dbConnection = $this->dbConnections[$dbId];
             $this->createLoadTables($dbConnection, $schema);
@@ -144,9 +143,36 @@ class EtlProcess
             foreach ($dbTasks as $task) {
                 $task->setDbConnection($dbConnection);
             }
-        }
+            
+            # Create Project Info table with data for all tasks
+            # that use the current database
+            $projectInfoTable = $this->projectInfoTables[$dbId];
+            $dbConnection->replaceTable($projectInfoTable);
+            
+            foreach ($dbTasks as $task) {
+                $apiUrl      = $task->getRedCapApiUrl();
+                $projectInfo = $task->getRedCapProjectInfo();
+                $projectInfo['api_url'] = $apiUrl;
+                $row = $projectInfoTable->createDataRow($task->getId(), $apiUrl, $projectInfo);
+                $dbConnection->insertRow($row);
 
-        # Create REDCap project info and metadata tables
+                $metadata    = $task->getRedCapMetadata();
+            }
+
+            
+
+            # Create REDCap project info and metadata tables for each database
+            /*
+            $projectInfoTable = $this->projectInfoTables[$dbId];
+            $dbConnection->replaceTable($projectInfoTable);
+
+            foreach ($this->projectInfos as $projectInfo) {
+                #print "\n\nPROJECT INFO:\n";
+                #print_r($projectInfo);
+                #print "\n\n";
+            }
+            */
+        }
     }
         
     /**
@@ -157,6 +183,9 @@ class EtlProcess
      */
     public function dropLoadTables($dbConnection, $schema)
     {
+        $dbId = $dbConnection->getId();
+        $dbConnection->dropTable($this->projectInfoTables[$dbId], $ifExists = true);
+
         #-------------------------------------------------------------
         # Get the tables in top-down order, so that each parent table
         # will always come before its child tables
