@@ -27,13 +27,14 @@ class Configuration
     const TRANSFORM_RULES_DEFAULT = '3';     // Auto-generate default rules
 
     # Default values
-    const DEFAULT_AUTOGEN_INCLUDE_COMPLETE_FIELDS = false;
-    const DEFAULT_AUTOGEN_INCLUDE_DAG_FIELDS = false;
-    const DEFAULT_AUTOGEN_INCLUDE_FILE_FIELDS = false;
-    const DEFAULT_AUTOGEN_REMOVE_NOTES_FIELDS = false;
-    const DEFAULT_AUTOGEN_REMOVE_IDENTIFIER_FIELDS = false;
+    const DEFAULT_AUTOGEN_INCLUDE_COMPLETE_FIELDS      = false;
+    const DEFAULT_AUTOGEN_INCLUDE_DAG_FIELDS           = false;
+    const DEFAULT_AUTOGEN_INCLUDE_FILE_FIELDS          = false;
+    const DEFAULT_AUTOGEN_INCLUDE_SURVEY_FIELDS        = false;
+    const DEFAULT_AUTOGEN_REMOVE_NOTES_FIELDS          = false;
+    const DEFAULT_AUTOGEN_REMOVE_IDENTIFIER_FIELDS     = false;
     const DEFAULT_AUTOGEN_COMBINE_NON_REPEATING_FIELDS = false;
-    const DEFAULT_AUTOGEN_NON_REPEATING_FIELDS_TABLE = '';
+    const DEFAULT_AUTOGEN_NON_REPEATING_FIELDS_TABLE   = '';
 
     const DEFAULT_BATCH_SIZE          = 100;
     const DEFAULT_CREATE_LOOKUP_TABLE = false;
@@ -76,6 +77,7 @@ class Configuration
     private $autogenIncludeCompleteFields;
     private $autogenIncludeDagFields;
     private $autogenIncludeFileFields;
+    private $autogenIncludeSurveyFields;
     private $autogenRemoveNotesFields;
     private $autogenRemoveIdentifierFields;
     private $autogenCombineNonRepeatingFields;
@@ -1306,6 +1308,11 @@ class Configuration
         return $this->autogenIncludeFileFields;
     }
 
+    public function getAutogenIncludeSurveyFields()
+    {
+        return $this->autogenIncludeSurveyFields;
+    }
+
     public function getAutogenRemoveNotesFields()
     {
         return $this->autogenRemoveNotesFields;
@@ -1371,6 +1378,20 @@ class Configuration
                     $includeFileFields = false;
             }
             $this->autogenIncludeFileFields = $includeFileFields;
+        }
+
+        $this->autogenIncludeSurveyFields = self::DEFAULT_AUTOGEN_INCLUDE_SURVEY_FIELDS;
+        if (array_key_exists(ConfigProperties::AUTOGEN_INCLUDE_SURVEY_FIELDS, $this->properties)) {
+            $includeSurveyFields = $this->properties[ConfigProperties::AUTOGEN_INCLUDE_SURVEY_FIELDS];
+
+            if ($includeSurveyFields === true || strcasecmp($includeSurveyFields, 'true') === 0
+                || $includeSurveyFields === '1') {
+                    $includeSurveyFields = true;
+            } elseif ($includeSurveyFields === false || strcasecmp($includeSurveyFields, 'false') === 0
+                || $includeSurveyFields === '0') {
+                    $includeSurveyFields = false;
+            }
+            $this->autogenIncludeSurveyFields = $includeSurveyFields;
         }
 
 

@@ -829,15 +829,6 @@ class ConfigurationTest extends TestCase
             'GetProperyInfo invalid test'
         );
 
-        $property = 'allowed_servers';
-        $expectedInfo = 'undefined';
-        $info = $config->getPropertyInfo($property);
-        $this->assertEquals(
-            $expectedInfo,
-            $info,
-            'GetProperyInfo undefined test'
-        );
-
         $property = 'transform_rules_source';
         $expectedInfo = '3 - defined in file: '.
             __DIR__.'/../data/config-test.ini';

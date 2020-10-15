@@ -14,15 +14,14 @@ class ConfigProperties
     #----------------------------------------------------------------
     # Configuration properties
     #----------------------------------------------------------------
-    const ALLOWED_SERVERS        = 'allowed_servers';
-
-    const AUTOGEN_INCLUDE_COMPLETE_FIELDS = 'autogen_include_complete_fields';
-    const AUTOGEN_INCLUDE_DAG_FIELDS = 'autogen_include_dag_fields';
-    const AUTOGEN_INCLUDE_FILE_FIELDS = 'autogen_include_file_fields';
-    const AUTOGEN_REMOVE_NOTES_FIELDS = 'autogen_remove_notes_fields';
-    const AUTOGEN_REMOVE_IDENTIFIER_FIELDS = 'autogen_remove_identifier_fields';
+    const AUTOGEN_INCLUDE_COMPLETE_FIELDS      = 'autogen_include_complete_fields';
+    const AUTOGEN_INCLUDE_DAG_FIELDS           = 'autogen_include_dag_fields';
+    const AUTOGEN_INCLUDE_FILE_FIELDS          = 'autogen_include_file_fields';
+    const AUTOGEN_INCLUDE_SURVEY_FIELDS        = 'autogen_include_file_fields';
+    const AUTOGEN_REMOVE_NOTES_FIELDS          = 'autogen_remove_notes_fields';
+    const AUTOGEN_REMOVE_IDENTIFIER_FIELDS     = 'autogen_remove_identifier_fields';
     const AUTOGEN_COMBINE_NON_REPEATING_FIELDS = 'autogen_combine_non_repeating_fields';
-    const AUTOGEN_NON_REPEATING_FIELDS_TABLE = 'autogen_non_repeating_fields_table';
+    const AUTOGEN_NON_REPEATING_FIELDS_TABLE   = 'autogen_non_repeating_fields_table';
 
     const BATCH_SIZE             = 'batch_size';
     

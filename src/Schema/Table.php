@@ -380,6 +380,18 @@ class Table
                 } else {
                     $row->data[$field->dbName] = '';
                 }
+            } elseif (preg_match('/_timestamp$/', $field->name) === 1 && $field->type === FieldType::DATETIME) {
+                # Handle survey timestamps differently; can have '[not completed]' value,
+                # which may cause an error for datetime fields
+                $value = $data[$field->name];
+                if (preg_match('/\[.*\]/', $value)) {
+                    $row->data[$field->dbName] = '';
+                } else {
+                    $row->data[$field->dbName] = $value;
+                    if (!empty($value)) {
+                        $dataFound = true;
+                    }
+                }
             } else {
                 // Otherwise, get data
                 

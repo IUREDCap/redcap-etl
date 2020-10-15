@@ -35,6 +35,8 @@ class RulesGenerator
     private $combineNonRepeatingFields;
     private $nonRepeatingFieldsTable;
 
+    private $addSurveyFields;
+
     /**
      * Generates transformation rules for the
      * specified data project.
@@ -58,15 +60,17 @@ class RulesGenerator
         $addFormCompleteFields = false,
         $addDagFields = false,
         $addFileFields = false,
+        $addSurveyFields = false,
         $removeNotesFields = false,
         $removeIdentifierFields = false,
         $combineNonRepeatingFields = false,
         $nonRepeatingFieldsTable = ''
     ) {
-  
         $this->addFormCompleteFields    = $addFormCompleteFields;
         $this->addDagFields             = $addDagFields;
         $this->addFileFields            = $addFileFields;
+        $this->addSurveyFields          = $addSurveyFields;
+
         $this->removeNotesFields        = $removeNotesFields;
         $this->removeIdentifierFields   = $removeIdentifierFields;
         $this->combineNonRepeatingFields= $combineNonRepeatingFields;
@@ -184,6 +188,22 @@ class RulesGenerator
     {
         $fields = '';
 
+        if ($this->addSurveyFields && in_array($formName, $this->getSurveyInstruments())) {
+            # Add survey identifier field
+            $field['field_name'] = RedCapEtl::COLUMN_SURVEY_IDENTIFIER;
+            $field['field_type'] = 'text';
+            $field['text_validation_type_or_show_slider_number'] = '';
+            $rule = $this->getFieldRule($field);
+
+            # Add survey timestamp field
+            $fields .= $rule;
+            $field['field_name'] = $formName . '_timestamp';
+            $field['field_type'] = 'text';
+            $field['text_validation_type_or_show_slider_number'] = 'datetime_mdy';
+            $rule = $this->getFieldRule($field);
+            $fields .= $rule;
+        }
+
         if ($this->addDagFields) {
             $field['field_name'] = RedCapEtl::COLUMN_DAG;
             $field['field_type'] = 'text';
@@ -239,6 +259,9 @@ class RulesGenerator
         if ($fieldName === RedCapEtl::COLUMN_DAG) {
             # DAG (Data Access Group) column
             $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+        } elseif ($fieldName === RedCapEtl::COLUMN_SURVEY_IDENTIFIER) {
+            # REDCap survey identifier column
+            $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
         } elseif ($fieldType === 'checkbox') {
             $type = FieldType::CHECKBOX;
         } elseif ($fieldType === 'file') {
@@ -288,6 +311,27 @@ class RulesGenerator
     protected function getRootInstrument()
     {
         return $this->metadata[0]['form_name'];
+    }
+
+
+
+    /**
+     * WORK IN PROGRESS
+     */
+    protected function getSurveyInstruments()
+    {
+        $surveyInstruments = array();
+
+        $surveysNodes = $this->projectXmlDom->getElementsByTagNameNS(
+            self::REDCAP_XML_NAMESPACE,
+            'Surveys'
+        );
+    
+        foreach ($surveysNodes as $surveysNode) {
+            $instrumentName  = $surveysNode->getAttribute('form_name');
+            $surveyInstruments[] = $instrumentName;
+        }
+        return $surveyInstruments;
     }
 
     protected function getRepeatingInstruments()
@@ -436,7 +480,8 @@ class RulesGenerator
         
         if (in_array($rootForm, $repeatingForms)) {
             #--------------------------------------------------------
-            # Generate record_id only table (with DAG if applicable)
+            # If the root form is a repeating form,
+            # generate record_id only table (with DAG if applicable)
             # Note: record_id added automatically
             #--------------------------------------------------------
             $rootTable = $rootForm . '_root';
@@ -445,10 +490,17 @@ class RulesGenerator
                 $primaryKey = strtolower($rootTable) . '_row_id';
             }
             $rules .= "TABLE,{$rootTable},{$primaryKey},".RulesParser::ROOT."\n";
+
+            if ($this->addSurveyFields && !empty($this->getSurveyInstruments())) {
+                $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+                $rules .= "FIELD,".RedCapEtl::COLUMN_SURVEY_IDENTIFIER.",{$type}\n";
+            }
+
             if ($this->addDagFields) {
                 $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
                 $rules .= "FIELD,".RedCapEtl::COLUMN_DAG.",{$type}\n";
             }
+
             $rules .= "\n";
         } else {
             $rootTable = $rootForm;

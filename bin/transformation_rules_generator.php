@@ -17,6 +17,7 @@ $usage = "Usage: php ".basename(__FILE__)." [OPTIONS] <configuration-file>".PHP_
     ."    -c, --complete-fields                    include form complete fields".PHP_EOL
     ."    -d, --dag-fields                         include DAG (Data Access Group) fields".PHP_EOL
     ."    -f, --file-fields                        include file fields".PHP_EOL
+    ."    -s, --survey-fields                      include survey fields".PHP_EOL
     ."    -n, --notes-fields                       remove notes fields".PHP_EOL
     ."    -i, --identifier-fields                  remove identifier fields".PHP_EOL
     ."    -t, --table-nonrepeating <table-name>    combine non-repeating fields into table 'table-name'".PHP_EOL
@@ -27,13 +28,14 @@ $configurationFile = null;
 $addDagFields = false;
 $addCompleteFields = false;
 $addFileFields = false;
+$addSurveyFields = false;
 $removeNotesFields = false;
 $removeIdentifierFields = false;
 $combineNonRepeatingFields = false;
 $nonRepeatingFieldsTable = '';
 
-$options  = 'cdfnit:';
-$longopts = ['complete-fields', 'dag-fields', 'file-fields',
+$options  = 'cdfsnit:';
+$longopts = ['complete-fields', 'dag-fields', 'file-fields', 'survey-fields',
              'notes-fields', 'identifier-fields',
              'table-nonrepeating:'
             ];
@@ -73,6 +75,8 @@ foreach ($opts as $opt => $value) {
         $addDagFields = true;
     } elseif ($opt === 'f' || $opt === 'file-fields') {
         $addFileFields = true;
+    } elseif ($opt === 's' || $opt === 'survey-fields') {
+        $addSurveyFields = true;
     } elseif ($opt === 'n' || $opt === 'notes-fields') {
         $removeNotesFields = true;
     } elseif ($opt === 'i' || $opt === 'identifier-fields') {
@@ -164,6 +168,7 @@ try {
         $addCompleteFields,
         $addDagFields,
         $addFileFields,
+        $addSurveyFields,
         $removeNotesFields,
         $removeIdentifierFields,
         $combineNonRepeatingFields,
