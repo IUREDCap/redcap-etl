@@ -23,7 +23,7 @@ class EtlProcess
     /** @var array array of task objects that represent the tasks of the workflow. */
     private $tasks;
 
-    /** @var array map from database ID (string) to array of task objects. */
+    /** @var array map from database ID (string) to array of task objects that use that database. */
     private $dbTasks;
 
     /** @var array map from database ID to database schema, which merges the schemas for all
