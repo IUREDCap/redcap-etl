@@ -491,11 +491,6 @@ class RulesGenerator
             }
             $rules .= "TABLE,{$rootTable},{$primaryKey},".RulesParser::ROOT."\n";
 
-            if ($this->addSurveyFields && !empty($this->getSurveyInstruments())) {
-                $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
-                $rules .= "FIELD,".RedCapEtl::COLUMN_SURVEY_IDENTIFIER.",{$type}\n";
-            }
-
             if ($this->addDagFields) {
                 $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
                 $rules .= "FIELD,".RedCapEtl::COLUMN_DAG.",{$type}\n";
