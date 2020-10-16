@@ -17,7 +17,7 @@ class ConfigProperties
     const AUTOGEN_INCLUDE_COMPLETE_FIELDS      = 'autogen_include_complete_fields';
     const AUTOGEN_INCLUDE_DAG_FIELDS           = 'autogen_include_dag_fields';
     const AUTOGEN_INCLUDE_FILE_FIELDS          = 'autogen_include_file_fields';
-    const AUTOGEN_INCLUDE_SURVEY_FIELDS        = 'autogen_include_file_fields';
+    const AUTOGEN_INCLUDE_SURVEY_FIELDS        = 'autogen_include_survey_fields';
     const AUTOGEN_REMOVE_NOTES_FIELDS          = 'autogen_remove_notes_fields';
     const AUTOGEN_REMOVE_IDENTIFIER_FIELDS     = 'autogen_remove_identifier_fields';
     const AUTOGEN_COMBINE_NON_REPEATING_FIELDS = 'autogen_combine_non_repeating_fields';
