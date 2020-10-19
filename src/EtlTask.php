@@ -307,17 +307,36 @@ class EtlTask
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
+        $configuration = $this->configuration;
+
+        $addFormCompleteFields     = $addFormCompleteFields     || $configuration->getAutogenIncludeCompleteFields();
+        $addDagFields              = $addDagFields              || $configuration->getAutogenIncludeDagFields();
+        $addFileFields             = $addFileFields             || $configuration->getAutogenIncludeFileFields();
+        $addSurveyFields           = $addSurveyFields           || $configuration->getAutogenIncludeSurveyFields();
+        $removeNotesFields         = $removeNotesFields         || $configuration->getAutogenRemoveNotesFields();
+        $removeIdentifierFields    = $removeIdentifierFields    || $configuration->getAutogenRemoveIdentifierFields();
+        $combineNonRepeatingFields = $combineNonRepeatingFields
+            || $configuration->getAutogenCombineNonRepeatingFields();
+
+        if ($combineNonRepeatingFields) {
+            if (empty($nonRepeatingFieldsTable)) {
+                $nonRepeatingFieldsTable = $configuration->getAutogenNonRepeatingFieldsTable();
+            }
+        } else {
+            $nonRepeatingFieldsTable = '';
+        }
+
         $rulesGenerator = new RulesGenerator();
         $rulesText = $rulesGenerator->generate(
             $this->dataProject,
-            $this->configuration->getAutogenIncludeCompleteFields(),
-            $this->configuration->getAutogenIncludeDagFields(),
-            $this->configuration->getAutogenIncludeFileFields(),
-            $this->configuration->getAutogenIncludeSurveyFields(),
-            $this->configuration->getAutogenRemoveNotesFields(),
-            $this->configuration->getAutogenRemoveIdentifierFields(),
-            $this->configuration->getAutogenCombineNonRepeatingFields(),
-            $this->configuration->getAutogenNonRepeatingFieldsTable()
+            $addFormCompleteFields,
+            $addDagFields,
+            $addFileFields,
+            $addSurveyFields,
+            $removeNotesFields,
+            $removeIdentifierFields,
+            $combineNonRepeatingFields,
+            $nonRepeatingFieldsTable
         );
         return $rulesText;
     }
