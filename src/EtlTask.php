@@ -292,8 +292,16 @@ class EtlTask
      *
      * @return string the rules text
      */
-    public function autoGenerateRules($addFormCompleteFields = false, $addDagFields = false, $addFileFields = false)
-    {
+    public function autoGenerateRules(
+        $addFormCompleteFields = false,
+        $addDagFields = false,
+        $addFileFields = false,
+        $addSurveyFields = false,
+        $removeNotesFields = false,
+        $removeIdentifierFields = false,
+        $combineNonRepeatingFields = false,
+        $nonRepeatingFieldsTable = ''
+    ) {
         if (!isset($this->dataProject)) {
             $message = 'No data project was found.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -302,9 +310,14 @@ class EtlTask
         $rulesGenerator = new RulesGenerator();
         $rulesText = $rulesGenerator->generate(
             $this->dataProject,
-            $addFormCompleteFields,
-            $addDagFields,
-            $addFileFields
+            $this->configuration->getAutogenIncludeCompleteFields(),
+            $this->configuration->getAutogenIncludeDagFields(),
+            $this->configuration->getAutogenIncludeFileFields(),
+            $this->configuration->getAutogenIncludeSurveyFields(),
+            $this->configuration->getAutogenRemoveNotesFields(),
+            $this->configuration->getAutogenRemoveIdentifierFields(),
+            $this->configuration->getAutogenCombineNonRepeatingFields(),
+            $this->configuration->getAutogenNonRepeatingFieldsTable()
         );
         return $rulesText;
     }

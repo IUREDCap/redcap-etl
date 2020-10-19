@@ -204,10 +204,6 @@ class RedCapEtl
     {
         $numberOfRecordIds = 0;
 
-        # Create the project info table that stores information
-        # on all the REDCap projects that are accessed
-        ##### $this->createProjectInfoTable();
-
         #----------------------------------------------
         # Drop old load tables if they exist,
         # and then create the load tables
