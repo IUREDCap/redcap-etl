@@ -829,6 +829,8 @@ class Configuration
      */
     private function processTransformationRules($properties)
     {
+        $this->getAutogenProperties($properties);
+
         $this->transformRulesSource = $properties[ConfigProperties::TRANSFORM_RULES_SOURCE];
 
         if ($this->transformRulesSource === self::TRANSFORM_RULES_TEXT) {
@@ -848,9 +850,8 @@ class Configuration
             $this->transformationRules = file_get_contents($file);
         } elseif ($this->transformRulesSource === self::TRANSFORM_RULES_DEFAULT) {
             # The actual rules are not part of the configuration and will need
-            # to be generate later after the data project has been set up.
+            # to be generated later after the data project has been set up.
             $this->transformationRules == '';
-            $this->getAutogenProperties($properties);
         } else {
             $message = 'Unrecognized transformation rules source: '.$this->transformRulesSource;
             throw new EtlException($message, EtlException::INPUT_ERROR);
