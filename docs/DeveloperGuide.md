@@ -177,7 +177,7 @@ the tests have much better code coverage when they are.
 
 #### Integration tests
 To set up the integration tests, you need to first set up
-the "Basic Demography" and "Repeating Events" REDCap projects that have
+the REDCap projects that have
 the data for the tests:
 
 1. In REDCap, create one project using the
@@ -185,10 +185,17 @@ the data for the tests:
    following files from REDCap-ETL:
 
         tests/projects/BasicDemography.REDCap.xml
+        tests/projects/MultipleRootInstruments.REDCap.xml
         tests/projects/RepeatingEvents.REDCap.xml
+        tests/projects/RepeatingForms.REDCap.xml
         tests/projects/Visits.REDCap.xml
 
-2. Request API tokens for the projects you just created (or
+2. Additional steps for the project created using RepeatingForms.REDCap.xml.
+   This project has two Data Access Groups named 'dag1' and 'dag2'. After the project has been created:
+   * Assign records 1001 and 1002 to dag1.
+   * Assign records 1049 and 1050 to dag2.
+
+3. Request API tokens for the projects you just created (or
    create tokens if you are an admin). The tokens needs to have export
    permission.
 
@@ -203,11 +210,8 @@ for the tests:
        sure to set this to the URL for the _API_, which typically ends
        with "/api/".
 
-    2. **data_source_api_token** - for the basic demography configuration (.ini)
-       files, set this to the REDCap API token for your REDCap Basic Demography
-       project created above. And for the repeating events configuration (.ini)
-       file, set it to the REDCap API token for the Repeating Events project
-       created above.
+    2. **data_source_api_token** - set these API tokens to correspond
+       to the API tokens for the projects that are referenced.
        
 After the above steps have been completed successfully, you need to run
 the test setup script to set up the individual test configuration files,
@@ -253,7 +257,7 @@ __ETL Configuration File Setup.__ The next thing you need to do is to create the
 2. Edit the file ./tests/config.ini. Set the **db_connection** properties for the
    databases that you have set up. The "with-ssl" databases are databases
    that support SSL. You can use the same database for the non-SSL and SSL
-   databasde configurations. If any db_connection properties are not set, then
+   database configurations. If any db_connection properties are not set, then
    the tests that use those properties will be skipped.
 
 3. To run all of the database SSL tests, you also need to
@@ -321,6 +325,25 @@ to support SSL (secure) connection. Possible values include:
     sqlserver
     sqlserver-ssl
 
+#### Adding a new test project
+
+If possible, the existing REDCap projects should be used for tests. These projects are in:
+
+    tests/projects/
+
+If you do need to add a new test project, then a REDCap XML download of the project
+should be added to the directory above, and a section
+should be added to the following file, where the section name corresponds to the project name:
+
+    tests/config-example.ini
+
+The following script will need to be modified to handle the new project:
+
+    bin/tests_setup.php
+
+Finally, new test setup information for this test project will need to be added to:
+
+    docs/DeveloperGuide.md
 
 
 API Documentation

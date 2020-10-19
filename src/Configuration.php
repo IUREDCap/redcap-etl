@@ -26,6 +26,15 @@ class Configuration
     const TRANSFORM_RULES_DEFAULT = '3';     // Auto-generate default rules
 
     # Default values
+    const DEFAULT_AUTOGEN_INCLUDE_COMPLETE_FIELDS      = false;
+    const DEFAULT_AUTOGEN_INCLUDE_DAG_FIELDS           = false;
+    const DEFAULT_AUTOGEN_INCLUDE_FILE_FIELDS          = false;
+    const DEFAULT_AUTOGEN_INCLUDE_SURVEY_FIELDS        = false;
+    const DEFAULT_AUTOGEN_REMOVE_NOTES_FIELDS          = false;
+    const DEFAULT_AUTOGEN_REMOVE_IDENTIFIER_FIELDS     = false;
+    const DEFAULT_AUTOGEN_COMBINE_NON_REPEATING_FIELDS = false;
+    const DEFAULT_AUTOGEN_NON_REPEATING_FIELDS_TABLE   = '';
+
     const DEFAULT_BATCH_SIZE          = 100;
     const DEFAULT_CREATE_LOOKUP_TABLE = false;
 
@@ -63,6 +72,16 @@ class Configuration
     private $logger;
 
     private $app;
+
+    private $autogenIncludeCompleteFields;
+    private $autogenIncludeDagFields;
+    private $autogenIncludeFileFields;
+    private $autogenIncludeSurveyFields;
+    private $autogenRemoveNotesFields;
+    private $autogenRemoveIdentifierFields;
+    private $autogenCombineNonRepeatingFields;
+    private $autogenNonRepeatingFieldsTable;
+
     private $batchSize;
 
     private $caCertFile;
@@ -613,7 +632,6 @@ class Configuration
             $this->batchSize = $batchSize;
         }
 
-
         $this->processTransformationRules($this->properties);
 
         #----------------------------------------------------------------
@@ -878,6 +896,7 @@ class Configuration
             # The actual rules are not part of the configuration and will need
             # to be generate later after the data project has been set up.
             $this->transformationRules == '';
+            $this->getAutogenProperties($properties);
         } else {
             $message = 'Unrecognized transformation rules source: '.$this->transformRulesSource;
             throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -1331,5 +1350,180 @@ class Configuration
     public function getTransformRulesSource()
     {
         return $this->transformRulesSource;
+    }
+
+    public function getAutogenIncludeCompleteFields()
+    {
+        return $this->autogenIncludeCompleteFields;
+    }
+
+    public function getAutogenIncludeDagFields()
+    {
+        return $this->autogenIncludeDagFields;
+    }
+
+    public function getAutogenIncludeFileFields()
+    {
+        return $this->autogenIncludeFileFields;
+    }
+
+    public function getAutogenIncludeSurveyFields()
+    {
+        return $this->autogenIncludeSurveyFields;
+    }
+
+    public function getAutogenRemoveNotesFields()
+    {
+        return $this->autogenRemoveNotesFields;
+    }
+
+    public function getAutogenRemoveIdentifierFields()
+    {
+        return $this->autogenRemoveIdentifierFields;
+    }
+
+    public function getAutogenCombineNonRepeatingFields()
+    {
+        return $this->autogenCombineNonRepeatingFields;
+    }
+
+    public function getAutogenNonRepeatingFieldsTable()
+    {
+        return $this->autogenNonRepeatingFieldsTable;
+    }
+
+
+    private function getAutogenProperties($properties)
+    {
+        $this->autogenIncludeCompleteFields = self::DEFAULT_AUTOGEN_INCLUDE_COMPLETE_FIELDS;
+        if (array_key_exists(ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS, $this->properties)) {
+            $includeCompleteFields = $this->properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS];
+
+            if ($includeCompleteFields === true || strcasecmp($includeCompleteFields, 'true') === 0
+                || $includeCompleteFields === '1') {
+                    $includeCompleteFields = true;
+            } elseif ($includeCompleteFields === false || strcasecmp($includeCompleteFields, 'false') === 0
+                || $includeCompleteFields === '0') {
+                    $includeCompleteFields = false;
+            }
+            $this->autogenIncludeCompleteFields = $includeCompleteFields;
+        }
+
+
+        $this->autogenIncludeDagFields = self::DEFAULT_AUTOGEN_INCLUDE_DAG_FIELDS;
+        if (array_key_exists(ConfigProperties::AUTOGEN_INCLUDE_DAG_FIELDS, $this->properties)) {
+            $includeDagFields = $this->properties[ConfigProperties::AUTOGEN_INCLUDE_DAG_FIELDS];
+
+            if ($includeDagFields === true || strcasecmp($includeDagFields, 'true') === 0
+                || $includeDagFields === '1') {
+                    $includeDagFields = true;
+            } elseif ($includeDagFields === false || strcasecmp($includeDagFields, 'false') === 0
+                || $includeDagFields === '0') {
+                    $includeDagFields = false;
+            }
+            $this->autogenIncludeDagFields = $includeDagFields;
+        }
+
+
+        $this->autogenIncludeFileFields = self::DEFAULT_AUTOGEN_INCLUDE_FILE_FIELDS;
+        if (array_key_exists(ConfigProperties::AUTOGEN_INCLUDE_FILE_FIELDS, $this->properties)) {
+            $includeFileFields = $this->properties[ConfigProperties::AUTOGEN_INCLUDE_FILE_FIELDS];
+
+            if ($includeFileFields === true || strcasecmp($includeFileFields, 'true') === 0
+                || $includeFileFields === '1') {
+                    $includeFileFields = true;
+            } elseif ($includeFileFields === false || strcasecmp($includeFileFields, 'false') === 0
+                || $includeFileFields === '0') {
+                    $includeFileFields = false;
+            }
+            $this->autogenIncludeFileFields = $includeFileFields;
+        }
+
+        $this->autogenIncludeSurveyFields = self::DEFAULT_AUTOGEN_INCLUDE_SURVEY_FIELDS;
+        if (array_key_exists(ConfigProperties::AUTOGEN_INCLUDE_SURVEY_FIELDS, $this->properties)) {
+            $includeSurveyFields = $this->properties[ConfigProperties::AUTOGEN_INCLUDE_SURVEY_FIELDS];
+
+            if ($includeSurveyFields === true || strcasecmp($includeSurveyFields, 'true') === 0
+                || $includeSurveyFields === '1') {
+                    $includeSurveyFields = true;
+            } elseif ($includeSurveyFields === false || strcasecmp($includeSurveyFields, 'false') === 0
+                || $includeSurveyFields === '0') {
+                    $includeSurveyFields = false;
+            }
+            $this->autogenIncludeSurveyFields = $includeSurveyFields;
+        }
+
+
+        $this->autogenRemoveNotesFields = self::DEFAULT_AUTOGEN_REMOVE_NOTES_FIELDS;
+        if (array_key_exists(ConfigProperties::AUTOGEN_REMOVE_NOTES_FIELDS, $this->properties)) {
+            $removeNotesFields = $this->properties[ConfigProperties::AUTOGEN_REMOVE_NOTES_FIELDS];
+
+            if ($removeNotesFields === true || strcasecmp($removeNotesFields, 'true') === 0
+                || $removeNotesFields === '1') {
+                    $removeNotesFields = true;
+            } elseif ($removeNotesFields === false || strcasecmp($removeNotesFields, 'false') === 0
+                || $removeNotesFields === '0') {
+                    $removeNotesFields = false;
+            }
+            $this->autogenRemoveNotesFields = $removeNotesFields;
+        }
+
+
+        $this->autogenRemoveIdentifierFields = self::DEFAULT_AUTOGEN_REMOVE_IDENTIFIER_FIELDS;
+        if (array_key_exists(ConfigProperties::AUTOGEN_REMOVE_IDENTIFIER_FIELDS, $this->properties)) {
+            $removeIdentifierFields = $this->properties[ConfigProperties::AUTOGEN_REMOVE_IDENTIFIER_FIELDS];
+
+            if ($removeIdentifierFields === true || strcasecmp($removeIdentifierFields, 'true') === 0
+                || $removeIdentifierFields === '1') {
+                    $removeIdentifierFields = true;
+            } elseif ($removeIdentifierFields === false || strcasecmp($removeIdentifierFields, 'false') === 0
+                || $removeIdentifierFields === '0') {
+                    $removeIdentifierFields = false;
+            }
+            $this->autogenRemoveIdentifierFields = $removeIdentifierFields;
+        }
+
+
+        $this->autogenCombineNonRepeatingFields = self::DEFAULT_AUTOGEN_COMBINE_NON_REPEATING_FIELDS;
+        if (array_key_exists(ConfigProperties::AUTOGEN_COMBINE_NON_REPEATING_FIELDS, $this->properties)) {
+            $combineNonRepeatingFields = $this->properties[ConfigProperties::AUTOGEN_COMBINE_NON_REPEATING_FIELDS];
+
+            if ($combineNonRepeatingFields === true || strcasecmp($combineNonRepeatingFields, 'true') === 0
+                || $combineNonRepeatingFields === '1') {
+                    $combineNonRepeatingFields = true;
+            } elseif ($combineNonRepeatingFields === false || strcasecmp($combineNonRepeatingFields, 'false') === 0
+                || $combineNonRepeatingFields === '0') {
+                    $combineNonRepeatingFields = false;
+            }
+            $this->autogenCombineNonRepeatingFields = $combineNonRepeatingFields;
+        }
+
+        $message = null;
+        $this->autogenNonRepeatingFieldsTable = self::DEFAULT_AUTOGEN_NON_REPEATING_FIELDS_TABLE;
+
+        if ($this->autogenCombineNonRepeatingFields) {
+            if (array_key_exists(ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE, $this->properties)) {
+                $nonRepeatingFieldsTable = $this->properties[ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE];
+
+                if (empty($nonRepeatingFieldsTable)) {
+                    $message = "Invalid ".ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE." property."
+                        . " This property must have a value if the AUTOGEN_COMBINE_NON_REPEATING_FIELDS property"
+                        . " is set to true.";
+                } elseif (preg_match("/[^a-zA-Z0-9_]+/", $nonRepeatingFieldsTable) === 1) {
+                    $message = "Invalid ".ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE." property."
+                        . " This property may only contain letters, numbers, and underscores.";
+                }
+
+                $this->autogenNonRepeatingFieldsTable = $nonRepeatingFieldsTable;
+            } else {
+                $message = "Invalid ".ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE." property."
+                        . " This property is required if the AUTOGEN_COMBINE_NON_REPEATING_FIELDS property"
+                        . " is set to true.";
+            }
+
+            if ($message) {
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+        }
     }
 }

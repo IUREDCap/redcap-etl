@@ -65,13 +65,20 @@ config/test.ini configuration file:
 
     php bin/transformation_rules_generator.php config/test.ini > config/test-rules.txt
 
-The above script supports the following 3 options:
+The above script supports several options:
 
 1. **-c, --complete-fields** - includes form complete fields in the auto-generated transformation rules.
 2. **-d, --dag-fields** - includes DAG (Data Access Group) fields in the auto-generated transformation rules.
 3. **-f, --file-fields** - includes file fields in the auto-generated transformation rules. Note that if a file
     field is included in the rules, only a flag indicating that a document has been uploaded for this field
     will be exported from REDCap. The file contents will NOT be exported.
+3. **-s, --survey-fields** - includes survey fields (survey identifier and timestamp) for forms that are
+    enabled as surveys.
+4. **-n, --notes-fields** - remove notes fields.
+5. **-i, --identifier-fields** - remove identifier fields.
+6. **-t, --table-nonrepeating &lt;table-name&gt;** - combine non-repeating fields into table "table-name"
+    (for non-longitudinal projects).
+
 
 Examples:
 
@@ -379,6 +386,88 @@ if the ETL process encounters an error.
 
 </tbody>
 </table>
+
+### Tranformation Rules Auto-Generation Properties
+
+For configurations where the **transform_rules_source** property is set to 3 (auto-generation), the following
+properties can be used to control the auto-generation of transformation rules:
+
+
+<table>
+<thead>
+<tr> <th>Property</th> <th>Description</th> </tr>
+</thead>
+<tbody>
+
+<tr>
+<td>autogen_include_complete_fields</td>
+<td>
+Set to 1 or 'true' to include form complete fields in the auto-generated transformation rules.
+By default, they wil not be included.
+</td>
+</tr>
+
+<tr>
+<td>autogen_include_dag_fields</td>
+<td>
+Set to 1 or 'true' to include DAG (Data Access Group) fields in the auto-generated transformation rules.
+By default, they wil not be included.
+</td>
+</tr>
+
+<tr>
+<td>autogen_include_file_fields</td>
+<td>
+Set to 1 or 'true' to include file fields in the auto-generated transformation rules.
+By default, they wil not be included.
+</td>
+</tr>
+
+<tr>
+<td>autogen_include_survey_fields</td>
+<td>
+Set to 1 or 'true' to include survey fields in the auto-generated transformation rules.
+By default, they wil not be included.
+</td>
+</tr>
+
+<tr>
+<td>autogen_remove_notes_fields</td>
+<td>
+Set to 1 or 'true' to remove REDCap notes fields in the auto-generated transformation rules.
+By default, they wil be included.
+</td>
+</tr>
+
+<tr>
+<td>autogen_remove_identifier_fields</td>
+<td>
+Set to 1 or 'true' to remove REDCap fields that are marked as identifiers
+in the auto-generated transformation rules.
+By default, they wil be included.
+</td>
+
+<tr>
+<td>autogen_combine_non_repeating_fields</td>
+<td>
+Set to 1 or 'true' to have all fields in non-repeating forms combined into a
+single table for non-longitudinal projects. By default, each form will
+be in a separate table.
+</td>
+</tr>
+
+<tr>
+<td>autogen_non_repeating_fields_table</td>
+<td>
+If the autogen_combine_non_repeating_fields property is set, this property needs to be set as the
+table name to use for the table that combines the non-repeating fields.
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
 
 ### SQL Processing Properties
 

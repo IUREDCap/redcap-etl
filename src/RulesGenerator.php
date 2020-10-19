@@ -30,6 +30,12 @@ class RulesGenerator
     private $addFormCompleteFields;
     private $addDagFields;
     private $addFileFields;
+    private $removeNotesFields;
+    private $removeIdentifierFields;
+    private $combineNonRepeatingFields;
+    private $nonRepeatingFieldsTable;
+
+    private $addSurveyFields;
 
     /**
      * Generates transformation rules for the
@@ -53,11 +59,22 @@ class RulesGenerator
         $dataProject,
         $addFormCompleteFields = false,
         $addDagFields = false,
-        $addFileFields = false
+        $addFileFields = false,
+        $addSurveyFields = false,
+        $removeNotesFields = false,
+        $removeIdentifierFields = false,
+        $combineNonRepeatingFields = false,
+        $nonRepeatingFieldsTable = ''
     ) {
-        $this->addFormCompleteFields = $addFormCompleteFields;
-        $this->addDagFields          = $addDagFields;
-        $this->addFileFields         = $addFileFields;
+        $this->addFormCompleteFields    = $addFormCompleteFields;
+        $this->addDagFields             = $addDagFields;
+        $this->addFileFields            = $addFileFields;
+        $this->addSurveyFields          = $addSurveyFields;
+
+        $this->removeNotesFields        = $removeNotesFields;
+        $this->removeIdentifierFields   = $removeIdentifierFields;
+        $this->combineNonRepeatingFields= $combineNonRepeatingFields;
+        $this->nonRepeatingFieldsTable  = $nonRepeatingFieldsTable;
 
         $rules = '';
 
@@ -68,6 +85,11 @@ class RulesGenerator
         // echo "{ \"projectInfo\": ";
         // echo json_encode($projectInfo, JSON_PRETTY_PRINT);
         $this->isLongitudinal = $projectInfo['is_longitudinal'];
+
+        if ($this->combineNonRepeatingFields && ($this->isLongitudinal)) {
+            $this->combineNonRepeatingFields = false;
+        }
+
         $this->instruments = $dataProject->exportInstruments();
         // echo ", \"instruments\": ";
         // echo json_encode($this->instruments, JSON_PRETTY_PRINT);
@@ -100,51 +122,16 @@ class RulesGenerator
             $rules = $this->generateClassicProjectRules();
         }
 
-        // print_r($rules);
         return $rules;
     }
     
     protected function generateClassicProjectRules()
     {
-        $rules = '';
-        
-        $rootForm = $this->getRootInstrument();
-        $repeatingForms = $this->getRepeatingInstruments();
-        
-        if (in_array($rootForm, $repeatingForms)) {
-            #--------------------------------------------------------
-            # Generate record_id only table (with DAG if applicable)
-            # Note: record_id added automatically
-            #--------------------------------------------------------
-            $rootTable = $rootForm . '_root';
-            $primaryKey = strtolower($rootTable) . '_id';
-            if (strcasecmp($primaryKey, $this->recordId) === 0) {
-                $primaryKey = strtolower($rootTable) . '_row_id';
-            }
-            $rules .= "TABLE,{$rootTable},{$primaryKey},".RulesParser::ROOT."\n";
-            if ($this->addDagFields) {
-                $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
-                $rules .= "FIELD,".RedCapEtl::COLUMN_DAG.",{$type}\n";
-            }
-            $rules .= "\n";
+        $rules = "";
+        if ($this->combineNonRepeatingFields) {
+            $rules = $this->generateCombineNonRepeatingTableRules();
         } else {
-            $rootTable = $rootForm;
-        }
-        
-        foreach ($this->instruments as $formName => $formLabel) {
-            $primaryKey = strtolower($formName) . '_id';
-            if (strcasecmp($primaryKey, $this->recordId) === 0) {
-                $primaryKey = strtolower($rootTable) . '_row_id';
-            }
-            
-            if (in_array($formName, $repeatingForms)) {
-                $rules .= "TABLE,{$formName},{$rootTable},".RulesParser::REPEATING_INSTRUMENTS."\n";
-            } else {
-                $rules .= "TABLE,{$formName},{$primaryKey},".RulesParser::ROOT."\n";
-            }
-    
-            $rules .= $this->generateFields($formName);
-            $rules .= "\n";
+            $rules = $this->generateIndividualTableRules();
         }
         return $rules;
     }
@@ -201,6 +188,22 @@ class RulesGenerator
     {
         $fields = '';
 
+        if ($this->addSurveyFields && in_array($formName, $this->getSurveyInstruments())) {
+            # Add survey identifier field
+            $field['field_name'] = RedCapEtl::COLUMN_SURVEY_IDENTIFIER;
+            $field['field_type'] = 'text';
+            $field['text_validation_type_or_show_slider_number'] = '';
+            $rule = $this->getFieldRule($field);
+
+            # Add survey timestamp field
+            $fields .= $rule;
+            $field['field_name'] = $formName . '_timestamp';
+            $field['field_type'] = 'text';
+            $field['text_validation_type_or_show_slider_number'] = 'datetime_mdy';
+            $rule = $this->getFieldRule($field);
+            $fields .= $rule;
+        }
+
         if ($this->addDagFields) {
             $field['field_name'] = RedCapEtl::COLUMN_DAG;
             $field['field_type'] = 'text';
@@ -210,10 +213,14 @@ class RulesGenerator
         }
 
         foreach ($this->metadata as $field) {
-            if ($field['form_name'] == $formName) {
-                $rule = $this->getFieldRule($field);
-                if (isset($rule)) {
-                    $fields .= $rule;
+            if (!($this->removeNotesFields && ($field['field_type'] === 'notes'))) {
+                if (!($this->removeIdentifierFields && ($field['identifier'] == 'y'))) {
+                    if ($field['form_name'] == $formName) {
+                        $rule = $this->getFieldRule($field);
+                        if (isset($rule)) {
+                            $fields .= $rule;
+                        }
+                    }
                 }
             }
         }
@@ -251,6 +258,9 @@ class RulesGenerator
         #----------------------------------------------
         if ($fieldName === RedCapEtl::COLUMN_DAG) {
             # DAG (Data Access Group) column
+            $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+        } elseif ($fieldName === RedCapEtl::COLUMN_SURVEY_IDENTIFIER) {
+            # REDCap survey identifier column
             $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
         } elseif ($fieldType === 'checkbox') {
             $type = FieldType::CHECKBOX;
@@ -301,6 +311,27 @@ class RulesGenerator
     protected function getRootInstrument()
     {
         return $this->metadata[0]['form_name'];
+    }
+
+
+
+    /**
+     * WORK IN PROGRESS
+     */
+    protected function getSurveyInstruments()
+    {
+        $surveyInstruments = array();
+
+        $surveysNodes = $this->projectXmlDom->getElementsByTagNameNS(
+            self::REDCAP_XML_NAMESPACE,
+            'Surveys'
+        );
+    
+        foreach ($surveysNodes as $surveysNode) {
+            $instrumentName  = $surveysNode->getAttribute('form_name');
+            $surveyInstruments[] = $instrumentName;
+        }
+        return $surveyInstruments;
     }
 
     protected function getRepeatingInstruments()
@@ -435,5 +466,113 @@ class RulesGenerator
             $isRepeatingInstrument = true;
         }
         return $isRepeatingInstrument;
+    }
+
+    /**
+     * Generates rules by creating one new table for each form
+     */
+    protected function generateIndividualTableRules()
+    {
+        $rules = '';
+        
+        $rootForm = $this->getRootInstrument();
+        $repeatingForms = $this->getRepeatingInstruments();
+        
+        if (in_array($rootForm, $repeatingForms)) {
+            #--------------------------------------------------------
+            # If the root form is a repeating form,
+            # generate record_id only table (with DAG if applicable)
+            # Note: record_id added automatically
+            #--------------------------------------------------------
+            $rootTable = $rootForm . '_root';
+            $primaryKey = strtolower($rootTable) . '_id';
+            if (strcasecmp($primaryKey, $this->recordId) === 0) {
+                $primaryKey = strtolower($rootTable) . '_row_id';
+            }
+            $rules .= "TABLE,{$rootTable},{$primaryKey},".RulesParser::ROOT."\n";
+
+            if ($this->addDagFields) {
+                $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+                $rules .= "FIELD,".RedCapEtl::COLUMN_DAG.",{$type}\n";
+            }
+
+            $rules .= "\n";
+        } else {
+            $rootTable = $rootForm;
+        }
+        
+        foreach ($this->instruments as $formName => $formLabel) {
+            $primaryKey = strtolower($formName) . '_id';
+            if (strcasecmp($primaryKey, $this->recordId) === 0) {
+                $primaryKey = strtolower($rootTable) . '_row_id';
+            }
+            
+            if (in_array($formName, $repeatingForms)) {
+                $rules .= "TABLE,{$formName},{$rootTable},".RulesParser::REPEATING_INSTRUMENTS."\n";
+            } else {
+                $rules .= "TABLE,{$formName},{$primaryKey},".RulesParser::ROOT."\n";
+            }
+    
+            $rules .= $this->generateFields($formName);
+            $rules .= "\n";
+        }
+        return $rules;
+    }
+
+   /**
+     * Generates rules by combining all nonrepeating forms in one table
+     */
+    protected function generateCombineNonRepeatingTableRules()
+    {
+        $rules = '';
+        
+        $rootForm = $this->getRootInstrument();
+        $repeatingForms = $this->getRepeatingInstruments();
+
+        $tableName = $this->nonRepeatingFieldsTable;
+        $primaryKey = strtolower($tableName) . '_id';
+
+        #if the root form is a repeating form, then create a record_id-only table
+        if (in_array($rootForm, $repeatingForms)) {
+            #--------------------------------------------------------
+            # Generate record_id only table (with DAG if applicable)
+            # Note: record_id added automatically
+            #--------------------------------------------------------
+            if (strcasecmp($primaryKey, $this->recordId) === 0) {
+                $primaryKey = strtolower($tableName) . '_row_id';
+            }
+            $rules .= "TABLE,{$tableName},{$primaryKey},".RulesParser::ROOT."\n";
+            if ($this->addDagFields) {
+                $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
+                $rules .= "FIELD,".RedCapEtl::COLUMN_DAG.",{$type}\n";
+            }
+            $rules .= "\n";
+        }
+
+        $origDagFlagValue = $this->addDagFields;
+
+        #Process all non-repeating forms
+        foreach ($this->instruments as $formName => $formLabel) {
+            if (!in_array($formName, $repeatingForms)) {
+                if ($formName === $rootForm) {
+                    $rules = "TABLE,{$tableName},{$primaryKey},".RulesParser::ROOT."\n";
+                } else {
+                    $this->addDagFields = false;
+                }
+                $rules .= $this->generateFields($formName);
+            }
+        }
+        $rules .= "\n";
+        $this->addDagFields = $origDagFlagValue;
+
+        #Then process all repeating forms
+        foreach ($this->instruments as $formName => $formLabel) {
+            if (in_array($formName, $repeatingForms)) {
+                $rules .= "TABLE,{$formName},{$tableName},".RulesParser::REPEATING_INSTRUMENTS."\n";
+                $rules .= $this->generateFields($formName);
+                $rules .= "\n";
+            }
+        }
+        return $rules;
     }
 }
