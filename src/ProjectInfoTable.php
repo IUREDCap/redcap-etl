@@ -24,7 +24,7 @@ class ProjectInfoTable extends Table
     const FIELD_PRIMARY_ID       = 'redcap_data_source';
     const FIELD_API_URL          = 'api_url';
     const FIELD_PROJECT_ID       = 'project_id';
-    const FIELD_PROJECT_NAME     = 'project_name';
+    const FIELD_PROJECT_TITLE    = 'project_title';
     const FIELD_PROJECT_LANGUAGE = 'project_language';
 
     public function __construct($tablePrefix = '', $name = self::DEFAULT_NAME)
@@ -44,12 +44,12 @@ class ProjectInfoTable extends Table
         #-----------------------------------------------
         $fieldApiUrl          = new Field(self::FIELD_API_URL, FieldType::VARCHAR, 255);
         $fieldProjectId       = new Field(self::FIELD_PROJECT_ID, FieldType::INT);
-        $fieldProjectName     = new Field(self::FIELD_PROJECT_NAME, FieldType::VARCHAR, 255);
+        $fieldProjectTitle    = new Field(self::FIELD_PROJECT_TITLE, FieldType::VARCHAR, 255);
         $fieldProjectLanguage = new Field(self::FIELD_PROJECT_LANGUAGE, FieldType::VARCHAR, 255);
         
         $this->addField($fieldApiUrl);
         $this->addField($fieldProjectId);
-        $this->addField($fieldProjectName);
+        $this->addField($fieldProjectTitle);
         $this->addField($fieldProjectLanguage);
     }
     
@@ -59,9 +59,9 @@ class ProjectInfoTable extends Table
         $row = new Row($this);
         $row->addValue(self::FIELD_PRIMARY_ID, $taskId);
         $row->addValue(self::FIELD_API_URL, $apiUrl);
-        $row->addValue(self::FIELD_PROJECT_ID, $projectInfo['project_id']);
-        $row->addValue(self::FIELD_PROJECT_NAME, $projectInfo['project_title']);
-        $row->addValue(self::FIELD_PROJECT_LANGUAGE, $projectInfo['project_language']);
+        $row->addValue(self::FIELD_PROJECT_ID, $projectInfo[self::FIELD_PROJECT_ID]);
+        $row->addValue(self::FIELD_PROJECT_TITLE, $projectInfo[self::FIELD_PROJECT_TITLE]);
+        $row->addValue(self::FIELD_PROJECT_LANGUAGE, $projectInfo[self::FIELD_PROJECT_LANGUAGE]);
 
         return $row;
     }
