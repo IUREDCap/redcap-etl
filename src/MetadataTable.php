@@ -23,6 +23,7 @@ class MetadataTable extends Table
     
     const FIELD_PRIMARY_ID       = 'redcap_data_source';
     const FIELD_FIELD_NAME       = 'field_name';
+    const FIELD_FORM_NAME        = 'form_name';
     const FIELD_FIELD_TYPE       = 'field_type';
     const FIELD_IDENTIFIER       = 'identifier';
 
@@ -63,10 +64,12 @@ class MetadataTable extends Table
         # Create and add fields for the lookup table
         #-----------------------------------------------
         $fieldFieldName  = new Field(self::FIELD_FIELD_NAME, FieldType::VARCHAR, 255);
+        $fieldFormName   = new Field(self::FIELD_FORM_NAME, FieldType::VARCHAR, 255);
         $fieldFieldType  = new Field(self::FIELD_FIELD_TYPE, FieldType::VARCHAR, 255);
         $fieldIdentifier = new Field(self::FIELD_IDENTIFIER, FieldType::VARCHAR, 1);
 
         $this->addField($fieldFieldName);
+        $this->addField($fieldFormName);
         $this->addField($fieldFieldType);
         $this->addField($fieldIdentifier);
     }
@@ -77,6 +80,7 @@ class MetadataTable extends Table
         $row = new Row($this);
         $row->addValue(self::FIELD_PRIMARY_ID, $taskId);
         $row->addValue(self::FIELD_FIELD_NAME, $metadata[self::FIELD_FIELD_NAME]);
+        $row->addValue(self::FIELD_FORM_NAME, $metadata[self::FIELD_FORM_NAME]);
         $row->addValue(self::FIELD_FIELD_TYPE, $metadata[self::FIELD_FIELD_TYPE]);
         $row->addValue(self::FIELD_IDENTIFIER, $metadata[self::FIELD_IDENTIFIER]);
 
