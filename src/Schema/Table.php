@@ -166,6 +166,8 @@ class Table
 
         $mergedTable->fields = $mergedFields;
 
+        $mergedTable->rows = array_merge($this->getRows(), $table->getRows());
+
         return $mergedTable;
     }
 

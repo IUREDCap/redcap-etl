@@ -1,11 +1,22 @@
 #!/usr/bin/env php
 <?php
-#==============================================================
+#=========================================================================
 # Script for setting up the automated REDCap-ETL tests.
-#==============================================================
+#
+# This script copies test configuration template files to the actual
+# configuration directory and sets the installation-specific values
+# for the properties in the copied files.
+#
+# Single task configuration files need to contain the name of the
+# REDCap project they use in the file name.
+#
+# Workflow (i.e., multi-task) configuration files, need to contain
+# "workflow" in the file name and have a comment with the name of
+# the project after each project-specific # property in the file.
+#=========================================================================
 
-$configInitDir = __DIR__.'/../tests/config-init/';
-$configDir     = __DIR__.'/../tests/config/';
+$configInitDir = __DIR__.'/../tests/config-init/';   # test config file template directory
+$configDir     = __DIR__.'/../tests/config/';        # test config file directory
 
 
 #---------------------------------------------------------------------
@@ -83,6 +94,10 @@ foreach ($configFiles as $configFile) {
     $fromPath = realpath($configInitDir . $configFile);
     $toPath   = $configDir . $configFile;
 
+    #--------------------------------------------------
+    # Check the configuration file name to see if it
+    # contains a database name
+    #--------------------------------------------------
     $db = null;
     if (preg_match('/mysql-ssl/', $configFile)) {
         $db = 'mysql-ssl';
@@ -137,6 +152,32 @@ foreach ($configFiles as $configFile) {
     if (file_exists($toPath)) {
         if (preg_match('/basic-demography-3.ini/', $toPath) === 1) {
             # Special case, test for properties not set
+        } elseif (preg_match('/workflow.*\.ini/', $toPath) === 1) {
+            # Workflow
+
+            # basic-demography properties
+            $contents = preg_replace(
+                '/redcap_api_url\s*=\s*;\s*basic-demography/',
+                "redcap_api_url = {$basicDemographyApiUrl}",
+                $contents
+            );
+            $contents = preg_replace(
+                '/data_source_api_token\s*=\s*;\s*basic-demography/',
+                "data_source_api_token = {$basicDemographyApiToken}",
+                $contents
+            );
+
+            # repeating-events properties
+            $contents = preg_replace(
+                '/redcap_api_url\s*=.\s*;\s*repeating-events/',
+                "redcap_api_url = {$repeatingEventsApiUrl}",
+                $contents
+            );
+            $contents = preg_replace(
+                '/data_source_api_token\s*=\s*;\s*repeating-events/',
+                "data_source_api_token = {$repeatingEventsApiToken}",
+                $contents
+            );
         } elseif (preg_match('/basic-demography.*\.ini/', $toPath) === 1) {
             #-------------------------------------
             # Basic demography files

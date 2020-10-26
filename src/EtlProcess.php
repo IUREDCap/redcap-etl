@@ -64,7 +64,7 @@ class EtlProcess
             # Get string that serves as database identifier
             $dbId = $etlTask->getDbId();
 
-            # Set schema and connection information for the current database
+            # Create a merged schema and get connection information for the current database
             if (array_key_exists($dbId, $this->dbSchemas)) {
                 $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge($etlTask->getSchema());
                 $this->dbTasks[$dbId]   = array_merge($this->dbTasks[$dbId], [$etlTask]);
@@ -83,7 +83,9 @@ class EtlProcess
         foreach ($this->tasks as $task) {
             $dbId = $task->getDbId();
             $dbSchema = $this->dbSchemas[$dbId];
-            $task->setDbSchema($dbSchema);
+            $task->setDbSchema($dbSchema);    // FIX!!!!,
+            // only want subset of merged schema that has
+            // original tables in task OR REMOVE??????????? !!!!!!!!!!!!
         }
     }
 
@@ -99,6 +101,7 @@ class EtlProcess
     public function createAllLoadTables()
     {
         # For each of the load databases, create the load tables
+        $i = 1;
         foreach ($this->dbSchemas as $dbId => $schema) {
             $dbConnection = $this->dbConnections[$dbId];
             $this->createLoadTables($dbConnection, $schema);

@@ -154,4 +154,11 @@ class LookupTable extends Table
         $valueLabelMap = $this->map[$tableName][$fieldName];
         return $valueLabelMap;
     }
+
+    public function merge($table)
+    {
+        $mergedLookup = parent::merge($table);
+        $mergedLookup->map = array_merge($this->map, $table->map);
+        return $mergedLookup;
+    }
 }

@@ -90,21 +90,6 @@ class RedCapEtl
     }
 
 
-    /**
-     * Creates the project info table that has information on the project(s) used in
-     * the ETL configuration(s). Only one of these tables is created for each ETL
-     * run, regardless of how many individual configurations are used.
-     */
-    public function createProjectInfoTable()
-    {
-        #-----------------------------------------------------------
-        # Create the project info table
-        #-----------------------------------------------------------
-        #$this->projectInfoTable = new ProjectInfoTable($this->configuration->getTablePrefix() /* , $name */);
-        #$this->dbcon->replaceTable($this->projectInfoTable);
-        #$this->loadTableRows($this->projectInfoTable);
-    }
-
 
     /**
      * Loads the rows that have been stored in the schema into the target database
@@ -219,6 +204,9 @@ class RedCapEtl
             
             $logger = $etlTask->getLogger();
 
+            #----------------------------------------------------------------
+            # Log version and job information
+            #----------------------------------------------------------------
             $logger->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
             $logger->log('REDCap version '.$etlTask->getDataProject()->exportRedCapVersion());
             $etlTask->logJobInfo();
@@ -228,6 +216,7 @@ class RedCapEtl
                 $logger->log("Load database {$i}: {$dbId}");
                 $i++;
             }
+
             $logger->log("Starting processing.");
 
             $etlTask->runPreProcessingSql();
@@ -235,7 +224,7 @@ class RedCapEtl
             #----------------------------------------------------------------------
             # Project Info table (eventually will have possible multiple projects)
             #----------------------------------------------------------------------
-            $etlTask->createProjectInfoTable();
+            // $etlTask->createProjectInfoTable();
 
             # ETL
             $numberOfRecordIds += $etlTask->extractTransformLoad();

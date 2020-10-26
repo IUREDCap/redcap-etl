@@ -148,7 +148,7 @@ try {
     $logger = new Logger($argv[0]);
     $redCapEtl = new RedCapEtl($logger, $configurationFile);
 
-    $configuration = $redCapEtl->getConfiguration();
+    $configuration = $redCapEtl->getConfiguration(0);
     $addCompleteFields         = $addCompleteFields         || $configuration->getAutogenIncludeCompleteFields();
     $addDagFields              = $addDagFields              || $configuration->getAutogenIncludeDagFields();
     $addFileFields             = $addFileFields             || $configuration->getAutogenIncludeFileFields();

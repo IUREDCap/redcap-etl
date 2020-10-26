@@ -228,8 +228,6 @@ class CsvDbConnection extends DbConnection
                         $label = '0';
                     }
                 } else {    // Non-checkbox field
-                    #print "** TABLE: {$table->name} - FIELD: {$field->name} - "
-                    #    ."USES LOOKUP: {$field->usesLookup} - VALUE: {$value}\n";
                     $label = $this->lookupTable->getLabel($table->name, $field->usesLookup, $value);
                 }
             }

@@ -22,7 +22,7 @@ class EtlTask
 {
     private $name;
     
-    /** @var int the task ID, which should be unique within a workflow */
+    /** @var int the task ID, which should be unique within a workflow; used as redcap_data_source value */
     private $id;
     
     /** @var EtlRedCapProject the project that has the data to extract */
@@ -268,7 +268,7 @@ class EtlTask
         } else {
             $rulesText = $this->configuration->getTransformationRules();
         }
-        
+
         $tablePrefix = $this->configuration->getTablePrefix();
         $schemaGenerator = new SchemaGenerator($this->dataProject, $this->configuration, $this->logger);
 
@@ -422,6 +422,10 @@ class EtlTask
                 }
             }
 
+            #print "\n\n";
+            #print $this->schema->toString();
+            #print "\n\n";
+
             foreach ($recordBatch as $recordId => $records) {
                 $recordEventsCount += count($records);
 
@@ -431,7 +435,7 @@ class EtlTask
                 $startTransformTime = microtime(true);
                 # For each root table, because processing will be done
                 # recursively to the child tables
-                foreach ($this->dbSchema->getRootTables() as $rootTable) {
+                foreach ($this->schema->getRootTables() as $rootTable) {
                     // Transform the records for this record_id into rows
                     $this->transform($rootTable, $records, '', '');
                 }
@@ -440,20 +444,17 @@ class EtlTask
             }
 
             #print("\n\n===============================================================\n");
-            #print("\n\nSCHEMA MAP\n{$this->dbSchema->toString()}\n\n");
+            #print("\n\nSCHEMA\n{$this->dbSchema->toString()}\n\n");
             #print("\n\n===============================================================\n");
             
             #-------------------------------------
             # Load the data into the database
             #-------------------------------------
             $startLoadTime = microtime(true);
-            foreach ($this->dbSchema->getTables() as $table) {
+            foreach ($this->schema->getTables() as $table) {
                 # Single row storage (stores one row at a time):
                 # foreach row, load it
                 ### $this->loadTableRows($table);
-                #print "*** LOADING ROWS FOR TABLE: \n";
-                #print_r($table);
-                #print "\n\n";
                 $this->loadTableRowsEfficiently($table);
             }
             #####$this->loadRows();

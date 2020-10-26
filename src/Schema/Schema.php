@@ -28,7 +28,7 @@ class Schema
     private $dbLogTable      = null;
     private $dbEventLogTable = null;
 
-    private $projectInfoTable = null;
+    #private $projectInfoTable = null;
 
     public function __construct()
     {
@@ -40,7 +40,11 @@ class Schema
      */
     public function merge($schema)
     {
-        $mergedSchema = $this;
+        $mergedSchema = new Schema();
+
+        $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
+
+        $mergedRootTables = array();
 
         # Create a table map that combines both schemas' tables that maps
         # from table name to a 2-element array, where the first element
@@ -66,16 +70,27 @@ class Schema
             if (empty($tables[0])) {
                 # table not in $this, table in $schema
                 $mergedTables[] = $tables[1];
+                if (in_array($tables[1], $schema->getRootTables())) {
+                    $mergedRootTables[] = $tables[1];
+                }
             } elseif (empty($fields[1])) {
                 # table in $this, not in $schema
                 $mergedTables[] = $tables[0];
+                if (in_array($tables[0], $this->getRootTables())) {
+                    $mergedRootTables[] = $tables[0];
+                }
             } else {
                 # table in both $this and $schema
-                $mergedTables[] = ($tables[0])->merge($tables[1]);
+                $mergedTable = ($tables[0])->merge($tables[1]);
+                $mergedTables[] = $mergedTable;
+                if (in_array($tables[0], $this->getRootTables())) {
+                    $mergedRootTables[] = $mergedTable;
+                }
             }
         }
 
-        $mergedSchema->tables = $mergedTables;
+        $mergedSchema->tables     = $mergedTables;
+        $mergedSchema->rootTables = $mergedRootTables;
 
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
@@ -211,15 +226,15 @@ class Schema
         $this->dbEventLogTable = $dbEventLogTable;
     }
 
-    public function getProjectInfoTable()
-    {
-        return $this->projectInfoTable;
-    }
+    #public function getProjectInfoTable()
+    #{
+    #    return $this->projectInfoTable;
+    #}
 
-    public function setProjectInfoTable($projectInfoTable)
-    {
-        $this->projectInfoTable = $projectInfoTable;
-    }
+    #public function setProjectInfoTable($projectInfoTable)
+    #{
+    #    $this->projectInfoTable = $projectInfoTable;
+    #}
 
     /**
      * Returns a string representation of the schema.
