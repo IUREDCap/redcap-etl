@@ -50,4 +50,44 @@ class FieldTest extends TestCase
 
         $this->assertEquals($expectedValue, $value, 'toString value check');
     }
+
+    public function testMergeCharFieldWithDifferentSizes()
+    {
+        $name = 'email';
+        $type = FieldType::CHAR;
+        $size1 = 40;
+
+        $field1 = new Field($name, $type, $size1);
+
+        $size2 = 60;
+        $field2 = new Field($name, $type, $size2);
+
+        $mergedField = $field1->merge($field2);
+
+        $this->assertNotNull($mergedField, 'Merged field not null check');
+
+        $this->assertEquals($name, $mergedField->name, 'Field name check');
+        $this->assertEquals(FieldType::CHAR, $mergedField->type, 'Field type check');
+        $this->assertEquals(max($size1, $size2), $mergedField->size, 'Field size check');
+    }
+
+    public function testMergeVarCharFieldWithDifferentSizes()
+    {
+        $name = 'email';
+        $type = FieldType::VARCHAR;
+        $size1 = 40;
+
+        $field1 = new Field($name, $type, $size1);
+
+        $size2 = 60;
+        $field2 = new Field($name, $type, $size2);
+
+        $mergedField = $field1->merge($field2);
+
+        $this->assertNotNull($mergedField, 'Merged field not null check');
+
+        $this->assertEquals($name, $mergedField->name, 'Field name check');
+        $this->assertEquals(FieldType::VARCHAR, $mergedField->type, 'Field type check');
+        $this->assertEquals(max($size1, $size2), $mergedField->size, 'Field size check');
+    }
 }
