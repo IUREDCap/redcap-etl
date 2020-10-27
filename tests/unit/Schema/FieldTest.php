@@ -90,4 +90,86 @@ class FieldTest extends TestCase
         $this->assertEquals(FieldType::VARCHAR, $mergedField->type, 'Field type check');
         $this->assertEquals(max($size1, $size2), $mergedField->size, 'Field size check');
     }
+
+    public function testMergeCharAndVarChar()
+    {
+        $name = 'email';
+        $type1 = FieldType::CHAR;
+        $size1 = 40;
+
+        $field1 = new Field($name, $type1, $size1);
+
+        $size2 = 60;
+        $type2 = FieldType::VARCHAR;
+        $field2 = new Field($name, $type2, $size2);
+
+        $mergedField = $field1->merge($field2);
+
+        $this->assertNotNull($mergedField, 'Merged field not null check');
+
+        $this->assertEquals($name, $mergedField->name, 'Field name check');
+        $this->assertEquals(FieldType::VARCHAR, $mergedField->type, 'Field type check');
+        $this->assertEquals(max($size1, $size2), $mergedField->size, 'Field size check');
+    }
+
+    public function testMergeVarCharAndChar()
+    {
+        $name = 'email';
+        $type1 = FieldType::VARCHAR;
+        $size1 = 40;
+
+        $field1 = new Field($name, $type1, $size1);
+
+        $size2 = 60;
+        $type2 = FieldType::CHAR;
+        $field2 = new Field($name, $type2, $size2);
+
+        $mergedField = $field1->merge($field2);
+
+        $this->assertNotNull($mergedField, 'Merged field not null check');
+
+        $this->assertEquals($name, $mergedField->name, 'Field name check');
+        $this->assertEquals(FieldType::VARCHAR, $mergedField->type, 'Field type check');
+        $this->assertEquals(max($size1, $size2), $mergedField->size, 'Field size check');
+    }
+
+    public function testMergeVarCharAndString()
+    {
+        $name = 'email';
+        $type1 = FieldType::VARCHAR;
+        $size1 = 40;
+
+        $field1 = new Field($name, $type1, $size1);
+
+        $type2 = FieldType::STRING;
+        $field2 = new Field($name, $type2);
+
+        $mergedField = $field1->merge($field2);
+
+        $this->assertNotNull($mergedField, 'Merged field not null check');
+
+        $this->assertEquals($name, $mergedField->name, 'Field name check');
+        $this->assertEquals(FieldType::STRING, $mergedField->type, 'Field type check');
+        $this->assertEquals(null, $mergedField->size, 'Field size check');
+    }
+
+    public function testMergeCharAndString()
+    {
+        $name = 'email';
+        $type1 = FieldType::CHAR;
+        $size1 = 40;
+
+        $field1 = new Field($name, $type1, $size1);
+
+        $type2 = FieldType::STRING;
+        $field2 = new Field($name, $type2);
+
+        $mergedField = $field1->merge($field2);
+
+        $this->assertNotNull($mergedField, 'Merged field not null check');
+
+        $this->assertEquals($name, $mergedField->name, 'Field name check');
+        $this->assertEquals(FieldType::STRING, $mergedField->type, 'Field type check');
+        $this->assertEquals(null, $mergedField->size, 'Field size check');
+    }
 }

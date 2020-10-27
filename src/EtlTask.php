@@ -274,7 +274,7 @@ class EtlTask
 
         list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
-        ###print "\n".($schema->toString())."\n";
+        # print "\n".($schema->toString())."\n";
 
         $this->schema = $schema;
 

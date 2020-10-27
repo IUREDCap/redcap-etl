@@ -1,0 +1,322 @@
+Found 39 user-defined fields in REDCap.
+Found 0 unmapped user-defined fields in REDCap.
+
+Number of tables: 10
+Number of root tables: 1
+
+Lookup Table
+    Lookup [lookup_id]
+    primary key: lookup_id  : lookup_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        table_name  : table_name string
+        field_name  : field_name string
+        value  : value string
+        label  : label string
+    Rows:
+        (table_name: enrollment, field_name: gender, value: 0, label: male, lookup_id: 1)
+        (table_name: enrollment, field_name: gender, value: 1, label: female, lookup_id: 2)
+        (table_name: enrollment, field_name: race, value: 0, label: American Indian/Alaska Native, lookup_id: 3)
+        (table_name: enrollment, field_name: race, value: 1, label: Asian, lookup_id: 4)
+        (table_name: enrollment, field_name: race, value: 2, label: Native Hawaiian or Other Pacific Islander, lookup_id: 5)
+        (table_name: enrollment, field_name: race, value: 3, label: Black or African American, lookup_id: 6)
+        (table_name: enrollment, field_name: race, value: 4, label: White, lookup_id: 7)
+        (table_name: enrollment, field_name: race, value: 5, label: Other, lookup_id: 8)
+        (table_name: contact_information, field_name: phone_type1, value: 0, label: cell, lookup_id: 9)
+        (table_name: contact_information, field_name: phone_type1, value: 1, label: home, lookup_id: 10)
+        (table_name: contact_information, field_name: phone_type1, value: 2, label: work, lookup_id: 11)
+        (table_name: contact_information, field_name: phone_type1, value: 3, label: other, lookup_id: 12)
+        (table_name: contact_information, field_name: phone_type2, value: 0, label: cell, lookup_id: 13)
+        (table_name: contact_information, field_name: phone_type2, value: 1, label: home, lookup_id: 14)
+        (table_name: contact_information, field_name: phone_type2, value: 2, label: work, lookup_id: 15)
+        (table_name: contact_information, field_name: phone_type2, value: 3, label: other, lookup_id: 16)
+        (table_name: contact_information, field_name: phone_type3, value: 0, label: cell, lookup_id: 17)
+        (table_name: contact_information, field_name: phone_type3, value: 1, label: home, lookup_id: 18)
+        (table_name: contact_information, field_name: phone_type3, value: 2, label: work, lookup_id: 19)
+        (table_name: contact_information, field_name: phone_type3, value: 3, label: other, lookup_id: 20)
+    Children:
+    primary key value: 21
+    uses lookup: 
+
+
+
+Root tables
+    root [root_id]
+    primary key: root_id  : root_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+    Rows:
+    Children:
+        enrollment
+        contact_information
+        emergency_contacts
+        weight
+        weight_repeating_events
+        weight_repeating_instruments
+        cardiovascular
+        cardiovascular_repeating_events
+        cardiovascular_repeating_instruments
+    primary key value: 1
+    uses lookup: 
+
+
+Tables
+    root [root_id]
+    primary key: root_id  : root_id int
+    foreign key: 
+    rows type: 0
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+    Rows:
+    Children:
+        enrollment
+        contact_information
+        emergency_contacts
+        weight
+        weight_repeating_events
+        weight_repeating_instruments
+        cardiovascular
+        cardiovascular_repeating_events
+        cardiovascular_repeating_instruments
+    primary key value: 1
+    uses lookup: 
+
+    enrollment [root]
+    primary key: enrollment_id  : enrollment_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        registration_date text : registration_date date
+        first_name text : first_name string
+        last_name text : last_name string
+        birthdate text : birthdate date
+        registration_age calc : registration_age string
+        gender radio : gender string [0 => male, 1 => female]
+        race___0 checkbox : race___0 int
+        race___1 checkbox : race___1 int
+        race___2 checkbox : race___2 int
+        race___3 checkbox : race___3 int
+        race___4 checkbox : race___4 int
+        race___5 checkbox : race___5 int
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    contact_information [root]
+    primary key: contact_information_id  : contact_information_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        home_address text : home_address string
+        phone1 text : phone1 string
+        phone_type1 dropdown : phone_type1 string [0 => cell, 1 => home, 2 => work, 3 => other]
+        phone2 text : phone2 string
+        phone_type2 dropdown : phone_type2 string [0 => cell, 1 => home, 2 => work, 3 => other]
+        phone3 text : phone3 string
+        phone_type3 dropdown : phone_type3 string [0 => cell, 1 => home, 2 => work, 3 => other]
+        email text : email string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 1
+
+    emergency_contacts [root]
+    primary key: emergency_contacts_id  : emergency_contacts_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        em_contact1 text : em_contact1 string
+        em_contact_phone1a text : em_contact_phone1a string
+        em_contact_phone1b text : em_contact_phone1b string
+        em_contact2 text : em_contact2 string
+        em_contact_phone2a text : em_contact_phone2a string
+        em_contact_phone2b text : em_contact_phone2b string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight [root]
+    primary key: weight_id  : weight_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg string
+        height_m text : height_m string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight_repeating_events [root]
+    primary key: weight_repeating_events_id  : weight_repeating_events_id int
+    foreign key: root_id  : root_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg string
+        height_m text : height_m string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    weight_repeating_instruments [root]
+    primary key: weight_repeating_instruments_id  : weight_repeating_instruments_id int
+    foreign key: root_id  : root_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        weight_time text : weight_time datetime
+        weight_kg text : weight_kg string
+        height_m text : height_m string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular [root]
+    primary key: cardiovascular_id  : cardiovascular_id int
+    foreign key: root_id  : root_id int
+    rows type: 1
+    Rows Suffixes: 
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl string
+        ldl_mg_dl text : ldl_mg_dl string
+        triglycerides_mg_dl text : triglycerides_mg_dl string
+        diastolic1 text : diastolic1 string
+        diastolic2 text : diastolic2 string
+        diastolic3 text : diastolic3 string
+        systolic1 text : systolic1 string
+        systolic2 text : systolic2 string
+        systolic3 text : systolic3 string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular_repeating_events [root]
+    primary key: cardiovascular_repeating_events_id  : cardiovascular_repeating_events_id int
+    foreign key: root_id  : root_id int
+    rows type: 5
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl string
+        ldl_mg_dl text : ldl_mg_dl string
+        triglycerides_mg_dl text : triglycerides_mg_dl string
+        diastolic1 text : diastolic1 string
+        diastolic2 text : diastolic2 string
+        diastolic3 text : diastolic3 string
+        systolic1 text : systolic1 string
+        systolic2 text : systolic2 string
+        systolic3 text : systolic3 string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+    cardiovascular_repeating_instruments [root]
+    primary key: cardiovascular_repeating_instruments_id  : cardiovascular_repeating_instruments_id int
+    foreign key: root_id  : root_id int
+    rows type: 4
+    Rows Suffixes:
+    Possible Suffixes:
+    Fields:
+        record_id  : record_id varchar(255)
+        redcap_event_name  : redcap_event_name varchar(255)
+        redcap_repeat_instrument  : redcap_repeat_instrument varchar(255)
+        redcap_repeat_instance  : redcap_repeat_instance int
+        cardiovascular_date text : cardiovascular_date date
+        hdl_mg_dl text : hdl_mg_dl string
+        ldl_mg_dl text : ldl_mg_dl string
+        triglycerides_mg_dl text : triglycerides_mg_dl string
+        diastolic1 text : diastolic1 string
+        diastolic2 text : diastolic2 string
+        diastolic3 text : diastolic3 string
+        systolic1 text : systolic1 string
+        systolic2 text : systolic2 string
+        systolic3 text : systolic3 string
+    Rows:
+    Children:
+    primary key value: 1
+    uses lookup: 
+
+
+Created table 'root'
+Created table 'enrollment'; Lookup table created
+Created table 'contact_information'; Lookup table created
+Created table 'emergency_contacts'
+Created table 'weight'
+Created table 'weight_repeating_events'
+Created table 'weight_repeating_instruments'
+Created table 'cardiovascular'
+Created table 'cardiovascular_repeating_events'
+Created table 'cardiovascular_repeating_instruments'
+REDCap-ETL version 1.5.6
+REDCap version 10.0.19
+REDCap API URL: http://localhost/redcap/api/
+Project ID: 17
+Project title: Repeating Events
+Configuration: config/repeating-events.ini
+Number of load databases: 1
+Load database 1: 0
+Starting processing.
+Number of record_ids found: 100
+Rows loaded for table 'root': 100
+Rows loaded for table 'enrollment': 100
+Rows loaded for table 'contact_information': 100
+Rows loaded for table 'emergency_contacts': 100
+Rows loaded for table 'weight': 100
+Rows loaded for table 'weight_repeating_events': 200
+Rows loaded for table 'weight_repeating_instruments': 200
+Rows loaded for table 'cardiovascular': 100
+Rows loaded for table 'cardiovascular_repeating_events': 200
+Rows loaded for table 'cardiovascular_repeating_instruments': 200
+Number of record events transformed: 800
+Processing complete.
