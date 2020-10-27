@@ -516,6 +516,8 @@ class EtlTask
                     #------------------------------------------------------------------------
                     $rootRecordFound = false;
                     foreach ($records as $record) {
+                        # Add the REDCap data source to the record
+                        $record[RedCapEtl::COLUMN_DATA_SOURCE] = $this->id;
                         $primaryKey =
                             $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
 
@@ -554,6 +556,8 @@ class EtlTask
                 case RowsType::BY_REPEATING_EVENTS:
                     // Foreach Record (i.e., foreach event or repeatable form or repeatable event)
                     foreach ($records as $record) {
+                        # Add the REDCap data source to the record
+                        $record[RedCapEtl::COLUMN_DATA_SOURCE] = $this->id;
                         $primaryKey =
                             $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
 
@@ -569,6 +573,8 @@ class EtlTask
                 case RowsType::BY_SUFFIXES:
                     // Foreach Suffix
                     foreach ($table->rowsSuffixes as $newSuffix) {
+                        # Add the REDCap data source to the record
+                        $record[RedCapEtl::COLUMN_DATA_SOURCE] = $this->id;
                         $primaryKey = $table->createRow(
                             $records[0],
                             $foreignKey,
@@ -591,6 +597,8 @@ class EtlTask
                     foreach ($records as $record) {
                         // Foreach Suffix
                         foreach ($table->rowsSuffixes as $newSuffix) {
+                            # Add the REDCap data source to the record
+                            $record[RedCapEtl::COLUMN_DATA_SOURCE] = $this->id;
                             $primaryKey = $table->createRow(
                                 $record,
                                 $foreignKey,

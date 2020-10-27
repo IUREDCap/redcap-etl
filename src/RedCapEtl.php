@@ -31,6 +31,8 @@ class RedCapEtl
 
     const COLUMN_DAG = 'redcap_data_access_group';
 
+    const COLUMN_DATA_SOURCE = 'redcap_data_source';
+
     # Text logged when the ETL process completes successfully.
     # This can be used to programmatically check the log for
     # when the process completes.

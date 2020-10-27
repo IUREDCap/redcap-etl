@@ -60,7 +60,7 @@ class BasicDemography2Test extends TestCase
         $expectedCsv = $parser2->parse();
 
         $header = $csv[0];
-        $this->assertEquals($header[1], 'record_id', 'Record id header test.');
+        $this->assertEquals($header[2], 'record_id', 'Record id header test.');
         $this->assertEquals(101, count($csv), 'Demography row count check.');
 
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');

@@ -456,6 +456,9 @@ class Table
                 } else {
                     $row->data[$field->dbName] = '';
                 }
+            } elseif ($field->name === RedCapEtl::COLUMN_DATA_SOURCE) {
+                # Just copy the field and don't count it as a "data found" field
+                $row->data[$field->dbName] = $data[$field->name];
             } elseif (preg_match('/_timestamp$/', $field->name) === 1 && $field->type === FieldType::DATETIME) {
                 # Handle survey timestamps differently; can have '[not completed]' value,
                 # which may cause an error for datetime fields

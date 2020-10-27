@@ -379,6 +379,12 @@ class SchemaGenerator
             $this->tablePrefix
         );
 
+        #-----------------------------------------------------
+        # Add redcap_data_source field to all tables
+        #-----------------------------------------------------
+        $field = new Field(RedCapEtl::COLUMN_DATA_SOURCE, FieldType::INT);
+        $table->addField($field);
+
         #---------------------------------------------------------
         # Add the record ID field as a field for all tables
         # (unless the primary key or foreign key has the same

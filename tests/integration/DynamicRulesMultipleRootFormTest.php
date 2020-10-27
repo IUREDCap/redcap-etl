@@ -156,7 +156,7 @@ class DynamicRulesMultipleRootFormTest extends TestCase
             'dynamicRulesMultipleRootForm check - combine non repeating fields, non-repeating forms file exists'
         );
 
-        $expected = '"combined_forms_id","record_id","building_number"';
+        $expected = '"combined_forms_id","redcap_data_source","record_id","building_number"';
         $expected .= "\n";
         $a = fopen(self::$combinedFormsCsvFile, 'r');
         if ($a) {
