@@ -58,7 +58,7 @@ class SchemaGenerationTest extends TestCase
         $tables = $schema->getTables();
         $actualTableNames = array();
         foreach ($tables as $table) {
-            array_push($actualTableNames, $table->getName());
+            $actualTableNames[] = $table->name;
         }
         $this->assertEquals($expectedTableNames, $actualTableNames, 'Get tables test');
 
@@ -105,17 +105,47 @@ class SchemaGenerationTest extends TestCase
 
         $this->assertNotNull($schema);
 
-        $result = $schema;
+        $tables = $schema->getTables();
+        $tableNames = array();
+        foreach ($tables as $table) {
+            $tableName = $table->getName();
+            $fields    = $table->getFields();
+            $tableNames[] = $tableName;
+            if ($tableName === 're_enrollment') {
+                $enrollmentFieldNames = array_column($fields, 'name');
+            } elseif ($tableName === 're_baseline') {
+                $baselineFieldNames = array_column($fields, 'name');
+            }
+        }
 
-#        #Put the returned schema into a string format for comparison purposes
-#        $output = print_r($result[0], true);
-#
-#        #Retrieve what the output text string should resemble
-#        $file='tests/data/schema_generator_output4.txt';
-#        $expected = file_get_contents($file);
-#
-#        #test that the generated output matches what is expected
-#        $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema longitudinal output');
+        $expectedTableNames = [
+            're_enrollment', 're_baseline', 're_home_weight_visits', 're_home_cardiovascular_visits',
+            're_visits', 're_baseline_and_visits', 're_baseline_and_home_visits',
+            're_visits_and_home_visits', 're_all_visits'
+        ];
+
+        $this->assertEquals($expectedTableNames, $tableNames, 'Table names test');
+
+        # Test enrollment field names
+        $expectedEnrollmentFieldNames = [
+            'redcap_data_source', 'record_id',    # fields added by REDCap-ETL
+            'registration_date', 'first_name', 'last_name', 'birthdate', 'registration_age', 'gender',
+            'race___0', 'race___1', 'race___2', 'race___3', 'race___4', 'race___5'
+        ];
+
+        $this->assertEquals($expectedEnrollmentFieldNames, $enrollmentFieldNames, 'Enrollment field names test');
+
+ 
+        # Test baseline field names
+        $expectedBaselineFieldNames = [
+            'redcap_data_source', 'record_id', 'redcap_event_name',    # fields added by REDCap-ETL
+            'weight_time', 'weight_kg', 'height_m',
+            'cardiovascular_date', 'hdl_mg_dl', 'ldl_mg_dl', 'triglycerides_mg_dl',
+            'diastolic1', 'diastolic2', 'diastolic3',
+            'systolic1', 'systolic2', 'systolic3'
+        ];
+
+        $this->assertEquals($expectedBaselineFieldNames, $baselineFieldNames, 'Enrollment field names test');
     }
 
     /**
