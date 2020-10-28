@@ -263,21 +263,12 @@ class RedCapEtl
 
     public function getEtlTasks()
     {
-        return $this->etlTasks;
+        return $this->etlProcess->getTasks();
     }
 
     public function getEtlTask($index)
     {
-        $proc = null;
-        $i = 0;
-        foreach ($this->etlTasks as $configName => $etlTask) {
-            if ($i === $index) {
-                $proc = $etlTask;
-                break;
-            }
-            $i++;
-        }
-        return $proc;
+        return $this->etlProcess->getTask($index);
     }
     
     public function getEtlProcess()

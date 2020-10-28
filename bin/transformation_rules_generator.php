@@ -164,7 +164,9 @@ try {
         $nonRepeatingFieldsTable = '';
     }
 
-    $rules = $redCapEtl->autoGenerateRules(
+    $task = $redCapEtl->getEtlTask(0);
+
+    $rules = $task->autoGenerateRules(
         $addCompleteFields,
         $addDagFields,
         $addFileFields,

@@ -595,13 +595,13 @@ class Table
         $allFields = $this->getFields();
         $fieldNames = array_column($allFields, 'name');
 
-        if (count($fieldNames) === 1) {
-            if (in_array($this->recordIdFieldName, $fieldNames)) {
+        if (count($fieldNames) === 2) {
+            if ($fieldNames == [RedCapEtl::COLUMN_DATA_SOURCE, $this->recordIdFieldName]) {
                 # If the record ID is the ONLY field in the table
                 $isRecordIdTable = true;
             }
-        } elseif (count($fieldNames) === 2) {
-            if (in_array($this->recordIdFieldName, $fieldNames) && in_array(RedCapEtl::COLUMN_DAG, $fieldNames)) {
+        } elseif (count($fieldNames) === 3) {
+            if ($fieldNames == [RedCapEtl::COLUMN_DATA_SOURCE, $this->recordIdFieldName, RedCapEtl::COLUMN_DAG]) {
                 # If the record ID and DAG (Data Access Group) are the only records in the table
                 $isRecordIdTable = true;
             }

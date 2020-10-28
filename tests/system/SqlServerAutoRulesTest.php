@@ -88,7 +88,7 @@ class SqlServerAutoRulesTest extends TestCase
     public function testEnrollmentTable()
     {
         $sql = 'SELECT '
-            .' enrollment_id, record_id, registration_date, first_name, last_name, '
+            .' enrollment_id, redcap_data_source, record_id, registration_date, first_name, last_name, '
             .' birthdate, registration_age, gender, '
             .' race___0, race___1, race___2, race___3, race___4, race___5'
             .' FROM enrollment ORDER BY record_id';
@@ -107,7 +107,7 @@ class SqlServerAutoRulesTest extends TestCase
     public function testEnrollmentView()
     {
         $sql = 'SELECT '
-            .' enrollment_id, record_id, registration_date, first_name, last_name, '
+            .' enrollment_id, redcap_data_source, record_id, registration_date, first_name, last_name, '
             .' birthdate, registration_age, gender, '
             .' race___0, race___1, race___2, race___3, race___4, race___5'
             .' FROM enrollment_label_view ORDER BY record_id';
