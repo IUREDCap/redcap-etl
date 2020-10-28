@@ -326,12 +326,14 @@ class SqlServerTest extends TestCase
         $foreignKey = null;
         $suffix = null;
         $data = [
+            'redcap_data_source' => 1,
             'recordid' => 1001,
             'fullname' => 'Ima Tester'
         ];
         $rootTable->createRow($data, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data1 = [
+            'redcap_data_source' => 1,
             'recordid' => 1002,
             'fullname' => 'Person That Has Way TOOOOO Many Letters in Their Name'
         ];
@@ -366,6 +368,7 @@ class SqlServerTest extends TestCase
         #############################################################
         #insert one row to see if it processes correctly
         $data = [
+            'redcap_data_source' => 1,
             'recordid' => 1001,
             'name' => 'Some Other Person'
         ];
@@ -488,6 +491,7 @@ class SqlServerTest extends TestCase
         $suffix = null;
         #updatedate deliberately not populated in any of the rows
         $data1 = [
+            'redcap_data_source' => 1,
             'recordid' => 1001,
             'fullname' => 'Ima Tester',
             'score' => 12.3,
@@ -497,6 +501,7 @@ class SqlServerTest extends TestCase
         $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data2 = [
+            'redcap_data_source' => 1,
             'recordid' => 1002,
             'fullname' => 'Spider Webb',
             'score' => 4.56,
@@ -599,12 +604,14 @@ class SqlServerTest extends TestCase
         $foreignKey = null;
         $suffix = null;
         $data21 = [
+            'redcap_data_source' => 1,
             'recordid' => 1001,
             'fullname' => 'Ima Tester'
         ];
         $rootTable2->createRow($data21, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data22 = [
+            'redcap_data_source' => 1,
             'recordid' => 1002,
             'fullname' => 'Person That Has Way TOOOOO Many Letters in Their Name'
         ];
@@ -899,12 +906,14 @@ class SqlServerTest extends TestCase
         $foreignKey = null;
         $suffix = null;
         $data1 = [
+            'redcap_data_source' => 1,
             'recordid' => 1001,
             'fullname' => 'Ima Tester'
         ];
         $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data2 = [
+            'redcap_data_source' => 1,
             'recordid' => 1002,
             'fullname' => 'Spider Webb'
         ];
@@ -1062,6 +1071,7 @@ class SqlServerTest extends TestCase
         $foreignKey = null;
         $suffix = null;
         $data1 = [
+            'redcap_data_source' => 1,
             'recordid' => 1001,
             'fullname' => 'Ima Tester',
             'maritalstatus' => 0
@@ -1069,6 +1079,7 @@ class SqlServerTest extends TestCase
         $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data2 = [
+            'redcap_data_source' => 1,
             'recordid' => 1002,
             'fullname' => 'Spider Webb',
             'maritalstatus' => 3

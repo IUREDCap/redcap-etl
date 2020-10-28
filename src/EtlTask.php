@@ -574,7 +574,7 @@ class EtlTask
                     // Foreach Suffix
                     foreach ($table->rowsSuffixes as $newSuffix) {
                         # Add the REDCap data source to the record
-                        $record[RedCapEtl::COLUMN_DATA_SOURCE] = $this->id;
+                        $records[0][RedCapEtl::COLUMN_DATA_SOURCE] = $this->id;
                         $primaryKey = $table->createRow(
                             $records[0],
                             $foreignKey,

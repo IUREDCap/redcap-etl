@@ -249,6 +249,7 @@ class DatabasesTest extends TestCase
         $suffix = null;
         #update_date deliberately not populated in any of the rows
         $data1 = [
+            'redcap_data_source' => 1,
             'record_id' => 1001,
             'full_name' => 'Ima Tester',
             'score' => 12.3,
@@ -258,6 +259,7 @@ class DatabasesTest extends TestCase
         $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data2 = [
+            'redcap_data_source' => 1,
             'record_id' => 1002,
             'full_name' => 'Spider Webb',
             'score' => 4.56,
@@ -360,12 +362,14 @@ class DatabasesTest extends TestCase
         $foreignKey = null;
         $suffix = null;
         $data21 = [
+            'redcap_data_source' => 1,
             'record_id' => 1001,
             'full_name' => 'Ima Tester'
         ];
         $rootTable2->createRow($data21, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data22 = [
+            'redcap_data_source' => 1,
             'record_id' => 1002,
             'full_name' => 'Person That Has Way TOOOOO Many Letters in Their Name'
         ];
@@ -442,12 +446,14 @@ class DatabasesTest extends TestCase
         $foreignKey = null;
         $suffix = null;
         $data = [
+            'redcap_data_source' => 1,
             'record_id' => 1001,
             'full_name' => 'Ima Tester'
         ];
         $rootTable->createRow($data, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data1 = [
+            'redcap_data_source' => 1,
             'record_id' => 1002,
             'full_name' => 'Person That Has Way TOOOOO Many Letters in Their Name'
         ];
@@ -482,6 +488,7 @@ class DatabasesTest extends TestCase
         #############################################################
         #insert one row to see if it processes correctly
         $data = [
+            'redcap_data_source' => 1,
             'record_id' => 1001,
             'name' => 'Some Other Person'
         ];
@@ -773,12 +780,14 @@ class DatabasesTest extends TestCase
         $foreignKey = null;
         $suffix = null;
         $data1 = [
+            'redcap_data_source' => 1,
             'record_id' => 1001,
             'full_name' => 'Ima Tester'
         ];
         $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data2 = [
+            'redcap_data_source' => 1,
             'record_id' => 1002,
             'full_name' => 'Spider Webb'
         ];
@@ -962,6 +971,7 @@ class DatabasesTest extends TestCase
         $foreignKey = null;
         $suffix = null;
         $data1 = [
+            'redcap_data_source' => 1,
             'record_id' => 1001,
             'full_name' => 'Ima Tester',
             'marital_status' => 0
@@ -969,6 +979,7 @@ class DatabasesTest extends TestCase
         $rootTable->createRow($data1, $foreignKey, $suffix, RowsType::BY_EVENTS);
 
         $data2 = [
+            'redcap_data_source' => 1,
             'record_id' => 1002,
             'full_name' => 'Spider Webb',
             'marital_status' => 3
