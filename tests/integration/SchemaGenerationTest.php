@@ -61,16 +61,6 @@ class SchemaGenerationTest extends TestCase
             $actualTableNames[] = $table->name;
         }
         $this->assertEquals($expectedTableNames, $actualTableNames, 'Get tables test');
-
-#        # Put the returned schema into a string format for comparison purposes
-#        $output = print_r($schema, true);
-#
-#        # Retrieve what the output text string should resemble
-#        $file = 'tests/data/schema_generator_output1.txt';
-#        $expected = file_get_contents($file);
-#
-#        # Test that the generated output matches what is expected
-#        $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema output');
     }
    
     /**
@@ -105,17 +95,14 @@ class SchemaGenerationTest extends TestCase
 
         $this->assertNotNull($schema);
 
+        #--------------------------------------------
+        # Test table names
+        #--------------------------------------------
         $tables = $schema->getTables();
         $tableNames = array();
         foreach ($tables as $table) {
             $tableName = $table->getName();
-            $fields    = $table->getFields();
             $tableNames[] = $tableName;
-            if ($tableName === 're_enrollment') {
-                $enrollmentFieldNames = array_column($fields, 'name');
-            } elseif ($tableName === 're_baseline') {
-                $baselineFieldNames = array_column($fields, 'name');
-            }
         }
 
         $expectedTableNames = [
@@ -126,7 +113,13 @@ class SchemaGenerationTest extends TestCase
 
         $this->assertEquals($expectedTableNames, $tableNames, 'Table names test');
 
+        #------------------------------------------
         # Test enrollment field names
+        #------------------------------------------
+        $table = $schema->getTable('re_enrollment');
+        $fields = $table->getFields();
+        $enrollmentFieldNames = array_column($fields, 'name');
+
         $expectedEnrollmentFieldNames = [
             'redcap_data_source', 'record_id',    # fields added by REDCap-ETL
             'registration_date', 'first_name', 'last_name', 'birthdate', 'registration_age', 'gender',
@@ -136,7 +129,13 @@ class SchemaGenerationTest extends TestCase
         $this->assertEquals($expectedEnrollmentFieldNames, $enrollmentFieldNames, 'Enrollment field names test');
 
  
+        #-----------------------------------------
         # Test baseline field names
+        #-----------------------------------------
+        $table = $schema->getTable('re_baseline');
+        $fields = $table->getFields();
+        $baselineFieldNames = array_column($fields, 'name');
+
         $expectedBaselineFieldNames = [
             'redcap_data_source', 'record_id', 'redcap_event_name',    # fields added by REDCap-ETL
             'weight_time', 'weight_kg', 'height_m',
@@ -240,17 +239,6 @@ class SchemaGenerationTest extends TestCase
         $rulesText = $configuration->getTransformationRules();
         $result = $schemaGenerator->generateSchema($rulesText);
 
-#        #Put the returned schema into a string format for comparison purposes
-#        $output = print_r($result[0], true);
-#
-#        #Retrieve what the output text string should resemble (no comments field, since that
-#        #field has the misspelled 'FIELD' reserved word)
-#        $file='tests/data/schema_generator_output2.txt';
-#        $expected = file_get_contents($file);
-#
-#        #test that the generated output matches what is expected
-#        $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema bad rule output');
-
         #test that the error message was written to the log file
         $logText = file_get_contents($logFile, false, null, 0, 500);
         $unrecognizedRuleMsg = 'Unrecognized rule type "IELD"';
@@ -301,17 +289,6 @@ class SchemaGenerationTest extends TestCase
         #Generate the schema
         $rulesText = $configuration->getTransformationRules();
         $result = $schemaGenerator->generateSchema($rulesText);
-
-#        #Put the returned schema into a string format for comparison purposes
-#        $output = print_r($result[0], true);
-#
-#        #Retrieve what the output text string should resemble (no bmi field, since that
-#        #field name was misspelled as 'bbbmi')
-#        $file='tests/data/schema_generator_output3.txt';
-#        $expected = file_get_contents($file);
-#
-#        #test that the generated output matches what is expected
-#        $this->assertEquals($expected, $output, 'SchemaGenerator, generateSchema bad field name output');
 
         #test that the error message was written to the log file
         $logText = file_get_contents($logFile, false, null, 0, 500);
