@@ -40,7 +40,7 @@ class EtlProcess
      * Constructor.
      *
      */
-    public function __construct($workflow, $logger, $redcapProjectClass)
+    public function __construct($workflowConfig, $logger, $redcapProjectClass)
     {
         $this->dbSchemas     = array();
         $this->dbConnections = array();
@@ -54,7 +54,7 @@ class EtlProcess
         # Create tasks and database information
         #---------------------------------------------
         $taskId = 1;
-        foreach ($workflow->getConfigurations() as $configName => $configuration) {
+        foreach ($workflowConfig->getConfigurations() as $configName => $configuration) {
             # Create task for this configuration
             $etlTask = new EtlTask($taskId);
             $etlTask->initialize($this->logger, $configName, $configuration, $redcapProjectClass);

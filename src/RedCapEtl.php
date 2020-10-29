@@ -51,7 +51,8 @@ class RedCapEtl
     private $recordIdFieldName;   // The field name for the record ID
                                   // for the data project in REDCap
 
-    private $workflow;       // parsed (possibly multiple) configuration
+    /** @var WorkflowConfig workflow configuration */
+    private $workflowConfig;
 
     /** @var array map where the keys represent root tables that have
      *     fields that have multiple rows of data per record ID.
@@ -83,9 +84,9 @@ class RedCapEtl
     ) {
         $this->app = $logger->getApp();
 
-        $this->workflow = new Workflow($logger, $properties, $redcapProjectClass);
+        $this->workflowConfig = new WorkflowConfig($logger, $properties, $redcapProjectClass);
         
-        $this->etlProcess = new EtlProcess($this->workflow, $logger, $redcapProjectClass);
+        $this->etlProcess = new EtlProcess($this->workflowConfig, $logger, $redcapProjectClass);
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;

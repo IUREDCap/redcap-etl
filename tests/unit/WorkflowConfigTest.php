@@ -11,19 +11,19 @@ use PHPUnit\Framework\TestCase;
 /**
  * PHPUnit tests for the Logger class.
  */
-class WorkflownTest extends TestCase
+class WorkflowConfigTest extends TestCase
 {
     public function setUp()
     {
     }
 
 
-    public function testWorkflow()
+    public function testWorkflowConfig()
     {
         $propertiesFile = __DIR__.'/../data/config-testconfiguration.ini';
         $logger = new Logger('test-app');
 
-        $workflow = new Workflow($logger, $propertiesFile);
-        $this->assertNotNull($workflow, 'config not null check');
+        $workflowConfig = new WorkflowConfig($logger, $propertiesFile);
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
     }
 }

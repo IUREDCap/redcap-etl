@@ -15,16 +15,16 @@ use IU\REDCapETL\Database\DbConnectionFactory;
 use IU\REDCapETL\Schema\FieldTypeSpecifier;
 
 /**
- * Class used to store ETL workflow information from
+ * Class used to store ETL workflow configuration information from
  * a configuration file.
  *
- * Workflows contain one or more configurations that are
+ * WorkflowConfigs contain one or more configurations that are
  * executed sequentially by REDCap-ETL with optional global properties
  * that override properties defined for individual configurations.
  */
-class Workflow
+class WorkflowConfig
 {
-    # Keys used in JSON workflow arrays that are the result of parsing a JSON file or string
+    # Keys used in JSON workflow config arrays that are the result of parsing a JSON file or string
     const JSON_WORKFLOW_KEY          = 'workflow';
     const JSON_GLOBAL_PROPERTIES_KEY = 'global_properties';
     const JSON_CONFIGURATIONS_KEY    = 'configurations';
@@ -40,7 +40,7 @@ class Workflow
     private $configurationFile;
 
     /**
-     * Creates a Workflow object from a workflow file.
+     * Creates a WorkflowConfig object from a workflow config file.
      *
      * @param Logger $logger logger for information and errors
      *
@@ -80,14 +80,14 @@ class Workflow
                 #---------------------------
                 # .ini configuration file
                 #---------------------------
-                $this->parseIniWorkflowFile($this->configurationFile);
+                $this->parseIniWorkflowConfigFile($this->configurationFile);
             } elseif (preg_match('/\.json$/i', $this->configurationFile) === 1) {
                 #-----------------------------------------------------------------
                 # JSON configuration file
                 #-----------------------------------------------------------------
-                $this->parseJsonWorkflowFile($this->configurationFile);
+                $this->parseJsonWorkflowConfigFile($this->configurationFile);
             } else {
-                $message = 'Non-JSON workflow file specified.';
+                $message = 'Non-JSON workflow configuration file specified.';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
             }
@@ -98,13 +98,13 @@ class Workflow
         }
     }
 
-    public function parseJsonWorkflowFile($configurationFile)
+    public function parseJsonWorkflowConfigFile($configurationFile)
     {
         $baseDir = realpath(dirname($configurationFile));
 
         $configurationFileContents = file_get_contents($configurationFile);
         if ($configurationFileContents === false) {
-            $message = 'The workflow file "'.$this->configurationFile.'" could not be read.';
+            $message = 'The workflow configuration file "'.$this->configurationFile.'" could not be read.';
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         }
@@ -117,20 +117,20 @@ class Workflow
         }
 
         if (array_key_exists(self::JSON_WORKFLOW_KEY, $config)) {
-            # Workflow
+            # WorkflowConfig
             if (count($config) > 1) {
-                throw new \Exception("Non-workflow properties at top-level of workflow.");
+                throw new \Exception("Non-workflow properties at top-level of workflow configuration.");
             }
 
-            $workflow = $config[self::JSON_WORKFLOW_KEY];
-            if (array_key_exists(self::JSON_GLOBAL_PROPERTIES_KEY, $workflow)) {
-                $this->globalProperties = $workflow[self::JSON_GLOBAL_PROPERTIES_KEY];
+            $workflowConfig = $config[self::JSON_WORKFLOW_KEY];
+            if (array_key_exists(self::JSON_GLOBAL_PROPERTIES_KEY, $workflowConfig)) {
+                $this->globalProperties = $workflowConfig[self::JSON_GLOBAL_PROPERTIES_KEY];
                 $this->globalProperties = $this->processJsonProperties($this->globalProperties);
                 $this->globalProperties = Configuration::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
             }
 
-            if (array_key_exists(self::JSON_CONFIGURATIONS_KEY, $workflow)) {
-                $configurations = $workflow[self::JSON_CONFIGURATIONS_KEY];
+            if (array_key_exists(self::JSON_CONFIGURATIONS_KEY, $workflowConfig)) {
+                $configurations = $workflowConfig[self::JSON_CONFIGURATIONS_KEY];
                 foreach ($configurations as $properties) {
                     $properties = $this->processJsonProperties($properties);
                     $properties = Configuration::makeFilePropertiesAbsolute($properties, $baseDir);
@@ -201,16 +201,16 @@ class Workflow
         return $properties;
     }
 
-    public function parseIniWorkflowFile($configurationFile)
+    public function parseIniWorkflowConfigFile($configurationFile)
     {
         $baseDir = realpath(dirname($configurationFile));
 
         $processSections = true;
         $config = parse_ini_file($configurationFile, $processSections);
 
-        $isWorkflow = $this->isIniWorkflow($config);
+        $isWorkflowConfig = $this->isIniWorkflowConfig($config);
 
-        if ($isWorkflow) {
+        if ($isWorkflowConfig) {
             foreach ($config as $propertyName => $propertyValue) {
                 if (is_array($propertyValue)) {
                     # Section (that defines a configuration)
@@ -262,19 +262,19 @@ class Workflow
     /**
      * @return true if this is a workflow configuration, false otherwise
      */
-    public function isIniWorkflow($config)
+    public function isIniWorkflowConfig($config)
     {
-        $isWorkflow = false;
+        $isWorkflowConfig = false;
         $numArrays = 0;
         $numScalars = 0;
         foreach ($config as $key => $value) {
             if (is_array($value)) {
-                $isWorkflow = true;
+                $isWorkflowConfig = true;
                 break;
             }
         }
 
-        return $isWorkflow;
+        return $isWorkflowConfig;
     }
 
     public function generateJson()
