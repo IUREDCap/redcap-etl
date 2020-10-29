@@ -9,8 +9,8 @@ namespace IU\REDCapETL\Schema;
 use IU\REDCapETL\EtlException;
 
 /**
- * Contains a complete type specification for a field, including the
- * type and size of the field.
+ * Class for complete database type specification for a field,
+ * including the type and size of the field.
  */
 class FieldTypeSpecifier
 {
@@ -18,7 +18,7 @@ class FieldTypeSpecifier
     private $type;
 
     /** @var int the size of the field */
-    private $size;  // int
+    private $size;
 
     /**
      * Constructor.
