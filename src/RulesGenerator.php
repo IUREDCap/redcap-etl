@@ -367,10 +367,10 @@ class RulesGenerator
      *         redcap:Variable="basic_information_timestamp">
      *         <Question><TranslatedText>Survey Timestamp</TranslatedText></Question>
      *     </ItemDef>
-     * This node is being used instead of just for <form_name>_timestamp just in case
-     * someone might name a variable with that name. The survey timestamp is being used
-     * instead of the survey identifier because it seems that not all surveys will have
-     * any child nodes with the text "Survey Identifier."
+     * This node is being used instead of looking for <form_name>_timestamp just in case
+     * someone might name a variable with that name. Also, the survey timestamp is
+     * being used instead of the survey identifier because it seems that not all 
+     * surveys will have any child nodes with the text "Survey Identifier."
      */
     protected function getSurveyInstruments()
     {
