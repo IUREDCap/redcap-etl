@@ -349,7 +349,7 @@ class RulesGenerator
             self::REDCAP_XML_NAMESPACE,
             'Surveys'
         );
-    
+
         foreach ($surveysNodes as $surveysNode) {
             $instrumentName  = $surveysNode->getAttribute('form_name');
             $surveyInstruments[] = $instrumentName;
@@ -360,7 +360,7 @@ class RulesGenerator
 
     /**
      * This function assumes that surveys can be identified by in the project
-     * XML, in the ItemDef element that contains a TranslatedText child node 
+     * XML, in the ItemDef element that contains a TranslatedText child node
      * containing the text "Survey Timestamp," for example:
      *     <ItemDef OID="basic_information_timestamp" Name="basic_information_timestamp"
      *         DataType="datetime" Length="999"
@@ -379,17 +379,21 @@ class RulesGenerator
 
         if ($hasSurvey > 0) {
             $xml = new \SimpleXMLElement($this->projectXml);
+            // phpcs:disable
             $metaData = $xml->Study->MetaDataVersion;
+            // phpcs:enable
 
             # identify instruments that are surveys
             foreach ($metaData->children() as $child) {
                 if ($child->getName() === "ItemDef") {
                     #$attributes = $child->attributes();
+                    // phpcs:disable
                     if (isset($child->Question->TranslatedText)) {
                         $text = (string) $child->Question->TranslatedText;
+                        // phpcs:enable
                         if ($text === 'Survey Timestamp') {
                             $instrument = str_replace('_timestamp', '', $child['Name']);
-                            if (!in_array($instrument, $surveyInstruments)) { 
+                            if (!in_array($instrument, $surveyInstruments)) {
                                 $surveyInstruments[] = $instrument;
                             }
                         }
@@ -544,7 +548,7 @@ class RulesGenerator
         $rootForm = $this->getRootInstrument();
         $repeatingForms = $this->getRepeatingInstruments();
 
-print "\n\nin RulesGenerator.php, generateIndividualTableRules\n\n";
+        print "\n\nin RulesGenerator.php, generateIndividualTableRules\n\n";
 
         if (in_array($rootForm, $repeatingForms)) {
             #--------------------------------------------------------
