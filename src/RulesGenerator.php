@@ -25,6 +25,7 @@ class RulesGenerator
     private $recordId;
     private $metadata;
     private $projectXmlDom;
+    private $projectXml;
     private $eventMappings;
 
     private $addFormCompleteFields;
@@ -99,14 +100,35 @@ class RulesGenerator
         // echo "}";
         // echo "\n";
         // echo "\n";
-        $projectXml  = $dataProject->exportProjectXml($metadataOnly = true);
-        // echo "\n";
-        // echo "\n";
-        // echo $projectXml;
-        // echo "\n";
-        // echo "\n";
+
+        // make sure the following fields are boolean
+        $returnMetadataOnly = true;
+        if (empty($this->addSurveyFields)) {
+            $exportSurveyFields = false;
+        } else {
+            $exportSurveyFields = true;
+            $returnMetadataOnly = false;
+        }
+        $exportDataAccessGroups = empty($this->addDagFields) ? false : true;
+        $exportFiles = empty($this->addFileFields) ? false : true;
+        $this->projectXml  = $dataProject->exportProjectXml(
+            $returnMetadataOnly,
+            $recordIds = null,
+            $fields = null,
+            $events = null,
+            $filterLogic = null,
+            $exportSurveyFields,
+            $exportDataAccessGroups,
+            $exportFiles
+        );
+        #echo "\nin RulesGenerator, projectXml is\n";
+        #echo "\n";
+        #echo $projectXml;
+        #echo "\n";
+        #echo "\n";
+
         $this->projectXmlDom = new \DomDocument();
-        $this->projectXmlDom->loadXML($projectXml);
+        $this->projectXmlDom->loadXML($this->projectXml);
 
         $this->recordId = $this->metadata[0]['field_name'];
 
@@ -189,6 +211,7 @@ class RulesGenerator
         $fields = '';
 
         if ($this->addSurveyFields && in_array($formName, $this->getSurveyInstruments())) {
+        #if ($this->addSurveyFields && $this->isSurvey()) {
             # Add survey identifier field
             $field['field_name'] = RedCapEtl::COLUMN_SURVEY_IDENTIFIER;
             $field['field_type'] = 'text';
@@ -318,7 +341,7 @@ class RulesGenerator
     /**
      * WORK IN PROGRESS
      */
-    protected function getSurveyInstruments()
+/*    protected function getSurveyInstruments()
     {
         $surveyInstruments = array();
 
@@ -330,6 +353,49 @@ class RulesGenerator
         foreach ($surveysNodes as $surveysNode) {
             $instrumentName  = $surveysNode->getAttribute('form_name');
             $surveyInstruments[] = $instrumentName;
+        }
+        return $surveyInstruments;
+    }
+*/
+
+    /**
+     * This function assumes that surveys can be identified by in the project
+     * XML, in the ItemDef element that contains a TranslatedText child node 
+     * containing the text "Survey Timestamp," for example:
+     *     <ItemDef OID="basic_information_timestamp" Name="basic_information_timestamp"
+     *         DataType="datetime" Length="999"
+     *         redcap:Variable="basic_information_timestamp">
+     *         <Question><TranslatedText>Survey Timestamp</TranslatedText></Question>
+     *     </ItemDef>
+     * This node is being used instead of just for <form_name>_timestamp just in case
+     * someone might name a variable with that name. The survey timestamp is being used
+     * instead of the survey identifier because it seems that not all surveys will have
+     * any child nodes with the text "Survey Identifier."
+     */
+    protected function getSurveyInstruments()
+    {
+        $surveyInstruments = array();
+        $hasSurvey = strpos($this->projectXml, "Survey Timestamp");
+
+        if ($hasSurvey > 0) {
+            $xml = new \SimpleXMLElement($this->projectXml);
+            $metaData = $xml->Study->MetaDataVersion;
+
+            # identify instruments that are surveys
+            foreach ($metaData->children() as $child) {
+                if ($child->getName() === "ItemDef") {
+                    #$attributes = $child->attributes();
+                    if (isset($child->Question->TranslatedText)) {
+                        $text = (string) $child->Question->TranslatedText;
+                        if ($text === 'Survey Timestamp') {
+                            $instrument = str_replace('_timestamp', '', $child['Name']);
+                            if (!in_array($instrument, $surveyInstruments)) { 
+                                $surveyInstruments[] = $instrument;
+                            }
+                        }
+                    }
+                }
+            }
         }
         return $surveyInstruments;
     }
@@ -477,7 +543,9 @@ class RulesGenerator
         
         $rootForm = $this->getRootInstrument();
         $repeatingForms = $this->getRepeatingInstruments();
-        
+
+print "\n\nin RulesGenerator.php, generateIndividualTableRules\n\n";
+
         if (in_array($rootForm, $repeatingForms)) {
             #--------------------------------------------------------
             # If the root form is a repeating form,
