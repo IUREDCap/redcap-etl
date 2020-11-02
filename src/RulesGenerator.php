@@ -341,7 +341,7 @@ class RulesGenerator
     /**
      * WORK IN PROGRESS
      */
-/*    protected function getSurveyInstruments()
+ /*   protected function getSurveyInstruments()
     {
         $surveyInstruments = array();
 
