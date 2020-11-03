@@ -29,7 +29,7 @@ class RulesGenerationTest extends TestCase
         $addDagFields = false;
         $addFileFields = false;
 
-        $etlTask = self::$redCapEtl->getEtlProcess()->getTask(0);
+        $etlTask = self::$redCapEtl->getEtlWorkflow()->getTask(0);
         $rules = $etlTask->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
@@ -43,7 +43,7 @@ class RulesGenerationTest extends TestCase
         $addDagFields = true;
         $addFileFields = false;
 
-        $etlTask = self::$redCapEtl->getEtlProcess()->getTask(0);
+        $etlTask = self::$redCapEtl->getEtlWorkflow()->getTask(0);
         $rules = $etlTask->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
@@ -57,7 +57,7 @@ class RulesGenerationTest extends TestCase
         $addDagFields = false;
         $addFileFields = false;
 
-        $etlTask = self::$redCapEtl->getEtlProcess()->getTask(0);
+        $etlTask = self::$redCapEtl->getEtlWorkflow()->getTask(0);
         $rules = $etlTask->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
         $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');

@@ -63,8 +63,8 @@ class RedCapEtl
 
     private $redcapProjectClass;
 
-    /** @var EtlProcess */
-    private $etlProcess;
+    /** @var EtlWorkflow */
+    private $etlWorkflow;
 
     /**
      * Constructor.
@@ -86,7 +86,7 @@ class RedCapEtl
 
         $this->workflowConfig = new WorkflowConfig($logger, $properties, $redcapProjectClass);
         
-        $this->etlProcess = new EtlProcess($this->workflowConfig, $logger, $redcapProjectClass);
+        $this->etlWorkflow = new EtlWorkflow($this->workflowConfig, $logger, $redcapProjectClass);
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;
@@ -196,13 +196,13 @@ class RedCapEtl
         # Drop old load tables if they exist,
         # and then create the load tables
         #----------------------------------------------
-        $this->etlProcess->dropAllLoadTables();
-        $this->etlProcess->createAllLoadTables();
+        $this->etlWorkflow->dropAllLoadTables();
+        $this->etlWorkflow->createAllLoadTables();
 
         #-----------------------------------------
         # Run ETL for each ETL task
         #-----------------------------------------
-        foreach ($this->etlProcess->getTasks() as $etlTask) {
+        foreach ($this->etlWorkflow->getTasks() as $etlTask) {
             $taskName = $etlTask->getName();
             
             $logger = $etlTask->getLogger();
@@ -213,9 +213,9 @@ class RedCapEtl
             $logger->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
             $logger->log('REDCap version '.$etlTask->getDataProject()->exportRedCapVersion());
             $etlTask->logJobInfo();
-            $logger->log('Number of load databases: '.count($this->etlProcess->getDbIds()));
+            $logger->log('Number of load databases: '.count($this->etlWorkflow->getDbIds()));
             $i = 1;
-            foreach (array_keys($this->etlProcess->getDbIds()) as $dbId) {
+            foreach (array_keys($this->etlWorkflow->getDbIds()) as $dbId) {
                 $logger->log("Load database {$i}: {$dbId}");
                 $i++;
             }
@@ -264,28 +264,28 @@ class RedCapEtl
 
     public function getEtlTasks()
     {
-        return $this->etlProcess->getTasks();
+        return $this->etlWorkflow->getTasks();
     }
 
     public function getEtlTask($index)
     {
-        return $this->etlProcess->getTask($index);
+        return $this->etlWorkflow->getTask($index);
     }
     
-    public function getEtlProcess()
+    public function getEtlWorkflow()
     {
-        return $this->etlProcess;
+        return $this->etlWorkflow;
     }
     
     public function getConfiguration($index)
     {
-        $configuration = $this->etlProcess->getConfiguration($index);
+        $configuration = $this->etlWorkflow->getConfiguration($index);
         return $configuration;
     }
     
     public function getDataProject($index)
     {
-        $dataProject = $this->etlProcess->getDataProject($index);
+        $dataProject = $this->etlWorkflow->getDataProject($index);
         return $dataProject;
     }
 }
