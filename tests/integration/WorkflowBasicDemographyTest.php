@@ -1,6 +1,6 @@
 <?php
 #-------------------------------------------------------
-# Copyright (C) 2019 The Trustees of Indiana University
+# Copyright (C) 2020 The Trustees of Indiana University
 # SPDX-License-Identifier: BSD-3-Clause
 #-------------------------------------------------------
 
@@ -32,18 +32,26 @@ class WorkflowBasicDemographyTest extends TestCase
             $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
-            $config0 = $redCapEtl->getConfiguration(0);
-            $this->assertNotNull($config0, 'redCapEtl configuration 0 not null');
+            for ($i = 0; $i <= 2; $i++) {
+                $config = $redCapEtl->getConfiguration($i);
+                $this->assertNotNull($config, "redCapEtl configuration {$i} not null");
 
-            $config1 = $redCapEtl->getConfiguration(1);
-            $this->assertNotNull($config1, 'redCapEtl configuration 1 not null');
+                $dbConnection = $config->getDbConnection();
+                $this->assertNotNull($dbConnection, "DB connection {$i} not null check");
+                $this->assertRegExp('/^CSV:/', $dbConnection, "DB connection {$i} pattern check");
+            }
 
-            $config2 = $redCapEtl->getConfiguration(2);
-            $this->assertNotNull($config1, 'redCapEtl configuration 2 not null');
-
-#            print "\n".$config1->getDbConnection()."\n";
-            
             $redCapEtl->run();
+
+            $matches = array();
+            preg_match('/^CSV:(.*)/', $dbConnection, $matches);
+            $dbDirectory = $matches[1];
+
+            $this->assertFileExists($dbDirectory.'/Demography.csv', 'Demography.csv file check');
+            $this->assertFileExists($dbDirectory.'/Demography_label_view.csv', 'Demography_label_view.csv file check');
+
+            $demographyLines = count(file($dbDirectory.'/Demography.csv'));
+            $this->assertEquals(601, $demographyLines, 'Demography number of lines check');
         } catch (EtlException $exception) {
             self::$logger->logException($exception);
             self::$logger->log('Processing failed.');

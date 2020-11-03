@@ -4,9 +4,9 @@ FIELD,record_id,int
 FIELD,first_name,varchar(40)
 FIELD,last_name,varchar(40)
 FIELD,address,string
-FIELD,telephone,char(24),phone
+FIELD,phone,char(24),phone
 FIELD,email,varchar(80)
-FIELD,dob,string,birthdate
+FIELD,dob,string
 FIELD,ethnicity,int
 FIELD,race,checkbox
 FIELD,sex,int
