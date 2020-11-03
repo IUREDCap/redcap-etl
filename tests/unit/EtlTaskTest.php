@@ -11,9 +11,9 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\TestProject;
 
 /**
- * PHPUnit tests for the EtlException class.
+ * PHPUnit tests for the EtlTask class.
  */
-class EtlExceptionTest extends TestCase
+class EtlTaskTest extends TestCase
 {
 
     public function setUp()
@@ -22,7 +22,10 @@ class EtlExceptionTest extends TestCase
     
     public function testConstructor()
     {
-        $exception = new EtlException('Test exception', 1, null);
-        $this->assertNotNull($exception, 'exception not null check');
+        $taskId = 1;
+        $etlTask = new EtlTask($taskId);
+        $this->assertNotNull($etlTask, 'ETL task not null check');
+
+        $this->assertEquals($taskId, $etlTask->getId(), 'Task ID check');
     }
 }

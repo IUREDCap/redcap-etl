@@ -40,7 +40,7 @@ class EtlWorkflow
      * Constructor.
      *
      */
-    public function __construct($workflowConfig, $logger, $redcapProjectClass)
+    public function __construct($workflowConfig, $logger, $redcapProjectClass = null)
     {
         $this->dbSchemas     = array();
         $this->dbConnections = array();
