@@ -59,7 +59,6 @@ class SchemaGenerator
         $this->configuration = $configuration;
         $this->tablePrefix   = $configuration->getTablePrefix();
         $this->logger        = $logger;
-        $this->projectInfoTable = new ProjectInfoTable($this->tablePrefix /* , $name */);
     }
 
 

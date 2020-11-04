@@ -16,19 +16,23 @@ namespace IU\REDCapETL\Schema;
  */
 class Schema
 {
-    /** @var array array of Table objects for all tables in schema (including root tables) */
+    /** @var array array of Table objects for all data tables in the schema, including root tables,
+     *    but excluding system generated tables, such as the lookup table */
     private $tables = array();
 
     /** @var array array of table objects for only the root tables in the schema */
     private $rootTables = array();
     
-    /** @var LookupTable table for mapping multiple choice codes to values */
+    /** @var LookupTable table for mapping multiple choice fields from (table name, field name, value) to label */
     private $lookupTable = null;
     
+    /** @var EtlLogTable parent log table that has one entry per ETL task; this table is NOT delete after each run */
     private $dbLogTable      = null;
+
+    /** @var EtlEventLogTable child log table that has one entry per ETL task event;
+     *    this table is NOT delete after each run */
     private $dbEventLogTable = null;
 
-    #private $projectInfoTable = null;
 
     public function __construct()
     {
@@ -41,8 +45,6 @@ class Schema
     public function merge($schema)
     {
         $mergedSchema = new Schema();
-
-        $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
         $mergedRootTables = array();
 
@@ -92,6 +94,8 @@ class Schema
         $mergedSchema->tables     = $mergedTables;
         $mergedSchema->rootTables = $mergedRootTables;
 
+        # Merge the lookup tables that provide a map for mutliple choice fields
+        # from (table name, field name, value) to label
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
         return $mergedSchema;
@@ -105,10 +109,10 @@ class Schema
      */
     public function addTable($table)
     {
-        // Add table to list of all tables
+        # Add table to list of all data tables
         array_push($this->tables, $table);
 
-        // If it is a root table, add to list of root tables
+        # If it is a root table, add to list of root tables
         if (in_array(RowsType::ROOT, $table->rowsType)) {
             array_push($this->rootTables, $table);
         }
@@ -150,6 +154,21 @@ class Schema
     public function getTables()
     {
         return($this->tables);
+    }
+
+
+    /**
+     * Gets the names of all the data tables in the Schema
+     */
+    public function getTableNames()
+    {
+        $tableNames = array();
+        if (isset($this->tables)) {
+            foreach ($this->tables as $table) {
+                $tableNames[] = $table->getName();
+            }
+        }
+        return $this->tableNames;
     }
 
     /**

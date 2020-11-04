@@ -38,8 +38,6 @@ class RedCapEtl
     # when the process completes.
     const PROCESSING_COMPLETE = 'Processing complete.';
 
-    protected $projectInfoTable;
-    
     protected $logger;
 
     protected $rowsLoadedForTable = array();
@@ -223,11 +221,6 @@ class RedCapEtl
             $logger->log("Starting processing.");
 
             $etlTask->runPreProcessingSql();
-
-            #----------------------------------------------------------------------
-            # Project Info table (eventually will have possible multiple projects)
-            #----------------------------------------------------------------------
-            // $etlTask->createProjectInfoTable();
 
             # ETL
             $numberOfRecordIds += $etlTask->extractTransformLoad();
