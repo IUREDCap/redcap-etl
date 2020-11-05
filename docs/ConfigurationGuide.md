@@ -8,7 +8,7 @@ for each different ETL process that you want to run. Configuration files specify
 * Transformation rules that describe how the extracted data should be transformed
 * Database connection information for the databases where the extracted and transformed data are to be loaded
 
-Starting with version 2.0, 2 types of configuration files are supported:
+Starting with version 2.0 of REDCap-ETL, 2 types of configuration files are supported:
 
 1. __Task__ - this is the original configuration format, and it supports the specification of a
     single ETL task that extracts data from a single REDCap project, transforms the extracted
@@ -18,7 +18,21 @@ Starting with version 2.0, 2 types of configuration files are supported:
     load data into multiple databases.
 
 
-![ETL Task](REDCap-ETL-Task.png)
+Task Configutations
+---------------------------------
+
+There are many optional properties that can be specified in a task configuration file,
+but the 3 things that need to be specified are:
+
+1. The data source - the REDCap project from which the data is extracted
+2. The transformation rules - rules that specify how the extracted data is transformed
+3. The database - information specifying where the extracted and transformed data is loaded
+
+REDCap-ETL uses REDCap's API (Application Programming Interface) to extract data from REDCap,
+so the API's URL and an API token, which indicates which REDCap project to access,
+need to be specified.
+
+![REDCap-ETL Task](REDCap-ETL-Task.png)
 
 
 REDCap-ETL uses the PHP .ini file format for configurations.
@@ -35,15 +49,19 @@ An example of a simple task configuration .ini file is as follows:
     ; extracted and transformed data should be loaded
     db_connection = MySQL:127.0.0.1:etl_user:etl_password:etl_db
 
-REDCap-ETL uses REDCap's API (Application Programming Interface) to extract data from REDCap,
-so the API's URL and an API token, which indicates which REDCap project to access,
-need to be specified.
-
 The .ini files follow the general format of:
 
     property_name = property_value
 
 Semi-colons are used to indicate comments.
+
+
+Workflow Configurations
+-------------------------------
+
+Workflows allow you to combine multiple tasks into a unified process.
+
+![REDCap-ETL Workflow](REDCap-ETL-Workflow.png)
 
 Workflows use the sections feature of .ini files to indicate different tasks.
 Sections are indicated by text within square brackets, and
@@ -71,12 +89,7 @@ You can use the following example file as a starting point for creating an ETL t
 
     config/config-example.ini
 
-There are many optional properties that can be specified in a task configuration file,
-but the 3 things that need to be specified are:
 
-1. The data source - the REDCap project from which the data is extracted
-2. The transformation rules - rules that specify how the extracted data is transformed
-3. The database - information specifying where the extracted and transformed data is loaded
 
 REDCap-ETL configuration files can be formatted as ini files or a JSON (.json) files, but it
 is expected that users will generally use the .ini format, and the JSON format is not covered
