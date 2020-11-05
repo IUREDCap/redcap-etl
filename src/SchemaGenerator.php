@@ -42,6 +42,10 @@ class SchemaGenerator
     private $dataProject;
     private $logger;
     private $configuration;
+
+    /** @var the ID of the task for the configuration for which the schema is being generated */
+    private $taskId;
+
     private $tablePrefix;
 
     /**
@@ -53,12 +57,13 @@ class SchemaGenerator
      * @param Logger $logger logger for logging ETL process information
      *     and errors.
      */
-    public function __construct($dataProject, $configuration, $logger)
+    public function __construct($dataProject, $configuration, $logger, $taskId = 1)
     {
         $this->dataProject   = $dataProject;
         $this->configuration = $configuration;
         $this->tablePrefix   = $configuration->getTablePrefix();
         $this->logger        = $logger;
+        $this->taskId        = $taskId;
     }
 
 
@@ -75,7 +80,9 @@ class SchemaGenerator
      */
     public function generateSchema($rulesText)
     {
+        $redCapApiUrl      = $this->configuration->getRedCapApiUrl();
         $projectInfo       = $this->dataProject->exportProjectInfo();
+        $metadata          = $this->dataProject->exportMetadata();
         $recordIdFieldName = $this->dataProject->getRecordIdFieldName();
         $fieldNames        = $this->dataProject->getFieldNames();
 
@@ -122,7 +129,29 @@ class SchemaGenerator
 
         $schema = new Schema();
 
-        // Log how many fields in REDCap could be parsed
+        #-----------------------------------------
+        # Add the REDCap project info table
+        #-----------------------------------------
+        $projectInfoTable = new ProjectInfoTable();
+        $row = $projectInfoTable->createDataRow($this->taskId, $redCapApiUrl, $projectInfo);
+        $projectInfoTable->addRow($row);
+        $schema->setProjectInfoTable($projectInfoTable);
+
+        #-----------------------------------------
+        # Add the REDCap metadata table
+        #-----------------------------------------
+        $metadataTable = new MetadataTable();
+
+        foreach ($metadata as $fieldMetadata) {
+            $row = $metadataTable->createDataRow($this->taskId, $fieldMetadata);
+            $metadataTable->addRow($row);
+        }
+        $schema->setMetadataTable($metadataTable);
+
+
+        #---------------------------------------------------
+        # Log how many fields in REDCap could be parsed
+        #---------------------------------------------------
         $message = "Found ".count($unmappedRedCapFields)." user-defined fields in REDCap.";
         $this->logger->log($message);
         $info .= $message."\n";

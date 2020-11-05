@@ -7,12 +7,13 @@
 namespace IU\REDCapETL\Schema;
 
 /**
- * Schema is used for holding information about dynamically created
- * tables/fields, as well as rows of data assigned to those tables.
+ * A Schema object is used for holding information about the tables where
+ * extracted and transformated data are stored that
+ * are described in transformation rules for an ETL configuration.
  *
- * These tables and rows know about a datastore (such as a relational
- * database or flat file) where their data can be persisted
- *
+ * Schema objects also contain information about several system generated
+ * tables, including: logging tables, a lookup table that maps multiple
+ * choice values to labels, and REDCap project info and metadata tables.
  */
 class Schema
 {
@@ -33,10 +34,15 @@ class Schema
      *    this table is NOT delete after each run */
     private $dbEventLogTable = null;
 
+    /** @var ProjectInfoTable table with REDCap project information */
+    private $projectInfoTable = null;
+
+    /** @var MetadataTable table with REDCap metadata information */
+    private $metadataTable = null;
+
 
     public function __construct()
     {
-        return true;
     }
 
     /**
@@ -97,6 +103,9 @@ class Schema
         # Merge the lookup tables that provide a map for mutliple choice fields
         # from (table name, field name, value) to label
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
+
+        $mergedSchema->projectInfoTable = $this->projectInfoTable->merge($schema->projectInfoTable);
+        $mergedSchema->metadataTable    = $this->metadataTable->merge($schema->metadataTable);
 
         return $mergedSchema;
     }
@@ -245,15 +254,25 @@ class Schema
         $this->dbEventLogTable = $dbEventLogTable;
     }
 
-    #public function getProjectInfoTable()
-    #{
-    #    return $this->projectInfoTable;
-    #}
+    public function getProjectInfoTable()
+    {
+        return $this->projectInfoTable;
+    }
 
-    #public function setProjectInfoTable($projectInfoTable)
-    #{
-    #    $this->projectInfoTable = $projectInfoTable;
-    #}
+    public function setProjectInfoTable($projectInfoTable)
+    {
+        $this->projectInfoTable = $projectInfoTable;
+    }
+
+    public function getmetadataTable()
+    {
+        return $this->metadataTable;
+    }
+
+    public function setMetadataTable($metadataTable)
+    {
+        $this->metadataTable = $metadataTable;
+    }
 
     /**
      * Returns a string representation of the schema.

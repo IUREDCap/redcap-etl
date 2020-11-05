@@ -113,26 +113,18 @@ class EtlWorkflow
                 $task->setDbConnection($dbConnection);
             }
             
-            # Create Project Info table with data for all tasks
-            # that use the current database
-            $projectInfoTable = new ProjectInfoTable();
-            $metadataTable    = new MetadataTable();
+            #--------------------------------------------------------
+            # Create Project Info and Metadata tables for the
+            # current database
+            #--------------------------------------------------------
+            $projectInfoTable = $schema->getProjectInfoTable();
+            $metadataTable    = $schema->getMetadataTable();
+
             $dbConnection->replaceTable($projectInfoTable);
             $dbConnection->replaceTable($metadataTable);
             
-            foreach ($dbTasks as $task) {
-                $apiUrl      = $task->getRedCapApiUrl();
-                $projectInfo = $task->getRedCapProjectInfo();
-                $projectInfo['api_url'] = $apiUrl;
-                $row = $projectInfoTable->createDataRow($task->getId(), $apiUrl, $projectInfo);
-                $dbConnection->insertRow($row);
-
-                $metadata    = $task->getRedCapMetadata();
-                foreach ($metadata as $fieldMetadata) {
-                    $row = $metadataTable->createDataRow($task->getId(), $fieldMetadata);
-                    $dbConnection->insertRow($row);
-                }
-            }
+             $dbConnection->storeRows($projectInfoTable);
+             $dbConnection->storeRows($metadataTable);
         }
     }
         

@@ -28,8 +28,6 @@ class EtlTask
     /** @var EtlRedCapProject the project that has the data to extract */
     protected $dataProject;
 
-    protected $projectInfoTable;
-    
     protected $logger;
 
     /** @var Schema schema based on tasks configuration */
@@ -270,7 +268,7 @@ class EtlTask
         }
 
         $tablePrefix = $this->configuration->getTablePrefix();
-        $schemaGenerator = new SchemaGenerator($this->dataProject, $this->configuration, $this->logger);
+        $schemaGenerator = new SchemaGenerator($this->dataProject, $this->configuration, $this->logger, $this->id);
 
         list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
@@ -707,39 +705,6 @@ class EtlTask
         return true;
     }
 
-
-    /**
-     * Creates the project info table that has information on the project(s) used in
-     * the ETL configuration(s). Only one of these tables is created for each ETL
-     * run, regardless of how many individual configurations are used.
-     */
-    public function loadProjectInfoTable()
-    {
-        #-----------------------------------------------------------
-        # Create the project info table
-        #-----------------------------------------------------------
-        #$this->projectInfoTable = new ProjectInfoTable($this->configuration->getTablePrefix() /* , $name */);
-        #$this->dbcon->replaceTable($this->projectInfoTable);
-        #$this->loadTableRows($this->projectInfoTable);
-    }
-
-
-    public function createProjectInfoTable()
-    {
-        #----------------------------------------------------------------------
-        # Project Info table (eventually will have possible multiple projects)
-        #----------------------------------------------------------------------
-        if (!($this->dbcon instanceof CsvDbConnection)) {
-            #$projectInfo = $this->dataProject->exportProjectInfo();
-            #$row = $this->projectInfoTable->getRowData(
-            #    $this->configuration->getRedCapApiUrl(),
-            #    $projectInfo['project_id'],
-            #    $projectInfo['project_title'],
-            #    $projectInfo['project_language']
-            #);
-            #$this->dbcon->insertRow($row);
-        }
-    }
 
     /**
      * Creates primary and foreign keys for the database tables if they
