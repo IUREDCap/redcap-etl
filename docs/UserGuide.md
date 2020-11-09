@@ -30,7 +30,7 @@ Starting with version 2.0 of REDCap-ETL, 2 types of configuration files are supp
     load data into multiple databases.
 
 
-###Task Configurations
+### Task Configurations
 
 There are many optional properties that can be specified in a task configuration file,
 but the 3 things that need to be specified are:
@@ -72,7 +72,7 @@ property_name = property_value
 Semi-colons are used to indicate comments.
 
 
-###Workflow Configurations
+### Workflow Configurations
 
 Workflows allow you to combine multiple tasks into a unified process.
 
