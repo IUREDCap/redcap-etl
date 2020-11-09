@@ -43,9 +43,7 @@ REDCap-ETL uses REDCap's API (Application Programming Interface) to extract data
 so the API's URL and an API token, which indicates which REDCap project to access,
 need to be specified.
 
-<br />
 ![REDCap-ETL Task](REDCap-ETL-Task.png)
-<br />
 
 REDCap-ETL uses the PHP .ini file format for configurations.
 An example of a simple task configuration .ini file is as follows:
@@ -76,9 +74,7 @@ Semi-colons are used to indicate comments.
 
 Workflows allow you to combine multiple tasks into a unified process.
 
-<br />
 ![REDCap-ETL Workflow](REDCap-ETL-Workflow.png)
-<br />
 
 Workflows use the sections feature of .ini files to indicate different tasks.
 Sections are indicated by text within square brackets, and
