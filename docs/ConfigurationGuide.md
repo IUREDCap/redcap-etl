@@ -38,20 +38,24 @@ need to be specified.
 REDCap-ETL uses the PHP .ini file format for configurations.
 An example of a simple task configuration .ini file is as follows:
 
-    ; Extract information - REDCap project
-    redcap_api_url = https://someplace.edu/redcap/api/
-    data_source_api_token =  1234567890ABCDEF1234567890ABCDEF
+```ini
+; Extract information - REDCap project
+redcap_api_url = https://someplace.edu/redcap/api/
+data_source_api_token =  1234567890ABCDEF1234567890ABCDEF
 
-    ; Transform information - transformation rules
-    transform_rules_source = 3    ; auto-generate
+; Transform information - transformation rules
+transform_rules_source = 3    ; auto-generate
 
-    ; Load information - database connection information for where the
-    ; extracted and transformed data should be loaded
-    db_connection = MySQL:127.0.0.1:etl_user:etl_password:etl_db
+; Load information - database connection information for where the
+; extracted and transformed data should be loaded
+db_connection = MySQL:127.0.0.1:etl_user:etl_password:etl_db
+```
 
 The .ini files follow the general format of:
 
-    property_name = property_value
+```ini
+property_name = property_value
+```
 
 Semi-colons are used to indicate comments.
 
@@ -69,16 +73,18 @@ all properties defined after a section (and before the start of another) belong 
 
 A simple workflow .ini file example that defines 2 tasks ("task1" and "task2") is shown below:
 
-    ; Global properties
-    redcap_api_url = https://someplace.edu/redcap/api/
-    transform_rules_source = 3    ; auto-generate
-    db_connection = MySQL:127.0.0.1:etl_user:etl_password:etl_db
+```ini
+; Global properties
+redcap_api_url = https://someplace.edu/redcap/api/
+transform_rules_source = 3    ; auto-generate
+db_connection = MySQL:127.0.0.1:etl_user:etl_password:etl_db
 
-    [task1]
-    data_source_api_token =  1234567890ABCDEF1234567890ABCDEF
+[task1]
+data_source_api_token =  1234567890ABCDEF1234567890ABCDEF
 
-    [task2]
-    data_source_api_token =  0987654321FEDCBA0987654321FEDCBA
+[task2]
+data_source_api_token =  0987654321FEDCBA0987654321FEDCBA
+```
 
 Properties defined at the beginning of the file that are outside of a section are
 considered to be global properties that apply to all tasks, except where they are
@@ -92,7 +98,7 @@ You can use the following example file as a starting point for creating an ETL t
 
 
 REDCap-ETL configuration files can be formatted as ini files or a JSON (.json) files, but it
-is expected that users will generally use the .ini format, and the JSON format is not covered
+is expected that users will use the .ini format, and the JSON format is not covered
 in this document. Support for the JSON format was added for internal use by the
 REDCap-ETL external module.
 
