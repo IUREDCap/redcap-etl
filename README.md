@@ -36,10 +36,11 @@ there are still several cases where you might want to use the REDCap-ETL applica
 ### Documentation:
 
 * [Installation Guide](docs/InstallationGuide.md)
-* [Configuration Guide](docs/ConfigurationGuide.md)
-    * [Transformation Rules Guide](docs/TransformationRulesGuide.md)
+* [User Guide](docs/UserGuide.md)
+    * [Configuration Guide](docs/ConfigurationGuide.md)
+        * [Transformation Rules Guide](docs/TransformationRulesGuide.md)
 * [Developer Guide](docs/DeveloperGuide.md)
-    * [Software Architecture](docs/SoftwareArchitecture.md)
+  * [Software Architecture](docs/SoftwareArchitecture.md)
 
 
 

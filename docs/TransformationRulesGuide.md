@@ -1,3 +1,8 @@
+<!-- =================================================
+Copyright (C) 2019 The Trustees of Indiana University
+SPDX-License-Identifier: BSD-3-Clause
+================================================== -->
+
 Transformation Rules
 ===================================================
 The transformation rules specify how the records in REDCap are transformed
