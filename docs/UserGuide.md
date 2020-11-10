@@ -182,8 +182,10 @@ When a task configuration is run, REDCap-ETL does the following steps:
     3. Load the records into the specified database
 5. Run post-processing SQL on the database (if specified)
 
-Note: each time REDCap-ETL runs, it drops and re-created its database tables, so any data that was manually entered into
-its tables will be deleted.
+---
+**Note:** each time REDCap-ETL runs, it drops and re-created its database tables,
+so any data that was manually entered into its tables will be deleted.
+---
 
 #### Workflow Configuration
 
@@ -200,47 +202,60 @@ Workflows used a merged database schema for their tasks that load data to the sa
 3. For each database:
     1. Drop all the tables, if they exist, for the merged database schema create above
     2. Create empty tables for the merged database schema
-4. For each task, in order of that the tasks are defined, process the REDCap recotds in
+4. For each task, in order of that the tasks are defined, process the REDCap records in
     batches specified by the batch_size configuration property:
     1. Extract records from REDCap
     2. Transform the records based on the transformation rules
     3. Load the records into the database specified for the task
 5. For each task, in order that the tasks are defined:
-    1. Run pre-processing SQL (if any)
-
-
-
-If 2 tasks that load data to the same database match exactly, then the merged database schema
-will be the same as either task's database schema. Or, if the 2 tasks have no tables in common
-then the merged database schema will be the union of the 2 sets of tables. For cases where there
-are 2 tasks that load data to the same table name, but defined the tables differently,
-the following rules apply:
-
-* Type conversion - 2 tasks with tables with same name that have a column with the same name but different types:
-    * char and varchar - the merged schema will use type varchar
-    * char and string - the merged schema will use type string
-    * varchar and string - the merged schema will use type string
-    * char/varchar with different sizes - the larger of the 2 sizes will be used
-    * all other type differences - an error will be generated
-* A column name exists in one table, but not in another
-    * the column name will be added to the merged database schema, and the task without it
-      will generate no data for that column
+    1. Run post-processing SQL (if any)
 
 
 #### System-Generated Database Tables
 
-In addition to the tables specified in the transformation rules, REDCap-ETL may (depending on configuraiton) generate several
-system-generated tables:
+In addition to the tables specified in the transformation rules, REDCap-ETL may (depending on configuration)
+generate several system-generated tables:
 
 
 | table name          | description                                                                        |
 | ------------------- | ---------------------------------------------------------------------------------- |
 | etl_log             | Main logging table, with one row per task run                                      |
-| etl_event_log       | Child logging table, with multiple per events per task run                         |
+| etl_event_log       | Child logging table, with multiple events per task run                             |
 | redcap_project_info | REDCap project information for each task                                           |
 | redcap_metadata     | REDCap metadata for the fields for the REDCap projects for which data is extracted |
 | Lookup              | Map from (table name, field name, multiple choice value) to multiple choice label  |
 
 
-Unlike all other tables, the logging tables are not dropped and re-created after each run. They also will not use the table prefix (if any).
+The logging tables "etl_log" and "etl_event_log" are intended for logging a history of all ETL activity in a database,
+so unlike all other tables, the logging tables are not dropped and re-created after each run.
+They also will not use the table prefix (if any).
+
+
+
+#### Merged Database Schemas
+
+As indicated above, REDCap-ETL creates a merged database schemas for all tasks in a workflow
+that load data to the same database.
+If the tasks that load data to the same database generate tables that have the same structure (table
+names, and column names and types),
+then the merged database schemas will be the same as each of the task's database schema. 
+However, if the generated database schemas do not match, errors may result from incompatibilities.
+
+Below is a list of possible database schema differences with a description of how the differences are handled. Some
+differences are resolved automatically, and some result in an error being generated that needs to be
+resolved manually.
+
+* **Column type differences** - tasks with tables with same name that have a column with the same name but different types:
+    * char and varchar - the merged schema will use type varchar for the column
+    * char and string - the merged schema will use type string
+    * varchar and string - the merged schema will use type string
+    * char/varchar with different sizes - the larger of the 2 sizes will be used
+    * all other type differences - an error will be generated, which needs to be resolved by changing the transformation rules
+* **Missing column** - a column name exists in one table, but not in another
+    * the column name will be added to the merged database schema, and the task without it
+      will generate no data for that column
+* **Lookup table name difference** - The lookup table is a system generated table that can be renamed in ETL configurations.
+    Schemas support only one lookup table, so having different names will result in an error. This
+    error is resolved by changing the workflow configuration to eliminate the different names.
+
 
