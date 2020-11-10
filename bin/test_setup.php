@@ -178,6 +178,32 @@ foreach ($configFiles as $configFile) {
                 "data_source_api_token = {$repeatingEventsApiToken}",
                 $contents
             );
+        } elseif (preg_match('/workflow.*\.json/', $toPath) === 1) {
+            # Workflow
+
+            # basic-demography properties
+            $contents = preg_replace(
+                '/"redcap_api_url"\s*:\s*"basic-demography"/',
+                '"redcap_api_url": "'.$basicDemographyApiUrl.'"',
+                $contents
+            );
+            $contents = preg_replace(
+                '/"data_source_api_token"\s*:\s*"basic-demography"/',
+                '"data_source_api_token": "'.$basicDemographyApiToken.'"',
+                $contents
+            );
+
+            ## repeating-events properties
+            #$contents = preg_replace(
+            #    '/redcap_api_url\s*=.\s*;\s*repeating-events/',
+            #    "redcap_api_url = {$repeatingEventsApiUrl}",
+            #    $contents
+            #);
+            #$contents = preg_replace(
+            #    '/data_source_api_token\s*=\s*;\s*repeating-events/',
+            #    "data_source_api_token = {$repeatingEventsApiToken}",
+            #    $contents
+            #);
         } elseif (preg_match('/basic-demography.*\.ini/', $toPath) === 1) {
             #-------------------------------------
             # Basic demography files

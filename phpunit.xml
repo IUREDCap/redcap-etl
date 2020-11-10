@@ -68,6 +68,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/SchemaGeneration.php</file>
       <file>tests/integration/Workflow1Test.php</file>
       <file>tests/integration/WorkflowBasicDemographyTest.php</file>
+      <file>tests/integration/WorkflowBasicDemographyJsonTest.php</file>
     </testsuite>
 
     <!--

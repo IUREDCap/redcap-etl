@@ -27,7 +27,7 @@ class WorkflowConfig
     # Keys used in JSON workflow config arrays that are the result of parsing a JSON file or string
     const JSON_WORKFLOW_KEY          = 'workflow';
     const JSON_GLOBAL_PROPERTIES_KEY = 'global_properties';
-    const JSON_CONFIGURATIONS_KEY    = 'task_configs';
+    const JSON_TASKS_KEY             = 'tasks';
 
     private $logger;
 
@@ -130,8 +130,8 @@ class WorkflowConfig
                 $this->globalProperties = TaskConfig::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
             }
 
-            if (array_key_exists(self::JSON_CONFIGURATIONS_KEY, $workflowConfig)) {
-                $taskConfigs = $workflowConfig[self::JSON_CONFIGURATIONS_KEY];
+            if (array_key_exists(self::JSON_TASKS_KEY, $workflowConfig)) {
+                $taskConfigs = $workflowConfig[self::JSON_TASKS_KEY];
                 foreach ($taskConfigs as $properties) {
                     $properties = $this->processJsonProperties($properties);
                     $properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
