@@ -132,7 +132,7 @@ class SchemaGenerator
         #-----------------------------------------
         # Add the REDCap project info table
         #-----------------------------------------
-        $projectInfoTable = new ProjectInfoTable();
+        $projectInfoTable = new ProjectInfoTable($this->tablePrefix);
         $row = $projectInfoTable->createDataRow($this->taskId, $redCapApiUrl, $projectInfo);
         $projectInfoTable->addRow($row);
         $schema->setProjectInfoTable($projectInfoTable);
@@ -140,7 +140,7 @@ class SchemaGenerator
         #-----------------------------------------
         # Add the REDCap metadata table
         #-----------------------------------------
-        $metadataTable = new MetadataTable();
+        $metadataTable = new MetadataTable($this->tablePrefix);
 
         foreach ($metadata as $fieldMetadata) {
             $row = $metadataTable->createDataRow($this->taskId, $fieldMetadata);

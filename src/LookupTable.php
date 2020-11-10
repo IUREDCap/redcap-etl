@@ -155,8 +155,17 @@ class LookupTable extends Table
         return $valueLabelMap;
     }
 
+    /**
+     * Returns the merge of this lookup table with the specified lookup table.
+     *
+     * @var LookupTable $table the lookup table to be merged.
+     */
     public function merge($table)
     {
+        if ($this->getName() !== $table->getName()) {
+            $message = "Lookup table names \"{$this->getName()}\" and \"{$table->getName()}\" do not match.";
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
         $mergedLookup = parent::merge($table);
         $mergedLookup->map = array_merge($this->map, $table->map);
         return $mergedLookup;

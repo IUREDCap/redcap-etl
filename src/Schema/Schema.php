@@ -47,8 +47,14 @@ class Schema
 
     /**
      * Merges the specified schema into this one.
+     *
+     * @param Schema $schema the schema to merge.
+     * @param string $dbId the database ID For the database for which the schemas are being merged.
+     *     This is needed only for informational purposes in error message, and not to merge the schemas.
+     * @param string $taskName the name of the task for the merged schema.
+     *     This is needed only for informational purposes in error message, and not to merge the schemas.
      */
-    public function merge($schema)
+    public function merge($schema, $dbId = null, $taskName = null)
     {
         $mergedSchema = new Schema();
 

@@ -66,7 +66,11 @@ class EtlWorkflow
 
             # Create a merged schema and get connection information for the current database
             if (array_key_exists($dbId, $this->dbSchemas)) {
-                $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge($etlTask->getSchema());
+                $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge(
+                    $etlTask->getSchema(),
+                    $dbId,
+                    $etlTask->getName()
+                );
                 $this->dbTasks[$dbId]   = array_merge($this->dbTasks[$dbId], [$etlTask]);
             } else {
                 $this->dbSchemas[$dbId]     = $etlTask->getSchema();
@@ -139,8 +143,8 @@ class EtlWorkflow
         #--------------------------------------------------
         # Drop the project info and metadata tables
         #--------------------------------------------------
-        $projectInfoTable = new ProjectInfoTable();
-        $metadataTable    = new MetadataTable();
+        $projectInfoTable = $schema->getProjectInfoTable();
+        $metadataTable    = $schema->getMetadataTable();
         $dbConnection->dropTable($projectInfoTable, $ifExists = true);
         $dbConnection->dropTable($metadataTable, $ifExists = true);
         
