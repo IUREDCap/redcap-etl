@@ -9,7 +9,7 @@ namespace IU\REDCapETL\Database;
 use PHPUnit\Framework\TestCase;
 
 use IU\REDCapETL\RedCapEtl;
-use IU\REDCapETL\Configuration;
+use IU\REDCapETL\TaskConfig;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\Logger;
 use IU\REDCapETL\LookupTable;
@@ -61,7 +61,7 @@ class MysqlSslTest extends TestCase
      */
     public function testMysqlDbConnectionConstructorWithSsl()
     {
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
 

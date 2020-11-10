@@ -9,7 +9,7 @@ namespace IU\REDCapETL\Database;
 use PHPUnit\Framework\TestCase;
 
 use IU\REDCapETL\RedCapEtl;
-use IU\REDCapETL\Configuration;
+use IU\REDCapETL\TaskConfig;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\Logger;
 use IU\REDCapETL\LookupTable;
@@ -104,7 +104,7 @@ class SqlServerTest extends TestCase
 
     public function testConnectorValidConnectionWithSsl()
     {
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE_SSL);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE_SSL);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
  
@@ -137,7 +137,7 @@ class SqlServerTest extends TestCase
      */
     public function testSqlServerDbConnectionCreateTableWithPortAndEncryption()
     {
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
 
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
@@ -342,7 +342,7 @@ class SqlServerTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -513,7 +513,7 @@ class SqlServerTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -660,7 +660,7 @@ class SqlServerTest extends TestCase
     public function testPdoDbProcessQueryFile()
     {
         #Create the SqlServerDbConnection object
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -922,7 +922,7 @@ class SqlServerTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -1104,7 +1104,7 @@ class SqlServerTest extends TestCase
         #############################################################
         # create the data table in the database
         #############################################################
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
@@ -1189,7 +1189,7 @@ class SqlServerTest extends TestCase
         );
 
         #create the SqlServerDbConnection
-        $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
         $dbConnection = $configuration->getDbConnection();
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 

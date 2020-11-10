@@ -25,7 +25,7 @@ class DynamicRulesTest extends TestCase
 
         if (file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('dynamic_rules_test');
-            self::$config = new Configuration(
+            self::$config = new TaskConfig(
                 self::$logger,
                 self::CONFIG_FILE
             );
@@ -81,7 +81,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
@@ -192,7 +192,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'true';
@@ -306,7 +306,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
@@ -413,7 +413,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
@@ -461,7 +461,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
@@ -510,7 +510,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
@@ -563,7 +563,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
@@ -606,7 +606,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';
@@ -628,7 +628,7 @@ class DynamicRulesTest extends TestCase
         try {
             $properties = self::$config->getProperties();
             $properties[ConfigProperties::DB_CONNECTION] = 'CSV:' . self::$csvDir;
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
 
             $properties[ConfigProperties::AUTOGEN_INCLUDE_COMPLETE_FIELDS] = 'false';

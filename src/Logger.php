@@ -71,9 +71,9 @@ class Logger
     /** @var integer the ID for the row in the main database logging table. */
     private $dbLogTableId;
     
-    /** @var Configuration the configuration for the ETL run; this will not be set
-                           until the configuration information has been processed. */
-    private $configuration;
+    /** @var TaskConfig the task configuration for the ETL run; this will not be set
+                        until the configuration information has been processed. */
+    private $taskConfig;
     
     # Logging error flags that are used to only print the first error
     # for a specific type of logging errors
@@ -113,7 +113,7 @@ class Logger
         $this->emailErrors  = true;
         $this->emailSummary = false;
         
-        $this->configuration = null;
+        $this->taskConfig = null;
         
         $this->printLoggingErrorLogged   = false;
         $this->fileLoggingErrorLogged    = false;
@@ -375,13 +375,13 @@ class Logger
             if (!($this->dbConnection instanceof CsvDbConnection)) {
                 try {
                     $tablePrefix = '';
-                    if (isset($this->configuration)) {
-                        $tablePrefix = $this->configuration->getTablePrefix();
+                    if (isset($this->taskConfig)) {
+                        $tablePrefix = $this->taskConfig->getTablePrefix();
                         if (!isset($tablePrefix)) {
                             $tablePrefix = '';
                         }
                     }
-                    $batchSize = $this->configuration->getBatchSize();
+                    $batchSize = $this->taskConfig->getBatchSize();
                     $row = $this->dbLogTable->createLogDataRow($this->app, $tablePrefix, $batchSize);
                     $id = $this->dbConnection->insertRow($row);
                     # Save inserted ID for use as foreign key in
@@ -431,11 +431,11 @@ class Logger
         
         if (!empty($this->logFile) && $this->isOn) {
             #$configInfo = '';
-            #if (!empty($this->configuration)) {
-            #    $redcapApiUrl = $this->configuration->getRedCapApiUrl();
-            #    $projectId    = $this->configuration->getProjectId();
-            #    $cronJob      = $this->configuration->getCronJob();
-            #    $configName   = $this->configuration->getConfigName();
+            #if (!empty($this->taskConfig)) {
+            #    $redcapApiUrl = $this->taskConfig->getRedCapApiUrl();
+            #    $projectId    = $this->taskConfig->getProjectId();
+            #    $cronJob      = $this->taskConfig->getCronJob();
+            #    $configName   = $this->taskConfig->getConfigName();
             #    $configInfo = "url={$redcapApiUrl} pid={$projectId} cron={$cronJob}"
             #         ." config={$configName} ";
             #}
@@ -743,14 +743,14 @@ class Logger
         $this->dbEventLogTable = $dbEventLogTable;
     }
     
-    public function getConfiguration()
+    public function getTaskConfig()
     {
-        return $this->configuration;
+        return $this->taskConfig;
     }
     
-    public function setConfiguration($configuration)
+    public function setTaskConfig($taskConfig)
     {
-        $this->configuration = $configuration;
+        $this->taskConfig = $taskConfig;
     }
     
     public function getLogId()

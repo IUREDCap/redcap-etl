@@ -24,7 +24,7 @@ class VisitsSqliteCodeTest extends TestCase
         if (file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('visits_sqlite_code_test');
 
-            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
 
             $dbConnection = $configuration->getDbConnection();
             list($type, $db) = explode(':', $dbConnection, 2);

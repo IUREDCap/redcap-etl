@@ -18,7 +18,7 @@ use IU\REDCapETL\Schema\FieldTypeSpecifier;
  * Class used to store ETL configuration information from
  * a configuration file or proprties arrary.
  */
-class Configuration
+class TaskConfig
 {
     # Transform rules source values
     const TRANSFORM_RULES_TEXT    = '1';
@@ -152,7 +152,7 @@ class Configuration
     private $baseDir;
 
     /**
-     * Creates a Configuration object from either an array of properties
+     * Creates a TaskConfig object from either an array of properties
      * or a configuration file, * and updates the logger based on the
      * configuration information found.
      *
@@ -608,7 +608,7 @@ class Configuration
 
         #-----------------------------------------------------------------------
         # Determine the batch size to use (how many records to process at once)
-        # Batch size is expected to be a positive integer. The Configuration
+        # Batch size is expected to be a positive integer. The TaskConfig
         # project should enforce that, but not the configuration file.
         #-----------------------------------------------------------------------
         $this->batchSize = self::DEFAULT_BATCH_SIZE;

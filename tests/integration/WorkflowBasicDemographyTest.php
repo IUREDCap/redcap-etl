@@ -33,7 +33,7 @@ class WorkflowBasicDemographyTest extends TestCase
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
             for ($i = 0; $i <= 2; $i++) {
-                $config = $redCapEtl->getConfiguration($i);
+                $config = $redCapEtl->getTaskConfig($i);
                 $this->assertNotNull($config, "redCapEtl configuration {$i} not null");
 
                 $dbConnection = $config->getDbConnection();

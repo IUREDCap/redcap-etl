@@ -49,7 +49,7 @@ class RepeatingEventsTest extends TestCase
         #-----------------------------
         # Get the CSV directory
         #-----------------------------
-        self::$config = self::$redCapEtl->getConfiguration(0);
+        self::$config = self::$redCapEtl->getTaskConfig(0);
         self::$csvDir = str_ireplace('CSV:', '', self::$config->getDbConnection());
         if (substr(self::$csvDir, -strlen(DIRECTORY_SEPARATOR)) !== DIRECTORY_SEPARATOR) {
             self::$csvDir .= DIRECTORY_SEPARATOR;

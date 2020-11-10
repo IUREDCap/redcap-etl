@@ -26,7 +26,7 @@ class RepeatingEventsMysqlTest extends RepeatingEventsTests
         if (file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('repeating_events_system_test');
 
-            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
 
             list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getMySqlConnectionInfo();
             $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;

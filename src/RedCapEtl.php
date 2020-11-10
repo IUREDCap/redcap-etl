@@ -270,10 +270,10 @@ class RedCapEtl
         return $this->etlWorkflow;
     }
     
-    public function getConfiguration($index)
+    public function getTaskConfig($index)
     {
-        $configuration = $this->etlWorkflow->getConfiguration($index);
-        return $configuration;
+        $taskConfig = $this->etlWorkflow->getTaskConfig($index);
+        return $taskConfig;
     }
     
     public function getDataProject($index)

@@ -15,8 +15,7 @@ use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
 
 /**
- * REDCap-ETL task representing a single configuration that contains a single data source (REDCap project)
- * and destination (database).
+ * REDCap-ETL workflow that contains 1 or more ETL tasks.
  */
 class EtlWorkflow
 {
@@ -54,10 +53,10 @@ class EtlWorkflow
         # Create tasks and database information
         #---------------------------------------------
         $taskId = 1;
-        foreach ($workflowConfig->getConfigurations() as $configName => $configuration) {
-            # Create task for this configuration
+        foreach ($workflowConfig->getTaskConfigs() as $taskConfigName => $taskConfig) {
+            # Create task for this task configuration
             $etlTask = new EtlTask($taskId);
-            $etlTask->initialize($this->logger, $configName, $configuration, $redcapProjectClass);
+            $etlTask->initialize($this->logger, $taskConfigName, $taskConfig, $redcapProjectClass);
         
             $this->tasks[] = $etlTask;
 
@@ -184,7 +183,7 @@ class EtlWorkflow
         # Create the tables in the order they were defined
         #------------------------------------------------------
         foreach ($tables as $table) {
-            $ifNotExists = true;   // same table could be created by 2 different configurations
+            $ifNotExists = true;   // same table could be created by 2 different task configurations
             $dbConnection->createTable($table, $ifNotExists);
             // $this->dbcon->addPrimaryKeyConstraint($table);
 
@@ -270,10 +269,10 @@ class EtlWorkflow
         return $this->tasks;
     }
     
-    public function getConfiguration($index)
+    public function getTaskConfig($index)
     {
         $task = $this->tasks[$index];
-        return $task->getConfiguration();
+        return $task->getTaskConfig();
     }
     
     public function getDataProject($index)

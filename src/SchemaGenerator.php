@@ -40,8 +40,10 @@ class SchemaGenerator
     private $lookupTable;
 
     private $dataProject;
+
     private $logger;
-    private $configuration;
+
+    private $taskConfig;
 
     /** @var the ID of the task for the configuration for which the schema is being generated */
     private $taskId;
@@ -53,15 +55,15 @@ class SchemaGenerator
      *
      * @param EtlRedCapProject $dataProject the REDCap project that
      *     contains the data to extract.
-     * @param Configuration $configuration ETL configuration information.
+     * @param TaskConfig $taskConfig ETL task configuration information.
      * @param Logger $logger logger for logging ETL process information
      *     and errors.
      */
-    public function __construct($dataProject, $configuration, $logger, $taskId = 1)
+    public function __construct($dataProject, $taskConfig, $logger, $taskId = 1)
     {
         $this->dataProject   = $dataProject;
-        $this->configuration = $configuration;
-        $this->tablePrefix   = $configuration->getTablePrefix();
+        $this->taskConfig    = $taskConfig;
+        $this->tablePrefix   = $taskConfig->getTablePrefix();
         $this->logger        = $logger;
         $this->taskId        = $taskId;
     }
@@ -80,7 +82,7 @@ class SchemaGenerator
      */
     public function generateSchema($rulesText)
     {
-        $redCapApiUrl      = $this->configuration->getRedCapApiUrl();
+        $redCapApiUrl      = $this->taskConfig->getRedCapApiUrl();
         $projectInfo       = $this->dataProject->exportProjectInfo();
         $metadata          = $this->dataProject->exportMetadata();
         $recordIdFieldName = $this->dataProject->getRecordIdFieldName();
@@ -119,8 +121,8 @@ class SchemaGenerator
         # Create lookup table that maps multiple choice values to labels
         #----------------------------------------------------------------
         $this->lookupChoices = $this->dataProject->getLookupChoices();
-        $keyType = $this->configuration->getGeneratedKeyType();
-        $lookupTableName = $this->configuration->getLookupTableName();
+        $keyType = $this->taskConfig->getGeneratedKeyType();
+        $lookupTableName = $this->taskConfig->getLookupTableName();
         $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix, $keyType, $lookupTableName);
 
         $info = '';
@@ -394,7 +396,7 @@ class SchemaGenerator
         $tableName = $this->tablePrefix . $rule->tableName;
         $rowsType  = $rule->rowsType;
 
-        $keyType = $this->configuration->getGeneratedKeyType();
+        $keyType = $this->taskConfig->getGeneratedKeyType();
         
         # Create the table
         $table = new Table(
@@ -431,7 +433,7 @@ class SchemaGenerator
                 .$rule->getLineNumber().': "'.$rule->getLine().'"';
             throw new EtlException($errorMessage, EtlException::INPUT_ERROR);
         } else {
-            $fieldTypeSpecifier = $this->configuration->getGeneratedRecordIdType();
+            $fieldTypeSpecifier = $this->taskConfig->getGeneratedRecordIdType();
             $field = new Field(
                 $recordIdFieldName,
                 $fieldTypeSpecifier->getType(),
@@ -482,13 +484,13 @@ class SchemaGenerator
         # Create event/instrument/instance/suffix identifier fields
         #--------------------------------------------------------------
         if ($hasEvent) {
-            $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+            $fieldTypeSpecifier = $this->taskConfig->getGeneratedNameType();
             $field = new Field(RedCapEtl::COLUMN_EVENT, $fieldTypeSpecifier->getType(), $fieldTypeSpecifier->getSize());
             $table->addField($field);
         }
 
         if ($hasInstrument) {
-            $fieldTypeSpecifier = $this->configuration->getGeneratedNameType();
+            $fieldTypeSpecifier = $this->taskConfig->getGeneratedNameType();
             $field = new Field(
                 RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
                 $fieldTypeSpecifier->getType(),
@@ -498,7 +500,7 @@ class SchemaGenerator
         }
 
         if ($hasInstance) {
-            $fieldTypeSpecifier = $this->configuration->getGeneratedInstanceType();
+            $fieldTypeSpecifier = $this->taskConfig->getGeneratedInstanceType();
             $field = new Field(
                 RedCapEtl::COLUMN_REPEATING_INSTANCE,
                 $fieldTypeSpecifier->getType(),
@@ -508,7 +510,7 @@ class SchemaGenerator
         }
 
         if ($hasSuffixes) {
-            $fieldTypeSpecifier = $this->configuration->getGeneratedSuffixType();
+            $fieldTypeSpecifier = $this->taskConfig->getGeneratedSuffixType();
             $field = new Field(
                 RedCapEtl::COLUMN_SUFFIXES,
                 $fieldTypeSpecifier->getType(),

@@ -48,7 +48,7 @@ class EtlTask
     private $recordIdFieldName;   // The field name for the record ID
                                   // for the data project in REDCap
 
-    private $configuration;
+    private $taskConfig;
 
     /** @var array map where the keys represent root tables that have
      *     fields that have multiple rows of data per record ID.
@@ -81,21 +81,21 @@ class EtlTask
      *     to use as the RedcapProject class. By default the EtlRedCapProject
      *     class is used.
      */
-    public function initialize($logger, $taskName, $configuration, $redcapProjectClass = null)
+    public function initialize($logger, $taskName, $taskConfig, $redcapProjectClass = null)
     {
         $this->app = $logger->getApp();
         $this->logger = $logger;
         $this->name = $taskName;
-        $this->logger->setConfiguration($configuration);
+        $this->logger->setTaskConfig($taskConfig);
 
         $this->rootTablesWithMultiValues = array();
 
-        $this->configuration = $configuration;
+        $this->taskConfig = $taskConfig;
 
         #---------------------------------------------------------
         # Set time limit
         #---------------------------------------------------------
-        $timeLimit = $this->configuration->getTimeLimit();
+        $timeLimit = $this->taskConfig->getTimeLimit();
         if (isset($timeLimit) && trim($timeLimit) !== '') {
             set_time_limit($timeLimit);
         } else {
@@ -105,7 +105,7 @@ class EtlTask
         #---------------------------------------------------------
         # Set timezone if one was specified
         #---------------------------------------------------------
-        $timezone = $this->configuration->getTimezone();
+        $timezone = $this->taskConfig->getTimezone();
         if (isset($timezone) && trim($timezone) !== '') {
             date_default_timezone_set($timezone);
         }
@@ -114,10 +114,10 @@ class EtlTask
         #-----------------------------------------------------------
         # Create RedCap object to use for getting REDCap projects
         #-----------------------------------------------------------
-        $apiUrl = $this->configuration->getRedCapApiUrl();
+        $apiUrl = $this->taskConfig->getRedCapApiUrl();
         $superToken = null; // There is no need to create projects, so this is not needed
-        $sslVerify  = $this->configuration->getSslVerify();
-        $caCertFile = $this->configuration->getCaCertFile();
+        $sslVerify  = $this->taskConfig->getSslVerify();
+        $caCertFile = $this->taskConfig->getCaCertFile();
 
         if (empty($redcapProjectClass)) {
             $redcapProjectClass = EtlRedCapProject::class;
@@ -156,7 +156,7 @@ class EtlTask
         #----------------------------------------------------------------
         # Get the project that has the actual data
         #----------------------------------------------------------------
-        $dataToken = $this->configuration->getDataSourceApiToken();
+        $dataToken = $this->taskConfig->getDataSourceApiToken();
         try {
             $this->dataProject = $redCap->getProject($dataToken);
         } catch (PhpCapException $exception) {
@@ -176,18 +176,18 @@ class EtlTask
         #---------------------------------------------------
         $dbconfactory = new DbConnectionFactory();
         $this->dbcon = $dbconfactory->createDbConnection(
-            $this->configuration->getDbConnection(),
-            $this->configuration->getDbSsl(),
-            $this->configuration->getDbSslVerify(),
-            $this->configuration->getCaCertFile(),
-            $this->configuration->getTablePrefix(),
-            $this->configuration->getLabelViewSuffix()
+            $this->taskConfig->getDbConnection(),
+            $this->taskConfig->getDbSsl(),
+            $this->taskConfig->getDbSslVerify(),
+            $this->taskConfig->getCaCertFile(),
+            $this->taskConfig->getTablePrefix(),
+            $this->taskConfig->getLabelViewSuffix()
         );
 
         #-------------------------------------------------
         # Set up database logging
         #-------------------------------------------------
-        if ($this->configuration->getDbLogging()) {
+        if ($this->taskConfig->getDbLogging()) {
             $this->logger->setDbConnection($this->dbcon);
             $this->logger->setDbLogging(true);
             
@@ -197,7 +197,7 @@ class EtlTask
             #----------------------------------------
             # (Main) database log table
             #----------------------------------------
-            $name = $this->configuration->getDbLogTable();
+            $name = $this->taskConfig->getDbLogTable();
             $dbLogTable = new EtlLogTable($name);
             $this->logger->setDbLogTable($dbLogTable);
             
@@ -210,7 +210,7 @@ class EtlTask
             #------------------------------
             # Database event log table
             #------------------------------
-            $name = $this->configuration->getDbEventLogTable();
+            $name = $this->taskConfig->getDbEventLogTable();
             $dbEventLogTable = new EtlEventLogTable($name);
             $this->logger->setDbEventLogTable($dbEventLogTable);
             
@@ -232,7 +232,7 @@ class EtlTask
 
     /**
      * Gets the database ID string. This method depends on database connections
-     * being specified consistently in configurations. For example, for a given
+     * being specified consistently in task configurations. For example, for a given
      * database that uses the default port number, either all references to
      * that database should not include a port number, or all should include
      * the default port number.
@@ -259,16 +259,16 @@ class EtlTask
 
         #-----------------------------------------------------------------------------
         # If auto-generated rules were specified, generate the rules,
-        # otherwise, get the from the configuration
+        # otherwise, get the from the task configuration
         #-----------------------------------------------------------------------------
-        if ($this->configuration->getTransformRulesSource() === Configuration::TRANSFORM_RULES_DEFAULT) {
+        if ($this->taskConfig->getTransformRulesSource() === TaskConfig::TRANSFORM_RULES_DEFAULT) {
             $rulesText = $this->autoGenerateRules();
         } else {
-            $rulesText = $this->configuration->getTransformationRules();
+            $rulesText = $this->taskConfig->getTransformationRules();
         }
 
-        $tablePrefix = $this->configuration->getTablePrefix();
-        $schemaGenerator = new SchemaGenerator($this->dataProject, $this->configuration, $this->logger, $this->id);
+        $tablePrefix = $this->taskConfig->getTablePrefix();
+        $schemaGenerator = new SchemaGenerator($this->dataProject, $this->taskConfig, $this->logger, $this->id);
 
         list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
@@ -305,20 +305,20 @@ class EtlTask
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
-        $configuration = $this->configuration;
+        $taskConfig = $this->taskConfig;
 
-        $addFormCompleteFields     = $addFormCompleteFields     || $configuration->getAutogenIncludeCompleteFields();
-        $addDagFields              = $addDagFields              || $configuration->getAutogenIncludeDagFields();
-        $addFileFields             = $addFileFields             || $configuration->getAutogenIncludeFileFields();
-        $addSurveyFields           = $addSurveyFields           || $configuration->getAutogenIncludeSurveyFields();
-        $removeNotesFields         = $removeNotesFields         || $configuration->getAutogenRemoveNotesFields();
-        $removeIdentifierFields    = $removeIdentifierFields    || $configuration->getAutogenRemoveIdentifierFields();
+        $addFormCompleteFields     = $addFormCompleteFields     || $taskConfig->getAutogenIncludeCompleteFields();
+        $addDagFields              = $addDagFields              || $taskConfig->getAutogenIncludeDagFields();
+        $addFileFields             = $addFileFields             || $taskConfig->getAutogenIncludeFileFields();
+        $addSurveyFields           = $addSurveyFields           || $taskConfig->getAutogenIncludeSurveyFields();
+        $removeNotesFields         = $removeNotesFields         || $taskConfig->getAutogenRemoveNotesFields();
+        $removeIdentifierFields    = $removeIdentifierFields    || $taskConfig->getAutogenRemoveIdentifierFields();
         $combineNonRepeatingFields = $combineNonRepeatingFields
-            || $configuration->getAutogenCombineNonRepeatingFields();
+            || $taskConfig->getAutogenCombineNonRepeatingFields();
 
         if ($combineNonRepeatingFields) {
             if (empty($nonRepeatingFieldsTable)) {
-                $nonRepeatingFieldsTable = $configuration->getAutogenNonRepeatingFieldsTable();
+                $nonRepeatingFieldsTable = $taskConfig->getAutogenNonRepeatingFieldsTable();
             }
         } else {
             $nonRepeatingFieldsTable = '';
@@ -366,7 +366,7 @@ class EtlTask
         #--------------------------------------------------
         $startExtractTime = microtime(true);
         $recordIdBatches = $this->dataProject->getRecordIdBatches(
-            (int) $this->configuration->getBatchSize()
+            (int) $this->taskConfig->getBatchSize()
         );
         $endExtractTime = microtime(true);
         $extractTime += $endExtractTime - $startExtractTime;
@@ -396,7 +396,7 @@ class EtlTask
             $endExtractTime = microtime(true);
             $extractTime += $endExtractTime - $startExtractTime;
 
-            if ($this->configuration->getExtractedRecordCountCheck()) {
+            if ($this->taskConfig->getExtractedRecordCountCheck()) {
                 if (count($recordBatch) < count($recordIdBatch)) {
                     $message = "Attempted to retrieve ".count($recordIdBatch)." records, but only "
                         .count($recordBatch)." were actually retrieved."
@@ -495,7 +495,7 @@ class EtlTask
     protected function transform($table, $records, $foreignKey, $suffix)
     {
         $tableName = $table->getName();
-        $calcFieldIgnorePattern = $this->configuration->getCalcFieldIgnorePattern();
+        $calcFieldIgnorePattern = $this->taskConfig->getCalcFieldIgnorePattern();
 
         foreach ($table->rowsType as $rowType) {
             // Look at row_event for this table
@@ -721,13 +721,13 @@ class EtlTask
         #------------------------------------------------------
         # Create tables
         #------------------------------------------------------
-        if ($this->configuration->getDbPrimaryKeys()) {
+        if ($this->taskConfig->getDbPrimaryKeys()) {
             foreach ($tables as $table) {
                 $this->dbcon->addPrimaryKeyConstraint($table);
             }
         }
 
-        if ($this->configuration->getDbForeignKeys()) {
+        if ($this->taskConfig->getDbForeignKeys()) {
             foreach ($tables as $table) {
                 $this->dbcon->addForeignKeyConstraint($table);
             }
@@ -738,12 +738,12 @@ class EtlTask
     public function runPreProcessingSql()
     {
         try {
-            $sql = $this->configuration->getPreProcessingSql();
+            $sql = $this->taskConfig->getPreProcessingSql();
             if (!empty($sql)) {
                 $this->dbcon->processQueries($sql);
             }
 
-            $sqlFile = $this->configuration->getPreProcessingSqlFile();
+            $sqlFile = $this->taskConfig->getPreProcessingSqlFile();
             if (!empty($sqlFile)) {
                 $this->dbcon->processQueryFile($sqlFile);
             }
@@ -756,12 +756,12 @@ class EtlTask
     public function runPostProcessingSql()
     {
         try {
-            $sql = $this->configuration->getPostProcessingSql();
+            $sql = $this->taskConfig->getPostProcessingSql();
             if (!empty($sql)) {
                 $this->dbcon->processQueries($sql);
             }
 
-            $sqlFile = $this->configuration->getPostProcessingSqlFile();
+            $sqlFile = $this->taskConfig->getPostProcessingSqlFile();
             if (!empty($sqlFile)) {
                 $this->dbcon->processQueryFile($sqlFile);
             }
@@ -772,12 +772,12 @@ class EtlTask
     }
 
     /**
-     * Logs job info from configuration, if any
+     * Logs job info from taskConfig, if any
      */
     public function logJobInfo()
     {
-        if (!empty($this->configuration)) {
-            $redcapApiUrl = $this->configuration->getRedCapApiUrl();
+        if (!empty($this->taskConfig)) {
+            $redcapApiUrl = $this->taskConfig->getRedCapApiUrl();
             $this->logger->log("REDCap API URL: ".$redcapApiUrl);
 
             $projectInfo = $this->dataProject->exportProjectInfo();
@@ -786,15 +786,15 @@ class EtlTask
                 $this->logger->log("Project title: ".$projectInfo['project_title']);
             }
 
-            $configName  = $this->configuration->getConfigName();
-            $configFile  = $this->configuration->getPropertiesFile();
+            $configName  = $this->taskConfig->getConfigName();
+            $configFile  = $this->taskConfig->getPropertiesFile();
             if (!empty($configName)) {
-                $this->logger->log("Configuration: ".$configName);
+                $this->logger->log("TaskConfig: ".$configName);
             } elseif (!empty($configFile)) {
-                $this->logger->log("Configuration: ".$configFile);
+                $this->logger->log("TaskConfig: ".$configFile);
             }
 
-            $cronJob = $this->configuration->getCronJob();
+            $cronJob = $this->taskConfig->getCronJob();
             if (!empty($cronJob)) {
                 if (strcasecmp($cronJob, 'true') === 0) {
                     $this->logger->log('Job type: scheduled');
@@ -807,7 +807,7 @@ class EtlTask
 
     public function getRedCapApiUrl()
     {
-        $apiUrl = $this->configuration->getRedCapApiUrl();
+        $apiUrl = $this->taskConfig->getRedCapApiUrl();
         return $apiUrl;
     }
 
@@ -833,9 +833,9 @@ class EtlTask
         return $this->logger;
     }
     
-    public function getConfiguration()
+    public function getTaskConfig()
     {
-        return $this->configuration;
+        return $this->taskConfig;
     }
     
     public function getDataProject()

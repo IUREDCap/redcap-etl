@@ -32,7 +32,7 @@ class BasicDemographyTestWithMock extends TestCase
             $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE, 'IU\REDCapETL\BasicDemographyProjectMock');
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
-            $config = $redCapEtl->getConfiguration(0);
+            $config = $redCapEtl->getTaskConfig(0);
             $this->assertNotNull($config, 'redCapEtl configuration not null');
 
             self::$csvDir = str_ireplace('CSV:', '', $config->getDbConnection());

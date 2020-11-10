@@ -8,7 +8,7 @@ namespace IU\REDCapETL\Schema;
 
 use PHPUnit\Framework\TestCase;
 
-use IU\REDCapETL\Configuration;
+use IU\REDCapETL\TaskConfig;
 use IU\REDCapETL\Logger;
 use IU\REDCapETL\RedCapEtl;
 
@@ -136,7 +136,7 @@ class TableTest extends TestCase
     {
         $logger = new Logger('test');
 
-        $configuration = new Configuration($logger, __DIR__.'/../../data/config-test.ini');
+        $taskConfig = new TaskConfig($logger, __DIR__.'/../../data/config-test.ini');
         $name = 'test';
         $parent = 'test_id';
         $rowsType = RowsType::ROOT;
@@ -154,12 +154,12 @@ class TableTest extends TestCase
 
 
         # Create EVENT field
-        $fieldTypeSpecifier = $configuration->getGeneratedNameType();
+        $fieldTypeSpecifier = $taskConfig->getGeneratedNameType();
         $field = new Field(RedCapEtl::COLUMN_EVENT, $fieldTypeSpecifier->getType(), $fieldTypeSpecifier->getSize());
         $table->addField($field);
 
         # Create REPEATING_INSTRUMENT field
-        $fieldTypeSpecifier = $configuration->getGeneratedInstanceType();
+        $fieldTypeSpecifier = $taskConfig->getGeneratedInstanceType();
         $field = new Field(
             RedCapEtl::COLUMN_REPEATING_INSTRUMENT,
             $fieldTypeSpecifier->getType(),
@@ -168,7 +168,7 @@ class TableTest extends TestCase
         $table->addField($field);
 
         # Create REPEATING_INSTANCE field
-        $fieldTypeSpecifier = $configuration->getGeneratedInstanceType();
+        $fieldTypeSpecifier = $taskConfig->getGeneratedInstanceType();
         $field = new Field(
             RedCapEtl::COLUMN_REPEATING_INSTANCE,
             $fieldTypeSpecifier->getType(),

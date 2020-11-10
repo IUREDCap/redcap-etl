@@ -29,7 +29,7 @@ class EtlWorkflowTest extends TestCase
             ->setMethods(array())
             ->disableOriginalConstructor()
             ->getMock();
-        $workflowConfigMock->method('getConfigurations')->will($this->returnValue(array()));
+        $workflowConfigMock->method('getTaskConfigs')->will($this->returnValue(array()));
 
         $etlWorkflow = new EtlWorkflow($workflowConfigMock, $loggerMock);
         $this->assertNotNull($etlWorkflow, 'ETL workflow not null check');

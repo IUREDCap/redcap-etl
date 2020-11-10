@@ -18,24 +18,24 @@ use IU\REDCapETL\Schema\FieldTypeSpecifier;
  * Class used to store ETL workflow configuration information from
  * a configuration file.
  *
- * WorkflowConfigs contain one or more configurations that are
+ * WorkflowConfigs contain one or more task configurations that are
  * executed sequentially by REDCap-ETL with optional global properties
- * that override properties defined for individual configurations.
+ * that override properties defined for individual task configurations.
  */
 class WorkflowConfig
 {
     # Keys used in JSON workflow config arrays that are the result of parsing a JSON file or string
     const JSON_WORKFLOW_KEY          = 'workflow';
     const JSON_GLOBAL_PROPERTIES_KEY = 'global_properties';
-    const JSON_CONFIGURATIONS_KEY    = 'configurations';
+    const JSON_CONFIGURATIONS_KEY    = 'task_configs';
 
     private $logger;
 
     /** @var array array of global properties (as map from property name to property value) */
     private $globalProperties;
 
-    /** @var array array of Configurations */
-    private $configurations;
+    /** @var array array of TaskConfigs */
+    private $taskConfigs;
 
     private $configurationFile;
 
@@ -60,18 +60,18 @@ class WorkflowConfig
         $this->logger = $logger;
 
         $this->globalProperties = array();
-        $this->configurations = array();
+        $this->taskConfigs = array();
 
         if (empty($properties)) {
             $message = 'No configuration was specified.';
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         } elseif (is_array($properties)) {
-            # Configuration specified as an array of properties
-            $configuration = new Configuration($logger, $properties);
-            $this->configurations[] = $configuration;
+            # TaskConfig specified as an array of properties
+            $taskConfig = new TaskConfig($logger, $properties);
+            $this->taskConfigs[] = $taskConfig;
         } elseif (is_string($properties)) {
-            # Configuration is in a file (properties is the name/path of the file)
+            # TaskConfig is in a file (properties is the name/path of the file)
             $this->configurationFile = trim($properties);
 
             $baseDir = realpath(dirname($this->configurationFile));
@@ -126,19 +126,19 @@ class WorkflowConfig
             if (array_key_exists(self::JSON_GLOBAL_PROPERTIES_KEY, $workflowConfig)) {
                 $this->globalProperties = $workflowConfig[self::JSON_GLOBAL_PROPERTIES_KEY];
                 $this->globalProperties = $this->processJsonProperties($this->globalProperties);
-                $this->globalProperties = Configuration::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
+                $this->globalProperties = TaskConfig::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
             }
 
             if (array_key_exists(self::JSON_CONFIGURATIONS_KEY, $workflowConfig)) {
-                $configurations = $workflowConfig[self::JSON_CONFIGURATIONS_KEY];
-                foreach ($configurations as $properties) {
+                $taskConfigs = $workflowConfig[self::JSON_CONFIGURATIONS_KEY];
+                foreach ($taskConfigs as $properties) {
                     $properties = $this->processJsonProperties($properties);
-                    $properties = Configuration::makeFilePropertiesAbsolute($properties, $baseDir);
-                    $properties = Configuration::overrideProperties($this->globalProperties, $properties);
+                    $properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
+                    $properties = TaskConfig::overrideProperties($this->globalProperties, $properties);
                     #print "\n\nPROPERTIES:\n";
                     #print_r($properties);
-                    $configuration = new Configuration($this->logger, $properties);
-                    $this->configurations[] = $configuration;
+                    $taskConfig = new TaskConfig($this->logger, $properties);
+                    $this->taskConfigs[] = $taskConfig;
                 }
             } else {
                 throw new \Exception("No configurations defined for workflow.");
@@ -146,13 +146,13 @@ class WorkflowConfig
         } else {
             # Single configuration
             $properties = $this->processJsonProperties($config);
-            $properties = Configuration::makeFilePropertiesAbsolute($properties, $baseDir);
+            $properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
 
             #print "\n\nPROPERTIES:\n";
             #print_r($properties);
 
-            $configuration = new Configuration($this->logger, $properties);
-            $this->configurations[] = $configuration;
+            $taskConfig = new TaskConfig($this->logger, $properties);
+            $this->taskConfigs[] = $taskConfig;
         }
     }
     
@@ -216,34 +216,34 @@ class WorkflowConfig
                     # Section (that defines a configuration)
                     $section = $propertyName;
                     $sectionProperties = $propertyValue;
-                    $sectionProperties = Configuration::makeFilePropertiesAbsolute($sectionProperties, $baseDir);
+                    $sectionProperties = TaskConfig::makeFilePropertiesAbsolute($sectionProperties, $baseDir);
                     $configFile = null;
 
                     $properties = $this->globalProperties;
-                    $properties = Configuration::makeFilePropertiesAbsolute($properties, $baseDir);
+                    $properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
 
                     if (array_key_exists(ConfigProperties::CONFIG_FILE, $properties)) {
                         # Config file property
                         $configFile = $properties[ConfigProperties::CONFIG_FILE];
                         unset($properties[ConfigProperties::CONFIG_FILE]);
-                        $fileProperties = Configuration::getPropertiesFromFile($configFile);
-                        $fileProperties = Configuration::makeFilePropertiesAbsolute($fileProperties, $baseDir);
-                        $properties = Configuration::overrideProperties($properties, $fileProperties);
+                        $fileProperties = TaskConfig::getPropertiesFromFile($configFile);
+                        $fileProperties = TaskConfig::makeFilePropertiesAbsolute($fileProperties, $baseDir);
+                        $properties = TaskConfig::overrideProperties($properties, $fileProperties);
                     }
 
-                    $properties = Configuration::overrideProperties($properties, $sectionProperties);
+                    $properties = TaskConfig::overrideProperties($properties, $sectionProperties);
 
                     # Properties used from lowest to highest precedence:
                     # global properties, config file properties, properties defined in section
-                    $this->configurations[$section] = new Configuration($this->logger, $properties);
+                    $this->taskConfigs[$section] = new TaskConfig($this->logger, $properties);
                 } else {
                     # Global property
                     $this->globalProperties[$propertyName] =  $propertyValue;
                 }
             }
         } else {
-            $configuration = new Configuration($this->logger, $configurationFile);
-            array_push($this->configurations, $configuration);
+            $taskConfig = new TaskConfig($this->logger, $configurationFile);
+            array_push($this->taskConfigs, $taskConfig);
         }
 
         # Parse file into properties and sections
@@ -279,7 +279,7 @@ class WorkflowConfig
 
     public function generateJson()
     {
-        $data = [$this->globalProperties, $this->configurations];
+        $data = [$this->globalProperties, $this->taskConfigs];
         $json = json_encode($data);
         #$json = json_encode($this, JSON_FORCE_OBJECT); // | JSON_PRETTY_PRINT);
         return $json;
@@ -294,9 +294,9 @@ class WorkflowConfig
             $string .= "    {$name}: {$value}\n";
         }
         $string .= "]\n";
-        foreach ($this->configurations as $name => $configuration) {
-            $string .= "Configuration \"{$name}\": [\n";
-            $string .= print_r($configuration, true);
+        foreach ($this->taskConfigs as $name => $taskConfig) {
+            $string .= "TaskConfig \"{$name}\": [\n";
+            $string .= print_r($taskConfig, true);
             $string .= "]\n";
         }
 
@@ -304,8 +304,8 @@ class WorkflowConfig
     }
     */
 
-    public function getConfigurations()
+    public function getTaskConfigs()
     {
-        return $this->configurations;
+        return $this->taskConfigs;
     }
 }

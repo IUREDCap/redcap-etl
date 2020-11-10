@@ -24,7 +24,7 @@ class VisitsMysqlCodeTest extends TestCase
         if (file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('visits_code_test');
 
-            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
 
             $options = [
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION

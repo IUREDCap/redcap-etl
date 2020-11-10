@@ -26,7 +26,7 @@ class SchemaGenerationTest extends TestCase
     {
         # create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/basic-demography.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new TaskConfig(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
         $apiToken = $configuration->getDataSourceApiToken();
         $sslVerify = false;
@@ -70,7 +70,7 @@ class SchemaGenerationTest extends TestCase
     {
         #create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/repeating-events.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new TaskConfig(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
         $apiToken = $configuration->getDataSourceApiToken();
         $sslVerify = false;
@@ -154,7 +154,7 @@ class SchemaGenerationTest extends TestCase
     {
         #create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/visits.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new TaskConfig(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
         $apiToken = $configuration->getDataSourceApiToken();
         $sslVerify = false;
@@ -211,7 +211,7 @@ class SchemaGenerationTest extends TestCase
     {
         #create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/basic-demography-bad-rule.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new TaskConfig(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
         $apiToken = $configuration->getDataSourceApiToken();
         $sslVerify = false;
@@ -262,7 +262,7 @@ class SchemaGenerationTest extends TestCase
     {
         #create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/basic-demography-bad-field-name.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new TaskConfig(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
         $apiToken = $configuration->getDataSourceApiToken();
         $sslVerify = false;
@@ -307,7 +307,7 @@ class SchemaGenerationTest extends TestCase
     {
         #create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/visits-missing-suffix.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new TaskConfig(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
         $apiToken = $configuration->getDataSourceApiToken();
         $sslVerify = false;
@@ -352,7 +352,7 @@ class SchemaGenerationTest extends TestCase
     {
         #create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/visits-empty-rules.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new TaskConfig(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
         $apiToken = $configuration->getDataSourceApiToken();
         $sslVerify = false;
@@ -399,7 +399,7 @@ class SchemaGenerationTest extends TestCase
     {
         #create an EtlRecCapProject object from which a schema will be generated
         $configFile = __DIR__.'/../config/basic-demography-duplicate-primary-key-name.ini';
-        $configuration = new Configuration(self::$logger, $configFile);
+        $configuration = new TaskConfig(self::$logger, $configFile);
         $apiUrl = $configuration->getRedCapApiUrl();
         $apiToken = $configuration->getDataSourceApiToken();
         $sslVerify = false;

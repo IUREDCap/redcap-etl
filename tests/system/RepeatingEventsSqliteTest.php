@@ -26,7 +26,7 @@ class RepeatingEventsSqliteTest extends RepeatingEventsTests
         if (file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('repeating_events_sqlite_system_test');
 
-            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
 
             $dbConnection = $configuration->getDbConnection();
             list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);

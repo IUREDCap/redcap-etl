@@ -39,7 +39,7 @@ class RepeatingEventsPostgreSqlTest extends RepeatingEventsTests
         if (extension_loaded('pdo_pgsql') && file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('repeating_events_postgresql_system_test');
 
-            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
 
             $dbConnection = $configuration->getDbConnection();
 

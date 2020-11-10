@@ -32,10 +32,10 @@ class Workflow1Test extends TestCase
             $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
-            $config0 = $redCapEtl->getConfiguration(0);
+            $config0 = $redCapEtl->getTaskConfig(0);
             $this->assertNotNull($config0, 'redCapEtl configuration 0 not null');
 
-            $config1 = $redCapEtl->getConfiguration(1);
+            $config1 = $redCapEtl->getTaskConfig(1);
             $this->assertNotNull($config1, 'redCapEtl configuration 1 not null');
 
 #            print "\n".$config1->getDbConnection()."\n";

@@ -25,7 +25,7 @@ class SqlServerAutoRulesTest extends TestCase
         if (extension_loaded('sqlsrv') && extension_loaded('pdo_sqlsrv') && file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('repeating_events_system_test');
 
-            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
 
             list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getSqlServerConnectionInfo();
             $dsn = 'sqlsrv:database='.$dbName.';server='.$dbHost;
@@ -70,10 +70,10 @@ class SqlServerAutoRulesTest extends TestCase
     public static function runEtl()
     {
         try {
-            $configuration = new Configuration(self::$logger, self::CONFIG_FILE);
+            $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
             
             $properties = $configuration->getProperties();
-            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = Configuration::TRANSFORM_RULES_DEFAULT;
+            $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
             $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = '';
                     
             $redCapEtl = new RedCapEtl(self::$logger, $properties);
