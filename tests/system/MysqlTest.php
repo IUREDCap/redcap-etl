@@ -54,7 +54,9 @@ class DatabasesTest extends TestCase
      */
     public function testMysqlDbConnectionCreateTableWithPort()
     {
-        $configuration = new TaskConfig(self::$logger, self::$configFile);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::$configFile);
+
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $port = '3306';
         $dbString = implode(":", $dbInfo).":$port";
@@ -271,7 +273,9 @@ class DatabasesTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new TaskConfig(self::$logger, self::$configFile);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::$configFile);
+
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
 
@@ -462,7 +466,8 @@ class DatabasesTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new TaskConfig(self::$logger, self::$configFile);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::$configFile);
 
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
@@ -559,7 +564,9 @@ class DatabasesTest extends TestCase
     public function testMysqlDbConnectionProcessQueryFile()
     {
         #Create the mysqlDbConnection object
-        $configuration = new TaskConfig(self::$logger, self::$configFile);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::$configFile);
+
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
 
@@ -796,7 +803,9 @@ class DatabasesTest extends TestCase
         #############################################################
         # create the table in the database
         #############################################################
-        $configuration = new TaskConfig(self::$logger, self::$configFile);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::$configFile);
+
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
 
@@ -914,7 +923,9 @@ class DatabasesTest extends TestCase
     public function testMysqlDbConnectionReplaceLookupViewWithLookup()
     {
         #Create the MysqlDbConnection
-        $configuration = new TaskConfig(self::$logger, self::$configFile);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::$configFile);
+
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
 
@@ -1062,7 +1073,9 @@ class DatabasesTest extends TestCase
 
     public function testMysqlDbConnectionParseSqlQueries()
     {
-        $configuration = new TaskConfig(self::$logger, self::$configFile);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::$configFile);
+
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
 
@@ -1121,7 +1134,9 @@ class DatabasesTest extends TestCase
         );
 
         #create the MysqlDbConnection
-        $configuration = new TaskConfig(self::$logger, self::$configFile);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::$configFile);
+
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
 

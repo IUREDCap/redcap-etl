@@ -152,33 +152,15 @@ class TaskConfig
     private $baseDir;
 
     /**
-     * Creates a TaskConfig object from either an array of properties
-     * or a configuration file, * and updates the logger based on the
-     * configuration information found.
-     *
-     * @param Logger $logger logger for information and errors
-     *
-     * @param mixed $properties if this is a string, it is assumed to
-     *     be the name of the properties file to use, if it is an array,
-     *     it is assumed to be a map from property names to values.
-     *     If a properties file name string is used, then it is assumed
-     *     to be a JSON file if the file name ends with .json, and a
-     *     .ini file otherwise.
-     *
-     * @param string $baseDir the base directory to use for references to files
-     *     in the properties. For example, if the base directory was specified as
-     *     "/home/etluser/" and the post_sql_processing_file property was specified
-     *     as "post.sql", then the file "/home/etluser/post.sql" would be used
-     *     for the post-processing SQL commands.
      */
-    public function __construct(& $logger, $properties, $baseDir = null)
+    public function __construct()
     {
-        $this->logger = $logger;
-        $this->app = $this->logger->getApp();
+        $this->logger = null;
+        $this->app    = '';
         $this->propertiesFile = null;
 
         #---------------------------------------------------------
-        # Set default values
+        # Set default config properties values
         #---------------------------------------------------------
         $this->dbSsl           = self::DEFAULT_DB_SSL;
 
@@ -200,7 +182,32 @@ class TaskConfig
         $this->sslVerify        = true;
 
         $this->extractedRecordCountCheck = true;
+    }
 
+    /**
+     * Sets a TaskConfig object from either an array of properties
+     * or a configuration file, * and updates the logger based on the
+     * configuration information found.
+     *
+     * @param Logger $logger logger for information and errors
+     *
+     * @param mixed $properties if this is a string, it is assumed to
+     *     be the name of the properties file to use, if it is an array,
+     *     it is assumed to be a map from property names to values.
+     *     If a properties file name string is used, then it is assumed
+     *     to be a JSON file if the file name ends with .json, and a
+     *     .ini file otherwise.
+     *
+     * @param string $baseDir the base directory to use for references to files
+     *     in the properties. For example, if the base directory was specified as
+     *     "/home/etluser/" and the post_sql_processing_file property was specified
+     *     as "post.sql", then the file "/home/etluser/post.sql" would be used
+     *     for the post-processing SQL commands.
+     */
+    public function set(& $logger, $properties, $baseDir = null)
+    {
+        $this->logger = $logger;
+        $this->app = $this->logger->getApp();
 
         #------------------------------------------------------------------------
         # Process the properties, which could be specified as an array or a file

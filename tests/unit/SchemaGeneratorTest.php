@@ -22,7 +22,8 @@ class SchemaGeneratorTest extends TestCase
 
         $logger = new Logger('schema_generator_test');
 
-        $taskConfig = new TaskConfig($logger, self::CONFIG_FILE);
+        $taskConfig = new TaskConfig();
+        $taskConfig->set($logger, self::CONFIG_FILE);
 
         $schemaGenerator = new SchemaGenerator($projectData, $taskConfig, $logger);
         $this->assertNotNull($schemaGenerator, 'schemaGenerator object created check');

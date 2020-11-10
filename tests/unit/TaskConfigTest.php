@@ -31,7 +31,8 @@ class TaskConfigTest extends TestCase
 
     public function testConstructor()
     {
-        $config = new TaskConfig($this->logger, $this->properties);
+        $config = new TaskConfig();
+        $config->set($this->logger, $this->properties);
 
         $this->assertNotNull($config, 'TaskConfig not null');
         $this->assertTrue($config  instanceof TaskConfig, 'TaskConfig type test');
@@ -46,7 +47,8 @@ class TaskConfigTest extends TestCase
     public function testDbTaskConfig()
     {
         $properties = $this->properties;
-        $configuration = new TaskConfig($this->logger, $properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $properties);
         $this->assertEquals(
             TaskConfig::DEFAULT_DB_SSL,
             $configuration->getDbSsl(),
@@ -67,7 +69,10 @@ class TaskConfigTest extends TestCase
         $properties = $this->properties;
         $properties[ConfigProperties::DB_PRIMARY_KEYS] = 0;
         $properties[ConfigProperties::DB_FOREIGN_KEYS] = 0;
-        $configuration = new TaskConfig($this->logger, $properties);
+
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $properties);
+ 
         $this->assertFalse($configuration->getDbPrimaryKeys(), 'Db primary keys set to false');
         $this->assertFalse($configuration->getDbForeignKeys(), 'Db foreign keys set to false');
 
@@ -75,7 +80,10 @@ class TaskConfigTest extends TestCase
         $properties = $this->properties;
         $properties[ConfigProperties::DB_PRIMARY_KEYS] = 1;
         $properties[ConfigProperties::DB_FOREIGN_KEYS] = 0;
-        $configuration = new TaskConfig($this->logger, $properties);
+
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $properties);
+
         $this->assertTrue($configuration->getDbPrimaryKeys(), 'Db primary keys set to true');
         $this->assertFalse($configuration->getDbForeignKeys(), 'Db foreign keys set to false when pk true');
 
@@ -85,7 +93,8 @@ class TaskConfigTest extends TestCase
         $properties[ConfigProperties::DB_FOREIGN_KEYS] = 1;
         $exceptionCaught = false;
         try {
-            $configuration = new TaskConfig($this->logger, $properties);
+            $configuration = new TaskConfig();
+            $configuration->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -106,7 +115,8 @@ class TaskConfigTest extends TestCase
         $expectedMessage = 'The JSON configuration file "'.$propertiesFile.
             '" could not be read.';
         try {
-            $config = new TaskConfig($logger, $propertiesFile);
+            $config = new TaskConfig();
+            $config->set($logger, $propertiesFile);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -139,7 +149,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No "redcap_api_url" property was defined.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -172,7 +183,8 @@ class TaskConfigTest extends TestCase
         $expectedMessage = 'Unrecognized value "'.$badSSLVerify.
             '" for ssl_verify property; a true or false value should be specified.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -203,7 +215,8 @@ class TaskConfigTest extends TestCase
         $expectedMessage = 'Unrecognized value "'.$badExtractedRecordCountCheck.
             '" for extracted_record_count_check property; a true or false value should be specified.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -230,7 +243,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No data source API token was found.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -262,7 +276,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'Invalid batch_size property. This property must be an integer greater than 0.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -286,7 +301,10 @@ class TaskConfigTest extends TestCase
     public function testIgnoreEmptyIncompleteForms()
     {
         $properties = $this->properties;
-        $config = new TaskConfig($this->logger, $properties);
+
+        $config = new TaskConfig();
+        $config->set($this->logger, $properties);
+
         $ignore = $config->getIgnoreEmptyIncompleteForms();
         $this->assertEquals(
             TaskConfig::DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS,
@@ -295,13 +313,15 @@ class TaskConfigTest extends TestCase
         );
 
         $properties[ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS] = 'true';
-        $config = new TaskConfig($this->logger, $properties);
+        $config = new TaskConfig();
+        $config->set($this->logger, $properties);
 
         $ignore = $config->getIgnoreEmptyIncompleteForms();
         $this->assertTrue($ignore, 'Set ignore empty incomplete fields to true');
 
         $properties[ConfigProperties::IGNORE_EMPTY_INCOMPLETE_FORMS] = 'false';
-        $config = new TaskConfig($this->logger, $properties);
+        $config = new TaskConfig();
+        $config->set($this->logger, $properties);
         $ignore = $config->getIgnoreEmptyIncompleteForms();
         $this->assertFalse($ignore, 'Set ignore empty incomplete fields to false');
     }
@@ -318,7 +338,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'Invalid batch_size property. This property must be an integer greater than 0.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -351,7 +372,8 @@ class TaskConfigTest extends TestCase
         $expectedMessage =
             'Invalid table_prefix property. This property may only contain letters, numbers, and underscores.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -385,7 +407,8 @@ class TaskConfigTest extends TestCase
         $expectedMessage =
             'Invalid label_view_suffix property. This property may only contain letters, numbers, and underscores.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -417,7 +440,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No database connection was specified in the configuration.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -448,7 +472,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No database connection was specified in the configuration.';
         try {
-            $config = new TaskConfig($this->logger, $properties);
+            $config = new TaskConfig();
+            $config->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -487,7 +512,8 @@ class TaskConfigTest extends TestCase
         $expectedPrintLogging = true;
         $properties[ConfigProperties::PRINT_LOGGING] = true;
 
-        $config = new TaskConfig($this->logger, $properties);
+        $config = new TaskConfig();
+        $config->set($this->logger, $properties);
 
 
         $sslVerify = $config->getSslVerify();
@@ -512,7 +538,8 @@ class TaskConfigTest extends TestCase
         $propertiesFile = __DIR__.'/../data/config-testconfiguration.ini';
         $logger = new Logger('test-app');
 
-        $config = new TaskConfig($logger, $propertiesFile);
+        $config = new TaskConfig();
+        $config->set($logger, $propertiesFile);
         $this->assertNotNull($config, 'config not null check');
 
         $retrievedLogger = $config->getLogger();
@@ -759,7 +786,8 @@ class TaskConfigTest extends TestCase
         $propertiesFile = __DIR__.'/../data/config-test3.ini';
         $logger = new Logger('test-app');
 
-        $config = new TaskConfig($logger, $propertiesFile);
+        $config = new TaskConfig();
+        $config->set($logger, $propertiesFile);
         $this->assertNotNull($config, 'config not null check');
 
         # db log table
@@ -781,7 +809,8 @@ class TaskConfigTest extends TestCase
 
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $propertiesFile);
+            $config = new TaskConfig();
+            $config->set($logger, $propertiesFile);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -799,7 +828,8 @@ class TaskConfigTest extends TestCase
 
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $propertiesFile);
+            $config = new TaskConfig();
+            $config->set($logger, $propertiesFile);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -818,7 +848,8 @@ class TaskConfigTest extends TestCase
 
         $propertiesFile = __DIR__.'/../data/config-test.ini';
         $logger = new Logger('test-app');
-        $config = new TaskConfig($logger, $propertiesFile);
+        $config = new TaskConfig();
+        $config->set($logger, $propertiesFile);
 
         $property = 'invalid-property';
         $expectedInfo = 'invalid property';
@@ -870,7 +901,8 @@ class TaskConfigTest extends TestCase
         $properties[ConfigProperties::REDCAP_API_URL] = 'https://redcap.someplace.edu/api/';
         $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
 
-        $configuration = new TaskConfig($this->logger, $this->properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $this->properties);
         $configuration->setProperties($properties);
         $getProperties = $configuration->getProperties();
         $this->assertEquals(
@@ -901,7 +933,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::FILE_ERROR;
         $expectedMessage = 'No transformation rules were entered.';
         try {
-            $configuration = new TaskConfig($this->logger, $properties);
+            $configuration = new TaskConfig();
+            $configuration->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -933,7 +966,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'No transformation rules text was defined.';
         try {
-            $configuration = new TaskConfig($this->logger, $properties);
+            $configuration = new TaskConfig();
+            $configuration->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -963,7 +997,8 @@ class TaskConfigTest extends TestCase
         $properties = $this->properties;
         $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_FILE;
         $properties[ConfigProperties::TRANSFORM_RULES_FILE] = $file;
-        $configuration = new TaskConfig($this->logger, $properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $properties);
 
         $expectedRules = file_get_contents($file);
 
@@ -984,7 +1019,8 @@ class TaskConfigTest extends TestCase
         $expectedCode = EtlException::INPUT_ERROR;
         $expectedMessage = 'Unrecognized transformation rules source.';
         try {
-            $configuration = new TaskConfig($this->logger, $properties);
+            $configuration = new TaskConfig();
+            $configuration->set($this->logger, $properties);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
@@ -1011,7 +1047,8 @@ class TaskConfigTest extends TestCase
         $properties = $this->properties;
         $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_DEFAULT;
 
-        $configuration = new TaskConfig($this->logger, $this->properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $this->properties);
 
         $expectedRulesSource = TaskConfig::TRANSFORM_RULES_DEFAULT;
         $rulesSource = $configuration->getTransformRulesSource();
@@ -1025,7 +1062,8 @@ class TaskConfigTest extends TestCase
 
     public function testProcessFile()
     {
-        $configuration = new TaskConfig($this->logger, $this->properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $this->properties);
         
         // File is null
         // Relative path
@@ -1085,7 +1123,9 @@ class TaskConfigTest extends TestCase
 
     public function testProcessFile2()
     {
-        $configuration = new TaskConfig($this->logger, $this->properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $this->properties);
+
         // Non-existing directory
         // Relative path
         // Properties file is not empty
@@ -1120,7 +1160,8 @@ class TaskConfigTest extends TestCase
 
     public function testProcessDirectoryWithNulArgument()
     {
-        $configuration = new TaskConfig($this->logger, $this->properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $this->properties);
 
         // Null argument
         $exceptionCaught = false;
@@ -1151,7 +1192,8 @@ class TaskConfigTest extends TestCase
 
     public function testProcessDirectory()
     {
-        $configuration = new TaskConfig($this->logger, $this->properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $this->properties);
 
         // Non-string argument
         $exceptionCaught = false;
@@ -1238,7 +1280,8 @@ class TaskConfigTest extends TestCase
         //       for relative paths to the same directory as the properties
         //       file, effectively adding 'test/unit' to the relative path.
         $propertiesFile = __DIR__.'/../data/config-test.ini';
-        $configuration = new TaskConfig($this->logger, $propertiesFile);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $propertiesFile);
 
         $path = '../output';
         $expectedRealDir = realpath(__DIR__.'/../output');
@@ -1252,7 +1295,8 @@ class TaskConfigTest extends TestCase
 
     public function testIsValidEmail()
     {
-        $configuration = new TaskConfig($this->logger, $this->properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $this->properties);
 
         $validEmail = 'foo@bar.com';
         $invalidEmail = 'foo-bar-bang';
@@ -1271,7 +1315,8 @@ class TaskConfigTest extends TestCase
 
         $properties = $this->properties;
         $properties[ConfigProperties::DB_CONNECTION] = $expectedDbConnection;
-        $configuration = new TaskConfig($this->logger, $properties);
+        $configuration = new TaskConfig();
+        $configuration->set($this->logger, $properties);
 
         $dbConnection = $configuration->GetDbConnection();
         $this->assertEquals(
@@ -1294,7 +1339,8 @@ class TaskConfigTest extends TestCase
         $logger = new Logger('test-app');
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $propertiesFile);
+            $config = new TaskConfig();
+            $config->set($logger, $propertiesFile);
         } catch (\Exception $exception) {
             $exceptionCaught = true;
         }
@@ -1320,7 +1366,8 @@ class TaskConfigTest extends TestCase
         #------------------------------------------------------------------------
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $properties);
+            $config = new TaskConfig();
+            $config->set($logger, $properties);
         } catch (\Exception $exception) {
             $exceptionCaught = true;
         }
@@ -1332,7 +1379,8 @@ class TaskConfigTest extends TestCase
         $properties['email_from_address'] = 'tester@someplace.edu';
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $properties);
+            $config = new TaskConfig();
+            $config->set($logger, $properties);
         } catch (\Exception $exception) {
             $exceptionCaught = true;
         }
@@ -1345,7 +1393,8 @@ class TaskConfigTest extends TestCase
         $properties['email_to_address'] = 'tester@someplace.edu';
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $properties);
+            $config = new TaskConfig();
+            $config->set($logger, $properties);
         } catch (\Exception $exception) {
             $exceptionCaught = true;
         }
@@ -1360,7 +1409,8 @@ class TaskConfigTest extends TestCase
         $properties['email_summary'] = 'true';
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $properties);
+            $config = new TaskConfig();
+            $config->set($logger, $properties);
         } catch (\Exception $exception) {
             $exceptionCaught = true;
         }
@@ -1372,7 +1422,8 @@ class TaskConfigTest extends TestCase
         $properties['email_from_address'] = 'tester@someplace.edu';
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $properties);
+            $config = new TaskConfig();
+            $config->set($logger, $properties);
         } catch (\Exception $exception) {
             $exceptionCaught = true;
         }
@@ -1385,7 +1436,8 @@ class TaskConfigTest extends TestCase
         $properties['email_to_address'] = 'tester@someplace.edu';
         $exceptionCaught = false;
         try {
-            $config = new TaskConfig($logger, $properties);
+            $config = new TaskConfig();
+            $config->set($logger, $properties);
         } catch (\Exception $exception) {
             $exceptionCaught = true;
         }

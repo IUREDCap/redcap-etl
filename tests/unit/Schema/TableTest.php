@@ -136,7 +136,8 @@ class TableTest extends TestCase
     {
         $logger = new Logger('test');
 
-        $taskConfig = new TaskConfig($logger, __DIR__.'/../../data/config-test.ini');
+        $taskConfig = new TaskConfig();
+        $taskConfig->set($logger, __DIR__.'/../../data/config-test.ini');
         $name = 'test';
         $parent = 'test_id';
         $rowsType = RowsType::ROOT;

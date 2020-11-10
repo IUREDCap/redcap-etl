@@ -68,7 +68,8 @@ class WorkflowConfig
             throw new EtlException($message, $code);
         } elseif (is_array($properties)) {
             # TaskConfig specified as an array of properties
-            $taskConfig = new TaskConfig($logger, $properties);
+            $taskConfig = new TaskConfig();
+            $taskConfig->set($logger, $properties);
             $this->taskConfigs[] = $taskConfig;
         } elseif (is_string($properties)) {
             # TaskConfig is in a file (properties is the name/path of the file)
@@ -137,7 +138,8 @@ class WorkflowConfig
                     $properties = TaskConfig::overrideProperties($this->globalProperties, $properties);
                     #print "\n\nPROPERTIES:\n";
                     #print_r($properties);
-                    $taskConfig = new TaskConfig($this->logger, $properties);
+                    $taskConfig = new TaskConfig();
+                    $taskConfig->set($this->logger, $properties);
                     $this->taskConfigs[] = $taskConfig;
                 }
             } else {
@@ -151,7 +153,8 @@ class WorkflowConfig
             #print "\n\nPROPERTIES:\n";
             #print_r($properties);
 
-            $taskConfig = new TaskConfig($this->logger, $properties);
+            $taskConfig = new TaskConfig();
+            $taskConfig->set($this->logger, $properties);
             $this->taskConfigs[] = $taskConfig;
         }
     }
@@ -235,14 +238,16 @@ class WorkflowConfig
 
                     # Properties used from lowest to highest precedence:
                     # global properties, config file properties, properties defined in section
-                    $this->taskConfigs[$section] = new TaskConfig($this->logger, $properties);
+                    $this->taskConfigs[$section] = new TaskConfig();
+                    $this->taskConfigs[$section]->set($this->logger, $properties);
                 } else {
                     # Global property
                     $this->globalProperties[$propertyName] =  $propertyValue;
                 }
             }
         } else {
-            $taskConfig = new TaskConfig($this->logger, $configurationFile);
+            $taskConfig = new TaskConfig();
+            $taskConfig->set($this->logger, $configurationFile);
             array_push($this->taskConfigs, $taskConfig);
         }
 

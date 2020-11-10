@@ -41,7 +41,8 @@ class RepeatingEventsSqlServerTest extends RepeatingEventsTests
         self::$logger = new Logger('repeating_events_system_test_sql_server');
 
         if (extension_loaded('pdo_sqlsrv') && file_exists(self::CONFIG_FILE)) {
-            $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
+            $configuration = new TaskConfig();
+            $configuration->set(self::$logger, self::CONFIG_FILE);
 
             $dbConnection = $configuration->getDbConnection();
             list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);

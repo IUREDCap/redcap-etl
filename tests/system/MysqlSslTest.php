@@ -61,7 +61,9 @@ class MysqlSslTest extends TestCase
      */
     public function testMysqlDbConnectionConstructorWithSsl()
     {
-        $configuration = new TaskConfig(self::$logger, self::CONFIG_FILE);
+        $configuration = new TaskConfig();
+        $configuration->set(self::$logger, self::CONFIG_FILE);
+
         $dbInfo = $configuration->getMySqlConnectionInfo();
         $dbString = implode(":", $dbInfo);
 

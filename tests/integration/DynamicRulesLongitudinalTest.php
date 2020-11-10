@@ -47,10 +47,9 @@ class DynamicRulesLongitudinalTest extends TestCase
     {
         if (file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('dynamic_rules_longitudinal_test');
-            self::$config = new TaskConfig(
-                self::$logger,
-                self::CONFIG_FILE
-            );
+            self::$config = new TaskConfig();
+            self::$config->set(self::$logger, self::CONFIG_FILE);
+
             #-----------------------------
             # Get the CSV directory
             #-----------------------------
