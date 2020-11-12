@@ -216,32 +216,47 @@ class WorkflowConfig
         if ($isWorkflowConfig) {
             foreach ($config as $propertyName => $propertyValue) {
                 if (is_array($propertyValue)) {
-                    # Section (that defines a configuration)
+                    #-------------------------------------------------
+                    # Section (that defines a task configuration)
+                    #-------------------------------------------------
                     $section = $propertyName;
                     $sectionProperties = $propertyValue;
                     $sectionProperties = TaskConfig::makeFilePropertiesAbsolute($sectionProperties, $baseDir);
                     $configFile = null;
 
-                    $properties = $this->globalProperties;
-                    $properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
+                    # Global properties
+                    $globalProperties = TaskConfig::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
 
-                    if (array_key_exists(ConfigProperties::CONFIG_FILE, $properties)) {
+                    #-----------------------------------------------------
+                    # Add included config file properties, if any
+                    #-----------------------------------------------------
+                    $fileProperties = array();
+                    if (array_key_exists(ConfigProperties::TASK_CONFIG_FILE, $sectionProperties)) {
                         # Config file property
-                        $configFile = $properties[ConfigProperties::CONFIG_FILE];
-                        unset($properties[ConfigProperties::CONFIG_FILE]);
+                        $configFile = $sectionProperties[ConfigProperties::TASK_CONFIG_FILE];
+                        unset($sectionProperties[ConfigProperties::TASK_CONFIG_FILE]);
                         $fileProperties = TaskConfig::getPropertiesFromFile($configFile);
                         $fileProperties = TaskConfig::makeFilePropertiesAbsolute($fileProperties, $baseDir);
-                        $properties = TaskConfig::overrideProperties($properties, $fileProperties);
                     }
 
+                    #--------------------------------------------------------------
+                    # Combine the config file, global and section properties
+                    #
+                    # Properties used from lowest to highest precedence:
+                    # config file properties, global properties, properties defined in section
+                    #--------------------------------------------------------------
+                    $properties = $fileProperties;
+                    $properties = TaskConfig::overrideProperties($properties, $globalProperties);
                     $properties = TaskConfig::overrideProperties($properties, $sectionProperties);
 
-                    # Properties used from lowest to highest precedence:
-                    # global properties, config file properties, properties defined in section
-                    $this->taskConfigs[$section] = new TaskConfig();
-                    $this->taskConfigs[$section]->set($this->logger, $properties);
+                    $taskConfig = new TaskConfig();
+                    $taskConfig->set($this->logger, $properties);
+
+                    $this->taskConfigs[] = $taskConfig;
                 } else {
+                    #------------------------------
                     # Global property
+                    #------------------------------
                     $this->globalProperties[$propertyName] =  $propertyValue;
                 }
             }

@@ -4,7 +4,7 @@
             "ssl_verify": 0,
             "db_connection": "CSV:../output/workflow-basic-demography-json/",
             "log_file": "../logs/workflow-basic-demography-json.log",
-            "print_logging": 0,
+            "print_logging": "false",
             "label_view_suffix": "_label_view",
             "table_prefix": "",
             "batch_size": 10

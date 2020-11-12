@@ -31,7 +31,8 @@ class ConfigProperties
     const CONFIG_OWNER              = 'config_owner'; # REDCap user who created the configuration,
                                                       #  if from the external module
 
-    const CONFIG_FILE               = 'config_file'; # Only allowed in workflows; for including a configuration file
+    const TASK_CONFIG_FILE          = 'task_config_file'; # For including task configuration file;
+                                                          # only allowed in workflows;
 
     const CREATE_LOOKUP_TABLE       = 'create_lookup_table';  # true/false indicating if a lookup table
                                                               # should be created
@@ -128,16 +129,21 @@ class ConfigProperties
     /**
      * Indicates if the specified property is a property
      * that specifies (the path of) a file.
+     *
+     * @param string $property the propery to check.
+     *
+     * @return boolean true if the property is a property that
+     *     specifies a file, and false otherwise.
      */
     public static function isFileProperty($property)
     {
         $isFile = false;
         switch ($property) {
             case self::CA_CERT_FILE:                # all these
-            case self::CONFIG_FILE:                 # cases
-            case self::LOG_FILE:                    # are
-            case self::PRE_PROCESSING_SQL_FILE:     # file
-            case self::POST_PROCESSING_SQL_FILE:    # property
+            case self::LOG_FILE:                    # cases
+            case self::PRE_PROCESSING_SQL_FILE:     # are
+            case self::POST_PROCESSING_SQL_FILE:    # file
+            case self::TASK_CONFIG_FILE:            # property
             case self::TRANSFORM_RULES_FILE:        # names
                 $isFile = true;
                 break;

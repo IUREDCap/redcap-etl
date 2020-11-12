@@ -70,6 +70,11 @@ property_name = property_value
 Semi-colons are used to indicate comments.
 
 
+You can use the following example file as a starting point for creating an ETL task configuration:
+
+    config/config-example.ini
+
+
 ### Workflow Configurations
 
 Workflows allow you to combine multiple tasks into a unified process.
@@ -100,15 +105,40 @@ considered to be global properties that apply to all tasks, except where they ar
 overridden by being redefined within a task.
 
 
-You can use the following example file as a starting point for creating an ETL task configuration:
-
-    config/config-example.ini
-
 Configuration files can be stored anywhere that REDCap-ETL can access, but if you want to keep 
 these files under the REDCap-ETL software directory, the standard place to store them there
 is in the the top-level config directory. The .gitignore file has been set to ignore non-example
 configuration files that are placed there.
 
+In workflow configurations, you can also include existing task configuration files
+using the **task_config_file** property. For example:
+
+
+```ini
+; Global properties
+redcap_api_url = https://someplace.edu/redcap/api/
+transform_rules_source = 3    ; auto-generate
+db_connection = MySQL:127.0.0.1:etl_user:etl_password:etl_db
+
+[task1]
+task_config_file = task1.ini
+
+[task2]
+task_config_file = task2.ini
+```
+
+You can use the same task configuration file in multiple workflows.
+
+The precedence for configuration properties in a workflow are as follows, from lowest to highest:
+
+1. task configuration file properties
+2. global properties
+3. task properties
+
+So, task configuration file properties will be overridden by global properties, which will be overridden
+by properties defined directly under a task section. In the example above, the redcap_api_url,
+transform_rules_source and db_connection properties defined globally will override any 
+corresponding properties defined in the task configuration files.
 
 REDCap-ETL configuration files can be formatted as ini files or a JSON (.json) files, but it
 is expected that users will use the .ini format, and the JSON format is not covered

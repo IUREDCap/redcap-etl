@@ -388,8 +388,8 @@ class TaskConfig
         #--------------------------------------------------
         # Check for invalid configuration file property
         #--------------------------------------------------
-        if (array_key_exists(ConfigProperties::CONFIG_FILE, $this->properties)) {
-            $message = 'Invalid property '.ConfigProperties::CONFIG_FILE
+        if (array_key_exists(ConfigProperties::TASK_CONFIG_FILE, $this->properties)) {
+            $message = 'Invalid property '.ConfigProperties::TASK_CONFIG_FILE
                 .' specified in configuration; this property can only be used in workflows.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }

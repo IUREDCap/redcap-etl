@@ -452,10 +452,8 @@ class EtlTask
             foreach ($this->schema->getTables() as $table) {
                 # Single row storage (stores one row at a time):
                 # foreach row, load it
-                ### $this->loadTableRows($table);
                 $this->loadTableRowsEfficiently($table);
             }
-            #####$this->loadRows();
             $endLoadTime = microtime(true);
             $loadTime += $endLoadTime - $startLoadTime;
         }
@@ -622,18 +620,18 @@ class EtlTask
      * Loads the rows that have been stored in the schema into the target database
      * and deletes the rows after they have been loaded.
      */
-    protected function loadRows()
-    {
-        #--------------------------------------------------------------
-        # foreach table object, store it's rows in the database and
-        # then remove them from the table object
-        #--------------------------------------------------------------
-        foreach ($this->dbSchema->getTables() as $table) {
-            $this->loadTableRows($table);
-        }
-
-        return true;
-    }
+#    protected function loadRows()
+#    {
+#        #--------------------------------------------------------------
+#        # foreach table object, store it's rows in the database and
+#        # then remove them from the table object
+#        #--------------------------------------------------------------
+#        foreach ($this->dbSchema->getTables() as $table) {
+#            $this->loadTableRows($table);
+#        }
+#
+#        return true;
+#    }
 
     /**
      * Loads an in-memory table's rows into the database.

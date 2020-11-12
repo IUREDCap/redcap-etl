@@ -30,6 +30,7 @@ class Workflow1Test extends TestCase
             self::$logger = new Logger($app);
 
             $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
+
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
             $config0 = $redCapEtl->getTaskConfig(0);
@@ -42,6 +43,7 @@ class Workflow1Test extends TestCase
             
             $redCapEtl->run();
         } catch (EtlException $exception) {
+            print "\n*** ERROR: {$exception->getMessage()}\n";
             self::$logger->logException($exception);
             self::$logger->log('Processing failed.');
         }
