@@ -83,100 +83,11 @@ class RedCapEtl
         $this->app = $logger->getApp();
 
         $this->workflowConfig = new WorkflowConfig($logger, $properties, $redcapProjectClass);
-        
+
         $this->etlWorkflow = new EtlWorkflow($this->workflowConfig, $logger, $redcapProjectClass);
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;
-    }
-
-
-
-    /**
-     * Loads the rows that have been stored in the schema into the target database
-     * and deletes the rows after they have been loaded.
-     */
-    protected function loadRows()
-    {
-        #--------------------------------------------------------------
-        # foreach table object, store it's rows in the database and
-        # then remove them from the table object
-        #--------------------------------------------------------------
-        foreach ($this->schema->getTables() as $table) {
-            $this->loadTableRows($table);
-        }
-
-        return true;
-    }
-
-    /**
-     * Loads an in-memory table's rows into the database.
-     *
-     * @param Table $table the table containing the (in-memory) rows
-     *    to be loaded into the database.
-     * @param boolean $deleteRowsAfterLoad indicates if the rows in the in-memory
-     *     table should be deleted after they are loaded into the database.
-     */
-    protected function loadTableRows($table, $deleteRowsAfterLoad = true)
-    {
-        foreach ($table->getRows() as $row) {
-            $rc = $this->dbcon->storeRow($row);
-            if (false === $rc) {
-                $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
-            }
-        }
-
-        // Add to summary how many rows created for this table
-        if (array_key_exists($table->name, $this->rowsLoadedForTable)) {
-            $this->rowsLoadedForTable[$table->name] += $table->getNumRows();
-        } else {
-            $this->rowsLoadedForTable[$table->name] = $table->getNumRows();
-        }
-
-        if ($deleteRowsAfterLoad) {
-            // Empty the rows for this table
-            $table->emptyRows();
-        }
-    }
-
-
-    /**
-     * Load all rows in the specified table using a method that will use
-     * a single insert statement.
-     *
-     * @param Table $table table object for which rows are loaded.
-     * @param boolean $deleteRowsAfterLoad if true, the rows in the table object are
-     *     deleted after they are loaded into the database.
-     */
-    protected function loadTableRowsEfficiently($table, $deleteRowsAfterLoad = true)
-    {
-        $rc = $this->dbcon->storeRows($table);
-
-        // Add to summary how many rows created for this table
-        if (array_key_exists($table->name, $this->rowsLoadedForTable)) {
-            $this->rowsLoadedForTable[$table->name] += $table->getNumRows();
-        } else {
-            $this->rowsLoadedForTable[$table->name] = $table->getNumRows();
-        }
-
-        if ($deleteRowsAfterLoad) {
-            // Empty the rows for this table
-            $table->emptyRows();
-        }
-    }
-
-    /**
-     * Reports rows written to the database
-     */
-    protected function reportRows()
-    {
-        // foreach table
-        foreach ($this->rowsLoadedForTable as $tableName => $rows) {
-            $msg = "Rows loaded for table '".$tableName."': ".$rows;
-            $this->log($msg);
-        }
-
-        return true;
     }
 
 
