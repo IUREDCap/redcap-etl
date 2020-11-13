@@ -162,6 +162,9 @@ class TaskConfig
         #---------------------------------------------------------
         # Set default config properties values
         #---------------------------------------------------------
+        $this->redcapApiUrl       = null;
+        $this->dataSourceApiToken = null;
+
         $this->dbSsl           = self::DEFAULT_DB_SSL;
 
         $this->printLogging    = self::DEFAULT_PRINT_LOGGING;
@@ -182,6 +185,8 @@ class TaskConfig
         $this->sslVerify        = true;
 
         $this->extractedRecordCountCheck = true;
+
+        $this->transformRulesSource = null;
     }
 
     /**
@@ -209,9 +214,9 @@ class TaskConfig
         $this->logger = $logger;
         $this->app = $this->logger->getApp();
 
-        #------------------------------------------------------------------------
-        # Process the properties, which could be specified as an array or a file
-        #------------------------------------------------------------------------
+        #-----------------------------------------------------------------------------------------
+        # Process the properties, which could be specified as an array or a file name (string)
+        #-----------------------------------------------------------------------------------------
         if (empty($properties)) {
             # No properties specified
             $message = 'No properties or properties file was specified.';
@@ -354,9 +359,6 @@ class TaskConfig
         #------------------------------------------------
         if (array_key_exists(ConfigProperties::REDCAP_API_URL, $this->properties)) {
             $this->redcapApiUrl = $this->properties[ConfigProperties::REDCAP_API_URL];
-        } else {
-            $message = 'No "'.ConfigProperties::REDCAP_API_URL.'" property was defined.';
-            throw new EtlException($message, EtlException::INPUT_ERROR);
         }
         
         #--------------------------------------------------------
@@ -591,9 +593,6 @@ class TaskConfig
         $this->dataSourceApiToken = '';
         if (array_key_exists(ConfigProperties::DATA_SOURCE_API_TOKEN, $this->properties)) {
             $this->dataSourceApiToken = $this->properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
-        } else {
-            $message = 'No data source API token was found.';
-            throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
         #----------------------------------------------------------
@@ -756,8 +755,71 @@ class TaskConfig
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
-        return true;
+        $this->hasValidSetOfProperties();
     }
+
+
+    /**
+     * Indicates if the task configuration has a valid set of (non-emtpy) properties.
+     * A valid set of properties consists of either a database connection and
+     * at least one SQL property (an SQL task), or a REDCap API URL,
+     * API token, transformation rules, and a database connection (an ETL task).
+     */
+    public function hasValidSetOfProperties()
+    {
+        $hasValidSet = false;
+
+        $hasDbConnection  = false;
+        $hasSql           = false;   // has pre or post-processing SQL
+        $hasApiUrl        = false;
+        $hasApiToken      = false;
+
+        $hasTransformationRules = false;
+
+        if (!empty($this->dbConnection)) {
+            $hasDbConnection = true;
+        }
+
+        if (!empty($this->preProcessingSql) || !empty($this->preProcessingSqlFile)
+            || !empty($this->postProcessingSql) || !empty($this->postProcessingSqlFile)) {
+            $hasSql = true;
+        }
+
+        if (!empty($this->redcapApiUrl)) {
+            $hasApiUrl = true;
+        }
+
+        if (!empty($this->dataSourceApiToken)) {
+            $hasApiToken = true;
+        }
+
+        if (!empty($this->transformRulesSource)) {
+            $hasTransformationRules = true;
+        }
+
+        if ($hasDbConnection && $hasSql) {
+            # SQL task
+            $hasValidSet = true;
+        } else {
+            # Check for valid ETL task
+            if (!$hasApiUrl) {
+                $message = 'No REDCap API URL was specified.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            } elseif (!$hasApiToken) {
+                $message = 'No API token was found.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            } elseif (!$hasTransformationRules) {
+                $message = 'No transformation rules specified.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            } else {
+                $hasValidSet = true;
+            }
+        }
+
+        return $hasValidSet;
+    }
+
+
 
     /**
      * Gets properties from a configuration file.
@@ -882,31 +944,35 @@ class TaskConfig
      */
     private function processTransformationRules($properties)
     {
-        $this->transformRulesSource = $properties[ConfigProperties::TRANSFORM_RULES_SOURCE];
+        if (array_key_exists(ConfigProperties::TRANSFORM_RULES_SOURCE, $properties)) {
+            $this->transformRulesSource = $properties[ConfigProperties::TRANSFORM_RULES_SOURCE];
 
-        if ($this->transformRulesSource == self::TRANSFORM_RULES_TEXT) {
-            if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $properties)) {
-                $this->transformationRules = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
-                if ($this->transformationRules == '') {
-                    $error = 'No transformation rules were entered.';
-                    throw new EtlException($error, EtlException::FILE_ERROR);
+            if (empty($this->transformRulesSource)) {
+                ; // Could be OK, if this is an SQL task - that needs to be checked later
+            } elseif ($this->transformRulesSource == self::TRANSFORM_RULES_TEXT) {
+                if (array_key_exists(ConfigProperties::TRANSFORM_RULES_TEXT, $properties)) {
+                    $this->transformationRules = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
+                    if ($this->transformationRules == '') {
+                        $error = 'No transformation rules were entered.';
+                        throw new EtlException($error, EtlException::FILE_ERROR);
+                    }
+                } else {
+                    $error = 'No transformation rules text was defined.';
+                    throw new EtlException($error, EtlException::INPUT_ERROR);
                 }
+            } elseif ($this->transformRulesSource == self::TRANSFORM_RULES_FILE) {
+                $file = $properties[ConfigProperties::TRANSFORM_RULES_FILE];
+                $file = $this->processFile($file);
+                $this->transformationRules = file_get_contents($file);
+            } elseif ($this->transformRulesSource == self::TRANSFORM_RULES_DEFAULT) {
+                # The actual rules are not part of the configuration and will need
+                # to be generate later after the data project has been set up.
+                $this->transformationRules == '';
+                $this->getAutogenProperties($properties);
             } else {
-                $error = 'No transformation rules text was defined.';
-                throw new EtlException($error, EtlException::INPUT_ERROR);
+                $message = 'Unrecognized transformation rules source: '.$this->transformRulesSource;
+                throw new EtlException($message, EtlException::INPUT_ERROR);
             }
-        } elseif ($this->transformRulesSource == self::TRANSFORM_RULES_FILE) {
-            $file = $properties[ConfigProperties::TRANSFORM_RULES_FILE];
-            $file = $this->processFile($file);
-            $this->transformationRules = file_get_contents($file);
-        } elseif ($this->transformRulesSource == self::TRANSFORM_RULES_DEFAULT) {
-            # The actual rules are not part of the configuration and will need
-            # to be generate later after the data project has been set up.
-            $this->transformationRules == '';
-            $this->getAutogenProperties($properties);
-        } else {
-            $message = 'Unrecognized transformation rules source: '.$this->transformRulesSource;
-            throw new EtlException($message, EtlException::INPUT_ERROR);
         }
     }
 

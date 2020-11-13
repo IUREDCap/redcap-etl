@@ -147,7 +147,7 @@ class TaskConfigTest extends TestCase
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'No "redcap_api_url" property was defined.';
+        $expectedMessage = 'No database connection was specified in the configuration.';
         try {
             $config = new TaskConfig();
             $config->set($this->logger, $properties);
@@ -238,10 +238,11 @@ class TaskConfigTest extends TestCase
 
         // No data API token property
         $properties = $propertiesTemplate;
+        $properties[ConfigProperties::DB_CONNECTION] = 'CSV:.';
 
         $exceptionCaught = false;
         $expectedCode = EtlException::INPUT_ERROR;
-        $expectedMessage = 'No data source API token was found.';
+        $expectedMessage = 'No API token was found.';
         try {
             $config = new TaskConfig();
             $config->set($this->logger, $properties);

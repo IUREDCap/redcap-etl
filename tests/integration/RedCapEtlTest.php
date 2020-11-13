@@ -43,26 +43,14 @@ class RedCapEtlTest extends TestCase
         # Check to see if an error will be generated because of the missing
         # api token.
         $exceptionCaught = false;
-        $expectedMessage = "Could not get data project.";
-        $expectedCode = EtlException::PHPCAP_ERROR;
+        $expectedMessage = "No REDCap API URL was specified.";
+        $expectedCode = EtlException::INPUT_ERROR;
 
         try {
             $redCapEtl = new RedCapEtl(self::$logger, $configFile);
         } catch (EtlException $exception) {
             $exceptionCaught = true;
         }
-        
-        $expectedTimezone = 'Arctic/Longyearbyen';
-        $currentTimezone = null;
-        if (date_default_timezone_get()) {
-            $currentTimezone = date_default_timezone_get();
-        }
-          
-        $this->assertEquals(
-            $expectedTimezone,
-            $currentTimezone,
-            'RedCapEtlTest, testConstructRedCapObjectError timezone change check'
-        );
 
         $this->assertTrue(
             $exceptionCaught,
@@ -79,6 +67,28 @@ class RedCapEtlTest extends TestCase
             $expectedMessage,
             $exception->getMessage(),
             'RedCapEtlTest, testConstructRedCapObjectError exception error message check'
+        );
+    }
+
+    public function testTimezone()
+    {
+        $baseDir = __DIR__.'/../config';
+        $configFile = $baseDir.'/basic-demography.ini';
+        $properties = TaskConfig::getPropertiesFromFile($configFile);
+        $properties[ConfigProperties::TIMEZONE] = 'Arctic/Longyearbyen';
+
+        $redCapEtl = new RedCapEtl(self::$logger, $properties, null, $baseDir);
+
+        $expectedTimezone = 'Arctic/Longyearbyen';
+        $currentTimezone = null;
+        if (date_default_timezone_get()) {
+            $currentTimezone = date_default_timezone_get();
+        }
+          
+        $this->assertEquals(
+            $expectedTimezone,
+            $currentTimezone,
+            'RedCapEtlTest, testConstructRedCapObjectError timezone change check'
         );
     }
 

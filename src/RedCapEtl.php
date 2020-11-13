@@ -68,21 +68,29 @@ class RedCapEtl
      * Constructor.
      *
      * @param Logger $logger logger for information and errors
+     *
      * @param mixed $properties if this is a string, it is assumed to
      *     be the name of the properties file to use, if it is an array,
      *     it is assumed to be a map from property names to values.
+     *
      * @param string $redcapProjectClass fully qualified class name for class
      *     to use as the RedcapProject class. By default the EtlRedCapProject
      *     class is used.
+     *
+     * @param string $baseDir used as the base directory for file properties
+     *     that are specified as relative paths. This generally only needs to
+     *     be set if the properties are passed as an array (instead of a file).
      */
     public function __construct(
         & $logger,
         $properties,
-        $redcapProjectClass = null
+        $redcapProjectClass = null,
+        $baseDir = null
     ) {
         $this->app = $logger->getApp();
 
-        $this->workflowConfig = new WorkflowConfig($logger, $properties, $redcapProjectClass);
+        $this->workflowConfig = new WorkflowConfig();
+        $this->workflowConfig->set($logger, $properties, $baseDir);
 
         $this->etlWorkflow = new EtlWorkflow($this->workflowConfig, $logger, $redcapProjectClass);
         

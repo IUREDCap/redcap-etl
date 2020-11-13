@@ -31,6 +31,8 @@ class WorkflowConfig
 
     private $logger;
 
+    private $baseDir;
+
     /** @var array array of global properties (as map from property name to property value) */
     private $globalProperties;
 
@@ -51,13 +53,19 @@ class WorkflowConfig
      *     to be a JSON file if the file name ends with .json, and a
      *     .ini file otherwise.
      *
-     * @param string $redcapProjectClass fully qualified class name for class
-     *     to use as the RedcapProject class. By default the EtlRedCapProject
-     *     class is used.
+     * @param string $baseDir base directory for $properties, if it is an array.
+     *     This is used for file properties that are specified as relative paths.
      */
-    public function __construct(& $logger, $properties, $redcapProjectClass = null)
+    public function __construct()
+    {
+        $this->logger = null;
+        $this->baseDir = null;
+    }
+
+    public function set(& $logger, $properties, $baseDir = null)
     {
         $this->logger = $logger;
+        $this->baseDir = $baseDir;
 
         $this->globalProperties = array();
         $this->taskConfigs = array();
@@ -69,7 +77,7 @@ class WorkflowConfig
         } elseif (is_array($properties)) {
             # TaskConfig specified as an array of properties
             $taskConfig = new TaskConfig();
-            $taskConfig->set($logger, $properties);
+            $taskConfig->set($logger, $properties, $this->baseDir);
             $this->taskConfigs[] = $taskConfig;
         } elseif (is_string($properties)) {
             # TaskConfig is in a file (properties is the name/path of the file)
@@ -139,7 +147,7 @@ class WorkflowConfig
                     #print "\n\nPROPERTIES:\n";
                     #print_r($properties);
                     $taskConfig = new TaskConfig();
-                    $taskConfig->set($this->logger, $properties);
+                    $taskConfig->set($this->logger, $properties, $this->baseDir);
                     $this->taskConfigs[] = $taskConfig;
                 }
             } else {
@@ -154,7 +162,7 @@ class WorkflowConfig
             #print_r($properties);
 
             $taskConfig = new TaskConfig();
-            $taskConfig->set($this->logger, $properties);
+            $taskConfig->set($this->logger, $properties, $this->baseDir);
             $this->taskConfigs[] = $taskConfig;
         }
     }
@@ -250,7 +258,7 @@ class WorkflowConfig
                     $properties = TaskConfig::overrideProperties($properties, $sectionProperties);
 
                     $taskConfig = new TaskConfig();
-                    $taskConfig->set($this->logger, $properties);
+                    $taskConfig->set($this->logger, $properties, $this->baseDir);
 
                     $this->taskConfigs[] = $taskConfig;
                 } else {
@@ -262,7 +270,7 @@ class WorkflowConfig
             }
         } else {
             $taskConfig = new TaskConfig();
-            $taskConfig->set($this->logger, $configurationFile);
+            $taskConfig->set($this->logger, $configurationFile, $this->baseDir);
             array_push($this->taskConfigs, $taskConfig);
         }
 

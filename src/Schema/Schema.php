@@ -19,30 +19,40 @@ class Schema
 {
     /** @var array array of Table objects for all data tables in the schema, including root tables,
      *    but excluding system generated tables, such as the lookup table */
-    private $tables = array();
+    private $tables;
 
     /** @var array array of table objects for only the root tables in the schema */
-    private $rootTables = array();
+    private $rootTables;
     
     /** @var LookupTable table for mapping multiple choice fields from (table name, field name, value) to label */
-    private $lookupTable = null;
+    private $lookupTable;
     
-    /** @var EtlLogTable parent log table that has one entry per ETL task; this table is NOT delete after each run */
-    private $dbLogTable      = null;
+    /** @var EtlLogTable parent log table that has one entry per ETL task; this table is NOT deleted after each run */
+    private $dbLogTable;
 
     /** @var EtlEventLogTable child log table that has one entry per ETL task event;
-     *    this table is NOT delete after each run */
-    private $dbEventLogTable = null;
+     *    this table is NOT deleted after each run */
+    private $dbEventLogTable;
 
     /** @var ProjectInfoTable table with REDCap project information */
-    private $projectInfoTable = null;
+    private $projectInfoTable;
 
     /** @var MetadataTable table with REDCap metadata information */
-    private $metadataTable = null;
+    private $metadataTable;
 
 
     public function __construct()
     {
+        $this->tables     = array();
+        $this->rootTables = array();
+
+        $this->lookupTable = null;
+ 
+        $this->dbLogTable = null;
+        $this->dbEventLogTable = null;
+
+        $this->projectInfoTable = null;
+        $this->metadataTable = null;
     }
 
     /**
@@ -270,7 +280,7 @@ class Schema
         $this->projectInfoTable = $projectInfoTable;
     }
 
-    public function getmetadataTable()
+    public function getMetadataTable()
     {
         return $this->metadataTable;
     }
