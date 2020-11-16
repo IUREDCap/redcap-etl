@@ -17,7 +17,7 @@ use IU\REDCapETL\Schema\Table;
 /**
  * REDCap-ETL workflow that contains 1 or more ETL tasks.
  */
-class EtlWorkflow
+class Workflow
 {
     /** @var array array of task objects that represent the tasks of the workflow. */
     private $tasks;

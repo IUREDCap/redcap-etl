@@ -11,9 +11,9 @@ use PHPUnit\Framework\TestCase;
 use IU\REDCapETL\TestProject;
 
 /**
- * PHPUnit tests for the EtlWorkflow class.
+ * PHPUnit tests for the Workflow class.
  */
-class EtlWorkflowTest extends TestCase
+class WorkflowTest extends TestCase
 {
 
     public function setUp()
@@ -31,7 +31,7 @@ class EtlWorkflowTest extends TestCase
             ->getMock();
         $workflowConfigMock->method('getTaskConfigs')->will($this->returnValue(array()));
 
-        $etlWorkflow = new EtlWorkflow($workflowConfigMock, $loggerMock);
-        $this->assertNotNull($etlWorkflow, 'ETL workflow not null check');
+        $workflow = new Workflow($workflowConfigMock, $loggerMock);
+        $this->assertNotNull($workflow, 'ETL workflow not null check');
     }
 }

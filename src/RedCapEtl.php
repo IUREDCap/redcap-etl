@@ -61,8 +61,8 @@ class RedCapEtl
 
     private $redcapProjectClass;
 
-    /** @var EtlWorkflow */
-    private $etlWorkflow;
+    /** @var Workflow */
+    private $workflow;
 
     /**
      * Constructor.
@@ -92,7 +92,7 @@ class RedCapEtl
         $this->workflowConfig = new WorkflowConfig();
         $this->workflowConfig->set($logger, $properties, $baseDir);
 
-        $this->etlWorkflow = new EtlWorkflow($this->workflowConfig, $logger, $redcapProjectClass);
+        $this->workflow = new Workflow($this->workflowConfig, $logger, $redcapProjectClass);
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;
@@ -112,7 +112,7 @@ class RedCapEtl
         #-----------------------------------------
         # For each task, log header information
         #-----------------------------------------
-        foreach ($this->etlWorkflow->getTasks() as $task) {
+        foreach ($this->workflow->getTasks() as $task) {
             $taskName = $task->getName();
             
             $logger = $task->getLogger();
@@ -128,9 +128,9 @@ class RedCapEtl
                 $logger->log('REDCap version '.$task->getDataProject()->exportRedCapVersion());
                 $task->logJobInfo();
             }
-            $logger->log('Number of load databases: '.count($this->etlWorkflow->getDbIds()));
+            $logger->log('Number of load databases: '.count($this->workflow->getDbIds()));
             $i = 1;
-            foreach (array_keys($this->etlWorkflow->getDbIds()) as $dbId) {
+            foreach (array_keys($this->workflow->getDbIds()) as $dbId) {
                 $logger->log("Load database {$i}: {$dbId}");
                 $i++;
             }
@@ -144,7 +144,7 @@ class RedCapEtl
         # This needs to be run before the tables are dropped so that user-created views
         # based on the ETL generated tables can be dropped before the tables are dropped.
         #-----------------------------------------------------------------------------------
-        foreach ($this->etlWorkflow->getTasks() as $task) {
+        foreach ($this->workflow->getTasks() as $task) {
             $task->runPreProcessingSql();
         }
 
@@ -152,12 +152,12 @@ class RedCapEtl
         # Drop old load tables if they exist,
         # and then create the load tables
         #----------------------------------------------
-        $this->etlWorkflow->dropAllLoadTables();
-        $this->etlWorkflow->createAllLoadTables();
+        $this->workflow->dropAllLoadTables();
+        $this->workflow->createAllLoadTables();
         #---------------------------------------------------------------------------------
         # For each ETL task (i.e., non-SQL-only tasks) run ETL (Extract Transform Load)
         #---------------------------------------------------------------------------------
-        foreach ($this->etlWorkflow->getTasks() as $task) {
+        foreach ($this->workflow->getTasks() as $task) {
             # ETL
             if (!$task->isSqlOnlyTask()) {
                 $numberOfRecordIds += $task->extractTransformLoad();
@@ -167,14 +167,14 @@ class RedCapEtl
         #-------------------------------------------------------------------------
         # Generate primary and foreign keys for the databases, if configured
         #-------------------------------------------------------------------------
-        foreach ($this->etlWorkflow->getDbIds() as $dbId) {
-            $this->etlWorkflow->createDatabaseKeys($dbId);
+        foreach ($this->workflow->getDbIds() as $dbId) {
+            $this->workflow->createDatabaseKeys($dbId);
         }
 
         #------------------------------------------------------------------
         # For each task, run post-processing SQL and log as complete
         #------------------------------------------------------------------
-        foreach ($this->etlWorkflow->getTasks() as $task) {
+        foreach ($this->workflow->getTasks() as $task) {
             $task->runPostProcessingSql();
                 
             $logger->log(self::PROCESSING_COMPLETE);
@@ -202,28 +202,28 @@ class RedCapEtl
 
     public function getTasks()
     {
-        return $this->etlWorkflow->getTasks();
+        return $this->workflow->getTasks();
     }
 
     public function getTask($index)
     {
-        return $this->etlWorkflow->getTask($index);
+        return $this->workflow->getTask($index);
     }
     
-    public function getEtlWorkflow()
+    public function getWorkflow()
     {
-        return $this->etlWorkflow;
+        return $this->workflow;
     }
     
     public function getTaskConfig($index)
     {
-        $taskConfig = $this->etlWorkflow->getTaskConfig($index);
+        $taskConfig = $this->workflow->getTaskConfig($index);
         return $taskConfig;
     }
     
     public function getDataProject($index)
     {
-        $dataProject = $this->etlWorkflow->getDataProject($index);
+        $dataProject = $this->workflow->getDataProject($index);
         return $dataProject;
     }
 }
