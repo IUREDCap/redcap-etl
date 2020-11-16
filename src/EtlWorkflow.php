@@ -55,29 +55,29 @@ class EtlWorkflow
         $taskId = 1;
         foreach ($workflowConfig->getTaskConfigs() as $taskConfigName => $taskConfig) {
             # Create task for this task configuration
-            $etlTask = new EtlTask($taskId);
-            $etlTask->initialize($this->logger, $taskConfigName, $taskConfig, $redcapProjectClass);
+            $task = new Task($taskId);
+            $task->initialize($this->logger, $taskConfigName, $taskConfig, $redcapProjectClass);
         
-            $this->tasks[] = $etlTask;
+            $this->tasks[] = $task;
 
             # Get string that serves as database identifier
-            $dbId = $etlTask->getDbId();
+            $dbId = $task->getDbId();
 
             # Create a merged schema and get connection information for the current database,
             # unless the task is an SQL-only task
-            if ($etlTask->isSqlOnlyTask()) {
+            if ($task->isSqlOnlyTask()) {
                 ; // SQL only - it has no schema to merge
             } elseif (array_key_exists($dbId, $this->dbSchemas)) {
                 $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge(
-                    $etlTask->getSchema(),
+                    $task->getSchema(),
                     $dbId,
-                    $etlTask->getName()
+                    $task->getName()
                 );
-                $this->dbTasks[$dbId]   = array_merge($this->dbTasks[$dbId], [$etlTask]);
+                $this->dbTasks[$dbId]   = array_merge($this->dbTasks[$dbId], [$task]);
             } else {
-                $this->dbSchemas[$dbId]     = $etlTask->getSchema();
-                $this->dbConnections[$dbId] = $etlTask->getDbConnection();
-                $this->dbTasks[$dbId]       = [$etlTask];
+                $this->dbSchemas[$dbId]     = $task->getSchema();
+                $this->dbConnections[$dbId] = $task->getDbConnection();
+                $this->dbTasks[$dbId]       = [$task];
             }
             
             $taskId++;

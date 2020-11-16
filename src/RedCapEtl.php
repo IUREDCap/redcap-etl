@@ -112,21 +112,21 @@ class RedCapEtl
         #-----------------------------------------
         # For each task, log header information
         #-----------------------------------------
-        foreach ($this->etlWorkflow->getTasks() as $etlTask) {
-            $taskName = $etlTask->getName();
+        foreach ($this->etlWorkflow->getTasks() as $task) {
+            $taskName = $task->getName();
             
-            $logger = $etlTask->getLogger();
+            $logger = $task->getLogger();
 
             #----------------------------------------------------------------
             # Log version and job information
             #----------------------------------------------------------------
             $logger->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
 
-            if ($etlTask->isSqlOnlyTask()) {
+            if ($task->isSqlOnlyTask()) {
                 $logger->log('SQL-only task');
             } else {
-                $logger->log('REDCap version '.$etlTask->getDataProject()->exportRedCapVersion());
-                $etlTask->logJobInfo();
+                $logger->log('REDCap version '.$task->getDataProject()->exportRedCapVersion());
+                $task->logJobInfo();
             }
             $logger->log('Number of load databases: '.count($this->etlWorkflow->getDbIds()));
             $i = 1;
@@ -144,8 +144,8 @@ class RedCapEtl
         # This needs to be run before the tables are dropped so that user-created views
         # based on the ETL generated tables can be dropped before the tables are dropped.
         #-----------------------------------------------------------------------------------
-        foreach ($this->etlWorkflow->getTasks() as $etlTask) {
-            $etlTask->runPreProcessingSql();
+        foreach ($this->etlWorkflow->getTasks() as $task) {
+            $task->runPreProcessingSql();
         }
 
         #----------------------------------------------
@@ -157,10 +157,10 @@ class RedCapEtl
         #---------------------------------------------------------------------------------
         # For each ETL task (i.e., non-SQL-only tasks) run ETL (Extract Transform Load)
         #---------------------------------------------------------------------------------
-        foreach ($this->etlWorkflow->getTasks() as $etlTask) {
+        foreach ($this->etlWorkflow->getTasks() as $task) {
             # ETL
-            if (!$etlTask->isSqlOnlyTask()) {
-                $numberOfRecordIds += $etlTask->extractTransformLoad();
+            if (!$task->isSqlOnlyTask()) {
+                $numberOfRecordIds += $task->extractTransformLoad();
             }
         }
 
@@ -174,8 +174,8 @@ class RedCapEtl
         #------------------------------------------------------------------
         # For each task, run post-processing SQL and log as complete
         #------------------------------------------------------------------
-        foreach ($this->etlWorkflow->getTasks() as $etlTask) {
-            $etlTask->runPostProcessingSql();
+        foreach ($this->etlWorkflow->getTasks() as $task) {
+            $task->runPostProcessingSql();
                 
             $logger->log(self::PROCESSING_COMPLETE);
             $logger->logEmailSummary();
@@ -200,12 +200,12 @@ class RedCapEtl
         $this->logger->logToFile($message);
     }
 
-    public function getEtlTasks()
+    public function getTasks()
     {
         return $this->etlWorkflow->getTasks();
     }
 
-    public function getEtlTask($index)
+    public function getTask($index)
     {
         return $this->etlWorkflow->getTask($index);
     }

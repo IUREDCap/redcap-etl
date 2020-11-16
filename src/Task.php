@@ -18,7 +18,7 @@ use IU\REDCapETL\Schema\Table;
  * REDCap-ETL task defined by a single task configuration that contains a single data source (REDCap project)
  * and destination (database).
  */
-class EtlTask
+class Task
 {
     private $name;
     
