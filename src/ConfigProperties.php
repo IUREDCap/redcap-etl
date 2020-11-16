@@ -82,7 +82,6 @@ class ConfigProperties
     
     const PRINT_LOGGING            = 'print_logging';   # true/false indicates if log messages should be printed
     const PROJECT_ID               = 'project_id';  # optional ID of REDCap project from which data are being extracted
-    const RECORD_ID                = 'record_id';
 
     const REDCAP_API_URL         = 'redcap_api_url';
     const SSL_VERIFY             = 'ssl_verify';
