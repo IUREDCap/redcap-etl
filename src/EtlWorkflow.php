@@ -63,8 +63,11 @@ class EtlWorkflow
             # Get string that serves as database identifier
             $dbId = $etlTask->getDbId();
 
-            # Create a merged schema and get connection information for the current database
-            if (array_key_exists($dbId, $this->dbSchemas)) {
+            # Create a merged schema and get connection information for the current database,
+            # unless the task is an SQL-only task
+            if ($etlTask->isSqlOnlyTask()) {
+                ; // SQL only - it has no schema to merge
+            } elseif (array_key_exists($dbId, $this->dbSchemas)) {
                 $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge(
                     $etlTask->getSchema(),
                     $dbId,

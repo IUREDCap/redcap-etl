@@ -128,8 +128,13 @@ class RedCapEtl
             # Log version and job information
             #----------------------------------------------------------------
             $logger->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
-            $logger->log('REDCap version '.$etlTask->getDataProject()->exportRedCapVersion());
-            $etlTask->logJobInfo();
+
+            if ($etlTask->isSqlOnlyTask()) {
+                $logger->log('SQL-only task');
+            } else {
+                $logger->log('REDCap version '.$etlTask->getDataProject()->exportRedCapVersion());
+                $etlTask->logJobInfo();
+            }
             $logger->log('Number of load databases: '.count($this->etlWorkflow->getDbIds()));
             $i = 1;
             foreach (array_keys($this->etlWorkflow->getDbIds()) as $dbId) {
@@ -142,7 +147,9 @@ class RedCapEtl
             $etlTask->runPreProcessingSql();
 
             # ETL
-            $numberOfRecordIds += $etlTask->extractTransformLoad();
+            if (!$etlTask->isSqlOnlyTask()) {
+                $numberOfRecordIds += $etlTask->extractTransformLoad();
+            }
 
 // FIX!!!!!!!!!! Try to create when table created - if at end,
 // need to wait for all tasks for a given database to finish:

@@ -110,59 +110,13 @@ class EtlTask
             date_default_timezone_set($timezone);
         }
 
-
-        #-----------------------------------------------------------
-        # Create RedCap object to use for getting REDCap projects
-        #-----------------------------------------------------------
-        $apiUrl = $this->taskConfig->getRedCapApiUrl();
-        $superToken = null; // There is no need to create projects, so this is not needed
-        $sslVerify  = $this->taskConfig->getSslVerify();
-        $caCertFile = $this->taskConfig->getCaCertFile();
-
-        if (empty($redcapProjectClass)) {
-            $redcapProjectClass = EtlRedCapProject::class;
+        #----------------------------------------------------------
+        # If this is NOT an SQL-only task, set up REDCap access
+        #----------------------------------------------------------
+        if (!$this->isSqlOnlyTask()) {
+            $this->setUpRedCapAccess();
         }
 
-        # Callback function for use in the RedCap class so
-        # that project objects retrieved will have class
-        # EtlRedCapProject, which has extensions for REDCapETL.
-        $callback = function (
-            $apiUrl,
-            $apiToken,
-            $sslVerify = false,
-            $caCertificateFile = null,
-            $errorHandler = null,
-            $connection = null
-        ) use ($redcapProjectClass) {
-            return new $redcapProjectClass(
-                $apiUrl,
-                $apiToken,
-                $sslVerify,
-                $caCertificateFile,
-                $errorHandler,
-                $connection
-            );
-        };
-        
-        try {
-            $redCap = new RedCap($apiUrl, $superToken, $sslVerify, $caCertFile);
-            $redCap->setProjectConstructorCallback($callback);
-        } catch (PhpCapException $exception) {
-            $message = 'Unable to set up RedCap object.';
-            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
-
-
-        #----------------------------------------------------------------
-        # Get the project that has the actual data
-        #----------------------------------------------------------------
-        $dataToken = $this->taskConfig->getDataSourceApiToken();
-        try {
-            $this->dataProject = $redCap->getProject($dataToken);
-        } catch (PhpCapException $exception) {
-            $message = 'Could not get data project.';
-            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
-        }
 
         #-----------------------------------------
         # Initialize the schema
@@ -219,9 +173,97 @@ class EtlTask
             $this->schema->setDbEventLogTable($dbEventLogTable);
         }
 
-        $this->processTransformationRules();
+        #-------------------------------------------------------------------
+        # If this is NOT an SQL-only task, process the transformation rules
+        #-------------------------------------------------------------------
+        if (!$this->isSqlOnlyTask()) {
+            $this->processTransformationRules();
+        }
+    }
+
+
+    protected function setUpRedCapAccess()
+    {
+        #-----------------------------------------------------------
+        # Create RedCap object to use for getting REDCap projects
+        #-----------------------------------------------------------
+        $apiUrl = $this->taskConfig->getRedCapApiUrl();
+        $superToken = null; // There is no need to create projects, so this is not needed
+        $sslVerify  = $this->taskConfig->getSslVerify();
+        $caCertFile = $this->taskConfig->getCaCertFile();
+
+        if (empty($redcapProjectClass)) {
+            $redcapProjectClass = EtlRedCapProject::class;
+        }
+
+        # Callback function for use in the RedCap class so
+        # that project objects retrieved will have class
+        # EtlRedCapProject, which has extensions for REDCapETL.
+        $callback = function (
+            $apiUrl,
+            $apiToken,
+            $sslVerify = false,
+            $caCertificateFile = null,
+            $errorHandler = null,
+            $connection = null
+        ) use ($redcapProjectClass) {
+            return new $redcapProjectClass(
+                $apiUrl,
+                $apiToken,
+                $sslVerify,
+                $caCertificateFile,
+                $errorHandler,
+                $connection
+            );
+        };
+        
+        try {
+            $redCap = new RedCap($apiUrl, $superToken, $sslVerify, $caCertFile);
+            $redCap->setProjectConstructorCallback($callback);
+        } catch (PhpCapException $exception) {
+            $message = 'Unable to set up access to REDCap';
+            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
+        }
+
+
+        #----------------------------------------------------------------
+        # Get the project that has the actual data
+        #----------------------------------------------------------------
+        $dataToken = $this->taskConfig->getDataSourceApiToken();
+        try {
+            $this->dataProject = $redCap->getProject($dataToken);
+        } catch (PhpCapException $exception) {
+            $message = 'Could not access REDCap project';
+            throw new EtlException($message, EtlException::PHPCAP_ERROR, $exception);
+        }
     }
     
+
+    /**
+     * @return boolean true if this task has SQL only (no ETL), and false otherwise.
+     */
+    public function isSqlOnlyTask()
+    {
+        $isSqlOnly = false;
+
+        $apiUrl   = $this->taskConfig->getRedCapApiUrl();
+        $apiToken = $this->taskConfig->getDataSourceApiToken();
+
+        $dbConnection      = $this->taskConfig->getDbConnection();
+        $preProcessingSql  = $this->taskConfig->getPreProcessingSql();
+        $postProcessingSql = $this->taskConfig->getPostProcessingSql();
+
+        if (empty($apiUrl) || empty($apiToken)) {
+            if (!empty($dbConnection)) {
+                if (!empty($preProcessingSql) || !empty($postProcessingSql)) {
+                    $isSqlOnly = true;
+                }
+            }
+        }
+
+        return $isSqlOnly;
+    }
+
     /**
      * Gets the task ID.
      */
