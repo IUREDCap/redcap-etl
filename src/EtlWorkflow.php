@@ -88,8 +88,11 @@ class EtlWorkflow
         #---------------------------------------------
         foreach ($this->tasks as $task) {
             $dbId = $task->getDbId();
-            $dbSchema = $this->dbSchemas[$dbId];
-            $task->setDbSchema($dbSchema);    // FIX!!!!,
+            if (array_key_exists($dbId, $this->dbSchemas)) {
+                # There wil be no schema for a database if it has only SQL-only tasks
+                $dbSchema = $this->dbSchemas[$dbId];
+                $task->setDbSchema($dbSchema);    // FIX!!!!,
+            }
             // only want subset of merged schema that has
             // original tables in task OR REMOVE??????????? !!!!!!!!!!!!
         }
