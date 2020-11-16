@@ -224,7 +224,7 @@ Each task creates a set of tables in a database, and the structure of these tabl
 (the names of the tables, and column names and types of each table) forms a database schema.
 Workflows used a merged database schema for their tasks that load data to the same database.
 
-1. For each database specified (workflows can specify more than 1),
+1. For each load database (workflows can specify more than 1),
     create a merged database schema that consists of all the
     tables created by each tasks that use the database
 2. For each task, in order that the tasks are defined:
@@ -237,7 +237,8 @@ Workflows used a merged database schema for their tasks that load data to the sa
     1. Extract records from REDCap
     2. Transform the records based on the transformation rules
     3. Load the records into the database specified for the task
-5. For each task, in order that the tasks are defined:
+5. For each load database, create primary and foreign keys, if configured
+6. For each task, in order that the tasks are defined:
     1. Run post-processing SQL (if any)
 
 

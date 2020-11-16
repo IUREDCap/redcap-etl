@@ -235,12 +235,88 @@ class EtlWorkflow
         }
     }
         
+
+    /**
+     * Indicates if the specified database needs to have primary keys generated for its tables.
+     */
+    public function needsDatabasePrimaryKeys($dbId)
+    {
+        $needsPrimaryKeys = false;
+
+        if (!empty($dbId) && array_key_exists($dbId, $this->dbTasks)) {
+            foreach ($this->dbTasks[$dbId] as $task) {
+                if ($task->getTaskConfig()->getDbPrimaryKeys()) {
+                    $needsPrimaryKeys = true;
+                }
+            }
+        }
+
+        return $needsPrimaryKeys;
+    }
+
+    /**
+     * Indicates if the specified database needs to have foreign keys generated for its tables.
+     */
+    public function needsDatabaseForeignKeys($dbId)
+    {
+        $needsForeignKeys = false;
+
+        if (!empty($dbId) && array_key_exists($dbId, $this->dbTasks) && array_key_exists($dbId, $this->dbSchemas)) {
+            foreach ($this->dbTasks[$dbId] as $task) {
+                if ($task->getTaskConfig()->getDbForeignKeys()) {
+                    $needsForeignKeys = true;
+                }
+            }
+        }
+
+        return $needsForeignKeys;
+    }
+
+    /**
+    /**
+     * Creates primary and foreign keys for the database tables if they
+     * have been specified (note: unsupported for CSV and SQLite).
+     */
+    public function createDatabaseKeys($dbId)
+    {
+        #---------------------------------------------------------------------------------
+        # If database keys are needed then generate the keys.
+        #
+        # Note: foreign keys can only be configured if primary keys are alsoconfigured.
+        #---------------------------------------------------------------------------------
+        if ($this->needsDatabasePrimaryKeys($dbId)) {
+            $schema = $this->dbSchemas[$dbId];
+
+            #-------------------------------------------------------------
+            # Get the tables in top-down order, so that each parent table
+            # will always come before its child tables
+            #-------------------------------------------------------------
+            $tables = $schema->getTablesTopDown();
+
+            $dbConnection = $this->getDbConnection($dbId);
+
+            #------------------------------------------------------
+            # Create tables
+            #------------------------------------------------------
+            foreach ($tables as $table) {
+                $dbConnection->addPrimaryKeyConstraint($table);
+            }
+
+            if ($this->needsDatabaseForeignKeys($dbId)) {
+                foreach ($tables as $table) {
+                    $dbConnection->addForeignKeyConstraint($table);
+                }
+            }
+        }
+    }
+
+
     public function getDbIds()
     {
         $dbIds = array_keys($this->dbSchemas);
         return $dbIds;
     }
-    
+
     public function getDbSchemas()
     {
         return $this->dbSchemas;

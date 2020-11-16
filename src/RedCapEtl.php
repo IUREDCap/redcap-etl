@@ -109,15 +109,8 @@ class RedCapEtl
     {
         $numberOfRecordIds = 0;
 
-        #----------------------------------------------
-        # Drop old load tables if they exist,
-        # and then create the load tables
-        #----------------------------------------------
-        $this->etlWorkflow->dropAllLoadTables();
-        $this->etlWorkflow->createAllLoadTables();
-
         #-----------------------------------------
-        # Run ETL for each ETL task
+        # For each task, log header information
         #-----------------------------------------
         foreach ($this->etlWorkflow->getTasks() as $etlTask) {
             $taskName = $etlTask->getName();
@@ -143,19 +136,45 @@ class RedCapEtl
             }
 
             $logger->log("Starting processing.");
+        }
 
+        #-----------------------------------------------------------------------------------
+        # For each task, run pre-processing SQL.
+        #
+        # This needs to be run before the tables are dropped so that user-created views
+        # based on the ETL generated tables can be dropped before the tables are dropped.
+        #-----------------------------------------------------------------------------------
+        foreach ($this->etlWorkflow->getTasks() as $etlTask) {
             $etlTask->runPreProcessingSql();
+        }
 
+        #----------------------------------------------
+        # Drop old load tables if they exist,
+        # and then create the load tables
+        #----------------------------------------------
+        $this->etlWorkflow->dropAllLoadTables();
+        $this->etlWorkflow->createAllLoadTables();
+        #---------------------------------------------------------------------------------
+        # For each ETL task (i.e., non-SQL-only tasks) run ETL (Extract Transform Load)
+        #---------------------------------------------------------------------------------
+        foreach ($this->etlWorkflow->getTasks() as $etlTask) {
             # ETL
             if (!$etlTask->isSqlOnlyTask()) {
                 $numberOfRecordIds += $etlTask->extractTransformLoad();
             }
+        }
 
-// FIX!!!!!!!!!! Try to create when table created - if at end,
-// need to wait for all tasks for a given database to finish:
+        #-------------------------------------------------------------------------
+        # Generate primary and foreign keys for the databases, if configured
+        #-------------------------------------------------------------------------
+        foreach ($this->etlWorkflow->getDbIds() as $dbId) {
+            $this->etlWorkflow->createDatabaseKeys($dbId);
+        }
 
-            //$etlTask->createDatabaseKeys(); // create primary and foreign keys, if configured
-
+        #------------------------------------------------------------------
+        # For each task, run post-processing SQL and log as complete
+        #------------------------------------------------------------------
+        foreach ($this->etlWorkflow->getTasks() as $etlTask) {
             $etlTask->runPostProcessingSql();
                 
             $logger->log(self::PROCESSING_COMPLETE);
