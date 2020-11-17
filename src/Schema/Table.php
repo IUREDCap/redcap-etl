@@ -166,9 +166,21 @@ class Table
 
         $mergedTable->fields = $mergedFields;
 
-        $mergedTable->rows = array_merge($this->getRows(), $table->getRows());
+        $mergedTable->rows = $this->mergeDataRows($table);
 
         return $mergedTable;
+    }
+
+    /**
+     * Merges only the data rows of 2 tables.
+     *
+     * @return array array of Row objects that represent the combined
+     *     data rows of the tables.
+     */
+    public function mergeDataRows($table)
+    {
+        $mergedRows = array_merge($this->getRows(), $table->getRows());
+        return $mergedRows;
     }
 
     /**

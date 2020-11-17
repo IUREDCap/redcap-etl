@@ -154,6 +154,7 @@ class RedCapEtl
         #----------------------------------------------
         $this->workflow->dropAllLoadTables();
         $this->workflow->createAllLoadTables();
+
         #---------------------------------------------------------------------------------
         # For each ETL task (i.e., non-SQL-only tasks) run ETL (Extract Transform Load)
         #---------------------------------------------------------------------------------

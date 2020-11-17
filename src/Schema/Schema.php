@@ -26,13 +26,25 @@ class Schema
     
     /** @var LookupTable table for mapping multiple choice fields from (table name, field name, value) to label */
     private $lookupTable;
+
+    /** @var array map from table name (string) to LookupTable object
+     *    for storing lookup tabes for merged schema. */
+    private $lookupTableMap;
     
     /** @var EtlLogTable parent log table that has one entry per ETL task; this table is NOT deleted after each run */
     private $dbLogTable;
 
+    /** @var array map from table name (string) to EtlLogTable that contains
+     *     all DB log tables for a merged schema */
+    private $dbLogTableMap;
+
     /** @var EtlEventLogTable child log table that has one entry per ETL task event;
      *    this table is NOT deleted after each run */
     private $dbEventLogTable;
+
+    /** @var array map from table name (string) to EtlEventLogTable that contains
+     *    all DB event log tables for a merged schema */
+    private $dbEventLogTableMap;
 
     /** @var ProjectInfoTable table with REDCap project information */
     private $projectInfoTable;
@@ -47,9 +59,14 @@ class Schema
         $this->rootTables = array();
 
         $this->lookupTable = null;
+
+        $this->lookupTableMap = array();
  
-        $this->dbLogTable = null;
+        $this->dbLogTable      = null;
         $this->dbEventLogTable = null;
+
+        $this->dbLogTableMap      = array();
+        $this->dbEventLogTableMap = array();
 
         $this->projectInfoTable = null;
         $this->metadataTable = null;
@@ -116,12 +133,18 @@ class Schema
         $mergedSchema->tables     = $mergedTables;
         $mergedSchema->rootTables = $mergedRootTables;
 
+        #------------------------------------------------------------------------
         # Merge the lookup tables that provide a map for mutliple choice fields
         # from (table name, field name, value) to label
+        #------------------------------------------------------------------------
+        $dataRows = $this->lookupTable->mergeDataRows($schema->lookupTable);
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
         $mergedSchema->projectInfoTable = $this->projectInfoTable->merge($schema->projectInfoTable);
         $mergedSchema->metadataTable    = $this->metadataTable->merge($schema->metadataTable);
+
+        $mergedSchema->dbLogTableMap      = array_merge($this->dbLogTableMap, $schema->dbLogTableMap);
+        $mergedSchema->dbEventLogTableMap = array_merge($this->dbEventLogTableMap, $schema->dbEventLogTableMap);
 
         return $mergedSchema;
     }
@@ -245,6 +268,7 @@ class Schema
      */
     public function setLookupTable($lookupTable)
     {
+        $this->lookupTableMap[$lookupTable->getName()] = $lookupTable;
         $this->lookupTable = $lookupTable;
     }
 
@@ -256,6 +280,7 @@ class Schema
 
     public function setDbLogTable($dbLogTable)
     {
+        $this->dbLogTableMap[$dbLogTable->getName()] = $dbLogTable;
         $this->dbLogTable = $dbLogTable;
     }
 
@@ -267,6 +292,7 @@ class Schema
 
     public function setDbEventLogTable($dbEventLogTable)
     {
+        $this->dbEventLogTableMap[$dbEventLogTable->getName()] = $dbEventLogTable;
         $this->dbEventLogTable = $dbEventLogTable;
     }
 

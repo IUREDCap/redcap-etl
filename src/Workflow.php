@@ -132,8 +132,8 @@ class Workflow
             $dbConnection->replaceTable($projectInfoTable);
             $dbConnection->replaceTable($metadataTable);
             
-             $dbConnection->storeRows($projectInfoTable);
-             $dbConnection->storeRows($metadataTable);
+            $dbConnection->storeRows($projectInfoTable);
+            $dbConnection->storeRows($metadataTable);
         }
     }
         
@@ -191,7 +191,6 @@ class Workflow
         foreach ($tables as $table) {
             $ifNotExists = true;   // same table could be created by 2 different task configurations
             $dbConnection->createTable($table, $ifNotExists);
-            // $this->dbcon->addPrimaryKeyConstraint($table);
 
             $msg = "Created table '".$table->name."'";
 

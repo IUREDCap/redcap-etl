@@ -207,8 +207,10 @@ class SchemaGenerator
                     $table->setForeign($parentTable);  # Add a foreign key
                     $parentTable->addChild($table);    # Add as a child of parent table
                 }
-            } elseif ($rule instanceof FieldRule) {     # FIELD RULE
-                // generate Fields...
+            } elseif ($rule instanceof FieldRule) {
+                #-------------------------------------------
+                # FIELD RULE
+                #-------------------------------------------
                  
                 if ($table == null) {
                     break; // table not set, probably error with table rule
@@ -344,8 +346,13 @@ class SchemaGenerator
 
                         // If this field has category/label choices
                         if (array_key_exists($originalFieldName, $this->lookupChoices)) {
-                            $this->lookupTable->addLookupField($table->name, $originalFieldName);
-                            $field->usesLookup = $originalFieldName;
+                            $this->lookupTable->addLookupField($table->name, $originalFieldName, $rule->dbFieldName);
+                            //$field->usesLookup = $originalFieldName;  FIX for lookup !!!!!!!!!!!!
+                            if (empty($rule->dbFieldName)) {
+                                $field->usesLookup = $originalFieldName;
+                            } else {
+                                $field->usesLookup = $rule->dbFieldName;
+                            }
                             $table->usesLookup = true;
                         }
                     }

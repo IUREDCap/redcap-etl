@@ -8,115 +8,51 @@ namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
 
-use IU\REDCapETL\EtlException;
-use IU\REDCapETL\Schema\RowsType;
-use IU\REDCapETL\Schema\FieldTypeSpecifier;
-use IU\REDCapETL\Schema\FieldType;
 use IU\REDCapETL\Schema\Field;
-use IU\REDCapETL\Schema\Table;
+use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\FieldTypeSpecifier;
 
 /**
-* PHPUnit tests for the LookupTable class.
+* PHPUnit tests for the LookupTable class
 */
 
 class LookupTableTest extends TestCase
 {
     public function testConstructor()
     {
-        $lookupChoices = [
-            "sex" => ['female', 'male']
-        ];
-        $tablePrefix = null;
-        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
-        $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
+        $name = "lookup";
 
         #test object creation
-        $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
+        $lookupTable = new LookupTable(array(), '', new FieldTypeSpecifier(FieldType::INT), $name);
         $this->assertNotNull($lookupTable, 'lookupTable object not null check');
+
+        $this->assertEquals($name, $lookupTable->getName(), 'lookupTable name check');
     }
 
-    /**
-    * To verify the map part of the addLookupField method, the getLabelMap
-    * method needs to be invoked, so testing for both addLookupField
-    * and getLabelMap have been combined into one test.
-    */
-    public function testAddLookupFieldAndGetLabelMap()
+    public function testRowsAdded()
     {
-        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
-
-        # create the lookup-table object that has the label values
+        $name = "lookup";
         $lookupChoices = [
-            "marital_status" => ['single', 'married', 'widowed', 'divorced']
+            'gender' => ['0' => 'male', '1' => 'female'],
+            'race' => [
+                '0' => 'American Indian/Alaska Native',
+                '1' => 'Asian',
+                '2' => 'Native Hawaiian or Other Pacific Islander',
+                '3' => 'Black or African American',
+                '4' => 'White',
+                '5' => 'Other'
+            ]
         ];
-        $tablePrefix = null;
-        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
-        $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
+        $lookupTable = new LookupTable($lookupChoices, '', new FieldTypeSpecifier(FieldType::INT), $name);
+        $this->assertNotNull($lookupTable, 'lookupTable object not null check');
 
-        #test addLookupField
-        $tableName = 'addLookupTest';
-        $fieldName = 'marital_status';
-        $result = $lookupTable->addLookupField($tableName, $fieldName);
-        $this->assertNull($result, 'addLookupField return check');
+        $lookupTable->addLookupField('test', 'gender');
+        $lookupTable->addLookupField('test', 'race');
 
-        $rows = $lookupTable->getRows();
-        $expectedLabel = ['single','married','widowed','divorced'];
+        $expectedMap = ['test' => $lookupChoices];
 
-        $i = 0;
-        $contentsOk = true;
-        foreach ($rows as $row) {
-            $rowData = $row->getData();
+        $this->assertEquals($expectedMap, $lookupTable->getMap(), 'Lookup table map check');
 
-            if ($rowData['table_name'] !== $tableName) {
-                $contentsOk = false;
-                #print "for i  $i, tableName fail" . PHP_EOL;
-            } elseif ($rowData['field_name'] !== $fieldName) {
-                $contentsOk = false;
-                #print "for i  $i, fieldName fail" . PHP_EOL;
-            } elseif ($rowData['value'] != $i) {
-                $contentsOk = false;
-                #print "for i  $i, value fail" . PHP_EOL;
-            } elseif ($rowData['label'] !== $expectedLabel[$i]) {
-                $contentsOk = false;
-                #print "for i  $i, label fail" . PHP_EOL;
-            } elseif ($rowData['lookup_id'] !== $i+1) {
-                $contentsOk = false;
-                #print "for i  $i, lookup id fail" . PHP_EOL;
-            }
-            $i++;
-        }
-        $this->assertTrue($contentsOk, 'addLookupField fields added check');
-
-        #check map update
-        $expectedMap = ['single', 'married', 'widowed', 'divorced'];
-        $valueLabelMap = $lookupTable->getValueLabelMap($tableName, $fieldName);
-        $this->assertEquals($expectedMap, $valueLabelMap, 'addLookupField map updated check');
-    }
-
-    public function testGetLabel()
-    {
-        $lookupChoices = [
-            "sex" => ['female', 'male']
-        ];
-        $tablePrefix = null;
-        $keyType = new FieldTypeSpecifier(FieldType::INT, null);
-        $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
-
-        $tableName = 'testGetLabelTest';
-        $fieldName = 'sex';
-        $lookupTable->addLookupField($tableName, $fieldName);
-
-        #run test
-        $testValues = ['',0,1];
-        $expectedLabels = ['','female','male'];
-        $i=0;
-        $labelsOk = true;
-        foreach ($testValues as $testValue) {
-            $label = $lookupTable->getLabel($tableName, $fieldName, $testValue);
-            if ($label !== $expectedLabels[$i]) {
-                $labelsOk = false;
-            }
-            $i++;
-        }
-        $this->assertTrue($labelsOk, 'getLabel check');
+        # print_r($lookupTable->getMap());
     }
 }
