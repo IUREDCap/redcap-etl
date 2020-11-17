@@ -213,12 +213,12 @@ abstract class PdoDbConnection extends DbConnection
         // foreach field
         foreach ($table->getAllFields() as $field) {
             // If the field does not use lookup table
-            if ($field->usesLookup === false) {
+            if ($field->usesLookup() === false) {
                 array_push($selects, $this->escapeName($field->dbName));
             } else {
                 // $field->usesLookup holds name of lookup field, if not false
                 // name of lookup field is root of field name for checkbox
-                $fname = $field->usesLookup;
+                $fname = $field->usesLookup();
 
                 // If the field uses the lookup table and is a checkbox field
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {

@@ -32,7 +32,7 @@ class Field
              have a value to label mapping entry in the lookup table. And false, if
              this field is not a multiple-choice field.
     */
-    public $usesLookup = false;
+    private $usesLookup = false;
     
     /** @var array map from values to labels for multiple-choice fields. */
     public $valueToLabelMap;
@@ -196,5 +196,15 @@ class Field
 
         $string .= "\n";
         return $string;
+    }
+
+    public function usesLookup()
+    {
+        return $this->usesLookup;
+    }
+
+    public function setUsesLookup($usesLookup)
+    {
+        $this->usesLookup = $usesLookup;
     }
 }

@@ -323,7 +323,7 @@ class CsvDbConnectionTest extends TestCase
             FieldType::INT,
             null
         );
-        $field7->usesLookup = 'sex';
+        $field7->setUsesLookup('sex');
         $rootTable1->addField($field7);
 
         $field8 = new Field(
@@ -331,7 +331,7 @@ class CsvDbConnectionTest extends TestCase
             FieldType::INT,
             null
         );
-        $field8->usesLookup = 'exercises___0';
+        $field8->setUsesLookup('exercises___0');
         $rootTable1->addField($field8);
 
         $field9 = new Field(
@@ -339,7 +339,7 @@ class CsvDbConnectionTest extends TestCase
             FieldType::CHECKBOX,
             null
         );
-        $field9->usesLookup = 'exercises___1';
+        $field9->setUsesLookup('exercises___1');
         $rootTable1->addField($field9);
 
         $fielda = new Field(
@@ -347,7 +347,7 @@ class CsvDbConnectionTest extends TestCase
             FieldType::CHECKBOX,
             null
         );
-        $fielda->usesLookup = 'exercises___2';
+        $fielda->setUsesLookup('exercises___2');
         $rootTable1->addField($fielda);
 
         $fieldb = new Field(
@@ -355,7 +355,7 @@ class CsvDbConnectionTest extends TestCase
             FieldType::VARCHAR,
             null
         );
-        $fieldb->usesLookup = 'employment_status';
+        $fieldb->setUsesLookup('employment_status');
         $rootTable1->addField($fieldb);
 
         # Insert two rows into the table object

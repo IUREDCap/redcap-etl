@@ -218,17 +218,17 @@ class CsvDbConnection extends DbConnection
             # Calculate the label for the field (if any)
             #------------------------------------------------------
             $label = null;
-            if ($field->usesLookup) {
+            if ($field->usesLookup()) {
                 if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
                 //if ($fieldType === FieldType::CHECKBOX) {  // This is wrong, because CHECKBOX field becomes int fields
                     if ($value === 1 || $value === '1') {
                         list($rootName, $checkboxValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
-                        $label = $this->lookupTable->getLabel($table->name, $field->usesLookup, $checkboxValue);
+                        $label = $this->lookupTable->getLabel($table->name, $field->usesLookup(), $checkboxValue);
                     } else {
                         $label = '0';
                     }
                 } else {    // Non-checkbox field
-                    $label = $this->lookupTable->getLabel($table->name, $field->usesLookup, $value);
+                    $label = $this->lookupTable->getLabel($table->name, $field->usesLookup(), $value);
                 }
             }
                     

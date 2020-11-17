@@ -1076,7 +1076,7 @@ class SqlServerTest extends TestCase
             FieldType::INT,
             null
         );
-        $field2->usesLookup = 'maritalstatus';
+        $field2->setUsesLookup('maritalstatus');
         $rootTable->addField($field2);
 
         $foreignKey = null;

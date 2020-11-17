@@ -976,7 +976,7 @@ class DatabasesTest extends TestCase
             FieldType::INT,
             null
         );
-        $field2->usesLookup = 'marital_status';
+        $field2->setUsesLookup('marital_status');
         $rootTable->addField($field2);
 
         $foreignKey = null;

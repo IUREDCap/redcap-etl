@@ -86,14 +86,12 @@ class LookupTable extends Table
      */
     public function addLookupField($tableName, $redcapFieldName, $dbFieldName = null)
     {
-
-        # print "ADD LOOKUP FIELD: {$tableName} - {$redcapFieldName} - {$dbFieldName}\n";
-
         if (empty($dbFieldName)) {
             $dbFieldName = $redcapFieldName;
         }
 
-        if (empty($this->lookupTableIn[$tableName.':'.$dbFieldName])) {
+        if (!(array_key_exists($tableName, $this->map) && array_key_exists($dbFieldName, $this->map))) {
+        #if (empty($this->lookupTableIn[$tableName.':'.$dbFieldName])) {
             $this->lookupTableIn[$tableName.':'.$dbFieldName] = true;
 
             foreach ($this->lookupChoices[$redcapFieldName] as $value => $label) {
@@ -127,7 +125,6 @@ class LookupTable extends Table
                 $this->map[$tableName][$dbFieldName][$value] = $label;
             }
         }
-        # print_r($this->map);
     }
 
     /**
@@ -142,8 +139,8 @@ class LookupTable extends Table
      */
     public function getLabel($tableName, $fieldName, $value)
     {
-        # print "\nGET LABEL: {$tableName} - {$fieldName} - {$value}\n";
         $label = '';
+
         # if the value is not null and
         # (is not a string or is a non-blank string)
         if (isset($value)) {
@@ -171,7 +168,6 @@ class LookupTable extends Table
      */
     public function getValueLabelMap($tableName, $fieldName)
     {
-        # print "\nGET LABEL VALUE MAP: {$tableName} - {$fieldName}\n";
         $valueLabelMap = $this->map[$tableName][$fieldName];
         return $valueLabelMap;
     }
@@ -189,12 +185,21 @@ class LookupTable extends Table
         }
         $mergedLookup = parent::merge($table);
 
+        $mergedLookup->lookupChoices = array_merge($this->lookupChoices, $table->lookupChoices);
+        ksort($mergedLookup->lookupChoices);
+
         $mergedLookup->map = array_merge($this->map, $table->map);
+        ksort($mergedLookup->map);
 
-#        if (!empty($mergedLookup->map)) {
-#            usort($mergedLookup->map, array($this, "compare"));
-#        }
+        $mergedLookup->rows = array();   # delete existing data, which may have duplicates and be unsorted
 
+        # Add back the data without duplicates and in order
+        $map = $mergedLookup->map;
+        foreach ($map as $table => $tableInfo) {
+            foreach ($tableInfo as $field => $valueInfo) {
+                $mergedLookup->addLookupField($table, $field);
+            }
+        }
         return $mergedLookup;
     }
 
@@ -209,6 +214,11 @@ class LookupTable extends Table
             }
         }
         return $cmp;
+    }
+
+    public function getLookupChoices()
+    {
+        return $this->lookupChoices;
     }
 
     public function getMap()
