@@ -177,24 +177,20 @@ class LookupTable extends Table
      *
      * @var LookupTable $table the lookup table to be merged.
      */
-    public function merge($table)
+    public function merge($table, $mergeData = true)
     {
         if ($this->getName() !== $table->getName()) {
             $message = "Lookup table names \"{$this->getName()}\" and \"{$table->getName()}\" do not match.";
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
-        $mergedLookup = parent::merge($table);
+
+        $mergedLookup = parent::merge($table, $mergeData);
 
         $mergedLookup->lookupChoices = array_merge($this->lookupChoices, $table->lookupChoices);
         ksort($mergedLookup->lookupChoices);
 
         $mergedLookup->map = array_merge($this->map, $table->map);
         ksort($mergedLookup->map);
-
-        #-----------------------------------------------------------------------
-        # Delete existing data, which may have duplicates and be unsorted
-        #-----------------------------------------------------------------------
-        $mergedLookup->rows = array();
 
         #-----------------------------------------------------------------------
         # Add back the data without duplicates and in sorted order

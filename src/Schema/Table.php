@@ -104,7 +104,7 @@ class Table
     /**
      * Merges the specified table with this table and returns the result.
      */
-    public function merge($table)
+    public function merge($table, $mergeData = false)
     {
         $mergedTable = $this;
 
@@ -166,7 +166,12 @@ class Table
 
         $mergedTable->fields = $mergedFields;
 
-        $mergedTable->rows = $this->mergeDataRows($table);
+        #------------------------------------------------
+        # If specified, merge the data for the 2 tables
+        #------------------------------------------------
+        if ($mergeData) {
+            $mergedTable->rows = $this->mergeDataRows($table);
+        }
 
         return $mergedTable;
     }
