@@ -138,6 +138,21 @@ class Schema
         # from (table name, field name, value) to label
         #------------------------------------------------------------------------
         $dataRows = $this->lookupTable->mergeDataRows($schema->lookupTable);
+
+        #--------------------------------------
+        # Lookup table(s)
+        #--------------------------------------
+        $mergedSchema->setLookupTable($this->lookupTable);
+        $lookupName = $schema->lookupTable->getName();
+        if (array_key_exists($lookupName, $mergedSchema->lookupTableMap)) {
+            # If the new lookup table already exists in the lookup table map, then
+            # merge the new lookup table with the schemae.
+            $mergedSchema->lookupTableMap[$lookupName] = $this->lookupTable->merge($schema->lookupTable);
+        } else {
+            # Else, this is a new lookup table.
+            $this->lookupTableMap[$lookupName] = $schema->lookupTable;
+        }
+
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
         $mergedSchema->projectInfoTable = $this->projectInfoTable->merge($schema->projectInfoTable);
@@ -269,7 +284,11 @@ class Schema
     public function setLookupTable($lookupTable)
     {
         $this->lookupTableMap[$lookupTable->getName()] = $lookupTable;
-        $this->lookupTable = $lookupTable;
+        if (count($this->lookupTableMap) === 1) {
+            # If this is the first lookup table, make the primary lookup table
+            # point to it
+            $this->lookupTable = & $this->lookupTableMap[$lookupTable->getName()];
+        }
     }
 
 

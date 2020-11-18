@@ -191,9 +191,14 @@ class LookupTable extends Table
         $mergedLookup->map = array_merge($this->map, $table->map);
         ksort($mergedLookup->map);
 
-        $mergedLookup->rows = array();   # delete existing data, which may have duplicates and be unsorted
+        #-----------------------------------------------------------------------
+        # Delete existing data, which may have duplicates and be unsorted
+        #-----------------------------------------------------------------------
+        $mergedLookup->rows = array();
 
-        # Add back the data without duplicates and in order
+        #-----------------------------------------------------------------------
+        # Add back the data without duplicates and in sorted order
+        #-----------------------------------------------------------------------
         $map = $mergedLookup->map;
         foreach ($map as $table => $tableInfo) {
             foreach ($tableInfo as $field => $valueInfo) {
