@@ -151,7 +151,7 @@ class WorkflowConfig
                     $this->taskConfigs[] = $taskConfig;
                 }
             } else {
-                throw new \Exception("No configurations defined for workflow.");
+                throw new \Exception("No tasks defined for workflow.");
             }
         } else {
             # Single configuration

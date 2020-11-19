@@ -48,12 +48,12 @@ class MetadataTable extends Table
     [field_annotation] =>
     */
 
-    public function __construct($tablePrefix = '', $name = self::DEFAULT_NAME)
+    public function __construct($name = self::DEFAULT_NAME)
     {
         $fieldTypePrimary = new FieldTypeSpecifier(FieldType::AUTO_INCREMENT);
 
         parent::__construct(
-            $tablePrefix . $name,
+            $name,
             self::FIELD_PRIMARY_ID,
             $fieldTypePrimary,
             array(RowsType::ROOT),

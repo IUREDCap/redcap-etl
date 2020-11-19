@@ -17,7 +17,7 @@ use IU\REDCapETL\Schema\Table;
  */
 class LookupTable extends Table
 {
-    const DEFAULT_NAME      = 'Lookup';
+    const DEFAULT_NAME      = 'etl_lookup';
     
     const FIELD_PRIMARY_ID  = 'lookup_id';
     const FIELD_TABLE_NAME  = 'table_name';
@@ -32,8 +32,6 @@ class LookupTable extends Table
 
     private $lookupChoices;
 
-    private $lookupTableIn;  // For efficiently checking if field was already inserted
-    
     /**
      * @parameter array $lookupChoices map from REDCap field name to a map from multiple
      *     choice value to multiple choice label for that field.
@@ -57,7 +55,6 @@ class LookupTable extends Table
         $this->map = array();
 
         $this->lookupChoices = $lookupChoices;
-        $this->lookupTableIn = array();
         
         #-----------------------------------------------
         # Create and add fields for the lookup table
@@ -82,6 +79,7 @@ class LookupTable extends Table
      *
      * @param string $tablename the name of the table that contains the
      *     field to be added.
+     *
      * @param string $redcapFieldName the name of the field to be added.
      */
     public function addLookupField($tableName, $redcapFieldName, $dbFieldName = null)
@@ -90,10 +88,7 @@ class LookupTable extends Table
             $dbFieldName = $redcapFieldName;
         }
 
-        if (!(array_key_exists($tableName, $this->map) && array_key_exists($dbFieldName, $this->map))) {
-        #if (empty($this->lookupTableIn[$tableName.':'.$dbFieldName])) {
-            $this->lookupTableIn[$tableName.':'.$dbFieldName] = true;
-
+        if (!(array_key_exists($tableName, $this->map) && array_key_exists($dbFieldName, $this->map[$tableName]))) {
             foreach ($this->lookupChoices[$redcapFieldName] as $value => $label) {
                 # REDCap apparently converts all field names to lower-case
                 $value = strtolower($value);

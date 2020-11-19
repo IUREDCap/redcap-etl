@@ -62,7 +62,6 @@ class TaskConfig
     const DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS = false;
 
     const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
-    const DEFAULT_LOOKUP_TABLE_NAME = 'Lookup';
     
     const DEFAULT_PRINT_LOGGING = true;
     
@@ -587,9 +586,11 @@ class TaskConfig
             $this->createLookupTable = $this->properties[ConfigProperties::CREATE_LOOKUP_TABLE];
         }
 
-        $this->lookupTableName = self::DEFAULT_LOOKUP_TABLE_NAME;
+        $this->lookupTableName = LookupTable::DEFAULT_NAME;
         if (array_key_exists(ConfigProperties::LOOKUP_TABLE_NAME, $this->properties)) {
-            $this->lookupTableName = $this->properties[ConfigProperties::LOOKUP_TABLE_NAME];
+            if (!empty($this->properties[ConfigProperties::LOOKUP_TABLE_NAME])) {
+                $this->lookupTableName = $this->properties[ConfigProperties::LOOKUP_TABLE_NAME];
+            }
         }
 
         #-------------------------------------------------------------
