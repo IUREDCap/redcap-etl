@@ -140,7 +140,7 @@ class Schema
         $dataRows = $this->lookupTable->mergeDataRows($schema->lookupTable);
 
         #--------------------------------------
-        # Lookup table(s)
+        # Merge lookup table(s)
         #--------------------------------------
         $mergedSchema->setLookupTable($this->lookupTable);
         $lookupName = $schema->lookupTable->getName();
@@ -155,9 +155,15 @@ class Schema
 
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
+        #------------------------------------------------------------------
+        # Merge the REDCap project info and metadata tables
+        #------------------------------------------------------------------
         $mergedSchema->projectInfoTable = $this->projectInfoTable->merge($schema->projectInfoTable);
         $mergedSchema->metadataTable    = $this->metadataTable->merge($schema->metadataTable);
 
+        #-----------------------------------------------
+        # Merge the logging tables
+        #-----------------------------------------------
         $mergedSchema->dbLogTableMap      = array_merge($this->dbLogTableMap, $schema->dbLogTableMap);
         $mergedSchema->dbEventLogTableMap = array_merge($this->dbEventLogTableMap, $schema->dbEventLogTableMap);
 

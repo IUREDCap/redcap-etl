@@ -27,12 +27,12 @@ class ProjectInfoTable extends Table
     const FIELD_PROJECT_TITLE    = 'project_title';
     const FIELD_PROJECT_LANGUAGE = 'project_language';
 
-    public function __construct($tablePrefix = '', $name = self::DEFAULT_NAME)
+    public function __construct($name = self::DEFAULT_NAME)
     {
         $fieldTypePrimary = new FieldTypeSpecifier(FieldType::AUTO_INCREMENT);
 
         parent::__construct(
-            $tablePrefix . $name,
+            $name,
             self::FIELD_PRIMARY_ID,
             $fieldTypePrimary,
             array(RowsType::ROOT),

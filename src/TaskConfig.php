@@ -127,7 +127,11 @@ class TaskConfig
     
     private $projectId;
     private $printLogging;
+
     private $redcapApiUrl;
+
+    private $redcapMetadataTable;
+    private $redcapProjectInfoTable;
 
     private $sslVerify;
     
@@ -181,6 +185,9 @@ class TaskConfig
         $this->emailSubject     = self::DEFAULT_EMAIL_SUBJECT;
 
         $this->cronJob          = ''; # By default, make this blank
+
+        $this->redcapMetadataTable    = MetadataTable::DEFAULT_NAME;
+        $this->redcapProjectInfoTable = ProjectInfoTable::DEFAULT_NAME;
 
         $this->sslVerify        = true;
 
@@ -359,6 +366,25 @@ class TaskConfig
         #------------------------------------------------
         if (array_key_exists(ConfigProperties::REDCAP_API_URL, $this->properties)) {
             $this->redcapApiUrl = $this->properties[ConfigProperties::REDCAP_API_URL];
+        }
+        
+        #---------------------------------------------------
+        # Get the REDCap Metadata and Project Info tables
+        #---------------------------------------------------
+        if (array_key_exists(ConfigProperties::REDCAP_METADATA_TABLE, $this->properties)) {
+            if (empty($this->properties[ConfigProperties::REDCAP_METADATA_TABLE])) {
+                $this->redcapMetadataTable = MetadataTable::DEFAULT_NAME;
+            } else {
+                $this->redcapMetadataTable = $this->properties[ConfigProperties::REDCAP_METADATA_TABLE];
+            }
+        }
+
+        if (array_key_exists(ConfigProperties::REDCAP_PROJECT_INFO_TABLE, $this->properties)) {
+            if (empty($this->properties[ConfigProperties::REDCAP_PROJECT_INFO_TABLE])) {
+                $this->redcapProjectInfoTable = ProjectInfoTable::DEFAULT_NAME;
+            } else {
+                $this->redcapProjectInfoTable = $this->properties[ConfigProperties::REDCAP_PROJECT_INFO_TABLE];
+            }
         }
         
         #--------------------------------------------------------
@@ -1388,6 +1414,16 @@ class TaskConfig
     public function getRedCapApiUrl()
     {
         return $this->redcapApiUrl;
+    }
+
+    public function getRedCapMetadataTable()
+    {
+        return $this->redcapMetadataTable;
+    }
+
+    public function getRedCapProjectInfoTable()
+    {
+        return $this->redcapProjectInfoTable;
     }
 
     public function getSslVerify()

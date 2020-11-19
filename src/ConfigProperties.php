@@ -82,8 +82,11 @@ class ConfigProperties
     
     const PRINT_LOGGING            = 'print_logging';   # true/false indicates if log messages should be printed
     const PROJECT_ID               = 'project_id';  # optional ID of REDCap project from which data are being extracted
+    const REDCAP_API_URL             = 'redcap_api_url';
 
-    const REDCAP_API_URL         = 'redcap_api_url';
+    const REDCAP_METADATA_TABLE      = 'redcap_metadata_table';
+    const REDCAP_PROJECT_INFO_TABLE  = 'redcap_project_info_table';
+
     const SSL_VERIFY             = 'ssl_verify';
     
     const TABLE_PREFIX           = 'table_prefix';
@@ -94,7 +97,6 @@ class ConfigProperties
     const TRANSFORM_RULES_FILE   = 'transform_rules_file';
     const TRANSFORM_RULES_SOURCE = 'transform_rules_source';
     const TRANSFORM_RULES_TEXT   = 'transform_rules_text';
-
 
     /**
      * Indicates if the specified property is a valid configuration
