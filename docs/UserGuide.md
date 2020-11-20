@@ -2,7 +2,7 @@
 Copyright (C) 2019 The Trustees of Indiana University
 SPDX-License-Identifier: BSD-3-Clause
 ================================================== -->
-
+$
 REDCap-ETL User Guide
 ===================================
 
@@ -265,11 +265,11 @@ They also will not use the table prefix (if any).
 
 **Lookup Table**.
 The lookup table provides a map for multiple choice fields in the database from the value for the choice
-to the label for the choice. This table is recreated each time REDCap-ETL is run, and it will use the
-table prefix in its table name, if a table prefix has been specified in the configuration. By default,
+to the label for the choice. This table is recreated each time REDCap-ETL is run. 
+Tasks belonging to the same workflow
+that load data to the same database that have different lookup table
+names will cause an error to be generated.
 if lookup table generation is specified, one lookup table will be generated for a workflow.
-However, tasks condfigurations may specify different (non-default) names for this table, in which
-case multiple lookup tables may be generated.
 
 **REDCap Tables**.
 The REDCap project info table provides information about the different REDCap projects used in an
@@ -285,9 +285,9 @@ for this table.
 | ------------------- |:-----------------:|:-----------------------------:| ------------------------------------------- |
 | etl_log             | No                | No                            | 1 per database (unless multiple names used) |
 | etl_event_log       | No                | No                            | 1 per database (unless multiple names used) |
-| etl_lookup          | Yes               | Yes                           | 1 per workflow (unless multiple names used) |
-| redcap_project_info | No                | Yes                           | 1 per workflow                              |
-| redcap_metadata     | No                | Yes                           | 1 per workflow                              |
+| etl_lookup          | No                | Yes                           | 1 for each database in a workflow           |
+| redcap_project_info | No                | Yes                           | 1 for each database in a workflow           |
+| redcap_metadata     | No                | Yes                           | 1 for each database in a workflow           |
 
 
 

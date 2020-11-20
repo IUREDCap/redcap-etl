@@ -86,4 +86,17 @@ class MetadataTable extends Table
 
         return $row;
     }
+
+
+    public function merge($table, $mergeData = true)
+    {
+        if ($this->getName() !== $table->getName()) {
+            $message = "Metadata table names \"{$this->getName()}\" and \"{$table->getName()}\" do not match.";
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+
+        $mergedMetadata = parent::merge($table, $mergeData);
+
+        return $mergedMetadata;
+    }
 }

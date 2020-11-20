@@ -65,4 +65,16 @@ class ProjectInfoTable extends Table
 
         return $row;
     }
+
+    public function merge($table, $mergeData = true)
+    {
+        if ($this->getName() !== $table->getName()) {
+            $message = "Project Info table names \"{$this->getName()}\" and \"{$table->getName()}\" do not match.";
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
+
+        $mergedProjectInfo = parent::merge($table, $mergeData);
+
+        return $mergedProjectInfo;
+    }
 }

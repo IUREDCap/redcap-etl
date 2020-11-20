@@ -45,7 +45,7 @@ class LookupTable extends Table
     public function __construct($lookupChoices, $tablePrefix, $keyType, $name = self::DEFAULT_NAME)
     {
         parent::__construct(
-            $tablePrefix . $name,
+            $name,
             self::FIELD_PRIMARY_ID,
             $keyType,
             array(RowsType::ROOT),
@@ -170,7 +170,7 @@ class LookupTable extends Table
     /**
      * Returns the merge of this lookup table with the specified lookup table.
      *
-     * @var LookupTable $table the lookup table to be merged.
+     * @param LookupTable $table the lookup table to be merged.
      */
     public function merge($table, $mergeData = true)
     {
