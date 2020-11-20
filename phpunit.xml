@@ -16,15 +16,15 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/unit/EtlExceptionTest.php</file>
       <file>tests/unit/EtlEventLogTableTest.php</file>
       <file>tests/unit/EtlLogTableTest.php</file>
-      <file>tests/unit/EtlTaskTest.php</file>
-      <file>tests/unit/EtlWorkflowTest.php</file>
       <file>tests/unit/FileUtilTest.php</file>
       <file>tests/unit/LookupTableTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
       <file>tests/unit/RulesParserTest.php</file>
       <file>tests/unit/RulesSemanticAnalyzerTest.php</file>
       <file>tests/unit/SchemaGeneratorTest.php</file>
+      <file>tests/unit/TaskTest.php</file>
       <file>tests/unit/TaskConfigTest.php</file>
+      <file>tests/unit/WorkflowConfigTest.php</file>
       <file>tests/unit/WorkflowTest.php</file>
 
       <file>tests/unit/Database/DbConnectionFactoryTest.php</file>

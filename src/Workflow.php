@@ -39,16 +39,19 @@ class Workflow
      * Constructor.
      *
      */
-    public function __construct($workflowConfig, $logger, $redcapProjectClass = null)
+    public function __construct()
     {
         $this->dbSchemas     = array();
         $this->dbConnections = array();
         $this->dbTasks       = array();
         
         $this->tasks = array();
-        
+    }
+
+    public function set($workflowConfig, $logger, $redcapProjectClass = null)
+    {
         $this->logger = $logger;
-        
+
         #---------------------------------------------
         # Create tasks and database information
         #---------------------------------------------

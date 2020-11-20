@@ -27,10 +27,6 @@ class Schema
     /** @var LookupTable table for mapping multiple choice fields from (table name, field name, value) to label */
     private $lookupTable;
 
-    /** @var array map from table name (string) to LookupTable object
-     *    for storing lookup tabes for merged schema. */
-    private $lookupTableMap;
-    
     /** @var EtlLogTable parent log table that has one entry per ETL task; this table is NOT deleted after each run */
     private $dbLogTable;
 
@@ -60,8 +56,6 @@ class Schema
 
         $this->lookupTable = null;
 
-        $this->lookupTableMap = array();
- 
         $this->dbLogTable      = null;
         $this->dbEventLogTable = null;
 
@@ -142,17 +136,6 @@ class Schema
         #--------------------------------------
         # Merge lookup table(s)
         #--------------------------------------
-        #$mergedSchema->setLookupTable($this->lookupTable);
-        #$lookupName = $schema->lookupTable->getName();
-        #if (array_key_exists($lookupName, $mergedSchema->lookupTableMap)) {
-        #    # If the new lookup table already exists in the lookup table map, then
-        #    # merge the new lookup table with the schemae.
-        #    $mergedSchema->lookupTableMap[$lookupName] = $this->lookupTable->merge($schema->lookupTable);
-        #} else {
-        #    # Else, this is a new lookup table.
-        #    $this->lookupTableMap[$lookupName] = $schema->lookupTable;
-        #}
-
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
         #------------------------------------------------------------------
@@ -289,12 +272,7 @@ class Schema
      */
     public function setLookupTable($lookupTable)
     {
-        $this->lookupTableMap[$lookupTable->getName()] = $lookupTable;
-        if (count($this->lookupTableMap) === 1) {
-            # If this is the first lookup table, make the primary lookup table
-            # point to it
-            $this->lookupTable = & $this->lookupTableMap[$lookupTable->getName()];
-        }
+        $this->lookupTable = $lookupTable;
     }
 
 
@@ -339,6 +317,29 @@ class Schema
     public function setMetadataTable($metadataTable)
     {
         $this->metadataTable = $metadataTable;
+    }
+
+    public function getDataTableNames()
+    {
+        $tableNames = array();
+
+        foreach ($this->tables as $table) {
+            $tableNames[] = $table->getName();
+        }
+        sort($tableNames);
+        return $tableNames();
+    }
+
+    public function getNonLoggingSystemTableNames()
+    {
+        $tableNames = array();
+        $tableNaems[] = $this->projectInfoTable->getName();
+        $tableNames[] = $this->metadataTable->getName();
+
+        if (!empty($this->lookupTable)) {
+            $tableNames[] = $this->lookupTable->getName();
+        }
+        return $tableNames;
     }
 
     /**

@@ -92,7 +92,8 @@ class RedCapEtl
         $this->workflowConfig = new WorkflowConfig();
         $this->workflowConfig->set($logger, $properties, $baseDir);
 
-        $this->workflow = new Workflow($this->workflowConfig, $logger, $redcapProjectClass);
+        $this->workflow = new Workflow();
+        $this->workflow->set($this->workflowConfig, $logger, $redcapProjectClass);
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;

@@ -8,20 +8,21 @@ namespace IU\REDCapETL;
 
 use PHPUnit\Framework\TestCase;
 
-use IU\REDCapETL\TestProject;
-
 /**
  * PHPUnit tests for the Workflow class.
  */
 class WorkflowTest extends TestCase
 {
-
     public function setUp()
     {
     }
-    
-    public function testConstructor()
+
+
+    public function testWorkflowCreation()
     {
+        $workflow = new Workflow();
+        $this->assertNotNull($workflow, 'Workflow not null check');
+
         $loggerMock = $this->createMock(Logger::class);
         $properties = array();
 
@@ -31,7 +32,7 @@ class WorkflowTest extends TestCase
             ->getMock();
         $workflowConfigMock->method('getTaskConfigs')->will($this->returnValue(array()));
 
-        $workflow = new Workflow($workflowConfigMock, $loggerMock);
-        $this->assertNotNull($workflow, 'ETL workflow not null check');
+        $workflow->set($workflowConfigMock, $loggerMock);
+        $this->assertNotNull($workflow, 'Workflow not null after set check');
     }
 }

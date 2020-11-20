@@ -9,7 +9,7 @@ namespace IU\REDCapETL;
 use PHPUnit\Framework\TestCase;
 
 /**
- * PHPUnit tests for the Logger class.
+ * PHPUnit tests for the WorkflowConfig class.
  */
 class WorkflowConfigTest extends TestCase
 {
