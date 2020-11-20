@@ -231,7 +231,7 @@ class Workflow
             $ifNotExists = true;   // same table could be created by 2 different task configurations
             $dbConnection->createTable($table, $ifNotExists);
 
-            $msg = "Created table '".$table->name."'";
+            $msg = "Created table '".$table->getName()."'";
 
             #--------------------------------------------------------------------------
             # If this table uses the Lookup table (i.e., has multiple-choice values),
@@ -252,7 +252,7 @@ class Workflow
         foreach ($table->getRows() as $row) {
             $rc = $dbConnection->storeRow($row);
             if (false === $rc) {
-                $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
+                $this->log("Error storing row in '".$table->getName()."': ".$this->dbcon->errorString);
             }
         }
 

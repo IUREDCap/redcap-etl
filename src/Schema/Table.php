@@ -14,10 +14,10 @@ use IU\REDCapETL\RedCapEtl;
 class Table
 {
     /** @var string the name of the table, including the table name prefix, if any. */
-    public $name;
+    private $name;
 
     /** @var string the table name prefix, if any */
-    public $namePrefix;
+    private $namePrefix;
 
     /** @var mixed the parent table if not a root table, or the primary key name, if it is a root table */
     public $parent = '';        // Table
@@ -112,16 +112,16 @@ class Table
 
         # Check the table name (tables with different names should not be merged in the first place,
         # so this error would tend to indicate some kind of logic error in the calling code).
-        if ($this->name !== $table->name) {
-            $message = 'Cannot merge tables; names are different: "'.$this->name.'" and "'.$table->name.'".';
+        if ($this->name !== $table->getName()) {
+            $message = 'Cannot merge tables; names are different: "'.$this->name.'" and "'.$table->getName().'".';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
         
         # Check the table name prefix (tables with different name prefixes should not be merged in the first place,
         # so this error would tend to indicate some kind of logic error in the calling code).
-        if ($this->namePrefix !== $table->namePrefix) {
+        if ($this->namePrefix !== $table->getNamePrefix()) {
             $message = 'Cannot merge tables; name prefixes are different: "'.$this->namePrefix.'"'
-                .' and "'.$table->namePrefix.'".';
+                .' and "'.$table->getNamePrefix().'".';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
         
@@ -714,6 +714,12 @@ class Table
     {
         return $this->name;
     }
+
+    public function getNamePrefix()
+    {
+        return $this->namePrefix;
+    }
+
 
     /**
      * Get's the table's name without the table prefix.

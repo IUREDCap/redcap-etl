@@ -60,7 +60,7 @@ class SchemaGenerationTest extends TestCase
         $tables = $schema->getTables();
         $actualTableNames = array();
         foreach ($tables as $table) {
-            $actualTableNames[] = $table->name;
+            $actualTableNames[] = $table->getName();
         }
         $this->assertEquals($expectedTableNames, $actualTableNames, 'Get tables test');
     }

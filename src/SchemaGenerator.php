@@ -349,7 +349,11 @@ class SchemaGenerator
 
                         // If this field has category/label choices
                         if (array_key_exists($originalFieldName, $this->lookupChoices)) {
-                            $this->lookupTable->addLookupField($table->name, $originalFieldName, $rule->dbFieldName);
+                            $this->lookupTable->addLookupField(
+                                $table->getName(),
+                                $originalFieldName,
+                                $rule->dbFieldName
+                            );
                             if (empty($rule->dbFieldName)) {
                                 $field->setUsesLookup($originalFieldName);
                             } else {

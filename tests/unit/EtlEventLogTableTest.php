@@ -25,7 +25,7 @@ class EtlEventLogTableTest extends TestCase
         $this->assertNotNull($etlEventLogTable, 'etlEventLogTable object not null check');
 
         #test table name correctly
-        $this->assertEquals($name, $etlEventLogTable->name, 'etlEventLogTable name check');
+        $this->assertEquals($name, $etlEventLogTable->getName(), 'etlEventLogTable name check');
 
         #test fields added correctly
         $expectedCount = 3;
@@ -59,7 +59,7 @@ class EtlEventLogTableTest extends TestCase
 
         $result = $etlEventLogTable->createEventLogDataRow($logId, $message);
 
-        $this->assertEquals($tableName, $result->table->name, 'testCreateEventLogDataRow table name check');
+        $this->assertEquals($tableName, $result->table->getName(), 'testCreateEventLogDataRow table name check');
         $this->assertEquals(
             $expectedTableParent,
             $result->table->parent,

@@ -245,7 +245,7 @@ class Schema
     public function getTable($tableName)
     {
         foreach ($this->tables as $table) {
-            if (0 == strcmp($table->name, $tableName)) {
+            if (0 == strcmp($table->getName(), $tableName)) {
                 return($table);
             }
         }

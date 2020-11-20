@@ -671,15 +671,15 @@ class Task
         foreach ($table->getRows() as $row) {
             $rc = $this->dbcon->storeRow($row);
             if (false === $rc) {
-                $this->log("Error storing row in '".$table->name."': ".$this->dbcon->errorString);
+                $this->log("Error storing row in '".$table->getName()."': ".$this->dbcon->errorString);
             }
         }
 
         // Add to summary how many rows created for this table
-        if (array_key_exists($table->name, $this->rowsLoadedForTable)) {
-            $this->rowsLoadedForTable[$table->name] += $table->getNumRows();
+        if (array_key_exists($table->getName(), $this->rowsLoadedForTable)) {
+            $this->rowsLoadedForTable[$table->getName()] += $table->getNumRows();
         } else {
-            $this->rowsLoadedForTable[$table->name] = $table->getNumRows();
+            $this->rowsLoadedForTable[$table->getName()] = $table->getNumRows();
         }
 
         if ($deleteRowsAfterLoad) {
@@ -702,10 +702,10 @@ class Task
         $rc = $this->dbcon->storeRows($table);
 
         // Add to summary how many rows created for this table
-        if (array_key_exists($table->name, $this->rowsLoadedForTable)) {
-            $this->rowsLoadedForTable[$table->name] += $table->getNumRows();
+        if (array_key_exists($table->getName(), $this->rowsLoadedForTable)) {
+            $this->rowsLoadedForTable[$table->getName()] += $table->getNumRows();
         } else {
-            $this->rowsLoadedForTable[$table->name] = $table->getNumRows();
+            $this->rowsLoadedForTable[$table->getName()] = $table->getNumRows();
         }
 
         if ($deleteRowsAfterLoad) {

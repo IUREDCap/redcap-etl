@@ -46,13 +46,13 @@ class CsvDbConnection extends DbConnection
 
     private function getTableFile($table)
     {
-        $file = $this->directory  . $table->name . CsvDbConnection::FILE_EXTENSION;
+        $file = $this->directory  . $table->getName() . CsvDbConnection::FILE_EXTENSION;
         return $file;
     }
 
     private function getLabelViewFile($table)
     {
-        $file = $this->directory .  $table->name . $this->labelViewSuffix . CsvDbConnection::FILE_EXTENSION;
+        $file = $this->directory .  $table->getName() . $this->labelViewSuffix . CsvDbConnection::FILE_EXTENSION;
         return $file;
     }
 
@@ -223,12 +223,12 @@ class CsvDbConnection extends DbConnection
                 //if ($fieldType === FieldType::CHECKBOX) {  // This is wrong, because CHECKBOX field becomes int fields
                     if ($value === 1 || $value === '1') {
                         list($rootName, $checkboxValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
-                        $label = $this->lookupTable->getLabel($table->name, $field->usesLookup(), $checkboxValue);
+                        $label = $this->lookupTable->getLabel($table->getName(), $field->usesLookup(), $checkboxValue);
                     } else {
                         $label = '0';
                     }
                 } else {    // Non-checkbox field
-                    $label = $this->lookupTable->getLabel($table->name, $field->usesLookup(), $value);
+                    $label = $this->lookupTable->getLabel($table->getName(), $field->usesLookup(), $value);
                 }
             }
                     

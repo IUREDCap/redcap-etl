@@ -139,9 +139,9 @@ class MysqlDbConnection extends DbConnection
     {
         // Define query
         if ($ifExists) {
-            $query = "DROP TABLE IF EXISTS ". $this->escapeName($table->name);
+            $query = "DROP TABLE IF EXISTS ". $this->escapeName($table->getName());
         } else {
-            $query = "DROP TABLE ". $this->escapeName($table->name);
+            $query = "DROP TABLE ". $this->escapeName($table->getName());
         }
         
         // Execute query
@@ -168,9 +168,9 @@ class MysqlDbConnection extends DbConnection
     {
         // Start query
         if ($ifNotExists) {
-            $query = 'CREATE TABLE IF NOT EXISTS '.$this->escapeName($table->name).' (';
+            $query = 'CREATE TABLE IF NOT EXISTS '.$this->escapeName($table->getName()).' (';
         } else {
-            $query = 'CREATE TABLE '.$this->escapeName($table->name).' (';
+            $query = 'CREATE TABLE '.$this->escapeName($table->getName()).' (';
         }
 
         // foreach field
@@ -285,7 +285,7 @@ class MysqlDbConnection extends DbConnection
 
     public function dropLabelView($table, $ifExists = false)
     {
-        $view = ($table->name).($this->labelViewSuffix);
+        $view = ($table->getName()).($this->labelViewSuffix);
 
         // Define query
         if ($ifExists) {
@@ -334,7 +334,7 @@ class MysqlDbConnection extends DbConnection
                     list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
 
                     $label = $this->mysqli->real_escape_string(
-                        $lookup->getLabel($table->name, $fname, $cat)
+                        $lookup->getLabel($table->getName(), $fname, $cat)
                     );
                     $select = 'CASE '.$this->escapeName($field->dbName).' WHEN 1 THEN '
                         . "'".$label."'"
@@ -343,7 +343,7 @@ class MysqlDbConnection extends DbConnection
                 } // The field uses the lookup table and is not a checkbox field
                 else {
                     $select = 'CASE '.$this->escapeName($field->dbName);
-                    $map = $lookup->getValueLabelMap($table->name, $fname);
+                    $map = $lookup->getValueLabelMap($table->getName(), $fname);
                     foreach ($map as $value => $label) {
                         $select .= ' WHEN '."'".($this->mysqli->real_escape_string($value))."'"
                             .' THEN '."'".($this->mysqli->real_escape_string($label))."'";
@@ -354,10 +354,10 @@ class MysqlDbConnection extends DbConnection
             }
         }
 
-        $query = 'CREATE OR REPLACE VIEW '.$this->escapeName($table->name.$this->labelViewSuffix).' AS ';
+        $query = 'CREATE OR REPLACE VIEW '.$this->escapeName($table->getName().$this->labelViewSuffix).' AS ';
 
         $select = 'SELECT '. implode(', ', $selects);
-        $from = 'FROM '.$this->escapeName($table->name);
+        $from = 'FROM '.$this->escapeName($table->getName());
 
         $query .= $select.' '.$from;
 
@@ -400,7 +400,7 @@ class MysqlDbConnection extends DbConnection
         $rowValues = $this->getRowValues($row, $fields);
         $queryValues[] = '('.implode(",", $rowValues).')';
     
-        $query = $this->createInsertStatement($table->name, $fields, $queryValues);
+        $query = $this->createInsertStatement($table->getName(), $fields, $queryValues);
         #print "\nQUERY: $query\n";
     
         $rc = $this->mysqli->query($query);
@@ -413,7 +413,7 @@ class MysqlDbConnection extends DbConnection
             # Note: do not print out the specific query here, because it will
             #     be logged, and could contain PHI
             $message = 'MySQL error while trying to insert a single row into table "'
-                .$table->name.'": '
+                .$table->getName().'": '
                 .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($message, $code);
@@ -448,7 +448,7 @@ class MysqlDbConnection extends DbConnection
                 $queryValues[] = '('.implode(",", $rowValues).')';
             }
     
-            $query = $this->createInsertStatement($table->name, $fields, $queryValues);
+            $query = $this->createInsertStatement($table->getName(), $fields, $queryValues);
     
             $rc = $this->mysqli->query($query);
     
@@ -462,7 +462,7 @@ class MysqlDbConnection extends DbConnection
                 # Note: do not print out the specific query here, because it will
                 #     be logged, and could contain PHI
                 $message = 'MySQL error while trying to insert values into table "'
-                    .$this->escapeName($table->name).'": '
+                    .$this->escapeName($table->getName()).'": '
                     .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
                 $code = EtlException::DATABASE_ERROR;
                 throw new EtlException($message, $code);

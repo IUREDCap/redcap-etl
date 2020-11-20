@@ -25,7 +25,7 @@ class EtlLogTableTest extends TestCase
         $this->assertNotNull($etlLogTable, 'etlLogTable object not null check');
 
         #test table name correctly
-        $this->assertEquals($name, $etlLogTable->name, 'etlLogTable name check');
+        $this->assertEquals($name, $etlLogTable->getName(), 'etlLogTable name check');
 
         #test fields added correctly
         $expectedCount = 8;
@@ -82,7 +82,7 @@ class EtlLogTableTest extends TestCase
         $expectedPrimaryDbName = 'log_id';
         $expectedPrimaryType = 'auto_increment';
 
-        $this->assertEquals($tableName, $result->table->name, 'testCreateLogDataRow table name check');
+        $this->assertEquals($tableName, $result->table->getName(), 'testCreateLogDataRow table name check');
         $this->assertEquals($expectedTableParent, $result->table->parent, 'testCreateLogDataRow table parent check');
         $this->assertEquals(
             $expectedPrimaryName,
