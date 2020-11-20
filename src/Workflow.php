@@ -91,10 +91,8 @@ class Workflow
             if (array_key_exists($dbId, $this->dbSchemas)) {
                 # There wil be no schema for a database if it has only SQL-only tasks
                 $dbSchema = $this->dbSchemas[$dbId];
-                $task->setDbSchema($dbSchema);    // FIX!!!!,
+                $task->setDbSchema($dbSchema);
             }
-            // only want subset of merged schema that has
-            // original tables in task OR REMOVE??????????? !!!!!!!!!!!!
         }
     }
 
@@ -118,8 +116,12 @@ class Workflow
             $this->createLoadTables($dbId, $schema);
             $dbTasks = $this->dbTasks[$dbId];
             
-            # reset task DB connections after the Lookup table information has been
-            # added from code above
+            #-----------------------------------------------------------------------
+            # Reset task DB connections after the Lookup table information has been
+            # added from code above. This is a kludge needed for CSV databases,
+            # because they can't create views, so they need to store the lookup
+            # table information between method calls.
+            #-----------------------------------------------------------------------
             $dbConnection = $this->dbConnections[$dbId];
             foreach ($dbTasks as $task) {
                 $task->setDbConnection($dbConnection);
@@ -205,6 +207,10 @@ class Workflow
         # and load the data rows for this table.
         #------------------------------------------------------------------------------------
         if ($this->needsLookupTable($dbId)) {
+            print "\n************************ NEEDS LOOKUP TABLE\n\n";
+            $lookupTable = $schema->getLookupTable();
+            print $lookupTable->toString();
+            print "\n\n";
             $dbConnection->createTable($lookupTable, $ifNotExists);
             $dbConnection->storeRows($lookupTable);
         }

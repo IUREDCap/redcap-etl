@@ -21,7 +21,6 @@ class CsvDbConnection extends DbConnection
     const FILE_EXTENSION = '.csv';
 
     private $directory;
-    private $lookup;
     private $lookupTable;
     private $id;
 
@@ -130,8 +129,9 @@ class CsvDbConnection extends DbConnection
      * Note: no way to create a view with CSV, so just
      *       need to create another file.
      *
-     * @param Table table the table for which the
+     * @param Table $table the table for which the
      *     "view" with labels is being created.
+     *
      * @param LookupTable $lookupTable the lookup table for the schema
      *     for which tables are being created.
      */

@@ -307,6 +307,9 @@ class MysqlDbConnection extends DbConnection
 
     /**
      * Creates (or replaces) the lookup view for the specified table.
+     *
+     * @param Table $table the table for which the label view is being created.
+     * @param LookupTable $lookup the lookup table.
      */
     public function replaceLookupView($table, $lookup)
     {

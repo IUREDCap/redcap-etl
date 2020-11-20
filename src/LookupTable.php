@@ -190,9 +190,21 @@ class LookupTable extends Table
         #-----------------------------------------------------------------------
         # Add back the data without duplicates and in sorted order
         #-----------------------------------------------------------------------
+        $mergedLookup->rows = array(); # remove existing rows
         $map = $mergedLookup->map;
         foreach ($map as $table => $tableInfo) {
             foreach ($tableInfo as $field => $valueInfo) {
+                foreach ($valueInfo as $value => $label) {
+                    $data = array(
+                        self::FIELD_TABLE_NAME => $table,
+                        self::FIELD_FIELD_NAME => $field,
+                        self::FIELD_VALUE => $value,
+                        self::FIELD_LABEL => $label
+                    );
+
+                    // Add the row, using no foreign key or suffix
+                    $this->createRow($data, '', '', $this->rowsType);
+                }
                 $mergedLookup->addLookupField($table, $field);
             }
         }

@@ -729,35 +729,6 @@ class Task
     }
 
 
-    /**
-     * Creates primary and foreign keys for the database tables if they
-     * have been specified (note: unsupported for CSV and SQLite).
-     */
-    public function createDatabaseKeys()
-    {
-        #-------------------------------------------------------------
-        # Get the tables in top-down order, so that each parent table
-        # will always come before its child tables
-        #-------------------------------------------------------------
-        $tables = $this->dbSchema->getTablesTopDown();
-
-        #------------------------------------------------------
-        # Create tables
-        #------------------------------------------------------
-        if ($this->taskConfig->getDbPrimaryKeys()) {
-            foreach ($tables as $table) {
-                $this->dbcon->addPrimaryKeyConstraint($table);
-            }
-        }
-
-        if ($this->taskConfig->getDbForeignKeys()) {
-            foreach ($tables as $table) {
-                $this->dbcon->addForeignKeyConstraint($table);
-            }
-        }
-    }
-
-
     public function runPreProcessingSql()
     {
         try {
