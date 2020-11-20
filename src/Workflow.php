@@ -121,19 +121,6 @@ class Workflow
             foreach ($dbTasks as $task) {
                 $task->setDbConnection($dbConnection);
             }
-            
-            #--------------------------------------------------------
-            # Create Project Info and Metadata tables for the
-            # current database
-            #--------------------------------------------------------
-            $projectInfoTable = $schema->getProjectInfoTable();
-            $metadataTable    = $schema->getMetadataTable();
-
-            $dbConnection->replaceTable($projectInfoTable);
-            $dbConnection->replaceTable($metadataTable);
-            
-            $dbConnection->storeRows($projectInfoTable);
-            $dbConnection->storeRows($metadataTable);
         }
     }
         
@@ -179,6 +166,19 @@ class Workflow
 
     public function createLoadTables(& $dbConnection, $schema)
     {
+        #--------------------------------------------------------
+        # Create Project Info and Metadata tables for the
+        # current database
+        #--------------------------------------------------------
+        $projectInfoTable = $schema->getProjectInfoTable();
+        $metadataTable    = $schema->getMetadataTable();
+
+        $dbConnection->replaceTable($projectInfoTable);
+        $dbConnection->replaceTable($metadataTable);
+            
+        $dbConnection->storeRows($projectInfoTable);
+        $dbConnection->storeRows($metadataTable);
+
         #-------------------------------------------------------------
         # Get the tables in top-down order, so that each parent table
         # will always come before its child tables
@@ -251,6 +251,21 @@ class Workflow
         }
 
         return $needsPrimaryKeys;
+    }
+
+    public function needsLookupTable($dbId)
+    {
+        $needsLookupTable = false;
+
+        if (!empty($dbId) && array_key_exists($dbId, $this->dbTasks)) {
+            foreach ($this->dbTasks[$dbId] as $task) {
+                if ($task->getTaskConfig()->getCreateLookupTable()) {
+                    $needsLookupTable = true;
+                }
+            }
+        }
+
+        return $needsLookupTable;
     }
 
     /**

@@ -137,21 +137,21 @@ class Schema
         # Merge the lookup tables that provide a map for mutliple choice fields
         # from (table name, field name, value) to label
         #------------------------------------------------------------------------
-        $dataRows = $this->lookupTable->mergeDataRows($schema->lookupTable);
+        #$dataRows = $this->lookupTable->mergeDataRows($schema->lookupTable);
 
         #--------------------------------------
         # Merge lookup table(s)
         #--------------------------------------
-        $mergedSchema->setLookupTable($this->lookupTable);
-        $lookupName = $schema->lookupTable->getName();
-        if (array_key_exists($lookupName, $mergedSchema->lookupTableMap)) {
-            # If the new lookup table already exists in the lookup table map, then
-            # merge the new lookup table with the schemae.
-            $mergedSchema->lookupTableMap[$lookupName] = $this->lookupTable->merge($schema->lookupTable);
-        } else {
-            # Else, this is a new lookup table.
-            $this->lookupTableMap[$lookupName] = $schema->lookupTable;
-        }
+        #$mergedSchema->setLookupTable($this->lookupTable);
+        #$lookupName = $schema->lookupTable->getName();
+        #if (array_key_exists($lookupName, $mergedSchema->lookupTableMap)) {
+        #    # If the new lookup table already exists in the lookup table map, then
+        #    # merge the new lookup table with the schemae.
+        #    $mergedSchema->lookupTableMap[$lookupName] = $this->lookupTable->merge($schema->lookupTable);
+        #} else {
+        #    # Else, this is a new lookup table.
+        #    $this->lookupTableMap[$lookupName] = $schema->lookupTable;
+        #}
 
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
 
