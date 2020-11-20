@@ -107,17 +107,20 @@ class Workflow
     }
 
 
+    /**
+     * Creates all the tables for all databases in the workflow.
+     */
     public function createAllLoadTables()
     {
         # For each of the load databases, create the load tables
         $i = 1;
         foreach ($this->dbSchemas as $dbId => $schema) {
-            $dbConnection = $this->dbConnections[$dbId];
-            $this->createLoadTables($dbConnection, $schema);
+            $this->createLoadTables($dbId, $schema);
             $dbTasks = $this->dbTasks[$dbId];
             
             # reset task DB connections after the Lookup table information has been
             # added from code above
+            $dbConnection = $this->dbConnections[$dbId];
             foreach ($dbTasks as $task) {
                 $task->setDbConnection($dbConnection);
             }
@@ -139,7 +142,13 @@ class Workflow
         $metadataTable    = $schema->getMetadataTable();
         $dbConnection->dropTable($projectInfoTable, $ifExists = true);
         $dbConnection->dropTable($metadataTable, $ifExists = true);
-        
+
+        #--------------------------------------------------
+        # Drop the lookup table, if any
+        #--------------------------------------------------
+        $lookupTable = $schema->getLookupTable();
+        $dbConnection->dropTable($lookupTable, $ifExists = true);
+
         #-------------------------------------------------------------
         # Get the tables in top-down order, so that each parent table
         # will always come before its child tables
@@ -164,8 +173,20 @@ class Workflow
 
 
 
-    public function createLoadTables(& $dbConnection, $schema)
+    /**
+     * Creates the tables for the specified database.
+     *
+     * @parameter string $dbId the database identifier for the database for which the tables
+     *     are to be created.
+     *
+     * @parameter Schema $schema the database schema for the specified database.
+     */
+    public function createLoadTables($dbId, $schema)
     {
+        $dbConnection = $this->dbConnections[$dbId];
+
+        $ifNotExists = true;
+
         #--------------------------------------------------------
         # Create Project Info and Metadata tables for the
         # current database
@@ -173,11 +194,20 @@ class Workflow
         $projectInfoTable = $schema->getProjectInfoTable();
         $metadataTable    = $schema->getMetadataTable();
 
-        $dbConnection->replaceTable($projectInfoTable);
-        $dbConnection->replaceTable($metadataTable);
+        $dbConnection->createTable($projectInfoTable, $ifNotExists);
+        $dbConnection->createTable($metadataTable, $ifNotExists);
             
         $dbConnection->storeRows($projectInfoTable);
         $dbConnection->storeRows($metadataTable);
+
+        #------------------------------------------------------------------------------------
+        # If configured, create the lookup table that maps multiple choice values to labels,
+        # and load the data rows for this table.
+        #------------------------------------------------------------------------------------
+        if ($this->needsLookupTable($dbId)) {
+            $dbConnection->createTable($lookupTable, $ifNotExists);
+            $dbConnection->storeRows($lookupTable);
+        }
 
         #-------------------------------------------------------------
         # Get the tables in top-down order, so that each parent table
@@ -205,17 +235,6 @@ class Workflow
             }
 
             $this->logger->log($msg);
-        }
-
-        #-----------------------------------------------------------------------------------
-        # If configured, create the lookup table that maps multiple choice values to labels
-        #-----------------------------------------------------------------------------------
-        # FIX!!!!!!! - still need to make sure that lookup tables are generated for
-        # all configurations if any have it set???
-        $lookupTable = $schema->getLookupTable();
-        if (isset($lookupTable)) {
-            $dbConnection->replaceTable($lookupTable);
-            $this->loadTableRows($dbConnection, $lookupTable);
         }
     }
     
