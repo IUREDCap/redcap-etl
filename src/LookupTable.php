@@ -36,13 +36,11 @@ class LookupTable extends Table
      * @parameter array $lookupChoices map from REDCap field name to a map from multiple
      *     choice value to multiple choice label for that field.
      *
-     * @parameter string $tablePrefix the prefix for the table name, if any.
-     *
      * @parameter FieldTypeSpecifier $keyType the type of the primary key.
      *
      * @parameter string $bane the name of the table, not including the table prefix, if any.
      */
-    public function __construct($lookupChoices, $tablePrefix, $keyType, $name = self::DEFAULT_NAME)
+    public function __construct($lookupChoices, $keyType, $name = self::DEFAULT_NAME)
     {
         parent::__construct(
             $name,

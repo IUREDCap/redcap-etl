@@ -1006,7 +1006,7 @@ class DatabasesTest extends TestCase
         ];
         $tablePrefix = null;
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
-        $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
+        $lookupTable = new LookupTable($lookupChoices, $keyType);
 
         #identify marital_status as a lookup field in the data table
         $fieldName = 'marital_status';

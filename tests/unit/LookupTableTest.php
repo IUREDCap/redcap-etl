@@ -23,7 +23,7 @@ class LookupTableTest extends TestCase
         $name = "lookup";
 
         #test object creation
-        $lookupTable = new LookupTable(array(), '', new FieldTypeSpecifier(FieldType::INT), $name);
+        $lookupTable = new LookupTable(array(), new FieldTypeSpecifier(FieldType::INT), $name);
         $this->assertNotNull($lookupTable, 'lookupTable object not null check');
 
         $this->assertEquals($name, $lookupTable->getName(), 'lookupTable name check');
@@ -43,7 +43,7 @@ class LookupTableTest extends TestCase
                 '5' => 'Other'
             ]
         ];
-        $lookupTable = new LookupTable($lookupChoices, '', new FieldTypeSpecifier(FieldType::INT), $name);
+        $lookupTable = new LookupTable($lookupChoices, new FieldTypeSpecifier(FieldType::INT), $name);
 
         $this->assertNotNull($lookupTable, 'lookupTable object not null check');
 
@@ -63,7 +63,7 @@ class LookupTableTest extends TestCase
         $lookupChoices1 = [
             'gender' => ['0' => 'male', '1' => 'female']
         ];
-        $lookupTable1 = new LookupTable($lookupChoices1, '', new FieldTypeSpecifier(FieldType::INT), $name1);
+        $lookupTable1 = new LookupTable($lookupChoices1, new FieldTypeSpecifier(FieldType::INT), $name1);
         $lookupTable1->addLookupField('info', 'gender');
         $this->assertNotNull($lookupTable1, 'lookupTable1 object not null check');
 
@@ -79,7 +79,7 @@ class LookupTableTest extends TestCase
                 '5' => 'Other'
             ]
         ];
-        $lookupTable2 = new LookupTable($lookupChoices2, '', new FieldTypeSpecifier(FieldType::INT), $name2);
+        $lookupTable2 = new LookupTable($lookupChoices2, new FieldTypeSpecifier(FieldType::INT), $name2);
         $lookupTable2->addLookupField('demographics', 'race');
         $lookupTable2->addLookupField('info', 'gender');
         $this->assertNotNull($lookupTable2, 'lookupTable2 object not null check');
@@ -88,7 +88,7 @@ class LookupTableTest extends TestCase
         $lookupChoices3 = [
             'rating' => ['0' => 'poor', '1' => 'fair', '2' => 'good']
         ];
-        $lookupTable3 = new LookupTable($lookupChoices3, '', new FieldTypeSpecifier(FieldType::INT), $name3);
+        $lookupTable3 = new LookupTable($lookupChoices3, new FieldTypeSpecifier(FieldType::INT), $name3);
         $lookupTable3->addLookupField('assesment', 'rating');
         $this->assertNotNull($lookupTable3, 'lookupTable3 object not null check');
 

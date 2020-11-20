@@ -123,7 +123,7 @@ class SchemaGenerator
         $this->lookupChoices = $this->dataProject->getLookupChoices();
         $keyType = $this->taskConfig->getGeneratedKeyType();
         $lookupTableName = $this->taskConfig->getLookupTableName();
-        $this->lookupTable = new LookupTable($this->lookupChoices, $this->tablePrefix, $keyType, $lookupTableName);
+        $this->lookupTable = new LookupTable($this->lookupChoices, $keyType, $lookupTableName);
 
         $info = '';
         $warnings = '';

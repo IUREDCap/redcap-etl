@@ -272,7 +272,7 @@ class CsvDbConnectionTest extends TestCase
         $tablePrefix = null;
         $tableName = 'insertRows';
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
-        $lookupTable = new LookupTable($lookupChoices, $tablePrefix, $keyType);
+        $lookupTable = new LookupTable($lookupChoices, $keyType);
 
         $fieldName1 = 'sex';
         $lookupTable->addLookupField($tableName, $fieldName1);
