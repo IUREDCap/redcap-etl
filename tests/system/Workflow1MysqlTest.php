@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Runs the "repeating events" tests using MySQL as the database.
  */
-class Workflow1MysqlTest extends RepeatingEventsTests
+class Workflow1MysqlTest extends TestCase
 {
     const WEIGHT_TIME_FIELD_DECLARATION = "DATE_FORMAT(weight_time, '%Y-%m-%d %H:%i') as 'weight_time'";
         
@@ -73,11 +73,23 @@ class Workflow1MysqlTest extends RepeatingEventsTests
         }
         $this->assertFalse($hasException, 'Run ETL exception check: '.$exceptionMessage);
 
+        #-------------------------------------------
+        # table "cardiovascular" row count check
+        #-------------------------------------------
         $sql = 'SELECT COUNT(*) FROM cardiovascular';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchColumn(0);
         $this->assertEquals(100, $actualData, 'Cardiovascular row count check');
+
+        #-----------------------------------------------
+        # table "contact_information" row count check
+        #-----------------------------------------------
+        $sql = 'SELECT COUNT(*) FROM contact_information';
+
+        $statement  = static::$dbh->query($sql);
+        $actualData = $statement->fetchColumn(0);
+        $this->assertEquals(100, $actualData, 'Contact information row count check');
     }
 
 
