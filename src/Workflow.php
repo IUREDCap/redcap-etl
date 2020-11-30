@@ -71,11 +71,7 @@ class Workflow
             if ($task->isSqlOnlyTask()) {
                 ; // SQL only - it has no schema to merge
             } elseif (array_key_exists($dbId, $this->dbSchemas)) {
-                $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge(
-                    $task->getSchema(),
-                    $dbId,
-                    $task->getName()
-                );
+                $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge($task->getSchema(), $dbId, $task->getName());
                 $this->dbTasks[$dbId]   = array_merge($this->dbTasks[$dbId], [$task]);
             } else {
                 $this->dbSchemas[$dbId]     = $task->getSchema();
@@ -210,10 +206,7 @@ class Workflow
         # and load the data rows for this table.
         #------------------------------------------------------------------------------------
         if ($this->needsLookupTable($dbId)) {
-            print "\n************************ NEEDS LOOKUP TABLE\n\n";
             $lookupTable = $schema->getLookupTable();
-            print $lookupTable->toString();
-            print "\n\n";
             $dbConnection->createTable($lookupTable, $ifNotExists);
             $dbConnection->storeRows($lookupTable);
         }

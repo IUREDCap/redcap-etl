@@ -108,7 +108,7 @@ class Schema
                 if (in_array($tables[1], $schema->getRootTables())) {
                     $mergedRootTables[] = $tables[1];
                 }
-            } elseif (empty($fields[1])) {
+            } elseif (empty($tables[1])) {
                 # table in $this, not in $schema
                 $mergedTables[] = $tables[0];
                 if (in_array($tables[0], $this->getRootTables())) {

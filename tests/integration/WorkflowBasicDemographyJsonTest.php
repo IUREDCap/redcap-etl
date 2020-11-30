@@ -53,6 +53,7 @@ class WorkflowBasicDemographyJsonTest extends TestCase
             $demographyLines = count(file($dbDirectory.'/Demography.csv'));
             $this->assertEquals(601, $demographyLines, 'Demography number of lines check');
         } catch (EtlException $exception) {
+            print "\n***EXCEPTION: {$exception->getMessage()}\n";
             self::$logger->logException($exception);
             self::$logger->log('Processing failed.');
         }

@@ -6,6 +6,7 @@
 
 namespace IU\REDCapETL\Schema;
 
+use IU\REDCapETL\EtlException;
 use IU\REDCapETL\RedCapEtl;
 
 /**
@@ -153,7 +154,7 @@ class Field
         }
         
         if ($this->usesLookup && $field->usesLookup) {
-            if ($this->valueLabelMap !== $field->valueLabelMap) {
+            if ($this->valueToLabelMap !== $field->valueToLabelMap) {
                 $message = 'Mismatch for multiple-choice options for field "'.$this->dbName.'".';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);

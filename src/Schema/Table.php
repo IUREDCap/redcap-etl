@@ -22,10 +22,11 @@ class Table
     /** @var mixed the parent table if not a root table, or the primary key name, if it is a root table */
     public $parent = '';        // Table
 
-    /** @var Field field used as the primary key */
-    public $primary = '';
+    /** @var Field field used as the primary key. */
+    public $primary;
 
-    public $foreign = '';       // Field used as foreign key to parent
+    /** @var Field field used as foreign key to parent. */
+    public $foreign;
 
     protected $children = array();   // Child tables
 
@@ -127,11 +128,30 @@ class Table
         
         # Check the rows type (ROOT, EVENTS, etc.)
         if ($this->rowsType != $table->rowsType) {
-            $messqge = 'Cannot merge tables; rows type are different: "'.$this->getRowsTypeString()
+            $message = 'Cannot merge tables; rows type are different: "'.$this->getRowsTypeString()
                 .'" and "'.$table->getRowsTypeString().'".';
             throw new EtlException($message, EtlException::INPUT_ERROR);
         }
 
+
+        #----------------------------------------
+        # Merge the primary key fields
+        #----------------------------------------
+        $mergedTable->primary = $this->primary->merge($table->primary);
+
+        #------------------------------------------------
+        # Merge foreign key fields
+        #------------------------------------------------
+        if (isset($this->foreign) && isset($table->foreign)) {
+            print_r($this->foreign);
+            $mergedTable->foreign = $this->foreign->merge($table->foreign);
+        } elseif (isset($this->foreign) && !isset($table->foreign)) {
+            $message = 'Table "'.$this->getTableName().'" is defined both with and without a foreign key.';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        } elseif (!isset($this->foreign) && isset($table->foreign)) {
+            $message = 'Table "'.$this->getTableName().'" is defined both with and without a foreign key.';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        }
 
         #--------------------------------------------------------------
         # Create a field map that combines both tables that maps
