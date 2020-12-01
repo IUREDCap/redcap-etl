@@ -398,6 +398,7 @@ class SchemaGenerator
             $messages = array(self::PARSE_VALID,$info);
         }
 
+        $schema->setLabelViewSuffix($this->taskConfig->getLabelViewSuffix());
         $schema->setLookupTable($this->lookupTable);
         
         return array($schema, $messages);

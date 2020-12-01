@@ -6,6 +6,8 @@
 
 namespace IU\REDCapETL\Schema;
 
+use IU\REDCapETL\EtlException;
+
 /**
  * A Schema object is used for holding information about the tables where
  * extracted and transformated data are stored that
@@ -47,6 +49,11 @@ class Schema
 
     /** @var MetadataTable table with REDCap metadata information */
     private $metadataTable;
+    
+    /** @var string suffix string that is appended to the end of the label view names.
+     *    These views are created for tables that have multiple choice values,
+     *    and have the labels for the multiple choice fields instead of the values. */
+    private $labelViewSuffix;
 
 
     public function __construct()
@@ -150,6 +157,17 @@ class Schema
         $mergedSchema->dbLogTableMap      = array_merge($this->dbLogTableMap, $schema->dbLogTableMap);
         $mergedSchema->dbEventLogTableMap = array_merge($this->dbEventLogTableMap, $schema->dbEventLogTableMap);
 
+        #----------------------------------------------
+        # Merge the label view suffix
+        #----------------------------------------------
+        if ($this->labelViewSuffix !== $schema->labelViewSuffix) {
+            $message = 'Cannot merge database schemas; label view suffixes in task configurations are different: "'
+                .$this->getlabelViewSuffix().'"'.' and "'.$schema->getLabelViewSuffix().'".';
+            throw new EtlException($message, EtlException::INPUT_ERROR);
+        } else {
+            $mergedSchema->labelViewSuffix = $this->labelViewSuffix;
+        }
+        
         return $mergedSchema;
     }
 
@@ -340,6 +358,16 @@ class Schema
             $tableNames[] = $this->lookupTable->getName();
         }
         return $tableNames;
+    }
+    
+    public function getLabelViewSuffix()
+    {
+        return $this->labelViewSuffix;
+    }
+    
+    public function setLabelViewSuffix($labelViewSuffix)
+    {
+        $this->labelViewSuffix = $labelViewSuffix;
     }
 
     /**
