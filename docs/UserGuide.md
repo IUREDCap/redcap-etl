@@ -213,7 +213,7 @@ When a task configuration is run, REDCap-ETL does the following steps:
 5. Run post-processing SQL on the database (if specified)
 
 ---
-**Note:** each time REDCap-ETL runs, it drops and re-created its database tables,
+**Note:** each time REDCap-ETL runs, it drops and re-creates its database tables,
 so any data that was manually entered into its tables will be deleted.
 ---
 
@@ -242,10 +242,16 @@ Workflows used a merged database schema for their tasks that load data to the sa
     1. Run post-processing SQL (if any)
 
 
+#### Label Views
+
+For each table that has at least one multiple-choice field, REDCap-ETL will generate a corresponding view that
+has labels, instead of values, for the multiple choice fields. The name of the view will be the same as the name
+of the table with the value of the label_view_suffix property appended to it.
+
 #### System-Generated Database Tables
 
-In addition to the tables specified in the transformation rules, REDCap-ETL may (depending on configuration)
-generate several system-generated tables:
+In addition to the tables specified in the transformation rules and their
+corresponding label views, REDCap-ETL will add several system-generated tables:
 
 
 | table name          | description                                                                        |
