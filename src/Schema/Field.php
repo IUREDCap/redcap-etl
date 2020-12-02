@@ -129,6 +129,14 @@ class Field
             } elseif ($this->type === FieldType::STRING || $field->type === FieldType::STRING) {
                 $mergedField->type = FieldType::STRING;
                 $mergedField->size = null;
+            } elseif ($this->type === FieldType::INT && ! $this->usesLookup() && $field->type === FieldType::FLOAT) {
+                # convert non-multiple choice int to float
+                $mergedField->type = FieldType::FLOAT;
+                $mergedField->size = null;
+            } elseif ($field->type === FieldType::INT && ! $field->usesLookup() && $this->type === FieldType::FLOAT) {
+                # convert non-multiple choice int to float
+                $mergedField->type = FieldType::FLOAT;
+                $mergedField->size = null;
             } else {
                 $message = 'Database field types "'.$this->type.'" and "'.$field->type.'"'
                     .' for field "'.$this->dbName.'" do not match.';
