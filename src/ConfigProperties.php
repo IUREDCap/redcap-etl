@@ -98,6 +98,8 @@ class ConfigProperties
     const TRANSFORM_RULES_SOURCE = 'transform_rules_source';
     const TRANSFORM_RULES_TEXT   = 'transform_rules_text';
 
+    const WORKFLOW_NAME          = 'workflow_name';
+
     /**
      * Indicates if the specified property is a valid configuration
      * property.

@@ -1,6 +1,7 @@
 {
     "workflow": {
         "global_properties": {
+            "workflow_name": "workflow-basic-demography-json",
             "ssl_verify": 0,
             "db_connection": "CSV:../output/workflow-basic-demography-json/",
             "log_file": "../logs/workflow-basic-demography-json.log",

@@ -360,6 +360,15 @@ class TaskConfig
             );
         }
 
+        #-------------------------------------------------------------------------
+        # Check for illegal workflow name property withing a task configuration
+        #-------------------------------------------------------------------------
+        if (array_key_exists(ConfigProperties::WORKFLOW_NAME, $this->properties)) {
+            $message = 'The "'.ConfigProperties::WORKFLOW_NAME.'" property cannot be used in a task configuration.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
+        }
+
         #------------------------------------------------
         # Get the REDCap API URL
         #------------------------------------------------

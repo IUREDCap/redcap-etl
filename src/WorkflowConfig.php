@@ -41,8 +41,19 @@ class WorkflowConfig
 
     private $configurationFile;
 
+    private $workflowName;
+
     /**
      * Creates a WorkflowConfig object from a workflow config file.
+     */
+    public function __construct()
+    {
+        $this->logger = null;
+        $this->baseDir = null;
+    }
+
+    /**
+     * Sets up a workflow configuration.
      *
      * @param Logger $logger logger for information and errors
      *
@@ -56,12 +67,6 @@ class WorkflowConfig
      * @param string $baseDir base directory for $properties, if it is an array.
      *     This is used for file properties that are specified as relative paths.
      */
-    public function __construct()
-    {
-        $this->logger = null;
-        $this->baseDir = null;
-    }
-
     public function set(& $logger, $properties, $baseDir = null)
     {
         $this->logger = $logger;
@@ -80,7 +85,7 @@ class WorkflowConfig
             $taskConfig->set($logger, $properties, $this->baseDir);
             $this->taskConfigs[] = $taskConfig;
         } elseif (is_string($properties)) {
-            # TaskConfig is in a file (properties is the name/path of the file)
+            # Configuration is in a file (properties is the name/path of the file)
             $this->configurationFile = trim($properties);
 
             $baseDir = realpath(dirname($this->configurationFile));
@@ -107,6 +112,9 @@ class WorkflowConfig
         }
     }
 
+    /**
+     * Parses a JSON format workflow configuration file.
+     */
     public function parseJsonWorkflowConfigFile($configurationFile)
     {
         $baseDir = realpath(dirname($configurationFile));
@@ -136,6 +144,20 @@ class WorkflowConfig
                 $this->globalProperties = $workflowConfig[self::JSON_GLOBAL_PROPERTIES_KEY];
                 $this->globalProperties = $this->processJsonProperties($this->globalProperties);
                 $this->globalProperties = TaskConfig::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
+
+                if (!array_key_exists(ConfigProperties::WORKFLOW_NAME, $this->globalProperties)
+                        || empty(trim($this->globalProperties[ConfigProperties::WORKFLOW_NAME]))) {
+                    $message = 'No workflow name was specified.';
+                    $code    = EtlException::INPUT_ERROR;
+                    throw new EtlException($message, $code);
+                } else {
+                    $this->workflowName = trim($this->globalProperties[ConfigProperties::WORKFLOW_NAME]);
+                    unset($this->globalProperties[ConfigProperties::WORKFLOW_NAME]);
+                }
+            } else {
+                $message = 'No workflow name was specified.';
+                $code    = EtlException::INPUT_ERROR;
+                throw new EtlException($message, $code);
             }
 
             if (array_key_exists(self::JSON_TASKS_KEY, $workflowConfig)) {
@@ -232,8 +254,22 @@ class WorkflowConfig
                     $sectionProperties = TaskConfig::makeFilePropertiesAbsolute($sectionProperties, $baseDir);
                     $configFile = null;
 
+                    #----------------------------
                     # Global properties
+                    #----------------------------
                     $globalProperties = TaskConfig::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
+
+                    # Process the workflow name
+                    if (!array_key_exists(ConfigProperties::WORKFLOW_NAME, $globalProperties)
+                            || empty(trim($globalProperties[ConfigProperties::WORKFLOW_NAME]))) {
+                        $message = 'No workflow name was specified.';
+                        $code    = EtlException::INPUT_ERROR;
+                        throw new EtlException($message, $code);
+                    } else {
+                        $this->workflowName = trim($globalProperties[ConfigProperties::WORKFLOW_NAME]);
+                        unset($globalProperties[ConfigProperties::WORKFLOW_NAME]);
+                    }
+
 
                     #-----------------------------------------------------
                     # Add included config file properties, if any
@@ -335,5 +371,10 @@ class WorkflowConfig
     public function getTaskConfigs()
     {
         return $this->taskConfigs;
+    }
+
+    public function getWorkflowName()
+    {
+        return $this->workflowName;
     }
 }
