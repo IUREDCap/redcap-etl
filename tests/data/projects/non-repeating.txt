@@ -12,7 +12,7 @@ FIELD,ethnicity,varchar(255)
 FIELD,race,varchar(255)
 FIELD,sex,varchar(255)
 FIELD,height,float
-FIELD,weight,varchar(255)
+FIELD,weight,int
 FIELD,bmi,string
 FIELD,comments,string
 FIELD,age_variable,float

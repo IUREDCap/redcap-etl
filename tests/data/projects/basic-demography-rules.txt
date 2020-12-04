@@ -9,7 +9,7 @@ FIELD,ethnicity,varchar(255)
 FIELD,race,checkbox
 FIELD,sex,varchar(255)
 FIELD,height,float
-FIELD,weight,varchar(255)
+FIELD,weight,int
 FIELD,bmi,string
 FIELD,comments,string
 

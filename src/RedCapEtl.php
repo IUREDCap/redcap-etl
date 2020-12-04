@@ -64,6 +64,11 @@ class RedCapEtl
      */
     private $rootTablesWithMultiValues;
 
+    /** @var string transformation rules text used for the ETL process. This can be helpful for retrieving the
+     * rules after an ETL run that use auto-generation of transformation rules;
+     */
+    private $transformationRulesText;
+
 
     /**
      * Constructor.
@@ -93,6 +98,8 @@ class RedCapEtl
         $this->logger = $logger;
         $this->logger->setConfiguration($this->configuration);
         
+        $this->transformationRulesText = '';
+
         #---------------------------------------------------------
         # Set time limit
         #---------------------------------------------------------
@@ -259,6 +266,8 @@ class RedCapEtl
         list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
 
         ###print "\n".($schema->toString())."\n";
+
+        $this->transformationRulesText = $rulesText;
 
         $this->schema      = $schema;
 
@@ -902,5 +911,10 @@ class RedCapEtl
     public function getDataProject()
     {
         return $this->dataProject;
+    }
+
+    public function getTransformationRulesText()
+    {
+        return $this->transformationRulesText;
     }
 }
