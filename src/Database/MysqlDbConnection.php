@@ -21,6 +21,8 @@ class MysqlDbConnection extends DbConnection
 
     private $id;
 
+    private $databaseName;
+
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
@@ -36,9 +38,11 @@ class MysqlDbConnection extends DbConnection
         $port = null;
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = $dbValues;
+            $this->databaseName = $database;
             $idValues = array(DbConnectionFactory::DBTYPE_MYSQL, $host, $database);
         } elseif (count($dbValues) == 5) {
             list($host,$username,$password,$database,$port) = $dbValues;
+            $this->databaseName = $database;
             $idValues = array(DbConnectionFactory::DBTYPE_MYSQL, $host, $database, $port);
             $port = intval($port);
         } else {
@@ -552,6 +556,27 @@ class MysqlDbConnection extends DbConnection
         return $rowValues;
     }
 
+    public function getTableColumnNames($tableName)
+    {
+        $columnNames = array();
+
+        $query = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?';
+        $statement = $this->mysqli->prepare($query);
+        $statement->bind_param('ss', $this->databaseName, $tableName);
+
+        $statement->execute();
+        $result = $statement->get_result();
+
+        $rows = $result->fetch_all(MYSQLI_NUM);
+        foreach ($rows as $row) {
+            $columnNames[] = $row[0];
+        }
+
+        print "\nCOLUMN NAMES:";
+        print_r($columnNames);
+
+        return $columnNames;
+    }
 
     public function processQueryFile($queryFile)
     {

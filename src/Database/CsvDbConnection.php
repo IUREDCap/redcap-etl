@@ -266,6 +266,12 @@ class CsvDbConnection extends DbConnection
     }
 
 
+    public function getTableColumnNames($tableName)
+    {
+        $columnNames = array();
+        return $columnNames;
+    }
+
     /**
      * Writes the specified value (or it's label) to the
      * specified file or files.

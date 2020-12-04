@@ -20,6 +20,7 @@ class SqlServerDbConnection extends PdoDbConnection
     const AUTO_INCREMENT_TYPE = 'INT NOT NULL IDENTITY(0,1) PRIMARY KEY';
 
     private $id;
+    private $database;
 
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
@@ -37,9 +38,11 @@ class SqlServerDbConnection extends PdoDbConnection
 
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = $dbValues;
+            $this->database = $database;
             $idValues = array(DbConnectionFactory::DBTYPE_SQLSERVER, $host, $database);
         } elseif (count($dbValues) == 5) {
             list($host,$username,$password,$database,$port) = $dbValues;
+            $this->database = $database;
             $idValues = array(DbConnectionFactory::DBTYPE_SQLSERVER, $host, $database, $port);
         }
 
@@ -114,8 +117,29 @@ class SqlServerDbConnection extends PdoDbConnection
     {
         return $this->id;
     }
- 
 
+    public function getTableColumnNames($tableName)
+    {
+        print "IN GET TABLE COLUMN NAMES - {$this->database} {$tableName}\n";
+        $columnNames = array();
+
+        $query = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS '
+            .' WHERE TABLE_CATALOG = :database AND TABLE_NAME = :table';
+        $statement = $this->db->prepare($query);
+
+        print "BEFORE STATEMENT EXECUTE\n";
+        $statement->execute(['database' => $this->database, 'table' => $tableName]);
+        print "AFTER STATEMENT EXECUTE\n";
+
+        $columnNames = $statement->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        print "\nCOLUMN NAMES:";
+        print_r($columnNames);
+
+        return $columnNames;
+    }
+
+ 
     protected function getCreateTableIfNotExistsQueryPrefix($tableName)
     {
         $query = 'IF NOT EXISTS (SELECT [name] FROM sys.tables ';

@@ -136,6 +136,7 @@ abstract class DbConnection
      */
     abstract public function processQueries($queries);
 
+    abstract public function getTableColumnNames($tableName);
 
     /**
      * Replaces the specified table in the database
