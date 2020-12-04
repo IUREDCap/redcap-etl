@@ -267,8 +267,8 @@ class RulesGenerator
         } elseif ($fieldType === 'file') {
             $type = FieldType::VARCHAR . '(' . self::DEFAULT_VARCHAR_SIZE . ')';
         } elseif ($validationType === 'integer') {
-            # The number be too large for the database int type,
-            # so use a varchar here
+            # The number could be too large for the database int type,
+            # so use a varchar here unless suitable min and max values are set
             $min = $field['text_validation_min'];
             $max = $field['text_validation_max'];
             if (!empty($min) && !empty($max)

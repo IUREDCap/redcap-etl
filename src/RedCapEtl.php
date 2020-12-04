@@ -211,6 +211,11 @@ class RedCapEtl
     {
         return $this->workflow->getTask($index);
     }
+
+    public function getTransformationRulesText($index)
+    {
+        return $this->getTask($index)->getTransformationRulesText();
+    }
     
     public function getWorkflow()
     {

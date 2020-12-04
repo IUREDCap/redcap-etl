@@ -57,6 +57,7 @@ class Task
      */
     private $rootTablesWithMultiValues;
 
+    private $transformationRulesText;
 
     /**
      * Constructor.
@@ -66,6 +67,7 @@ class Task
     {
         $this->id   = $id;
         $this->name = '';
+        $this->transformationRulesText = '';
     }
 
     /**
@@ -314,6 +316,8 @@ class Task
         $schemaGenerator = new SchemaGenerator($this->dataProject, $this->taskConfig, $this->logger, $this->id);
 
         list($schema, $parseResult) = $schemaGenerator->generateSchema($rulesText);
+
+        $this->transformationRulesText = $rulesText;
 
         # print "\n".($schema->toString())."\n";
 
