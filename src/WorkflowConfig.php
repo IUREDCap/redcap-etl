@@ -101,7 +101,7 @@ class WorkflowConfig
                 #-----------------------------------------------------------------
                 $this->parseJsonWorkflowConfigFile($this->configurationFile);
             } else {
-                $message = 'Non-JSON workflow configuration file specified.';
+                $message = 'Configuration file "'.$this->configurationFile.'" is not a .ini or .json file.';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
             }

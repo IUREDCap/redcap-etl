@@ -201,10 +201,6 @@ class Workflow
         $dbConnection->storeRows($projectInfoTable);
         $dbConnection->storeRows($metadataTable);
 
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! print:
-        print "CALL TO GET TABLE COLUMN NAMES\n";
-        $dbConnection->getTableColumnNames($projectInfoTable->getName());
-
         #------------------------------------------------------------------------------------
         # If configured, create the lookup table that maps multiple choice values to labels,
         # and load the data rows for this table.

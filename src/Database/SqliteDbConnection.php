@@ -59,6 +59,20 @@ class SqliteDbConnection extends PdoDbConnection
         return $pdoConnection;
     }
 
+    public function getTableColumnNames($tableName)
+    {
+        $columnNames = array();
+
+        $query = "PRAGMA table_info('{$tableName}')";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute();
+
+        $columnNames = $statement->fetchAll(\PDO::FETCH_COLUMN, 1);
+
+        return $columnNames;
+    }
+
     public function getId()
     {
         return $this->id;

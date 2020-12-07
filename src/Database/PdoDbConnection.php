@@ -469,31 +469,6 @@ abstract class PdoDbConnection extends DbConnection
         }
     }
     
-    public function getTableColumnNames($tableName)
-    {
-        print "IN GET TABLE COLUMN NAMES - {$this->database} {$tableName}\n";
-        $columnNames = array();
-
-        $query = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS '
-            .' WHERE TABLE_SCHEMA = :database AND TABLE_NAME = :table';
-        $statement = $this->db->prepare($query);
-
-        print "BEFORE STATEMENT EXECUTE\n";
-        $statement->execute(['database' => $this->database, 'table' => $tableName]);
-        print "AFTER STATEMENT EXECUTE\n";
-
-        $result = $statement->fetchAll(\PDO::FETCH_COLUMN, 0);
-        print_r($result);
-        foreach ($result as $row) {
-            $columnNames[] = $row[0];
-        }
-
-        print "\nCOLUMN NAMES:";
-        print_r($columnNames);
-
-        return $columnNames;
-    }
-
     public function processQueries($queries)
     {
         try {

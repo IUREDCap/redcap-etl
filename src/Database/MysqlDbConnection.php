@@ -572,9 +572,6 @@ class MysqlDbConnection extends DbConnection
             $columnNames[] = $row[0];
         }
 
-        print "\nCOLUMN NAMES:";
-        print_r($columnNames);
-
         return $columnNames;
     }
 

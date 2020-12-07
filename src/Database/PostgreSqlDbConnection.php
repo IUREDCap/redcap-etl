@@ -20,7 +20,12 @@ class PostgreSqlDbConnection extends PdoDbConnection
     const AUTO_INCREMENT_TYPE = 'SERIAL PRIMARY KEY';
     const DATETIME_TYPE       = 'timestamptz';
 
+    const DEFAULT_SCHEMA_NAME = 'public';
+
     private $id;
+
+    private $databaseName;
+    private $schemaName;
 
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
@@ -31,6 +36,8 @@ class PostgreSqlDbConnection extends PdoDbConnection
         
         $this->db = self::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
 
+        $this->schemaName = self::DEFAULT_SCHEMA_NAME;
+
         #--------------------------------------
         # Set ID
         #--------------------------------------
@@ -38,12 +45,21 @@ class PostgreSqlDbConnection extends PdoDbConnection
 
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = $dbValues;
+            $this->databaseName = $database;
             $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database);
         } elseif (count($dbValues) == 5) {
             list($host,$username,$password,$database,$schema) = $dbValues;
+            $this->databaseName = $database;
+            if (!empty($schema)) {
+                $this->schemaName = $schema;
+            }
             $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database, $schema);
         } elseif (count($dbValues) == 6) {
             list($host,$username,$password,$database,$schema, $port) = $dbValues;
+            $this->databaseName = $database;
+            if (!empty($schema)) {
+                $this->schemaName = $schema;
+            }
             $idValues = array(DbConnectionFactory::DBTYPE_POSTGRESQL, $host, $database, $schema, $port);
         }
 
@@ -128,6 +144,21 @@ class PostgreSqlDbConnection extends PdoDbConnection
         }
         
         return $pdoConnection;
+    }
+
+    public function getTableColumnNames($tableName)
+    {
+        $columnNames = array();
+
+        $query = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS '
+            .' WHERE TABLE_CATALOG = :database AND TABLE_SCHEMA = :schema AND TABLE_NAME = :table';
+        $statement = $this->db->prepare($query);
+
+        $statement->execute(['database' => $this->databaseName, 'schema' => $this->schemaName, 'table' => $tableName]);
+
+        $columnNames = $statement->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        return $columnNames;
     }
 
     public function getId()

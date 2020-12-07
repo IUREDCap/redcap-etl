@@ -266,12 +266,6 @@ class CsvDbConnection extends DbConnection
     }
 
 
-    public function getTableColumnNames($tableName)
-    {
-        $columnNames = array();
-        return $columnNames;
-    }
-
     /**
      * Writes the specified value (or it's label) to the
      * specified file or files.
@@ -288,6 +282,21 @@ class CsvDbConnection extends DbConnection
         }
     }
     
+    public function getTableColumnNames($tableName)
+    {
+        $columnNames = array();
+
+        $tableFile = $this->directory . $tableName . '.csv';
+
+        @$fh = fopen($tableFile, 'r');
+        if ($fh) {
+            $columnNames = fgetcsv($fh);
+            fclose($fh);
+        }
+
+        return $columnNames;
+    }
+
     public function processQueryFile($queryFile)
     {
         $message = "Processing a query file is not supported for CSV files";
