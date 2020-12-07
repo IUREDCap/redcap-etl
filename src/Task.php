@@ -45,10 +45,11 @@ class Task
 
     private $app;
 
-    private $recordIdFieldName;   // The field name for the record ID
-                                  // for the data project in REDCap
-
+    /** @var TaskConfig the task configuration for this task. */
     private $taskConfig;
+
+    /** @var Workflow the workflow for this task, */
+    private $workflow;
 
     /** @var array map where the keys represent root tables that have
      *     fields that have multiple rows of data per record ID.
@@ -83,16 +84,18 @@ class Task
      *     to use as the RedcapProject class. By default the EtlRedCapProject
      *     class is used.
      */
-    public function initialize($logger, $taskName, $taskConfig, $redcapProjectClass = null)
+    public function initialize($logger, $taskConfig, $redcapProjectClass = null, $workflow = null)
     {
         $this->app = $logger->getApp();
         $this->logger = $logger;
-        $this->name = $taskName;
+        $this->name = $taskConfig->getTaskName();
         $this->logger->setTaskConfig($taskConfig);
 
         $this->rootTablesWithMultiValues = array();
 
         $this->taskConfig = $taskConfig;
+
+        $this->workflow = $workflow;
 
         #---------------------------------------------------------
         # Set time limit
@@ -863,5 +866,10 @@ class Task
     public function setDbSchema($dbSchema)
     {
         $this->dbSchema = $dbSchema;
+    }
+
+    public function getWorkflow()
+    {
+        return $this->workflow;
     }
 }

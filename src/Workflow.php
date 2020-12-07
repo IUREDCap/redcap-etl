@@ -35,6 +35,12 @@ class Workflow
     
     private $logger;
 
+    /** @var string the name of the workflow. */
+    private $name;
+
+    /** @var string generated unique ID, which can be used to tell which tasks belong to the same workflow. */
+    private $id;
+
     /**
      * Constructor.
      *
@@ -52,14 +58,17 @@ class Workflow
     {
         $this->logger = $logger;
 
+        $this->name = $workflowConfig->getWorkflowName();
+        $this->id = uniqid('', true);
+
         #---------------------------------------------
         # Create tasks and database information
         #---------------------------------------------
         $taskId = 1;
-        foreach ($workflowConfig->getTaskConfigs() as $taskConfigName => $taskConfig) {
+        foreach ($workflowConfig->getTaskConfigs() as $taskConfig) {
             # Create task for this task configuration
             $task = new Task($taskId);
-            $task->initialize($this->logger, $taskConfigName, $taskConfig, $redcapProjectClass);
+            $task->initialize($this->logger, $taskConfig, $redcapProjectClass);
         
             $this->tasks[] = $task;
 
@@ -396,5 +405,32 @@ class Workflow
     {
         $task = $this->tasks[$index];
         return $task->getDataProject();
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Indicates if this workflow represents a standalone task, i.e., it
+     * contains a single task that was configured as a standalone configuration,
+     * outside of a workflow.
+     */
+    public function isStandaloneTask()
+    {
+        $isStandAloneTask = false;
+        if (count($this->getTasks()) === 1) {
+            $task = $this->getTask(0);
+            if (empty($task->getName())) {
+                $isStandAloneTask = true;
+            }
+        }
+        return $isStandAloneTask;
     }
 }

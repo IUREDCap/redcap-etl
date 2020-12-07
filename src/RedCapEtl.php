@@ -129,6 +129,13 @@ class RedCapEtl
                 $logger->log('REDCap version '.$task->getDataProject()->exportRedCapVersion());
                 $task->logJobInfo();
             }
+            $workflowName = $this->workflow->getName();
+            $workflowId   = $this->workflow->getId();
+            if (!empty($workflowName)) {
+                $logger->log("Workflow: {$workflowName}");
+                $logger->log("Workflow ID: {$workflowId}");
+            }
+
             $logger->log('Number of load databases: '.count($this->workflow->getDbIds()));
             $i = 1;
             foreach (array_keys($this->workflow->getDbIds()) as $dbId) {

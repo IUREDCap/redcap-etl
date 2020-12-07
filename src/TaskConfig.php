@@ -154,6 +154,9 @@ class TaskConfig
      *     in property values */
     private $baseDir;
 
+    /** @var string the name of the task (only tasks within workflows will have names). */
+    private $taskName;
+
     /**
      */
     public function __construct()
@@ -161,6 +164,8 @@ class TaskConfig
         $this->logger = null;
         $this->app    = '';
         $this->propertiesFile = null;
+
+        $this->taskName = '';
 
         #---------------------------------------------------------
         # Set default config properties values
@@ -215,10 +220,11 @@ class TaskConfig
      *     as "post.sql", then the file "/home/etluser/post.sql" would be used
      *     for the post-processing SQL commands.
      */
-    public function set(& $logger, $properties, $baseDir = null)
+    public function set(& $logger, $properties, $taskName = '', $baseDir = null)
     {
         $this->logger = $logger;
         $this->app = $this->logger->getApp();
+        $this->taskName = $taskName;
 
         #-----------------------------------------------------------------------------------------
         # Process the properties, which could be specified as an array or a file name (string)
@@ -1509,6 +1515,11 @@ class TaskConfig
     public function getAutogenNonRepeatingFieldsTable()
     {
         return $this->autogenNonRepeatingFieldsTable;
+    }
+
+    public function getTaskName()
+    {
+        return $this->taskName;
     }
 
 

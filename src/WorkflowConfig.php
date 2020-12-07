@@ -43,6 +43,12 @@ class WorkflowConfig
 
     private $workflowName;
 
+    /** @var boolean true if the workflow configuration represents a standalone task, false
+     *               if the configuration has multiple tasks, or has a single task defined
+     *               within a workflow. Standalone tasks will not have a task name.
+     */
+    private $isStandaloneTask;
+
     /**
      * Creates a WorkflowConfig object from a workflow config file.
      */
@@ -82,7 +88,7 @@ class WorkflowConfig
         } elseif (is_array($properties)) {
             # TaskConfig specified as an array of properties
             $taskConfig = new TaskConfig();
-            $taskConfig->set($logger, $properties, $this->baseDir);
+            $taskConfig->set($logger, $properties, '', $this->baseDir);
             $this->taskConfigs[] = $taskConfig;
         } elseif (is_string($properties)) {
             # Configuration is in a file (properties is the name/path of the file)
@@ -162,14 +168,14 @@ class WorkflowConfig
 
             if (array_key_exists(self::JSON_TASKS_KEY, $workflowConfig)) {
                 $taskConfigs = $workflowConfig[self::JSON_TASKS_KEY];
-                foreach ($taskConfigs as $properties) {
+                foreach ($taskConfigs as $taskName => $properties) {
                     $properties = $this->processJsonProperties($properties);
                     $properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
                     $properties = TaskConfig::overrideProperties($this->globalProperties, $properties);
                     #print "\n\nPROPERTIES:\n";
                     #print_r($properties);
                     $taskConfig = new TaskConfig();
-                    $taskConfig->set($this->logger, $properties, $this->baseDir);
+                    $taskConfig->set($this->logger, $properties, $taskName, $this->baseDir);
                     $this->taskConfigs[] = $taskConfig;
                 }
             } else {
@@ -184,7 +190,7 @@ class WorkflowConfig
             #print_r($properties);
 
             $taskConfig = new TaskConfig();
-            $taskConfig->set($this->logger, $properties, $this->baseDir);
+            $taskConfig->set($this->logger, $properties, '', $this->baseDir);
             $this->taskConfigs[] = $taskConfig;
         }
     }
@@ -270,7 +276,6 @@ class WorkflowConfig
                         unset($globalProperties[ConfigProperties::WORKFLOW_NAME]);
                     }
 
-
                     #-----------------------------------------------------
                     # Add included config file properties, if any
                     #-----------------------------------------------------
@@ -294,7 +299,7 @@ class WorkflowConfig
                     $properties = TaskConfig::overrideProperties($properties, $sectionProperties);
 
                     $taskConfig = new TaskConfig();
-                    $taskConfig->set($this->logger, $properties, $this->baseDir);
+                    $taskConfig->set($this->logger, $properties, $section, $this->baseDir);
 
                     $this->taskConfigs[] = $taskConfig;
                 } else {
@@ -306,19 +311,8 @@ class WorkflowConfig
             }
         } else {
             $taskConfig = new TaskConfig();
-            $taskConfig->set($this->logger, $configurationFile, $this->baseDir);
+            $taskConfig->set($this->logger, $configurationFile, '', $this->baseDir);
             array_push($this->taskConfigs, $taskConfig);
-        }
-
-        # Parse file into properties and sections
-        $properties = array();
-        $sections = array();
-        foreach ($config as $key => $value) {
-            if (is_array($value)) {
-                $sections[$key] = $value;
-            } else {
-                $properties[$key] = $value;
-            }
         }
     }
 
