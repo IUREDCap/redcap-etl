@@ -42,7 +42,7 @@ class Table
     /** @var array array of Row objects used to store rows of data for the table */
     protected $rows = array();
 
-    private $primaryKeyValue = 1;
+    private $primaryKeyValue;
 
     public $usesLookup = false;   // Are fields in this table represented
                                   // in the Lookup table?
@@ -81,6 +81,8 @@ class Table
     ) {
         $this->recordIdFieldName = $recordIdFieldName;
         $this->keyType = $keyType;
+        
+        $this->primaryKeyValue = 1;
         
         $this->name = str_replace(' ', '_', $name);
         $this->namePrefix = $namePrefix;
