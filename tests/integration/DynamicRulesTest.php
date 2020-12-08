@@ -551,6 +551,8 @@ class DynamicRulesTest extends TestCase
 
     public function testCombineNonRepeatingFieldsException()
     {
+        self::deleteOldResultsFiles();
+
         $exceptionCaught = false;
         $expectedMessage = "Invalid autogen_non_repeating_fields_table property.";
         $expectedMessage .= " This property must have a value if the";
