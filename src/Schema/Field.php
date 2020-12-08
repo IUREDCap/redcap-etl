@@ -177,7 +177,7 @@ class Field
         return $mergedField;
     }
     
-    public function toString($indent)
+    public function toString($indent = 0)
     {
         $in = str_repeat(' ', $indent);
         $string = '';

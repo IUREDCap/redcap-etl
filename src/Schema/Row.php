@@ -44,7 +44,7 @@ class Row
      *
      * @param integer $indent the number of spaces to indent each line.
      */
-    public function toString($indent)
+    public function toString($indent = 0)
     {
         $in = str_repeat(' ', $indent);
         $string = '';
