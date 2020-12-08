@@ -145,7 +145,6 @@ class Table
         # Merge foreign key fields
         #------------------------------------------------
         if (isset($this->foreign) && isset($table->foreign)) {
-            print_r($this->foreign);
             $mergedTable->foreign = $this->foreign->merge($table->foreign);
         } elseif (isset($this->foreign) && !isset($table->foreign)) {
             $message = 'Table "'.$this->getTableName().'" is defined both with and without a foreign key.';
