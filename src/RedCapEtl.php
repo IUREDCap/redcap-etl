@@ -97,6 +97,8 @@ class RedCapEtl
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;
+
+        KeyValueDb::initialize();
     }
 
 

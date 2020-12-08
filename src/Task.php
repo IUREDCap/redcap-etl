@@ -69,6 +69,7 @@ class Task
         $this->id   = $id;
         $this->name = '';
         $this->transformationRulesText = '';
+        $this->schema = null;
     }
 
     /**
@@ -80,9 +81,13 @@ class Task
      *     be the name of the properties file to use, if it is an array,
      *     it is assumed to be a map from property names to values.
      *
+     * @param TaskConfig the task configuration object for this task.
+     *
      * @param string $redcapProjectClass fully qualified class name for class
      *     to use as the RedcapProject class. By default the EtlRedCapProject
      *     class is used.
+     *
+     * @param Workflow the workflow this task belongs to.
      */
     public function initialize($logger, $taskConfig, $redcapProjectClass = null, $workflow = null)
     {
@@ -121,13 +126,6 @@ class Task
         if (!$this->isSqlOnlyTask()) {
             $this->setUpRedCapAccess();
         }
-
-
-        #-----------------------------------------
-        # Initialize the schema
-        #-----------------------------------------
-        $this->schema = new Schema();
-                
 
         #---------------------------------------------------
         # Create a database connection for the database
@@ -542,6 +540,7 @@ class Task
     {
         $tableName = $table->getName();
         $calcFieldIgnorePattern = $this->taskConfig->getCalcFieldIgnorePattern();
+        $ignoreEmptyIncompleteForms = $this->taskConfig->getIgnoreEmptyIncompleteForms();
 
         foreach ($table->rowsType as $rowType) {
             // Look at row_event for this table
@@ -562,8 +561,15 @@ class Task
                     foreach ($records as $record) {
                         # Add the REDCap data source to the record
                         $record[RedCapEtl::COLUMN_DATA_SOURCE] = $this->id;
-                        $primaryKey =
-                            $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
+                        $primaryKey = $table->createRow(
+                            $record,
+                            $foreignKey,
+                            $suffix,
+                            $rowType,
+                            $calcFieldIgnorePattern,
+                            $ignoreEmptyIncompleteForms,
+                            $this->getDbId()
+                        );
 
                         # If row creation succeeded:
                         if ($primaryKey) {
@@ -602,8 +608,15 @@ class Task
                     foreach ($records as $record) {
                         # Add the REDCap data source to the record
                         $record[RedCapEtl::COLUMN_DATA_SOURCE] = $this->id;
-                        $primaryKey =
-                            $table->createRow($record, $foreignKey, $suffix, $rowType, $calcFieldIgnorePattern);
+                        $primaryKey = $table->createRow(
+                            $record,
+                            $foreignKey,
+                            $suffix,
+                            $rowType,
+                            $calcFieldIgnorePattern,
+                            $ignoreEmptyIncompleteForms,
+                            $this->getDbId()
+                        );
 
                         if ($primaryKey) {
                             foreach ($table->getChildren() as $childTable) {
@@ -624,7 +637,9 @@ class Task
                             $foreignKey,
                             $suffix.$newSuffix,
                             $rowType,
-                            $calcFieldIgnorePattern
+                            $calcFieldIgnorePattern,
+                            $ignoreEmptyIncompleteForms,
+                            $this->getDbId()
                         );
 
                         if ($primaryKey) {
@@ -648,7 +663,9 @@ class Task
                                 $foreignKey,
                                 $suffix.$newSuffix,
                                 $rowType,
-                                $calcFieldIgnorePattern
+                                $calcFieldIgnorePattern,
+                                $ignoreEmptyIncompleteForms,
+                                $this->getDbId()
                             );
 
                             if ($primaryKey) {

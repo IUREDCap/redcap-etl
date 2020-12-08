@@ -55,7 +55,6 @@ class Schema
      *    and have the labels for the multiple choice fields instead of the values. */
     private $labelViewSuffix;
 
-
     public function __construct()
     {
         $this->tables     = array();
@@ -225,7 +224,6 @@ class Schema
     {
         return($this->tables);
     }
-
 
     /**
      * Gets the names of all the data tables in the Schema

@@ -8,6 +8,7 @@ namespace IU\REDCapETL;
 
 use IU\REDCapETL\Schema\Field;
 use IU\REDCapETL\Schema\FieldType;
+use IU\REDCapETL\Schema\FieldTypeSpecifier;
 use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Table;
 
@@ -42,6 +43,8 @@ class LookupTable extends Table
      */
     public function __construct($lookupChoices, $keyType, $name = self::DEFAULT_NAME)
     {
+        $keyType = new FieldTypeSpecifier(FieldType::AUTO_INCREMENT);
+
         parent::__construct(
             $name,
             self::FIELD_PRIMARY_ID,

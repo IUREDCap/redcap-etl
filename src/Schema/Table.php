@@ -7,6 +7,7 @@
 namespace IU\REDCapETL\Schema;
 
 use IU\REDCapETL\RedCapEtl;
+use IU\REDCapETL\KeyValueDb;
 
 /**
  * Table is used to store information about a relational table
@@ -347,8 +348,15 @@ class Table
 
     public function nextPrimaryKey()
     {
-        $this->primaryKeyValue += 1;
-        return($this->primaryKeyValue - 1);
+        $value = 0;
+        if (empty($this->primaryKeyDb)) {
+            # if not primary key db was set, use the internal variable to get the next value
+            $value = $this->primaryKeyValue;
+            $this->primaryKeyValue += 1;
+        } else {
+            $value = $this->primaryKeyDb->getNextKey($this->name);
+        }
+        return $value;
     }
 
 
@@ -371,7 +379,8 @@ class Table
         $suffix,
         $rowType,
         $calcFieldIgnorePattern = '',
-        $ignoreEmptyIncompleteForms = false
+        $ignoreEmptyIncompleteForms = false,
+        $dbId = null
     ) {
         #---------------------------------------------------------------
         # If a row is being created for a repeating instrument, don't
@@ -581,7 +590,13 @@ class Table
 
         if ($dataFound) {
             // Get and set primary key
-            $primaryKeyValue = $this->nextPrimaryKey();
+            if (empty($dbId)) {
+                $primaryKeyValue = $this->nextPrimaryKey();
+            } else {
+                # If a database identifier was passed, use the centralized key value class
+                # to get the primary key value.
+                $primaryKeyValue = KeyValueDb::getNextKeyValue($dbId, $this->name);
+            }
             $row->data[$this->primary->name] = $primaryKeyValue;
 
             // Add Row
@@ -770,5 +785,15 @@ class Table
             }
         }
         return $string;
+    }
+
+    public function getPrimaryKeyDb()
+    {
+        return $this->primaryKeyDb;
+    }
+
+    public function setPRimaryKeyDb($primaryKeyDb)
+    {
+        $this->primaryKeyDb = $primaryKeyDb;
     }
 }
