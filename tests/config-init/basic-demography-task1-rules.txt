@@ -1,5 +1,5 @@
 # Basic demography transformation rules
-TABLE,Demography,primary_key,ROOT
+TABLE,basic_demography,basic_demography_id,ROOT
 FIELD,record_id,int
 FIELD,first_name,varchar(40)
 FIELD,last_name,varchar(40)
