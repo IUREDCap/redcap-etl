@@ -78,11 +78,8 @@ foreach (array_merge($rulesFiles, $sqlFiles) as $configFile) {
         exit(1);
     }
 
-    # If the copied file doesn't exist, copy it
-    if (!file_exists($toPath)) {
-        print "Copying file \"{$configFile}\" to \"{$configDir}\"\n";
-        copy($fromPath, $toPath);
-    }
+    print "Copying file \"{$configFile}\" to \"{$configDir}\"\n";
+    copy($fromPath, $toPath);
 }
 
 
