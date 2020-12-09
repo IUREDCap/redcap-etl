@@ -348,14 +348,9 @@ class Table
 
     public function nextPrimaryKey()
     {
-        $value = 0;
-        if (empty($this->primaryKeyDb)) {
-            # if not primary key db was set, use the internal variable to get the next value
-            $value = $this->primaryKeyValue;
-            $this->primaryKeyValue += 1;
-        } else {
-            $value = $this->primaryKeyDb->getNextKey($this->name);
-        }
+        # if not primary key db was set, use the internal variable to get the next value
+        $value = $this->primaryKeyValue;
+        $this->primaryKeyValue += 1;
         return $value;
     }
 
@@ -785,15 +780,5 @@ class Table
             }
         }
         return $string;
-    }
-
-    public function getPrimaryKeyDb()
-    {
-        return $this->primaryKeyDb;
-    }
-
-    public function setPRimaryKeyDb($primaryKeyDb)
-    {
-        $this->primaryKeyDb = $primaryKeyDb;
     }
 }
