@@ -17,7 +17,7 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
         
     const CONFIG_FILE = __DIR__.'/../config/workflow-basic-demography-mysql.ini';
 
-    protected static $dbh;
+    protected static $dbConnection;
     protected static $logger;
 
     
@@ -25,25 +25,14 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
     {
         if (file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('workflow-basic-demography-mysql-test');
-
-            $configuration = new WorkflowConfig();
-            $configuration->set(self::$logger, self::CONFIG_FILE);
-            $taskConfigs = $configuration->getTaskConfigs();
-
-            list($dbHost, $dbUser, $dbPassword, $dbName) = ($taskConfigs[0])->getMySqlConnectionInfo();
-            $dsn = 'mysql:dbname='.$dbName.';host='.$dbHost;
-            try {
-                self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
-            } catch (Exception $exception) {
-                print "ERROR - database connection error: ".$exception->getMessage()."\n";
-            }
         }
     }
 
     public function setUp()
     {
         if (!file_exists(self::CONFIG_FILE)) {
-            $this->markTestSkipped("Required configuration not set for this test.");
+            $this->markTestSkipped('Required configuration file "'.CONFIG_FILE.'"'
+                .' does not exist for test "'.__FILE__.'".');
         }
     }
 
@@ -52,6 +41,11 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
         try {
             $redCapEtl = new RedCapEtl($logger, $configFile);
             $redCapEtl->run();
+
+            # Get the database connection. All tasks for this test use the same
+            # one, so you can get it from any of the tasks.
+            $firstTask = $redCapEtl->getTask(0);
+            self::$dbConnection = $firstTask->getDbConnection();
         } catch (Exception $exception) {
             $logger->logException($exception);
             $logger->log('Processing failed.');
@@ -61,7 +55,7 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
 
     public function testTables()
     {
-        # $this->dropTablesAndViews(static::$dbh);
+        # $this->dropTablesAndViews(static::$dbConnection);
 
         $hasException = false;
         $exceptionMessage = '';
@@ -76,16 +70,18 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
         #-------------------------------------------
         # table "basic_demography" row count check
         #-------------------------------------------
-        $sql = 'SELECT COUNT(*) FROM basic_demography';
+        $actualData = self::$dbConnection->getData('basic_demography');
 
-        $statement  = static::$dbh->query($sql);
-        $actualData = $statement->fetchColumn(0);
-        $this->assertEquals(300, $actualData, 'basic_demography row count check');
+        $this->assertEquals(300, count($actualData), 'basic_demography row count check');
+
+        $basicDemographyIds = array_column($actualData, 'basic_demography_id');
+        $expectedIds = range(1, 300);
+        $this->assertEquals($expectedIds, $basicDemographyIds, 'Basic Demography ID check.');
     }
 
 
-    public function dropTablesAndViews($dbh)
+    public function dropTablesAndViews($dbConnection)
     {
-        $dbh->exec("DROP TABLE IF EXISTS basic_demography");
+        #$dbConnection->exec("DROP TABLE IF EXISTS basic_demography");
     }
 }

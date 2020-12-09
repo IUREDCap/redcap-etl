@@ -39,6 +39,7 @@ class Task
 
     protected $rowsLoadedForTable = array();
   
+    /** @var DbConnection the database connection object for this task */
     protected $dbcon;
 
     private $errorHandler;
