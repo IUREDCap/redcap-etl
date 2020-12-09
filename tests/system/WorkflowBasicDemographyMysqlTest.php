@@ -55,8 +55,6 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
 
     public function testTables()
     {
-        # $this->dropTablesAndViews(static::$dbConnection);
-
         $hasException = false;
         $exceptionMessage = '';
         try {
@@ -74,14 +72,18 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
 
         $this->assertEquals(300, count($actualData), 'basic_demography row count check');
 
+        #-----------------------------------------
+        # Basic demography IDs check
+        #-----------------------------------------
         $basicDemographyIds = array_column($actualData, 'basic_demography_id');
         $expectedIds = range(1, 300);
-        $this->assertEquals($expectedIds, $basicDemographyIds, 'Basic Demography ID check.');
-    }
+        $this->assertEquals($expectedIds, $basicDemographyIds, 'Basic Demography IDs check.');
 
-
-    public function dropTablesAndViews($dbConnection)
-    {
-        #$dbConnection->exec("DROP TABLE IF EXISTS basic_demography");
+        #-----------------------------------------
+        # Record IDs check
+        #-----------------------------------------
+        $expectedRecordIds = array_merge(range(1001, 1100), range(1001, 1100), range(1001, 1100));
+        $recordIds = array_column($actualData, 'record_id');
+        $this->assertEquals($expectedRecordIds, $recordIds, 'Record IDs check.');
     }
 }
