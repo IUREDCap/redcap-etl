@@ -24,7 +24,7 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
     public static function setUpBeforeClass()
     {
         if (file_exists(self::CONFIG_FILE)) {
-            self::$logger = new Logger('workflow1-mysql-test');
+            self::$logger = new Logger('workflow-basic-demography-mysql-test');
 
             $configuration = new WorkflowConfig();
             $configuration->set(self::$logger, self::CONFIG_FILE);
@@ -74,22 +74,13 @@ class WorkflowBasicDemographyMysqlTest extends TestCase
         $this->assertFalse($hasException, 'Run ETL exception check: '.$exceptionMessage);
 
         #-------------------------------------------
-        # table "cardiovascular" row count check
+        # table "basic_demography" row count check
         #-------------------------------------------
-        $sql = 'SELECT COUNT(*) FROM cardiovascular';
+        $sql = 'SELECT COUNT(*) FROM basic_demography';
 
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchColumn(0);
-        $this->assertEquals(100, $actualData, 'Cardiovascular row count check');
-
-        #-----------------------------------------------
-        # table "contact_information" row count check
-        #-----------------------------------------------
-        $sql = 'SELECT COUNT(*) FROM contact_information';
-
-        $statement  = static::$dbh->query($sql);
-        $actualData = $statement->fetchColumn(0);
-        $this->assertEquals(100, $actualData, 'Contact information row count check');
+        $this->assertEquals(300, $actualData, 'basic_demography row count check');
     }
 
 

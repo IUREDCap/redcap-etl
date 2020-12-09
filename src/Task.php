@@ -179,6 +179,8 @@ class Task
         #-------------------------------------------------------------------
         if (!$this->isSqlOnlyTask()) {
             $this->schema = $this->processTransformationRules();
+        } else {
+            $this->schema = new Schema();
         }
         
         if ($this->taskConfig->getDbLogging()) {
