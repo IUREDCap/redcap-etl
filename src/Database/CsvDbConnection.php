@@ -308,4 +308,28 @@ class CsvDbConnection extends DbConnection
         $message = "Processing a queries is not supported for CSV files";
         throw new EtlException($message, EtlException::INPUT_ERROR);
     }
+
+    /**
+     * Gets the data as an array of maps from column name to data value.
+     */
+    public function getData($tableName)
+    {
+        $data = array();
+
+        $tableFile = $this->directory . $tableName . '.csv';
+
+        $fh = fopen($tableFile, "r");
+
+        if (isset($fh) && !feof($fh)) {
+            $columnNames = fgetcsv($fh);   # The first row is the column names
+            while (!feof($fh)) {
+                $row = fgetcsv($fh);
+                # Change row from array of data values to map from column name to data value
+                $row = array_combine($columnNames, $row);
+                $data[] = $row;
+            }
+        }
+        fclose($fh);
+        return $data;
+    }
 }

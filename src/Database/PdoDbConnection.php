@@ -483,6 +483,17 @@ abstract class PdoDbConnection extends DbConnection
         }
     }
 
+    public function getData($tableName)
+    {
+        $data = array();
+        $query = 'SELECT * FROM '.$this->escapeName($tableName);
+        $result = $this->db->query($query);
+        if ($result) {
+            $data = $result->fetchAll(\PDO::FETCH_ASSOC);
+        }
+        return $data;
+    }
+
     /**
      * Escapes a name for use as a table or column name in a query.
      */
