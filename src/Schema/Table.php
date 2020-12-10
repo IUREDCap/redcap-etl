@@ -110,7 +110,7 @@ class Table
      */
     public function merge($table, $mergeData = false)
     {
-        $mergedTable = $this;
+        $mergedTable = clone $this;
 
         $mergedTable->usesLookup = $this->usesLookup || $table->usesLookup;
 
@@ -449,7 +449,6 @@ class Table
         $dataFound = false;
         
         $allFields = $this->getFields();
-        $fieldNames = array_column($allFields, 'name');
         
         // Foreach field
         foreach ($allFields as $field) {
@@ -514,6 +513,10 @@ class Table
                     }
                 }
             } else {
+                if ($this->name === 'basic_demography' && $row->data['record_id'] == 1001) {
+                    #print $field->toString();
+                    #print_r($row->data);
+                }
                 // Otherwise, get data
                 
                 $isCalcField     = false;
@@ -545,11 +548,12 @@ class Table
 
                 // Add field and value to row and
                 // keep track of whether any data is found
-                $row->data[$field->name] = '';
+                $row->data[$field->dbName] = '';
                 $value = null;
                 if (array_key_exists($variableName, $data)) {
                     $value = $data[$variableName];
-                    $row->data[$field->name] = $value;
+                    # print "\nAdded value {$value} to field {$field->dbName}\n";
+                    $row->data[$field->dbName] = $value;
                 }
 
                 if (isset($value)) {
@@ -595,6 +599,11 @@ class Table
             $row->data[$this->primary->name] = $primaryKeyValue;
 
             // Add Row
+            if ($this->name === 'basic_demography') {
+                if ($row->data['record_id'] == 1001) {
+                    #print_r($row->data);
+                }
+            }
             $this->addRow($row);
 
             return($primaryKeyValue);

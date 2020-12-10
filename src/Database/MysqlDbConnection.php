@@ -502,48 +502,48 @@ class MysqlDbConnection extends DbConnection
         $rowData = $row->getData();
         $rowValues = array();
         foreach ($fields as $field) {
-            $fieldName  = $field->name;
-            $fieldType  = $field->type;
-            $redcapType = $field->redcapType;
+            $fieldDbName = $field->dbName;
+            $fieldType   = $field->type;
+            $redcapType  = $field->redcapType;
 
             switch ($fieldType) {
                 case FieldType::INT:
-                    #print "REDCAP TYPE FOR {$fieldName}: {$redcapType}\n";
-                    if (empty($rowData[$fieldName]) && $rowData[$fieldName] !== 0) {
+                    #print "REDCAP TYPE FOR {$fieldDbName}: {$redcapType}\n";
+                    if (empty($rowData[$fieldDbName]) && $rowData[$fieldDbName] !== 0) {
                         if (strcasecmp($redcapType, 'checkbox') === 0) {
                             $rowValues[] = 0;
                         } else {
                             $rowValues[] = 'null';
                         }
                     } else {
-                        $rowValues[] = (int) $rowData[$fieldName];
+                        $rowValues[] = (int) $rowData[$fieldDbName];
                     }
                     break;
                 case FieldType::CHECKBOX:
-                    if (empty($rowData[$fieldName])) {
+                    if (empty($rowData[$fieldDbName])) {
                         $rowValues[] = 0;
                     } else {
-                        $rowValues[] = (int) $rowData[$fieldName];
+                        $rowValues[] = (int) $rowData[$fieldDbName];
                     }
                     break;
                 case FieldType::FLOAT:
-                    if (empty($rowData[$fieldName]) && $rowData[$fieldName] !== 0.0) {
+                    if (empty($rowData[$fieldDbName]) && $rowData[$fieldDbName] !== 0.0) {
                         $rowValues[] = 'null';
                     } else {
-                        $rowValues[] = (float) $rowData[$fieldName];
+                        $rowValues[] = (float) $rowData[$fieldDbName];
                     }
                     break;
                 case FieldType::STRING:
                 case FieldType::CHAR:
                 case FieldType::VARCHAR:
-                    $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldName])."'";
+                    $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldDbName])."'";
                     break;
                 case FieldType::DATE:
                 case FieldType::DATETIME:
-                    if (empty($rowData[$fieldName])) {
+                    if (empty($rowData[$fieldDbName])) {
                         $rowValues[] = "null";
                     } else {
-                        $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldName])."'";
+                        $rowValues[] = "'".$this->mysqli->real_escape_string($rowData[$fieldDbName])."'";
                     }
                     break;
                 default:
@@ -634,10 +634,15 @@ class MysqlDbConnection extends DbConnection
     }
 
 
-    public function getData($tableName)
+    public function getData($tableName, $orderByField = null)
     {
         $data = array();
         $query = 'SELECT * FROM '.$this->escapeName($tableName);
+
+        if (!empty($orderByField)) {
+            $query .= ' ORDER BY '.$this->escapeName($orderByField);
+        }
+
         $result = $this->mysqli->query($query);
         if ($result) {
             $data = $result->fetch_all(MYSQLI_ASSOC);

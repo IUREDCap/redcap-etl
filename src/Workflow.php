@@ -69,7 +69,7 @@ class Workflow
             # Create task for this task configuration
             $task = new Task($taskId);
             $task->initialize($this->logger, $taskConfig, $redcapProjectClass);
-        
+
             $this->tasks[] = $task;
 
             # Get string that serves as database identifier

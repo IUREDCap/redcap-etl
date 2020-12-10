@@ -151,7 +151,7 @@ abstract class DbConnection
      *     represented as an associative array, where the keys are column names and the values
      *     are the corresponding data values.
      */
-    abstract public function getData($tableName);
+    abstract public function getData($tableName, $orderByField = null);
 
     /**
      * Replaces the specified table in the database

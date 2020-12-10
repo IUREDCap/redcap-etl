@@ -188,6 +188,9 @@ class Task
             $this->schema->setDbLogTable($dbLogTable);
             $this->schema->setDbEventLogTable($dbEventLogTable);
         }
+
+        #print "\n\n-----------------------------------------------------SCHEMA:=======\n";
+        #print $this->schema->toString();
     }
 
 

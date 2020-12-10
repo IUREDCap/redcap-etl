@@ -206,7 +206,7 @@ class CsvDbConnection extends DbConnection
         $rowData = $row->getData();
         foreach ($table->getAllFields() as $field) {
             $fieldType = $field->type;
-            $value = $rowData[$field->name];
+            $value = $rowData[$field->dbName];
 
             if ($isFirst) {
                 $isFirst = false;
@@ -312,7 +312,7 @@ class CsvDbConnection extends DbConnection
     /**
      * Gets the data as an array of maps from column name to data value.
      */
-    public function getData($tableName)
+    public function getData($tableName, $orderByField = null)
     {
         $data = array();
 
@@ -325,11 +325,19 @@ class CsvDbConnection extends DbConnection
             while (!feof($fh)) {
                 $row = fgetcsv($fh);
                 # Change row from array of data values to map from column name to data value
+                #print_r($columnNames);
+                #print_r($row);
                 $row = array_combine($columnNames, $row);
                 $data[] = $row;
             }
         }
         fclose($fh);
+
+        if (!empty($orderByField)) {
+            $orderByFieldValues = array_column($data, $orderByfield);
+            array_multisort($orderByFieldValues, SORT_ASC, $data);
+        }
+
         return $data;
     }
 }

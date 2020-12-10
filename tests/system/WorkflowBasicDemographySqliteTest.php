@@ -9,9 +9,9 @@ namespace IU\REDCapETL;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Runs the basic demograhy workflow tests using MySQL as the database.
+ * Runs the basic demography workflow tests using SQLite as the database.
  */
-class WorkflowBasicDemographyMysqlTest extends WorkflowBasicDemographySystemTest
+class WorkflowBasicDemographySqliteTest extends WorkflowBasicDemographySystemTest
 {
-    const CONFIG_FILE = __DIR__.'/../config/workflow-basic-demography-mysql.ini';
+    const CONFIG_FILE = __DIR__.'/../config/workflow-basic-demography-sqlite.ini';
 }
