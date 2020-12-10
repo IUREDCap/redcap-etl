@@ -50,7 +50,7 @@ class MetadataTable extends Table
 
     public function __construct($name = self::DEFAULT_NAME)
     {
-        $fieldTypePrimary = new FieldTypeSpecifier(FieldType::AUTO_INCREMENT);
+        $fieldTypePrimary = new FieldTypeSpecifier(FieldType::INT);
 
         parent::__construct(
             $name,
