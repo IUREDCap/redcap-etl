@@ -95,6 +95,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/VisitsMysqlCodeTest.php</file>
       <file>tests/system/VisitsSqliteCodeTest.php</file>
       <file>tests/system/Workflow1Test.php</file>
+      <file>tests/system/WorkflowBasicDemographyCsvTest.php</file>
       <file>tests/system/WorkflowBasicDemographyMysqlTest.php</file>
       <file>tests/system/WorkflowBasicDemographyPostgreSqlTest.php</file>
       <file>tests/system/WorkflowBasicDemographySqliteTest.php</file>

@@ -324,17 +324,17 @@ class CsvDbConnection extends DbConnection
             $columnNames = fgetcsv($fh);   # The first row is the column names
             while (!feof($fh)) {
                 $row = fgetcsv($fh);
-                # Change row from array of data values to map from column name to data value
-                #print_r($columnNames);
-                #print_r($row);
-                $row = array_combine($columnNames, $row);
-                $data[] = $row;
+                if (!empty($row)) {
+                    # Change row from array of data values to map from column name to data value
+                    $row = array_combine($columnNames, $row);
+                    $data[] = $row;
+                }
             }
         }
         fclose($fh);
 
         if (!empty($orderByField)) {
-            $orderByFieldValues = array_column($data, $orderByfield);
+            $orderByFieldValues = array_column($data, $orderByField);
             array_multisort($orderByFieldValues, SORT_ASC, $data);
         }
 

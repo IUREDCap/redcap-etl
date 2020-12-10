@@ -270,6 +270,18 @@ class Schema
         return($tableName);
     }
 
+    public function hasTable($tableName)
+    {
+        $hasTable = false;
+        foreach ($this->tables as $table) {
+            if (strcmp($table->getName(), $tableName) === 0) {
+                $hasTable = true;
+                break;
+            }
+        }
+        return $hasTable;
+    }
+
 
     /**
      * Gets the lookup table.

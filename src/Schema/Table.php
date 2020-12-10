@@ -475,6 +475,8 @@ class Table
                 }
             } elseif ($field->name === RedCapEtl::COLUMN_EVENT) {
                 // If this is the field to store the current event
+                #print "\nTABLE {$this->name}\n";
+                #print_r($row->data);
                 $row->data[$field->dbName] = $data[$field->name];
             } elseif ($field->name === RedCapEtl::COLUMN_SUFFIXES) {
                 // if this is the field to store the current suffix
