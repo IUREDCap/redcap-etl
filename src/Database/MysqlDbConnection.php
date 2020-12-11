@@ -637,6 +637,9 @@ class MysqlDbConnection extends DbConnection
     }
 
 
+    /**
+     * Note: MySQL with return all values with type string.
+     */
     public function getData($tableName, $orderByField = null)
     {
         $data = array();
