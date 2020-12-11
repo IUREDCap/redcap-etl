@@ -25,7 +25,7 @@
     "lookup_table_name": "basic_lookup",
 
     "transform_rules_text": [
-        "TABLE,Demography_json,primary_key,ROOT",
+        "TABLE,basic_demography_json,basic_demography_id,ROOT",
         "FIELD,record_id,int",
         "FIELD,first_name,varchar(40)",
         "FIELD,last_name,varchar(40)",

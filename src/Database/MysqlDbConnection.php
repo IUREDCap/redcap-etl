@@ -405,7 +405,7 @@ class MysqlDbConnection extends DbConnection
         $queryValues[] = '('.implode(",", $rowValues).')';
     
         $query = $this->createInsertStatement($table->getName(), $fields, $queryValues);
-        #print "\nQUERY: $query\n";
+        # print "\nQUERY: $query\n";
     
         $rc = $this->mysqli->query($query);
     
@@ -453,6 +453,7 @@ class MysqlDbConnection extends DbConnection
             }
     
             $query = $this->createInsertStatement($table->getName(), $fields, $queryValues);
+            # print "QUERY: {$query}\n";
     
             $rc = $this->mysqli->query($query);
     
@@ -509,7 +510,9 @@ class MysqlDbConnection extends DbConnection
             switch ($fieldType) {
                 case FieldType::INT:
                     #print "REDCAP TYPE FOR {$fieldDbName}: {$redcapType}\n";
-                    if (empty($rowData[$fieldDbName]) && $rowData[$fieldDbName] !== 0) {
+                    if (empty($rowData[$fieldDbName])
+                            && $rowData[$fieldDbName] !== 0
+                            && $rowData[$fieldDbName] !== '0') {
                         if (strcasecmp($redcapType, 'checkbox') === 0) {
                             $rowValues[] = 0;
                         } else {

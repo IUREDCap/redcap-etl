@@ -40,8 +40,8 @@ class BasicDemographyTest extends TestCase
                 self::$csvDir .= DIRECTORY_SEPARATOR;
             }
             
-            self::$csvFile      = self::$csvDir . 'Demography.csv';
-            self::$csvLabelFile = self::$csvDir . 'Demography'.$config->getlabelViewSuffix().'.csv';
+            self::$csvFile      = self::$csvDir . 'basic_demography.csv';
+            self::$csvLabelFile = self::$csvDir . 'basic_demography'.$config->getlabelViewSuffix().'.csv';
             # Try to delete the output file in case it exists from a previous run
             if (file_exists(self::$csvFile)) {
                 unlink(self::$csvFile);

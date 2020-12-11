@@ -40,8 +40,8 @@ class BasicDemographyJsonTest extends TestCase
                 self::$csvDir .= DIRECTORY_SEPARATOR;
             }
             
-            self::$csvFile      = self::$csvDir . 'Demography_json.csv';
-            self::$csvLabelFile = self::$csvDir . 'Demography_json'.$config->getlabelViewSuffix().'.csv';
+            self::$csvFile      = self::$csvDir . 'basic_demography_json.csv';
+            self::$csvLabelFile = self::$csvDir . 'basic_demography_json'.$config->getlabelViewSuffix().'.csv';
             # Try to delete the output file in case it exists from a previous run
             if (file_exists(self::$csvFile)) {
                 unlink(self::$csvFile);

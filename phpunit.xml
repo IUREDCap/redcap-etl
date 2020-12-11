@@ -80,8 +80,9 @@ SPDX-License-Identifier: BSD-3-Clause
           a server
     -->
     <testsuite name="system">
-      <file>tests/system/MysqlAutoRulesTest.php</file>
+      <file>tests/system/BasicDemographyMysqlTest.php</file>
       <file>tests/system/DynamicRulesTest.php</file>
+      <file>tests/system/MysqlAutoRulesTest.php</file>
       <file>tests/system/MysqlSslTest.php</file>
       <file>tests/system/MysqlTest.php</file>
       <file>tests/system/PostgreSqlTest.php</file>

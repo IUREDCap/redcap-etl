@@ -515,14 +515,11 @@ class Table
                     }
                 }
             } else {
-                if ($this->name === 'basic_demography' && $row->data['record_id'] == 1001) {
-                    #print $field->toString();
-                    #print_r($row->data);
-                }
                 // Otherwise, get data
                 
                 $isCalcField     = false;
                 $isCheckbox      = false;
+                $isRadio         = false;
                 $isCompleteField = false;
 
                 // If this is a checkbox field
@@ -537,6 +534,8 @@ class Table
                                         
                     if ($field->redcapType === 'calc') {
                         $isCalcField = true;
+                    } elseif ($field->redcapType === 'radio') {
+                        $isRadio = true;
                     }
 
                     if (preg_match('/_complete$/', $field->name)) {
@@ -600,12 +599,6 @@ class Table
             }
             $row->data[$this->primary->name] = $primaryKeyValue;
 
-            // Add Row
-            if ($this->name === 'basic_demography') {
-                if ($row->data['record_id'] == 1001) {
-                    #print_r($row->data);
-                }
-            }
             $this->addRow($row);
 
             return($primaryKeyValue);

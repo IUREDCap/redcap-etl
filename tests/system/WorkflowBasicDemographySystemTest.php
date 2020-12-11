@@ -83,5 +83,39 @@ class WorkflowBasicDemographySystemTest extends TestCase
         $expectedRecordIds = array_merge(range(1001, 1100), range(1001, 1100), range(1001, 1100));
         $recordIds = array_column($actualData, 'record_id');
         $this->assertEquals($expectedRecordIds, $recordIds, 'Record IDs check.');
+
+        # print "\nCLASS: ".get_class($this)."\n\n";
+
+        /*
+        if (!($this instanceOf WorkflowBasicDemographyCsvTest)) {
+            $actualLastRow = $actualData[count($actualData)-1];
+            $expectedLastRow = [
+                "basic_demography_id" => 300,
+                "redcap_data_source" => 4,
+                "record_id" => "1100",
+                "first_name"=> "Ella",
+                "last_name" => "Kunze",
+                "address" => "26346 Kenyatta Fords\nStoltenbergville, MN 57828-4095",
+                "phone" => "(714) 207-0230",
+                "email" => "ella.kunze@mailinator.com",
+                "birthdate" => "1988-01-19",
+                "ethnicity" => 1,
+                "race___0" => 0,
+                "race___1" => 0,
+                "race___2" => 0,
+                "race___3" => 0,
+                "race___4" => 1,
+                "race___5" => 0,
+                "sex" => 0,
+                "height" => 172,
+                "weight" => 64,
+                "bmi" => 21.6,
+                "comments" => "",
+                "dob" => "1988-01-19"
+            ];
+            $this->assertEquals($expectedLastRow, $actualLastRow, 'Last row check');
+            print_r($actualLastRow);
+        }
+        */
     }
 }
