@@ -63,6 +63,7 @@ $visitsApiToken  = $properties['visits']['data_source_api_token'];
 $dbConnection['mysql']         = $properties['mysql']['db_connection'];
 $dbConnection['mysql-ssl']     = $properties['mysql-ssl']['db_connection'];
 $dbConnection['postgresql']    = $properties['postgresql']['db_connection'];
+$dbConnection['sqlite']        = $properties['sqlite']['db_connection'];
 $dbConnection['sqlserver']     = $properties['sqlserver']['db_connection'];
 $dbConnection['sqlserver-ssl'] = $properties['sqlserver-ssl']['db_connection'];
 
@@ -290,7 +291,7 @@ foreach ($configFiles as $configFile) {
             );
         }
 
-        if (!empty($db) && $db !== 'sqlite') {
+        if (!empty($db)) {
             $contents = preg_replace(
                 '/db_connection\s*=.*/',
                 "db_connection = ".$dbConnection[$db],

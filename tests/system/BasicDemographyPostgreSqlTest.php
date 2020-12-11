@@ -9,9 +9,9 @@ namespace IU\REDCapETL;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Runs the "basic demography" tests using MySQL as the database.
+ * Runs the "basic demography" tests using PostgreSQL as the database.
  */
-class BasicDemographyMysqlTest extends BasicDemographySystemTest
+class BasicDemographyPostgreSqlTest extends BasicDemographySystemTest
 {
-    const CONFIG_FILE = __DIR__.'/../config/basic-demography-mysql.ini';
+    const CONFIG_FILE = __DIR__.'/../config/basic-demography-postgresql.ini';
 }

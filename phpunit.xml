@@ -81,6 +81,9 @@ SPDX-License-Identifier: BSD-3-Clause
     -->
     <testsuite name="system">
       <file>tests/system/BasicDemographyMysqlTest.php</file>
+      <file>tests/system/BasicDemographyPostgreSqlTest.php</file>
+      <file>tests/system/BasicDemographySqliteTest.php</file>
+      <file>tests/system/BasicDemographySqlServerTest.php</file>
       <file>tests/system/DynamicRulesTest.php</file>
       <file>tests/system/MysqlAutoRulesTest.php</file>
       <file>tests/system/MysqlSslTest.php</file>
