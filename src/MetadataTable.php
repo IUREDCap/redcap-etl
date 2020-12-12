@@ -21,11 +21,13 @@ class MetadataTable extends Table
 {
     const DEFAULT_NAME       = 'redcap_metadata';
     
-    const FIELD_PRIMARY_ID       = 'redcap_data_source';
-    const FIELD_FIELD_NAME       = 'field_name';
-    const FIELD_FORM_NAME        = 'form_name';
-    const FIELD_FIELD_TYPE       = 'field_type';
-    const FIELD_IDENTIFIER       = 'identifier';
+    const FIELD_PRIMARY_ID        = 'redcap_data_source';
+    const FIELD_TABLE             = 'table';
+    const FIELD_TABLE_FIELD       = 'table_field';
+    const FIELD_FIELD_NAME        = 'field_name';
+    const FIELD_FORM_NAME         = 'form_name';
+    const FIELD_FIELD_TYPE        = 'field_type';
+    const FIELD_IDENTIFIER        = 'identifier';
 
     /*
     [field_name] => weight_pounds
@@ -60,8 +62,14 @@ class MetadataTable extends Table
             array()
         );
 
+        $fieldTable      = new Field(self::FIELD_TABLE, FieldType::VARCHAR, 255);
+        $fieldTableField = new Field(self::FIELD_TABLE_FIELD, FieldType::VARCHAR, 255);
+
+        $this->addField($fieldTable);
+        $this->addField($fieldTableField);
+
         #-----------------------------------------------
-        # Create and add fields for the lookup table
+        # Create and add REDCap metadata fields
         #-----------------------------------------------
         $fieldFieldName  = new Field(self::FIELD_FIELD_NAME, FieldType::VARCHAR, 255);
         $fieldFormName   = new Field(self::FIELD_FORM_NAME, FieldType::VARCHAR, 255);
@@ -75,10 +83,12 @@ class MetadataTable extends Table
     }
     
         
-    public function createDataRow($taskId, $metadata)
+    public function createDataRow($taskId, $table, $tableField, $metadata)
     {
         $row = new Row($this);
         $row->addValue(self::FIELD_PRIMARY_ID, $taskId);
+        $row->addValue(self::FIELD_TABLE, $table);
+        $row->addValue(self::FIELD_TABLE_FIELD, $tableField);
         $row->addValue(self::FIELD_FIELD_NAME, $metadata[self::FIELD_FIELD_NAME]);
         $row->addValue(self::FIELD_FORM_NAME, $metadata[self::FIELD_FORM_NAME]);
         $row->addValue(self::FIELD_FIELD_TYPE, $metadata[self::FIELD_FIELD_TYPE]);

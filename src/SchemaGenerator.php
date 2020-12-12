@@ -141,18 +141,6 @@ class SchemaGenerator
         $projectInfoTable->addRow($row);
         $schema->setProjectInfoTable($projectInfoTable);
 
-        #-----------------------------------------
-        # Add the REDCap metadata table
-        #-----------------------------------------
-        $metadataTableName = $this->taskConfig->getRedCapMetadataTable();
-        $metadataTable = new MetadataTable($metadataTableName);
-
-        foreach ($metadata as $fieldMetadata) {
-            $row = $metadataTable->createDataRow($this->taskId, $fieldMetadata);
-            $metadataTable->addRow($row);
-        }
-        $schema->setMetadataTable($metadataTable);
-
 
         #---------------------------------------------------
         # Log how many fields in REDCap could be parsed
@@ -366,6 +354,38 @@ class SchemaGenerator
             } // End if for rule types
         } // End foreach
         
+        #-----------------------------------------
+        # Add the REDCap metadata table
+        #-----------------------------------------
+        $metadataTableName = $this->taskConfig->getRedCapMetadataTable();
+        $metadataTable = new MetadataTable($metadataTableName);
+
+        $metadataMap = array();
+        foreach ($metadata as $fieldMetadata) {
+            $metadataMap[$fieldMetadata['field_name']] = $fieldMetadata;
+        }
+
+        foreach ($schema->getTables() as $table) {
+            foreach ($table->getFields() as $field) {
+                # For checkbox fields, need to remove the checbox value for looking up the metadata
+                $fieldName = $field->name;
+                if ($field->redcapType === 'checkbox') {
+                    $fieldName = substr($fieldName, 0, strpos($fieldName, RedCapEtl::CHECKBOX_SEPARATOR));
+                }
+
+                if (array_key_exists($fieldName, $metadataMap)) {
+                    $row = $metadataTable->createDataRow(
+                        $this->taskId,
+                        $table->getName(),
+                        $field->dbName,
+                        $metadataMap[$fieldName]
+                    );
+                    $metadataTable->addRow($row);
+                }
+            }
+        }
+        $schema->setMetadataTable($metadataTable);
+
         
         if ($parsedRules->getParsedLineCount() < 1) {
             $message = "Found no transformation rules.";
