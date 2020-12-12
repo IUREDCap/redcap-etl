@@ -63,6 +63,37 @@ class WorkflowBasicDemographySystemTest extends TestCase
         }
         $this->assertFalse($hasException, 'Run ETL exception check: '.$exceptionMessage);
 
+        #-----------------------
+        # Column names check
+        #-----------------------
+        $expectedColumns = [
+            'basic_demography_id',
+            'redcap_data_source',
+            'record_id',
+            'first_name',
+            'last_name',
+            'address',
+            'phone',
+            'email',
+            'birthdate',
+            'ethnicity',
+            'race___0',
+            'race___1',
+            'race___2',
+            'race___3',
+            'race___4',
+            'race___5',
+            'sex',
+            'height',
+            'weight',
+            'bmi',
+            'comments',
+            'dob',
+        ];
+        $columns = self::$dbConnection->getTableColumnNames('basic_demography');
+        $this->assertEquals($expectedColumns, $columns, 'Column name check');
+
+
         #-------------------------------------------
         # table "basic_demography" row count check
         #-------------------------------------------

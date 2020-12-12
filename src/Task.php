@@ -485,7 +485,7 @@ class Task
                 $startTransformTime = microtime(true);
                 # For each root table, because processing will be done
                 # recursively to the child tables
-                foreach ($this->dbSchema->getRootTables() as $rootTable) {
+                foreach ($this->schema->getRootTables() as $rootTable) {
                     // Transform the records for this record_id into rows
                     if ($this->schema->hasTable($rootTable->getName())) {
                         $this->transform($rootTable, $records, '', '');
@@ -503,7 +503,7 @@ class Task
             # Load the data into the database
             #-------------------------------------
             $startLoadTime = microtime(true);
-            foreach ($this->dbSchema->getTables() as $table) {
+            foreach ($this->schema->getTables() as $table) {
                 # Single row storage (stores one row at a time):
                 # foreach row, load it
                 if ($this->schema->hasTable($table->getName())) {

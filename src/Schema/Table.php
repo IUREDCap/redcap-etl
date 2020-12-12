@@ -267,6 +267,16 @@ class Table
         return $this->fields;
     }
 
+    public function getDbFieldNameMap()
+    {
+        $map = array();
+        foreach ($this->getAllFields() as $field) {
+            $map[$field->dbName] = $field;
+        }
+        return $map;
+    }
+
+
     /**
      * Returns regular fields, primary field, and, if
      * applicable, foreign field

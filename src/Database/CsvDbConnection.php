@@ -204,63 +204,75 @@ class CsvDbConnection extends DbConnection
         $isFirst = true;
         $position = 0;
         $rowData = $row->getData();
-        foreach ($table->getAllFields() as $field) {
-            $fieldType = $field->type;
-            $value = $rowData[$field->dbName];
 
+        # Fix row data to contain all the columns in the table
+        $columns = $this->getTableColumnNames($table->GetName());
+        $dbFieldNameMap = $table->getDbFieldNameMap();
+        foreach ($columns as $column) {
             if ($isFirst) {
                 $isFirst = false;
             } else {
                 $this->fileWrite($fh, $lfh, ',');
             }
 
-            #------------------------------------------------------
-            # Calculate the label for the field (if any)
-            #------------------------------------------------------
-            $label = null;
-            if ($field->usesLookup()) {
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
-                //if ($fieldType === FieldType::CHECKBOX) {  // This is wrong, because CHECKBOX field becomes int fields
-                    if ($value === 1 || $value === '1') {
-                        list($rootName, $checkboxValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
-                        $label = $this->lookupTable->getLabel($table->getName(), $field->usesLookup(), $checkboxValue);
-                    } else {
-                        $label = '0';
+            if (!array_key_exists($column, $dbFieldNameMap)) {
+                $this->fileWrite($fh, $lfh, '');
+            } else {
+                $field = $dbFieldNameMap[$column];
+                $fieldType = $field->type;
+                $value = $rowData[$field->dbName];
+
+                #------------------------------------------------------
+                # Calculate the label for the field (if any)
+                #------------------------------------------------------
+                $label = null;
+                if ($field->usesLookup()) {
+                    if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
+                        if ($value === 1 || $value === '1') {
+                            list($rootName, $checkboxValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
+                            $label = $this->lookupTable->getLabel(
+                                $table->getName(),
+                                $field->usesLookup(),
+                                $checkboxValue
+                            );
+                        } else {
+                            $label = '0';
+                        }
+                    } else {    // Non-checkbox field
+                        $label = $this->lookupTable->getLabel($table->getName(), $field->usesLookup(), $value);
                     }
-                } else {    // Non-checkbox field
-                    $label = $this->lookupTable->getLabel($table->getName(), $field->usesLookup(), $value);
                 }
+ 
+                switch ($fieldType) {
+                    case FieldType::CHECKBOX:
+                        //$label = null;
+                        $this->fileWrite($fh, $lfh, $value, $label);
+                        break;
+                    case FieldType::DATE:
+                    case FieldType::DATETIME:
+                        $this->fileWrite($fh, $lfh, $value);
+                        break;
+                    case FieldType::FLOAT:
+                        $this->fileWrite($fh, $lfh, $value);
+                        break;
+                    case FieldType::INT:
+                        //$label = null;
+                        $this->fileWrite($fh, $lfh, $value, $label);
+                        break;
+                    case FieldType::CHAR:
+                    case FieldType::VARCHAR:
+                    case FieldType::STRING:
+                        if (isset($label)) {
+                            $this->fileWrite($fh, $lfh, '"'.$value.'"', '"'.$label.'"');
+                        } else {
+                            $this->fileWrite($fh, $lfh, '"'.$value.'"');
+                        }
+                        break;
+                    default:
+                        $this->fileWrite($fh, $lfh, $value, $label);
+                }
+                $position++;
             }
-                    
-            switch ($fieldType) {
-                case FieldType::CHECKBOX:
-                    //$label = null;
-                    $this->fileWrite($fh, $lfh, $value, $label);
-                    break;
-                case FieldType::DATE:
-                case FieldType::DATETIME:
-                    $this->fileWrite($fh, $lfh, $value);
-                    break;
-                case FieldType::FLOAT:
-                    $this->fileWrite($fh, $lfh, $value);
-                    break;
-                case FieldType::INT:
-                    //$label = null;
-                    $this->fileWrite($fh, $lfh, $value, $label);
-                    break;
-                case FieldType::CHAR:
-                case FieldType::VARCHAR:
-                case FieldType::STRING:
-                    if (isset($label)) {
-                        $this->fileWrite($fh, $lfh, '"'.$value.'"', '"'.$label.'"');
-                    } else {
-                        $this->fileWrite($fh, $lfh, '"'.$value.'"');
-                    }
-                    break;
-                default:
-                    $this->fileWrite($fh, $lfh, $value, $label);
-            }
-            $position++;
         }
         $this->fileWrite($fh, $lfh, PHP_EOL);
     }
