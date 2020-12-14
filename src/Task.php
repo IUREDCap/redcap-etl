@@ -489,9 +489,7 @@ class Task
                 # recursively to the child tables
                 foreach ($this->schema->getRootTables() as $rootTable) {
                     // Transform the records for this record_id into rows
-                    if ($this->schema->hasTable($rootTable->getName())) {
-                        $this->transform($rootTable, $records, '', '');
-                    }
+                    $this->transform($rootTable, $records, '', '');
                 }
                 $endTransformTime = microtime(true);
                 $transformTime += $endTransformTime - $startTransformTime;
@@ -508,10 +506,7 @@ class Task
             foreach ($this->schema->getTables() as $table) {
                 # Single row storage (stores one row at a time):
                 # foreach row, load it
-                if ($this->schema->hasTable($table->getName())) {
-                    # Only process this table if it exists in the task's schema
-                    $this->loadTableRowsEfficiently($table);
-                }
+                $this->loadTableRowsEfficiently($table);
             }
             $endLoadTime = microtime(true);
             $loadTime += $endLoadTime - $startLoadTime;
