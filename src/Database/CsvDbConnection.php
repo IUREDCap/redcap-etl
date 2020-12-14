@@ -24,11 +24,17 @@ class CsvDbConnection extends DbConnection
     private $lookupTable;
     private $id;
 
+    private $columnNamesMap;  // map from table name to array of column names
+
     public function __construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix)
     {
         parent::__construct($dbString, $ssl, $sslVerify, $caCertFile, $tablePrefix, $labelViewSuffix);
 
         $this->directory = $dbString;
+
+        $this->columnNamesMap = array();
+
+        $this->columnNamesMap = array();
 
         $idValues = array(DbConnectionFactory::DBTYPE_CSV, $dbString);
         $this->id = DbConnection::createConnectionString($idValues);
@@ -298,12 +304,22 @@ class CsvDbConnection extends DbConnection
     {
         $columnNames = array();
 
-        $tableFile = $this->directory . $tableName . '.csv';
+        if (array_key_exists($tableName, $this->columnNamesMap)) {
+            $columnNames = $this->columnNamesMap[$tableName];
+        } else {
+            $tableFile = $this->directory . $tableName . '.csv';
 
-        @$fh = fopen($tableFile, 'r');
-        if ($fh) {
-            $columnNames = fgetcsv($fh);
-            fclose($fh);
+            @$fh = fopen($tableFile, 'r');
+            if ($fh) {
+                $columnNames = fgetcsv($fh);
+                fclose($fh);
+            }
+            if (!empty($columnNames)) {
+                # Create a cache for column names, otherwise they
+                # will be retrieved from the table file for each
+                # row that is inserted into the file.
+                $this->columnNamesMap[$tableName] = $columnNames;
+            }
         }
 
         return $columnNames;
