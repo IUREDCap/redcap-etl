@@ -115,38 +115,117 @@ class WorkflowBasicDemographySystemTest extends TestCase
         $recordIds = array_column($actualData, 'record_id');
         $this->assertEquals($expectedRecordIds, $recordIds, 'Record IDs check.');
 
-        # print "\nCLASS: ".get_class($this)."\n\n";
+        #--------------------------------
+        # First row check
+        #--------------------------------
+        $expectedFirstRow = [
+            'basic_demography_id' => '1',
+            'redcap_data_source'  => '2',
+            'record_id'           => '1001',
+            'first_name'          => "Katherine",
+            'last_name'           => "Huels",
+            'address'             => "316 Goodwin Lights Suite 463\nPort Marietta, NV 35323-5627",
+            'phone'               => "(759) 257-3524",
+            'email'               => "katherine.huels@mailinator.com",
+            'birthdate'           => "1955-05-07",
+            'ethnicity'           => '0',
+            'race___0'            => '0',
+            'race___1'            => '0',
+            'race___2'            => '0',
+            'race___3'            => '0',
+            'race___4'            => '1',
+            'race___5'            => '0',
+            'sex'                 => '0',
+            'height'              => '174.0',
+            'weight'              => '57.0',
+            'bmi'                 => '18.8',
+            'comments'            => '',
+            'dob'                 => ''
+        ];
 
-        /*
-        if (!($this instanceOf WorkflowBasicDemographyCsvTest)) {
-            $actualLastRow = $actualData[count($actualData)-1];
-            $expectedLastRow = [
-                "basic_demography_id" => 300,
-                "redcap_data_source" => 4,
-                "record_id" => "1100",
-                "first_name"=> "Ella",
-                "last_name" => "Kunze",
-                "address" => "26346 Kenyatta Fords\nStoltenbergville, MN 57828-4095",
-                "phone" => "(714) 207-0230",
-                "email" => "ella.kunze@mailinator.com",
-                "birthdate" => "1988-01-19",
-                "ethnicity" => 1,
-                "race___0" => 0,
-                "race___1" => 0,
-                "race___2" => 0,
-                "race___3" => 0,
-                "race___4" => 1,
-                "race___5" => 0,
-                "sex" => 0,
-                "height" => 172,
-                "weight" => 64,
-                "bmi" => 21.6,
-                "comments" => "",
-                "dob" => "1988-01-19"
-            ];
-            $this->assertEquals($expectedLastRow, $actualLastRow, 'Last row check');
-            print_r($actualLastRow);
+
+        $actualFirstRow = $actualData[0];
+        $actualFirstRow['phone'] = rtrim($actualFirstRow['phone']);
+
+        if ($this instanceof WorkflowBasicDemographyCsvTest) {
+            $expectedFirstRow['redcap_data_source'] = 1;
         }
-        */
+
+        $this->assertEquals($expectedFirstRow, $actualFirstRow, 'First row check');
+
+        #--------------------------------
+        # Row 200 check
+        #--------------------------------
+        $expected200thRow = [
+            'basic_demography_id' => '200',
+            'redcap_data_source'  => '3',
+            'record_id'           => '1100',
+            "first_name"          => "Ella",
+            "last_name"           => "Kunze",
+            "address"             => "26346 Kenyatta Fords\nStoltenbergville, MN 57828-4095",
+            "phone"               => "",
+            "email"               => "ella.kunze@mailinator.com",
+            "birthdate"           => "",
+            "ethnicity"           => 1,
+            "race___0"            => 0,
+            "race___1"            => 0,
+            "race___2"            => 0,
+            "race___3"            => 0,
+            "race___4"            => 1,
+            "race___5"            => 0,
+            "sex"                 => 0,
+            "height"              => 172,
+            "weight"              => 64,
+            "bmi"                 => 21.6,
+            "comments"            => "",
+            "dob"                 => "1988-01-19",
+        ];
+
+        $actual200thRow = $actualData[199];
+        $actual200thRow['phone'] = rtrim($actual200thRow['phone']);
+
+        if ($this instanceof WorkflowBasicDemographyCsvTest) {
+            $expected200thRow['redcap_data_source'] = 2;
+        }
+
+        $this->assertEquals($expected200thRow, $actual200thRow, '200th row check');
+
+        #--------------------------------
+        #--------------------------------
+        # Last row check
+        #--------------------------------
+        $expectedLastRow = [
+            "basic_demography_id" => 300,
+            "redcap_data_source" => 4,
+            "record_id" => "1100",
+            "first_name"=> "Ella",
+            "last_name" => "Kunze",
+            "address" => "26346 Kenyatta Fords\nStoltenbergville, MN 57828-4095",
+            "phone" => "(714) 207-0230",
+            "email" => "ella.kunze@mailinator.com",
+            "birthdate" => "1988-01-19",
+            "ethnicity" => 1,
+            "race___0" => 0,
+            "race___1" => 0,
+            "race___2" => 0,
+            "race___3" => 0,
+            "race___4" => 1,
+            "race___5" => 0,
+            "sex" => 0,
+            "height" => 172,
+            "weight" => 64,
+            "bmi" => 21.6,
+            "comments" => "",
+            "dob" => ""
+        ];
+
+        $actualLastRow = $actualData[count($actualData)-1];
+        $actualLastRow['phone'] = rtrim($actualLastRow['phone']);
+
+        if ($this instanceof WorkflowBasicDemographyCsvTest) {
+            $expectedLastRow['redcap_data_source'] = 3;
+        }
+
+        $this->assertEquals($expectedLastRow, $actualLastRow, 'Last row check');
     }
 }

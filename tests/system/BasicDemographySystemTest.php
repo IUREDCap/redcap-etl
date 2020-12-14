@@ -226,19 +226,4 @@ class BasicDemographySystemTest extends TestCase
 
         $this->assertEquals($expectedLastRow, $lastRow, 'Last row check');
     }
-
-    public function assertRowsEqual($expectedRow, $actualRow, $comment)
-    {
-        foreach ($expectedRow as $key => $expectedValue) {
-            $actualValue = $actualRow[$key];
-            if (is_string($actualValue)) {
-                $actualValue = rtrim($actualValue);  # Sometimes database pad with trailing blanks
-            }
-
-            if (is_float($expectedValue)) {
-            }
-        }
-
-        $this->assertEquals($expectedRow, $actualRow, $comment);
-    }
 }

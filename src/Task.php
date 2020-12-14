@@ -326,6 +326,8 @@ class Task
 
         $this->transformationRulesText = $rulesText;
 
+        # print "\n\n----------------------------------------------------------------------------\n";
+        # print "TASK {$this->getName()}\n";
         # print "\n".($schema->toString())."\n";
 
         return $schema;

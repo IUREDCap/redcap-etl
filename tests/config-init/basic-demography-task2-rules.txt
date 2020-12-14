@@ -4,7 +4,6 @@ FIELD,record_id,int
 FIELD,first_name,varchar(40)
 FIELD,last_name,varchar(40)
 FIELD,address,string
-FIELD,phone,char(24),phone
 FIELD,email,varchar(80)
 FIELD,dob,string
 FIELD,ethnicity,int
