@@ -36,7 +36,6 @@ transformation rules into a target database schema with mapping information.
 The transformation rules text is retrieved from either:
 
 * a file on the REDCap-ETL server
-* the REDCap configuration project
 * the **RulesGenerator** class (for automatically generated rules)
 
 The **SchemaGenerator** class uses the **RulesParser** class to translate
