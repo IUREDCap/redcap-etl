@@ -16,6 +16,32 @@ use IU\REDCapETL\EtlException;
  */
 class DbConnectionTest extends TestCase
 {
+    public function testConnectionStrings()
+    {
+        $connectionString = "MySQL:127.0.0.1:etl_user:etlPassword:etl_test";
+        $result = DbConnection::parseConnectionString($connectionString);
+        $expectedResult =  ['MySQL', '127.0.0.1', 'etl_user', 'etlPassword', 'etl_test'];
+        $this->assertEquals($expectedResult, $result, 'Parse test without escapes');
+
+        $newConnectionString = DbConnection::createConnectionString($result);
+        $this->assertEquals($connectionString, $newConnectionString, 'Create test without escape');
+
+        $connectionString = "MySQL:127.0.0.1:etl_user:etl\:Pass\word\\\:etl_test";
+        $result = DbConnection::parseConnectionString($connectionString);
+        $expectedResult =  ['MySQL', '127.0.0.1', 'etl_user', 'etl:Pass\\word\\', 'etl_test'];
+        $this->assertEquals($expectedResult, $result, 'Parse test with escapes');
+
+
+        $values =  ['MySQL', '127.0.0.1', 'etl_user', 'etl:Pass\word', 'etl_test'];
+        $connectionString = DbConnection::createConnectionString($values);
+        $this->assertEquals(
+            "MySQL:127.0.0.1:etl_user:etl\\:Pass\\\\word:etl_test",
+            $connectionString,
+            'Create test with escapes'
+        );
+    }
+
+
     public function testParseSqlQueriesWithSingleQuery()
     {
         $queries = 'select * from test;';
