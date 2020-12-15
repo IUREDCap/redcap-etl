@@ -19,6 +19,8 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/unit/FileUtilTest.php</file>
       <file>tests/unit/LookupTableTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
+      <file>tests/unit/MetadataTableTest.php</file>
+      <file>tests/unit/ProjectInfoTableTest.php</file>
       <file>tests/unit/RulesParserTest.php</file>
       <file>tests/unit/RulesSemanticAnalyzerTest.php</file>
       <file>tests/unit/SchemaGeneratorTest.php</file>
@@ -93,6 +95,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/RepeatingEventsPostgreSqlTest.php</file>
       <file>tests/system/RepeatingEventsSqliteTest.php</file>
       <file>tests/system/RepeatingEventsSqlServerTest.php</file>
+      <file>tests/system/RepeatingFormsMysqlTest.php</file>
       <file>tests/system/SqlServerTest.php</file>
       <file>tests/system/SqlServerAutoRulesTest.php</file>
       <file>tests/system/VisitsMysqlTest.php</file>
