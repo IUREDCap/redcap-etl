@@ -17,6 +17,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/unit/EtlEventLogTableTest.php</file>
       <file>tests/unit/EtlLogTableTest.php</file>
       <file>tests/unit/FileUtilTest.php</file>
+      <file>tests/unit/KeyValueDbTest.php</file>
       <file>tests/unit/LookupTableTest.php</file>
       <file>tests/unit/LoggerTest.php</file>
       <file>tests/unit/MetadataTableTest.php</file>
