@@ -107,15 +107,29 @@ class Field
      * The merged field will have the greater of the 2 fields sizes, if the
      * fields ihave sizes set and match on values other than size.
      */
-    public function merge($field)
+    public function merge($field, $task = null)
     {
         $mergedField = new Field($this->name, $this->type, $this->size, $this->dbName, $this->redcapType);
         $mergedField->usesLookup      = $this->usesLookup;
         $mergedField->valueToLabelMap = $this->valueToLabelMap;
 
+        #------------------------------------
+        # Set error message prefix
+        #------------------------------------
+        $errorMessage = 'Error in field "'.$this->dbName.'"';
+        if (isset($task)) {
+            $taskName = $task->getName();
+            if (!empty($taskName)) {
+                $errorMessage .= ' from task "'.$taskName.'"';
+            }
+            $errorMessage .= ' for database "'.$task->getDbId().'"';
+        }
+        $errorMessage .= ': ';
+
         # Check that fields' database names match
         if ($this->dbName !== $field->dbName) {
-            $message = 'Database field names "'.$this->dbName.'" and "'.$field->dbName.'" do not match.';
+            $message = $errorMesssage . 'database field names "'.$this->dbName.'"'
+                .' and "'.$field->dbName.'" do not match.';
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         }
@@ -138,8 +152,8 @@ class Field
                 $mergedField->type = FieldType::FLOAT;
                 $mergedField->size = null;
             } else {
-                $message = 'Database field types "'.$this->type.'" and "'.$field->type.'"'
-                    .' for field "'.$this->dbName.'" do not match.';
+                $message = $errorMessage . 'the database field type "'.$field->type.'"'.' does not match'
+                    .' the previously defined type "'.$this->type.'" for this field.';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
             }
@@ -148,22 +162,23 @@ class Field
         # Check for compatible redcap type
         if ($this->redcapType !== $field->redcapType) {
             if ($this->redcapType === 'checkbox' || $field->redcapType === 'checkbox') {
-                $message = 'REDCap field types "'.$this->redcapType.'" and "'.$field->redcapType.'"'
-                    .' for database field "'.$this->dbName.'" do not match.';
+                $message = $errorMessage . 'the REDCap field type "'.$field->redcapType.'"'.' does not match'
+                    .' the previously defined REDCap type "'.$this->redcapType.'" for this field.';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
             }
         }
  
         if ($this->usesLookup !== $field->usesLookup) {
-            $message = 'Mismatch for multiple-choice options for field "'.$this->dbName.'".';
+            $message = 'is inconsistently defined as a multiple-choice field.';
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         }
         
         if ($this->usesLookup && $field->usesLookup) {
             if ($this->valueToLabelMap !== $field->valueToLabelMap) {
-                $message = 'Mismatch for multiple-choice options for field "'.$this->dbName.'".';
+                $message = $erroMessage
+                    .'the multiple-choice options for this field do not match those previously defined.';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
             }

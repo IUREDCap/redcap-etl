@@ -80,7 +80,7 @@ class Workflow
             if ($task->isSqlOnlyTask()) {
                 ; // SQL only - it has no schema to merge
             } elseif (array_key_exists($dbId, $this->dbSchemas)) {
-                $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge($task->getSchema(), $dbId, $task->getName());
+                $this->dbSchemas[$dbId] = $this->dbSchemas[$dbId]->merge($task->getSchema(), $task);
                 $this->dbTasks[$dbId]   = array_merge($this->dbTasks[$dbId], [$task]);
             } else {
                 $this->dbSchemas[$dbId]     = $task->getSchema();
@@ -99,7 +99,6 @@ class Workflow
             if (array_key_exists($dbId, $this->dbSchemas)) {
                 # There wil be no schema for a database if it has only SQL-only tasks
                 $dbSchema = $this->dbSchemas[$dbId];
-                $task->setDbSchema($dbSchema);
             }
         }
     }

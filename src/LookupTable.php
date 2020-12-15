@@ -173,7 +173,7 @@ class LookupTable extends Table
      *
      * @param LookupTable $table the lookup table to be merged.
      */
-    public function merge($table, $mergeData = true)
+    public function merge($table, $mergeData = true, $task = null)
     {
         if ($this->getName() !== $table->getName()) {
             $message = "Lookup table names \"{$this->getName()}\" and \"{$table->getName()}\" do not match.";

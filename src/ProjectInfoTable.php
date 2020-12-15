@@ -66,7 +66,7 @@ class ProjectInfoTable extends Table
         return $row;
     }
 
-    public function merge($table, $mergeData = true)
+    public function merge($table, $mergeData = true, $task = null)
     {
         if ($this->getName() !== $table->getName()) {
             $message = "Project Info table names \"{$this->getName()}\" and \"{$table->getName()}\" do not match.";

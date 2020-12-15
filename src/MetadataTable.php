@@ -98,7 +98,7 @@ class MetadataTable extends Table
     }
 
 
-    public function merge($table, $mergeData = true)
+    public function merge($table, $mergeData = true, $task = null)
     {
         if ($this->getName() !== $table->getName()) {
             $message = "Metadata table names \"{$this->getName()}\" and \"{$table->getName()}\" do not match.";

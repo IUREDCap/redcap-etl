@@ -49,9 +49,6 @@ class RedCapEtl
     private $recordIdFieldName;   // The field name for the record ID
                                   // for the data project in REDCap
 
-    /** @var WorkflowConfig workflow configuration */
-    private $workflowConfig;
-
     /** @var array map where the keys represent root tables that have
      *     fields that have multiple rows of data per record ID.
      *     Root tables are intended for fields that have a 1:1 mapping
@@ -89,11 +86,11 @@ class RedCapEtl
     ) {
         $this->app = $logger->getApp();
 
-        $this->workflowConfig = new WorkflowConfig();
-        $this->workflowConfig->set($logger, $properties, $baseDir);
+        $workflowConfig = new WorkflowConfig();
+        $workflowConfig->set($logger, $properties, $baseDir);
 
         $this->workflow = new Workflow();
-        $this->workflow->set($this->workflowConfig, $logger, $redcapProjectClass);
+        $this->workflow->set($workflowConfig, $logger, $redcapProjectClass);
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;

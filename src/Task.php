@@ -33,10 +33,6 @@ class Task
     /** @var Schema schema based on tasks configuration */
     protected $schema;
     
-    /** @var Schema schema for entire database represented by all tasks in the workflow that access
-     * the same database as this task. */
-    protected $dbSchema;
-
     protected $rowsLoadedForTable = array();
   
     /** @var DbConnection the database connection object for this task */
@@ -883,16 +879,6 @@ class Task
         $this->dbcon = $dbConnection;
     }
     
-    public function getDbSchema()
-    {
-        return $this->dbSchema;
-    }
-    
-    public function setDbSchema($dbSchema)
-    {
-        $this->dbSchema = $dbSchema;
-    }
-
     public function getWorkflow()
     {
         return $this->workflow;

@@ -335,14 +335,6 @@ class WorkflowConfig
         return $isWorkflowConfig;
     }
 
-    public function generateJson()
-    {
-        $data = [$this->globalProperties, $this->taskConfigs];
-        $json = json_encode($data);
-        #$json = json_encode($this, JSON_FORCE_OBJECT); // | JSON_PRETTY_PRINT);
-        return $json;
-    }
-
     /*
     public function toString()
     {

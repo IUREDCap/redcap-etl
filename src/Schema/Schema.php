@@ -76,12 +76,9 @@ class Schema
      * Merges the specified schema into this one.
      *
      * @param Schema $schema the schema to merge.
-     * @param string $dbId the database ID For the database for which the schemas are being merged.
-     *     This is needed only for informational purposes in error message, and not to merge the schemas.
-     * @param string $taskName the name of the task for the merged schema.
-     *     This is needed only for informational purposes in error message, and not to merge the schemas.
+     * @param string $task the task of the schema that is being merged (if any) - used to get info for logging.
      */
-    public function merge($schema, $dbId = null, $taskName = null)
+    public function merge($schema, $task = null)
     {
         $mergedSchema = new Schema();
 
@@ -122,7 +119,8 @@ class Schema
                 }
             } else {
                 # table in both $this and $schema
-                $mergedTable = ($tables[0])->merge($tables[1]);
+                $mergeData = false;
+                $mergedTable = ($tables[0])->merge($tables[1], $mergeData, $task);
                 $mergedTables[] = $mergedTable;
                 if (in_array($tables[0], $this->getRootTables())) {
                     $mergedRootTables[] = $mergedTable;
@@ -142,13 +140,17 @@ class Schema
         #--------------------------------------
         # Merge lookup table(s)
         #--------------------------------------
-        $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable);
+        $mergeData = false;
+        $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable, $mergeData, $task);
 
         #------------------------------------------------------------------
         # Merge the REDCap project info and metadata tables
         #------------------------------------------------------------------
-        $mergedSchema->projectInfoTable = $this->projectInfoTable->merge($schema->projectInfoTable);
-        $mergedSchema->metadataTable    = $this->metadataTable->merge($schema->metadataTable);
+        $mergeData = false;
+        $mergedSchema->projectInfoTable =
+            $this->projectInfoTable->merge($schema->projectInfoTable, $mergeData, $task);
+        $mergedSchema->metadataTable =
+            $this->metadataTable->merge($schema->metadataTable, $mergeData, $task);
 
         #-----------------------------------------------
         # Merge the logging tables

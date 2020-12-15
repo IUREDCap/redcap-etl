@@ -107,8 +107,12 @@ class Table
 
     /**
      * Merges the specified table with this table and returns the result.
+     *
+     * @param Table $table the table to merge.
+     * @param boolean $mergeData indicates if data (in addition to the metadata) should be merged.
+     * @param Task $task the task of the table being merged (if any); used to get info for logging.
      */
-    public function merge($table, $mergeData = false)
+    public function merge($table, $mergeData = false, $task = null)
     {
         $mergedTable = clone $this;
 
@@ -140,13 +144,13 @@ class Table
         #----------------------------------------
         # Merge the primary key fields
         #----------------------------------------
-        $mergedTable->primary = $this->primary->merge($table->primary);
+        $mergedTable->primary = $this->primary->merge($table->primary, $task);
 
         #------------------------------------------------
         # Merge foreign key fields
         #------------------------------------------------
         if (isset($this->foreign) && isset($table->foreign)) {
-            $mergedTable->foreign = $this->foreign->merge($table->foreign);
+            $mergedTable->foreign = $this->foreign->merge($table->foreign, $task);
         } elseif (isset($this->foreign) && !isset($table->foreign)) {
             $message = 'Table "'.$this->getTableName().'" is defined both with and without a foreign key.';
             throw new EtlException($message, EtlException::INPUT_ERROR);
@@ -182,7 +186,7 @@ class Table
             } elseif (empty($fields[1])) {
                 $mergedFields[] = $fields[0];
             } else {
-                $mergedFields[] = ($fields[0])->merge($fields[1]);
+                $mergedFields[] = ($fields[0])->merge($fields[1], $task);
             }
         }
 
