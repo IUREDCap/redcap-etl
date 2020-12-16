@@ -25,7 +25,7 @@
             "basic-demography-task2": {
                 "redcap_api_url":  "basic-demography",
                 "data_source_api_token": "basic-demography",
-                "transform_rules_source": 2,
+                "transform_rules_source": 1,
                 "transform_rules_file": "",
                 "transform_rules_text": [
                     "TABLE,basic_demography_json,basic_demography_id,ROOT",

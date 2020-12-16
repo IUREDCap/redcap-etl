@@ -31,8 +31,8 @@ class WorkflowErrorsTest extends TestCase
             self::$logger = new Logger($app);
             $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
         } catch (EtlException $exception) {
-            $code = $exception->getCode();
             $exceptionCaught = true;
+            $code = $exception->getCode();
         }
 
         $this->assertTrue($exceptionCaught, 'Exception caught check');

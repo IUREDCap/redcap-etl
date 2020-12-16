@@ -72,6 +72,11 @@ class RepeatingFormsSystemTest extends TestCase
         $columnNames = self::$dbConnection->getTableColumnNames('rf_registration');
         $this->assertNotNull($columnNames);
 
+        # Check the record IDs
+        $recordIds = array_column($data, 'record_id');
+        $expectedRecordIds = range(1001, 1050);
+        $this->assertEquals($expectedRecordIds, $recordIds, 'Record IDs check');
+
         $expectedColumns = [
             'registration_id',
             'redcap_data_source',
