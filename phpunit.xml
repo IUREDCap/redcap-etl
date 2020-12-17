@@ -113,6 +113,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/WorkflowBasicDemographyPostgreSqlTest.php</file>
       <file>tests/system/WorkflowBasicDemographySqliteTest.php</file>
       <file>tests/system/WorkflowBasicDemographySqlServerTest.php</file>
+      <file>tests/system/WorkflowMultiDbTest.php</file>
     </testsuite>
 
   </testsuites>

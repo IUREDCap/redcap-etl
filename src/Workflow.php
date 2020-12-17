@@ -388,6 +388,18 @@ class Workflow
         $task = $this->tasks[$index];
         return $task;
     }
+
+    public function getTaskByName($name)
+    {
+        $taskWithName = null;
+        foreach ($this->tasks as $task) {
+            if ($name === $task->getName()) {
+                $taskWithName = $task;
+                break;
+            }
+        }
+        return $taskWithName;
+    }
     
     public function getTasks()
     {

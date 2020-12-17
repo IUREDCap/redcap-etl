@@ -92,6 +92,13 @@ foreach ($configFiles as $configFile) {
     $fromPath = realpath($configInitDir . $configFile);
     $toPath   = $configDir . $configFile;
 
+    $contents = file_get_contents($fromPath);
+
+    if (empty($contents)) {
+        print "ERROR - required configuration file \"{$fromPath}\" is empty.\n";
+        exit(1);
+    }
+
     #--------------------------------------------------
     # Check the configuration file name to see if it
     # contains a database name
@@ -109,17 +116,40 @@ foreach ($configFiles as $configFile) {
         $db = 'sqlserver';
     } elseif (preg_match('/sqlite/', $configFile)) {
         $db = 'sqlite';
+    } elseif (preg_match('/multidb.*\.ini/', $configFile)) {
+        # .ini configuration file with multiple databases
+
+        # MySQL
+        $contents = preg_replace(
+            '/db_connection\s*=\s*;\s*mysql/',
+            "db_connection = {$dbConnection['mysql']}",
+            $contents
+        );
+
+        # PostgreSQL
+        $contents = preg_replace(
+            '/db_connection\s*=\s*;\s*postgresql/',
+            "db_connection = {$dbConnection['postgresql']}",
+            $contents
+        );
+
+        # Sqlite
+        $contents = preg_replace(
+            '/db_connection\s*=\s*;\s*sqlite/',
+            "db_connection = {$dbConnection['sqlite']}",
+            $contents
+        );
+
+        # SQL Server
+        $contents = preg_replace(
+            '/db_connection\s*=\s*;\s*sqlserver/',
+            "db_connection = {$dbConnection['sqlserver']}",
+            $contents
+        );
     }
 
     if (!file_exists($fromPath)) {
         print "ERROR - required configuration file \"{$fromPath}\" could not be found.\n";
-        exit(1);
-    }
-
-    $contents = file_get_contents($fromPath);
-
-    if (empty($contents)) {
-        print "ERROR - required configuration file \"{$fromPath}\" is empty.\n";
         exit(1);
     }
 
@@ -176,6 +206,18 @@ foreach ($configFiles as $configFile) {
                 "data_source_api_token = {$repeatingEventsApiToken}",
                 $contents
             );
+
+            # repeating-forms properties
+            $contents = preg_replace(
+                '/redcap_api_url\s*=.\s*;\s*repeating-forms/',
+                "redcap_api_url = {$repeatingFormsApiUrl}",
+                $contents
+            );
+            $contents = preg_replace(
+                '/data_source_api_token\s*=\s*;\s*repeating-forms/',
+                "data_source_api_token = {$repeatingFormsApiToken}",
+                $contents
+            );
         } elseif (preg_match('/workflow.*\.json/', $toPath) === 1) {
             # Workflow
 
@@ -190,18 +232,6 @@ foreach ($configFiles as $configFile) {
                 '"data_source_api_token": "'.$basicDemographyApiToken.'"',
                 $contents
             );
-
-            ## repeating-events properties
-            #$contents = preg_replace(
-            #    '/redcap_api_url\s*=.\s*;\s*repeating-events/',
-            #    "redcap_api_url = {$repeatingEventsApiUrl}",
-            #    $contents
-            #);
-            #$contents = preg_replace(
-            #    '/data_source_api_token\s*=\s*;\s*repeating-events/',
-            #    "data_source_api_token = {$repeatingEventsApiToken}",
-            #    $contents
-            #);
         } elseif (preg_match('/basic-demography.*\.ini/', $toPath) === 1) {
             #-------------------------------------
             # Basic demography files
