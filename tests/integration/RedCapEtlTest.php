@@ -31,11 +31,28 @@ class RedCapEtlTest extends TestCase
         }
     }
 
+    public function testConstructorAndRun()
+    {
+        $configFile = __DIR__.'/../config/basic-demography.ini';
+        $rulesFile  = __DIR__.'/../config/basic-demography-rules.txt';
+
+        $redCapEtl = new RedCapEtl(self::$logger, $configFile);
+        $redCapEtl->run();
+
+        $this->assertNotNull($redCapEtl, 'Not null redCapEtl check');
+
+        $rulesText = $redCapEtl->getTransformationRulesText(0);
+        $this->assertNotNull($rulesText, 'Rules text not null check');
+
+        $expectedRulesText = file_get_contents($rulesFile);
+        $this->assertEquals($expectedRulesText, $rulesText, 'Rules text match check');
+    }
+
+
     /**
      * The basic-demography-3.ini file contains a designation
      * for the timezone and a missing api url and token.
      */
-
     public function testConstructRedCapObjectError()
     {
         $configFile = __DIR__.'/../config/basic-demography-3.ini';

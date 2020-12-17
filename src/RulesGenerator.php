@@ -184,24 +184,39 @@ class RulesGenerator
         return $rules;
     }
     
-    protected function generateFields($formName)
+    /**
+     * Generates rules for the fields of the specified REDCap form (instrument).
+     *
+     * @param string $formName the name of the form for which field rules are to be generated.
+     *
+     * @param boolean $generateSurveryIdentifier indicates if a survey identifer should be
+     *     gennerated if the form is a survey form, and generation for survey fields was
+     *     specified. This is used when combining forms into the same table to eliminate
+     *     duplicate survey identifiers in the table.
+     *
+     * @return string the field rules for the specified REDCap form (instrument)
+     */
+    protected function generateFields($formName, $generateSurveyIdentifier = true)
     {
-        $fields = '';
+        $fieldRules = '';
+        $rule = '';
 
         if ($this->addSurveyFields && in_array($formName, $this->getSurveyInstruments())) {
-            # Add survey identifier field
-            $field['field_name'] = RedCapEtl::COLUMN_SURVEY_IDENTIFIER;
-            $field['field_type'] = 'text';
-            $field['text_validation_type_or_show_slider_number'] = '';
-            $rule = $this->getFieldRule($field);
+            if ($generateSurveyIdentifier) {
+                # Add survey identifier field
+                $field['field_name'] = RedCapEtl::COLUMN_SURVEY_IDENTIFIER;
+                $field['field_type'] = 'text';
+                $field['text_validation_type_or_show_slider_number'] = '';
+                $rule = $this->getFieldRule($field);
+            }
 
             # Add survey timestamp field
-            $fields .= $rule;
+            $fieldRules .= $rule;
             $field['field_name'] = $formName . '_timestamp';
             $field['field_type'] = 'text';
             $field['text_validation_type_or_show_slider_number'] = 'datetime_mdy';
             $rule = $this->getFieldRule($field);
-            $fields .= $rule;
+            $fieldRules .= $rule;
         }
 
         if ($this->addDagFields) {
@@ -209,7 +224,7 @@ class RulesGenerator
             $field['field_type'] = 'text';
             $field['text_validation_type_or_show_slider_number'] = '';
             $rule = $this->getFieldRule($field);
-            $fields .= $rule;
+            $fieldRules .= $rule;
         }
 
         foreach ($this->metadata as $field) {
@@ -218,7 +233,7 @@ class RulesGenerator
                     if ($field['form_name'] == $formName) {
                         $rule = $this->getFieldRule($field);
                         if (isset($rule)) {
-                            $fields .= $rule;
+                            $fieldRules .= $rule;
                         }
                     }
                 }
@@ -230,10 +245,10 @@ class RulesGenerator
             $field['field_type'] = 'dropdown';
             $field['text_validation_type_or_show_slider_number'] = '';
             $rule = $this->getFieldRule($field);
-            $fields .= $rule;
+            $fieldRules .= $rule;
         }
 
-        return $fields;
+        return $fieldRules;
     }
 
 
@@ -564,6 +579,7 @@ class RulesGenerator
         $origDagFlagValue = $this->addDagFields;
 
         #Process all non-repeating forms
+        $generateSurveyIdentifier = true;
         foreach ($this->instruments as $formName => $formLabel) {
             if (!in_array($formName, $repeatingForms)) {
                 if ($formName === $rootForm) {
@@ -571,7 +587,15 @@ class RulesGenerator
                 } else {
                     $this->addDagFields = false;
                 }
-                $rules .= $this->generateFields($formName);
+                $rules .= $this->generateFields($formName, $generateSurveyIdentifier);
+                
+                if (in_array($formName, $this->getSurveyInstruments())) {
+                    # The form that was just processed was a survey form,
+                    # so it should have generated a survey identifer field,
+                    # so don't generated another one (since this will lead
+                    # to duplicate fields in the same table).
+                    $generateSurveyIdentifier = false;
+                }
             }
         }
         $rules .= "\n";

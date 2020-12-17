@@ -883,4 +883,9 @@ class Task
     {
         return $this->workflow;
     }
+
+    public function getTransformationRulesText()
+    {
+        return $this->transformationRulesText;
+    }
 }

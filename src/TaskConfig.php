@@ -988,7 +988,6 @@ class TaskConfig
     {
         if (array_key_exists(ConfigProperties::TRANSFORM_RULES_SOURCE, $properties)) {
             $this->transformRulesSource = $properties[ConfigProperties::TRANSFORM_RULES_SOURCE];
-
             if (empty($this->transformRulesSource)) {
                 ; // Could be OK, if this is an SQL task - that needs to be checked later
             } elseif ($this->transformRulesSource == self::TRANSFORM_RULES_TEXT) {

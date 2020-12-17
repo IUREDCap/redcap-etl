@@ -152,6 +152,7 @@ try {
     $addCompleteFields         = $addCompleteFields         || $configuration->getAutogenIncludeCompleteFields();
     $addDagFields              = $addDagFields              || $configuration->getAutogenIncludeDagFields();
     $addFileFields             = $addFileFields             || $configuration->getAutogenIncludeFileFields();
+    $addSurveyFields           = $addSurveyFields           || $configuration->getAutogenIncludeSurveyFields();
     $removeNotesFields         = $removeNotesFields         || $configuration->getAutogenRemoveNotesFields();
     $removeIdentifierFields    = $removeIdentifierFields    || $configuration->getAutogenRemoveIdentifierFields();
     $combineNonRepeatingFields = $combineNonRepeatingFields || $configuration->getAutogenCombineNonRepeatingFields();
