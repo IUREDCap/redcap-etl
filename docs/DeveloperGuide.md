@@ -416,3 +416,53 @@ do the following:
 ![REDCap-ETL Database Connection Classes](redcap-etl-db-connections.png)
 
 
+### JSON Configuration Format
+
+The JSON configuration format is intended for programmatic use of REDCap-ETL. This format is used, for example,
+by the REDCap-ETL External Module that includes REDCap-ETL as a dependency. The JSON format supports the complete specification
+of a configuration, including transformation rules and pre and post-processing SQL, in a single file.
+
+Examples of the JSON format can be seen in the .json files in the tests/config-init/ directory.
+Below is an example of a very simple JSON configuration file for a single task
+that uses the auto-generation feature for transformation rules generation (transform_rules_source = 3).
+
+```json
+{
+    "redcap_api_url" : "http://localhost/redcap/api/",
+    "data_source_api_token" : "1235ABCA87862FF0318837CC05721348",
+    "transform_rules_source": "3",
+    "db_connection": "MySQL:127.0.0.1:etl_user:etl_password:etl_db"
+}
+```
+
+The basic structure of a JSON workflow configuration is shown below. In this example
+"task1" and "task2" are the task names for the workflow, and they can be set to abitrary values.
+The "workflow", "global_properties" and "tasks" labels are in effect keywords that must
+appear as shown. Each property defined in "global_properties" will apply to all tasks that
+do not explicitly override the property. The "workflow_name" property can only appear in
+the "global_properties" and is required.
+
+```json
+{
+    "workflow": {
+        "global_properties": {
+            "workflow_name": "workflow1",
+            "batch_size": 10,
+            ...
+        },
+        "tasks": {
+            "task1": {
+                "redcap_api_url": "http://localhost/redcap/api/",
+                "data_source_api_token": "11347CC74A8B98AC31BA9F78215814968",
+                ...
+            },
+            "task2": {
+                ...
+            },
+
+        }
+    }
+}
+```
+```
+

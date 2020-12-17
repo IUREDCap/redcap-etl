@@ -16,7 +16,7 @@ Configuration Files
 
 Configuration files specify an ETL process, and include the following information for each phase:
 
-* **Extract.** REDCap projects from where data will be extracted
+* **Extract.** REDCap projects from where the data will be extracted
 * **Transform.** Transformation rules that specify how the extracted data should be transformed
 * **Load.** Database connection information for the databases where the extracted and transformed data are to be loaded
 
@@ -316,6 +316,7 @@ resolved manually.
     * char and string - the merged schema will use type string
     * varchar and string - the merged schema will use type string
     * char/varchar with different sizes - the larger of the 2 sizes will be used
+    * (non-multiple-choice) int and float - the merged schema will use type float
     * all other type differences - an error will be generated, which needs to be resolved by changing the transformation rules
 * **Missing column** - a column name exists in one table, but not in another
     * the column name will be added to the merged database schema, and the task without it
