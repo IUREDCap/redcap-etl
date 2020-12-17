@@ -556,17 +556,17 @@ class TaskConfig
         $this->generatedRecordIdType = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_RECORD_ID_TYPE);
         $this->generatedSuffixType   = FieldTypeSpecifier::create(self::DEFAULT_GENERATED_SUFFIX_TYPE);
 
-        if (array_key_exists(ConfigProperties::GENERATED_INSTANCE_TYPE, $this->properties)) {
-            $this->generatedInstanceType = FieldTypeSpecifier::create(
-                $this->properties[ConfigProperties::GENERATED_INSTANCE_TYPE]
-            );
-        }
+        #if (array_key_exists(ConfigProperties::GENERATED_INSTANCE_TYPE, $this->properties)) {
+        #    $this->generatedInstanceType = FieldTypeSpecifier::create(
+        #        $this->properties[ConfigProperties::GENERATED_INSTANCE_TYPE]
+        #    );
+        #}
 
-        if (array_key_exists(ConfigProperties::GENERATED_KEY_TYPE, $this->properties)) {
-            $this->generatedKeyType = FieldTypeSpecifier::create(
-                $this->properties[ConfigProperties::GENERATED_KEY_TYPE]
-            );
-        }
+        #if (array_key_exists(ConfigProperties::GENERATED_KEY_TYPE, $this->properties)) {
+        #    $this->generatedKeyType = FieldTypeSpecifier::create(
+        #        $this->properties[ConfigProperties::GENERATED_KEY_TYPE]
+        #    );
+        #}
 
         if (array_key_exists(ConfigProperties::GENERATED_LABEL_TYPE, $this->properties)) {
             $this->generatedLabelType = FieldTypeSpecifier::create(
