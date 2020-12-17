@@ -442,27 +442,24 @@ appear as shown. Each property defined in "global_properties" will apply to all 
 do not explicitly override the property. The "workflow_name" property can only appear in
 the "global_properties" and is required.
 
-```json
-{
-    "workflow": {
-        "global_properties": {
-            "workflow_name": "workflow1",
-            "batch_size": 10,
-            ...
-        },
-        "tasks": {
-            "task1": {
-                "redcap_api_url": "http://localhost/redcap/api/",
-                "data_source_api_token": "11347CC74A8B98AC31BA9F78215814968",
+    {
+        "workflow": {
+            "global_properties": {
+                "workflow_name": "workflow1",
+                "batch_size": 10,
                 ...
             },
-            "task2": {
-                ...
-            },
-
+            "tasks": {
+                "task1": {
+                    "redcap_api_url": "http://localhost/redcap/api/",
+                    "data_source_api_token": "11347CC74A8B98AC31BA9F78215814968",
+                    ...
+                },
+                "task2": {
+                    ...
+                },
+    
+            }
         }
     }
-}
-```
-```
 
