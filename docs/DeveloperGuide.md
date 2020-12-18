@@ -436,7 +436,7 @@ that uses the auto-generation feature for transformation rules generation (trans
 ```
 
 The basic structure of a JSON workflow configuration is shown below. In this example
-"task1" and "task2" are the task names for the workflow, and they can be set to abitrary values.
+"task1" and "task2" are the task names for the workflow, and they can be set to arbitrary values.
 The "workflow", "global_properties" and "tasks" labels are in effect keywords that must
 appear as shown. Each property defined in "global_properties" will apply to all tasks that
 do not explicitly override the property. The "workflow_name" property can only appear in
