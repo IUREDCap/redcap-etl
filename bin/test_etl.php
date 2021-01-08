@@ -52,7 +52,11 @@ if (array_key_exists('b', $options)) {
 try {
     $redCapEtl = new RedCapEtl($logger, $configFile);
     if (isset($batchSize)) {
-        $redCapEtl->getConfiguration()->setBatchSize($batchSize);
+        $tasks = $redCapEtl->getTasks();
+        foreach ($tasks as $task) {
+            $task->getTaskConfig()->setBatchSize($batchSize);
+        }
+
     }
 
     $count = $redCapEtl->run();
@@ -63,7 +67,7 @@ try {
 
 $endTime = microtime(true);
 
-$batchSize = $redCapEtl->getConfiguration()->getBatchSize();
+#$batchSize = $redCapEtl->getConfiguration()->getBatchSize();
 $time = $endTime - $startTime;
 $memoryUsed = memory_get_peak_usage();
 print "{$configFile},{$count},{$batchSize},{$memoryUsed},{$time}\n";
