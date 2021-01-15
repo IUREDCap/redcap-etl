@@ -47,11 +47,14 @@ class WorkflowBasicDemographyTest extends TestCase
             preg_match('/^CSV:(.*)/', $dbConnection, $matches);
             $dbDirectory = $matches[1];
 
-            $this->assertFileExists($dbDirectory.'/Demography.csv', 'Demography.csv file check');
-            $this->assertFileExists($dbDirectory.'/Demography_label_view.csv', 'Demography_label_view.csv file check');
+            $this->assertFileExists($dbDirectory.'/basic_demography.csv', 'basic_demography.csv file check');
+            $this->assertFileExists(
+                $dbDirectory.'/basic_demography_label_view.csv',
+                'basic_demography_label_view.csv file check'
+            );
 
-            $demographyLines = count(file($dbDirectory.'/Demography.csv'));
-            $this->assertEquals(601, $demographyLines, 'Demography number of lines check');
+            $demographyLines = count(file($dbDirectory.'/basic_demography.csv'));
+            $this->assertEquals(601, $demographyLines, 'Basic demography number of lines check');
         } catch (EtlException $exception) {
             self::$logger->logException($exception);
             self::$logger->log('Processing failed.');
