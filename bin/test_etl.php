@@ -52,18 +52,39 @@ if (array_key_exists('b', $options)) {
 try {
     $redCapEtl = new RedCapEtl($logger, $configFile);
     if (isset($batchSize)) {
-        $redCapEtl->getConfiguration()->setBatchSize($batchSize);
+        $tasks = $redCapEtl->getTasks();
+        $redcapVersion = ($tasks[0])->getDataProject()->exportRedCapVersion();
+        $redcapEtlVersion = Version::RELEASE_NUMBER;
+        $phpVersion = PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION.".".PHP_RELEASE_VERSION;
+        #print "*********************** REDCap Version {$redcapVersion}\n";
+        #print "*********************** REDCap-ETL Version {$redcapEtlVersion}\n";
+        #print "*********************** PHP Version ".$phpVersion."\n";
+        foreach ($tasks as $task) {
+            $task->getTaskConfig()->setBatchSize($batchSize);
+        }
     }
 
     $count = $redCapEtl->run();
+
+    $workflow = $redCapEtl->getWorkflow();
+
+    $preProcessingTime  = $workflow->getPreProcessingTime();
+    $extractTime        = $workflow->getExtractTime();
+    $transformTime      = $workflow->getTransformTime();
+    $loadTime           = $workflow->getLoadTime();
+    $postProcessingTime = $workflow->getPostProcessingTime();
+
+    $totalTime     = $workflow->getTotalTime();
 } catch (EtlException $exception) {
     $logger->logException($exception);
     $logger->log('Processing failed.');
+    exit(1);
 }
 
 $endTime = microtime(true);
 
-$batchSize = $redCapEtl->getConfiguration()->getBatchSize();
+#$batchSize = $redCapEtl->getConfiguration()->getBatchSize();
 $time = $endTime - $startTime;
 $memoryUsed = memory_get_peak_usage();
-print "{$configFile},{$count},{$batchSize},{$memoryUsed},{$time}\n";
+print "{$configFile},{$count},{$batchSize},{$memoryUsed},{$totalTime},"
+    ."{$preProcessingTime},{$extractTime},{$transformTime},{$loadTime},{$postProcessingTime}\n";

@@ -41,6 +41,15 @@ class Workflow
     /** @var string generated unique ID, which can be used to tell which tasks belong to the same workflow. */
     private $id;
 
+    private $extractTime;
+    private $transformTime;
+    private $loadTime;
+
+    private $preProcessingTime;
+    private $postProcessingTime;
+
+    private $totalTime;
+
     /**
      * Constructor.
      *
@@ -52,6 +61,15 @@ class Workflow
         $this->dbTasks       = array();
         
         $this->tasks = array();
+
+        $this->extractTime    = 0.0;
+        $this->transformTime  = 0.0;
+        $this->loadTime       = 0.0;
+
+        $this->preProcessingTime  = 0.0;
+        $this->postProcessingTime = 0.0;
+
+        $this->totalTime      = 0.0;
     }
 
     public function set($workflowConfig, $logger, $redcapProjectClass = null)
@@ -102,6 +120,111 @@ class Workflow
             }
         }
     }
+
+
+    public function run()
+    {
+        $startTime = microtime(true);
+        $preProcessingStartTime = $startTime;
+        $numberOfRecordIds = 0;
+
+        #-----------------------------------------
+        # For each task, log header information
+        #-----------------------------------------
+        foreach ($this->getTasks() as $task) {
+            $taskName = $task->getName();
+            
+            $logger = $task->getLogger();
+
+            #----------------------------------------------------------------
+            # Log version and job information
+            #----------------------------------------------------------------
+            $logger->log('REDCap-ETL version '.Version::RELEASE_NUMBER);
+
+            if ($task->isSqlOnlyTask()) {
+                $logger->log('SQL-only task');
+            } else {
+                $logger->log('REDCap version '.$task->getDataProject()->exportRedCapVersion());
+                $task->logJobInfo();
+            }
+            $workflowName = $this->getName();
+            $workflowId   = $this->getId();
+            if (!empty($workflowName)) {
+                $logger->log("Workflow: {$workflowName}");
+                $logger->log("Workflow ID: {$workflowId}");
+            }
+
+            $logger->log('Number of load databases: '.count($this->getDbIds()));
+            $i = 1;
+            foreach (array_keys($this->getDbIds()) as $dbId) {
+                $logger->log("Load database {$i}: {$dbId}");
+                $i++;
+            }
+
+            $logger->log("Starting processing.");
+        }
+
+        #-----------------------------------------------------------------------------------
+        # For each task, run pre-processing SQL.
+        #
+        # This needs to be run before the tables are dropped so that user-created views
+        # based on the ETL generated tables can be dropped before the tables are dropped.
+        #-----------------------------------------------------------------------------------
+        foreach ($this->getTasks() as $task) {
+            $task->runPreProcessingSql();
+        }
+
+        #----------------------------------------------
+        # Drop old load tables if they exist,
+        # and then create the load tables
+        #----------------------------------------------
+        $this->dropAllLoadTables();
+        $this->createAllLoadTables();
+
+        $preProcessingEndTime = microtime(true);
+        $this->preProcessingTime = $preProcessingEndTime - $preProcessingStartTime;
+
+        #---------------------------------------------------------------------------------
+        # For each ETL task (i.e., non-SQL-only tasks) run ETL (Extract Transform Load)
+        #---------------------------------------------------------------------------------
+        foreach ($this->getTasks() as $task) {
+            # ETL
+            if (!$task->isSqlOnlyTask()) {
+                $numberOfRecordIds += $task->extractTransformLoad();
+
+                $this->extractTime   += $task->getExtractTime();
+                $this->transformTime += $task->getTransformTime();
+                $this->loadTime      += $task->getLoadTime();
+            }
+        }
+
+        $postProcessingStartTime = microtime(true);
+        #-------------------------------------------------------------------------
+        # Generate primary and foreign keys for the databases, if configured
+        #-------------------------------------------------------------------------
+        foreach ($this->getDbIds() as $dbId) {
+            $this->createDatabaseKeys($dbId);
+        }
+
+        #------------------------------------------------------------------
+        # For each task, run post-processing SQL and log as complete
+        #------------------------------------------------------------------
+        foreach ($this->getTasks() as $task) {
+            $task->runPostProcessingSql();
+                
+            $logger->log(RedCapEtl::PROCESSING_COMPLETE);
+            $logger->logEmailSummary();
+        }
+
+        $endTime = microtime(true);
+        $this->postProcessingTime = $endTime - $postProcessingStartTime;
+        $this->totalTime = $endTime - $startTime;
+
+        return $numberOfRecordIds;
+    }
+
+
+
 
     public function dropAllLoadTables()
     {
@@ -426,6 +549,36 @@ class Workflow
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getPreProcessingTime()
+    {
+        return $this->preProcessingTime;
+    }
+
+    public function getPostProcessingTime()
+    {
+        return $this->postProcessingTime;
+    }
+
+    public function getExtractTime()
+    {
+        return $this->extractTime;
+    }
+
+    public function getTransformTime()
+    {
+        return $this->transformTime;
+    }
+
+    public function getLoadTime()
+    {
+        return $this->loadTime;
+    }
+
+    public function getTotalTime()
+    {
+        return $this->totalTime;
     }
 
     /**

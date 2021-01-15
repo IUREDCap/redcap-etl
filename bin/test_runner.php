@@ -48,7 +48,7 @@ if (array_key_exists('c', $options) && array_key_exists('b', $options)) {
         $batchSizes = array($batchSizes);
     }
 } else {
-    print "Usage: test.php -c <config-file> -b <batch-size> -n <number-of-runs> -o <output-file>\n";
+    print "Usage: test_runner.php -c <config-file> -b <batch-size> -n <number-of-runs> -o <output-file>\n";
     exit(1);
 }
 
@@ -80,7 +80,10 @@ foreach ($configFiles as $configFile) {
 #------------------------------------------------------------
 # Output test results to a CSV file
 #------------------------------------------------------------
-$header = ['config file', 'record id count', 'batch size', 'run number', 'peak memory used (bytes)', 'time (seconds)'];
+$header = [
+    'config file', 'record id count', 'batch size', 'run number', 'peak memory used (bytes)', 'time (seconds)',
+    'pre-processing time', 'extract time', 'transform time', 'load time', 'post-processing time'
+];
 
 $fh = fopen($outputCsvFile, 'w');
 fputcsv($fh, $header);
