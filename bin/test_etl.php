@@ -53,16 +53,31 @@ try {
     $redCapEtl = new RedCapEtl($logger, $configFile);
     if (isset($batchSize)) {
         $tasks = $redCapEtl->getTasks();
+        $redcapVersion = ($tasks[0])->getDataProject()->exportRedCapVersion();
+        $redcapEtlVersion = Version::RELEASE_NUMBER;
+        $phpVersion = PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION.".".PHP_RELEASE_VERSION;
+        #print "*********************** REDCap Version {$redcapVersion}\n";
+        #print "*********************** REDCap-ETL Version {$redcapEtlVersion}\n";
+        #print "*********************** PHP Version ".$phpVersion."\n";
         foreach ($tasks as $task) {
             $task->getTaskConfig()->setBatchSize($batchSize);
         }
-
     }
 
     $count = $redCapEtl->run();
+
+    foreach ($tasks as $task) {
+        $extractTime   = $task->getExtractTime();
+        $transformTime = $task->getTransformTime();
+        $loadTime      = $task->getLoadTime();
+        print "Extract time:   {$extractTime}\n";
+        print "Transform time: {$transformTime}\n";
+        print "Load time:      {$loadTime}\n";
+    }
 } catch (EtlException $exception) {
     $logger->logException($exception);
     $logger->log('Processing failed.');
+    exit(1);
 }
 
 $endTime = microtime(true);

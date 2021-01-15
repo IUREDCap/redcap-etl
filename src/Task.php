@@ -57,6 +57,10 @@ class Task
 
     private $transformationRulesText;
 
+    private $extractTime;
+    private $transformTime;
+    private $loadTime;
+
     /**
      * Constructor.
      *
@@ -67,6 +71,10 @@ class Task
         $this->name = '';
         $this->transformationRulesText = '';
         $this->schema = null;
+
+        $this->extractTime   = 0.0;
+        $this->transformTime = 0.0;
+        $this->loadTime      = 0.0;
     }
 
     /**
@@ -407,10 +415,6 @@ class Task
     {
         $startEtlTime = microtime(true);
 
-        $extractTime   = 0.0;
-        $transformTime = 0.0;
-        $loadTime      = 0.0;
-
         #--------------------------------------------------
         # Extract the record ID batches
         #--------------------------------------------------
@@ -419,7 +423,7 @@ class Task
             (int) $this->taskConfig->getBatchSize()
         );
         $endExtractTime = microtime(true);
-        $extractTime += $endExtractTime - $startExtractTime;
+        $this->extractTime += $endExtractTime - $startExtractTime;
 
         # Count and log the number of record IDs found
         $recordIdCount = 0;
@@ -444,7 +448,7 @@ class Task
             $startExtractTime = microtime(true);
             $recordBatch = $this->dataProject->getRecordBatch($recordIdBatch);
             $endExtractTime = microtime(true);
-            $extractTime += $endExtractTime - $startExtractTime;
+            $this->extractTime += $endExtractTime - $startExtractTime;
 
             if ($this->taskConfig->getExtractedRecordCountCheck()) {
                 if (count($recordBatch) < count($recordIdBatch)) {
@@ -488,7 +492,7 @@ class Task
                     $this->transform($rootTable, $records, '', '');
                 }
                 $endTransformTime = microtime(true);
-                $transformTime += $endTransformTime - $startTransformTime;
+                $this->transformTime += $endTransformTime - $startTransformTime;
             }
 
             #print("\n\n===============================================================\n");
@@ -505,13 +509,13 @@ class Task
                 $this->loadTableRowsEfficiently($table);
             }
             $endLoadTime = microtime(true);
-            $loadTime += $endLoadTime - $startLoadTime;
+            $this->loadTime += $endLoadTime - $startLoadTime;
         }
 
         $endEtlTime = microtime(true);
-        $this->logger->logToFile('Extract time:   '.$extractTime.' seconds');
-        $this->logger->logToFile('Transform time: '.$transformTime.' seconds');
-        $this->logger->logToFile('Load time:      '.$loadTime.' seconds');
+        $this->logger->logToFile('Extract time:   '.$this->extractTime.' seconds');
+        $this->logger->logToFile('Transform time: '.$this->transformTime.' seconds');
+        $this->logger->logToFile('Load time:      '.$this->loadTime.' seconds');
         $this->logger->logToFile('ETL total time: '.($endEtlTime - $startEtlTime).' seconds');
 
         $this->reportRows();
@@ -887,5 +891,20 @@ class Task
     public function getTransformationRulesText()
     {
         return $this->transformationRulesText;
+    }
+
+    public function getExtractTime()
+    {
+        return $this->extractTime;
+    }
+
+    public function getTransformTime()
+    {
+        return $this->transformTime;
+    }
+
+    public function getLoadTime()
+    {
+        return $this->loadTime;
     }
 }
