@@ -66,14 +66,15 @@ try {
 
     $count = $redCapEtl->run();
 
-    foreach ($tasks as $task) {
-        $extractTime   = $task->getExtractTime();
-        $transformTime = $task->getTransformTime();
-        $loadTime      = $task->getLoadTime();
-        print "Extract time:   {$extractTime}\n";
-        print "Transform time: {$transformTime}\n";
-        print "Load time:      {$loadTime}\n";
-    }
+    $workflow = $redCapEtl->getWorkflow();
+
+    $preProcessingTime  = $workflow->getPreProcessingTime();
+    $extractTime        = $workflow->getExtractTime();
+    $transformTime      = $workflow->getTransformTime();
+    $loadTime           = $workflow->getLoadTime();
+    $postProcessingTime = $workflow->getPostProcessingTime();
+
+    $totalTime     = $workflow->getTotalTime();
 } catch (EtlException $exception) {
     $logger->logException($exception);
     $logger->log('Processing failed.');
@@ -85,4 +86,5 @@ $endTime = microtime(true);
 #$batchSize = $redCapEtl->getConfiguration()->getBatchSize();
 $time = $endTime - $startTime;
 $memoryUsed = memory_get_peak_usage();
-print "{$configFile},{$count},{$batchSize},{$memoryUsed},{$time}\n";
+print "{$configFile},{$count},{$batchSize},{$memoryUsed},{$totalTime},"
+    ."{$preProcessingTime},{$extractTime},{$transformTime},{$loadTime},{$postProcessingTime}\n";

@@ -41,6 +41,15 @@ class Workflow
     /** @var string generated unique ID, which can be used to tell which tasks belong to the same workflow. */
     private $id;
 
+    private $extractTime;
+    private $transformTime;
+    private $loadTime;
+
+    private $preProcessingTime;
+    private $postProcessingTime;
+
+    private $totalTime;
+
     /**
      * Constructor.
      *
@@ -52,6 +61,15 @@ class Workflow
         $this->dbTasks       = array();
         
         $this->tasks = array();
+
+        $this->extractTime    = 0.0;
+        $this->transformTime  = 0.0;
+        $this->loadTime       = 0.0;
+
+        $this->preProcessingTime  = 0.0;
+        $this->postProcessingTime = 0.0;
+
+        $this->totalTime      = 0.0;
     }
 
     public function set($workflowConfig, $logger, $redcapProjectClass = null)
@@ -106,6 +124,8 @@ class Workflow
 
     public function run()
     {
+        $startTime = microtime(true);
+        $preProcessingStartTime = $startTime;
         $numberOfRecordIds = 0;
 
         #-----------------------------------------
@@ -161,6 +181,9 @@ class Workflow
         $this->dropAllLoadTables();
         $this->createAllLoadTables();
 
+        $preProcessingEndTime = microtime(true);
+        $this->preProcessingTime = $preProcessingEndTime - $preProcessingStartTime;
+
         #---------------------------------------------------------------------------------
         # For each ETL task (i.e., non-SQL-only tasks) run ETL (Extract Transform Load)
         #---------------------------------------------------------------------------------
@@ -168,9 +191,14 @@ class Workflow
             # ETL
             if (!$task->isSqlOnlyTask()) {
                 $numberOfRecordIds += $task->extractTransformLoad();
+
+                $this->extractTime   += $task->getExtractTime();
+                $this->transformTime += $task->getTransformTime();
+                $this->loadTime      += $task->getLoadTime();
             }
         }
 
+        $postProcessingStartTime = microtime(true);
         #-------------------------------------------------------------------------
         # Generate primary and foreign keys for the databases, if configured
         #-------------------------------------------------------------------------
@@ -187,6 +215,10 @@ class Workflow
             $logger->log(RedCapEtl::PROCESSING_COMPLETE);
             $logger->logEmailSummary();
         }
+
+        $endTime = microtime(true);
+        $this->postProcessingTime = $endTime - $postProcessingStartTime;
+        $this->totalTime = $endTime - $startTime;
 
         return $numberOfRecordIds;
     }
@@ -517,6 +549,36 @@ class Workflow
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getPreProcessingTime()
+    {
+        return $this->preProcessingTime;
+    }
+
+    public function getPostProcessingTime()
+    {
+        return $this->postProcessingTime;
+    }
+
+    public function getExtractTime()
+    {
+        return $this->extractTime;
+    }
+
+    public function getTransformTime()
+    {
+        return $this->transformTime;
+    }
+
+    public function getLoadTime()
+    {
+        return $this->loadTime;
+    }
+
+    public function getTotalTime()
+    {
+        return $this->totalTime;
     }
 
     /**
