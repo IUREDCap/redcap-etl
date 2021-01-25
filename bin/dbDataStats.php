@@ -16,7 +16,7 @@ $recordIdToDataSizeMap = array();
 # Map from record ID to number of database rows
 $recordIdToDbRows = array();
 
-$tableToNumberOfFields = array();
+$tableToNumberOfColumns = array();
 $tableToNumberOfRows   = array();
 
 if (count($argv) < 2) {
@@ -63,7 +63,7 @@ foreach ($dataFiles as $dataFile) {
     $recordIdKey = array_search($recordIdFieldName, $header);
 
     $tableName = basename($dataFile, '.csv');
-    $tableToNumberOfFields[$tableName] = count($header);
+    $tableToNumberOfColumns[$tableName] = count($header);
     $tableToNumberOfRows[$tableName]   = 0;
 
     while ($row = fgetcsv($fh)) {
@@ -116,13 +116,23 @@ foreach ($dataFiles as $table) {
 }
 print "\n";
 
-foreach ($tableToNumberOfFields as $table => $numberOfFields) {
-    print "Table {$table}: {$tableToNumberOfRows[$table]} rows, {$numberOfFields} fields\n";
+$totalDataFields = 0;
+foreach ($tableToNumberOfColumns as $table => $numberOfColumns) {
+    $rows = $tableToNumberOfRows[$table];
+    $numberOfDataFields = $rows * $numberOfColumns;
+    print "Table {$table}: ".number_format($rows)." rows, {$numberOfColumns} columns, "
+        .number_format($numberOfDataFields)." data fields\n";
+    $totalDataFields += $numberOfDataFields;
 }
+print "\n";
+print "Total table rows: ".number_format($totalRows)."\n";
+print "Total table data fields: ".number_format($totalDataFields)."\n";
 
+print "\n";
 print "Number of record IDs: ".count($recordIdToDataSizeMap)."\n";
 print "Total bytes data loaded: ".number_format($totalData)."\n";
 print "Average bytes data loaded per record ID: ".number_format($totalData / count($recordIdToDataSizeMap), 2)."\n";
+print "Average table data fields per record ID: ".number_format($totalDataFields / count($recordIdToDataSizeMap), 2)."\n";
 print "Average database rows per record ID: ".number_format($totalRows / count($recordIdToDataSizeMap), 2)."\n";
 print "\n";
 
