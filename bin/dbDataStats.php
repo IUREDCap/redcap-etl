@@ -108,8 +108,7 @@ $isFirst = true;
 foreach ($dataFiles as $table) {
     if ($isFirst) {
         $isFirst = false;
-    }
-    else {
+    } else {
         print ", ";
     }
     print basename($table, '.csv');
@@ -132,7 +131,8 @@ print "\n";
 print "Number of record IDs: ".count($recordIdToDataSizeMap)."\n";
 print "Total bytes data loaded: ".number_format($totalData)."\n";
 print "Average bytes data loaded per record ID: ".number_format($totalData / count($recordIdToDataSizeMap), 2)."\n";
-print "Average table data fields per record ID: ".number_format($totalDataFields / count($recordIdToDataSizeMap), 2)."\n";
-print "Average database rows per record ID: ".number_format($totalRows / count($recordIdToDataSizeMap), 2)."\n";
+print "Average table data fields per record ID: "
+    .number_format($totalDataFields / count($recordIdToDataSizeMap), 2)."\n";
+print "Average database rows per record ID: "
+    .number_format($totalRows / count($recordIdToDataSizeMap), 2)."\n";
 print "\n";
-

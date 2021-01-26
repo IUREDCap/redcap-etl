@@ -71,7 +71,10 @@ foreach ($configFiles as $configFile) {
             print "PROCESSING CONFIG FILE: {$configFile} WITH BATCH SIZE {$batchSize} - RUN NUMBER {$runNumber}\n";
             $result = system("{$testEtl} -c {$configFile} -b {$batchSize}");
             $result = explode(',', $result);
-            array_splice($result, 3, 0, array($runNumber));
+
+            # Add the run number to the results returned
+            array_splice($result, 4, 0, array($runNumber));
+
             array_push($results, $result);
         }
     }
@@ -81,7 +84,9 @@ foreach ($configFiles as $configFile) {
 # Output test results to a CSV file
 #------------------------------------------------------------
 $header = [
-    'config file', 'record id count', 'batch size', 'run number', 'peak memory used (bytes)', 'time (seconds)',
+    'start time', 'config file', 'record id count', 'batch size', 'run number',
+    'REDCap version', 'REDCap-ETL version',
+    'peak memory used (bytes)', 'time (seconds)',
     'pre-processing time', 'extract time', 'transform time', 'load time', 'post-processing time'
 ];
 

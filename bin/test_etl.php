@@ -50,6 +50,8 @@ if (array_key_exists('b', $options)) {
 
 
 try {
+    $currentDateTime = date('Y-m-d H:i:s');
+
     $redCapEtl = new RedCapEtl($logger, $configFile);
     if (isset($batchSize)) {
         $tasks = $redCapEtl->getTasks();
@@ -86,5 +88,7 @@ $endTime = microtime(true);
 #$batchSize = $redCapEtl->getConfiguration()->getBatchSize();
 $time = $endTime - $startTime;
 $memoryUsed = memory_get_peak_usage();
-print "{$configFile},{$count},{$batchSize},{$memoryUsed},{$totalTime},"
+print "{$currentDateTime},{$configFile},{$count},{$batchSize},"
+    ."{$redcapVersion},{$redcapEtlVersion},"
+    ."{$memoryUsed},{$totalTime},"
     ."{$preProcessingTime},{$extractTime},{$transformTime},{$loadTime},{$postProcessingTime}\n";
