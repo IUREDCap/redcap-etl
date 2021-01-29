@@ -511,8 +511,8 @@ class MysqlDbConnection extends DbConnection
                 case FieldType::INT:
                     #print "REDCAP TYPE FOR {$fieldDbName}: {$redcapType}\n";
                     if (empty($rowData[$fieldDbName])
-                            && $rowData[$fieldDbName] !== 0
-                            && $rowData[$fieldDbName] !== '0') {
+                            && $rowData[$fieldDbName] != 0
+                            && $rowData[$fieldDbName] != '0') {
                         if (strcasecmp($redcapType, 'checkbox') === 0) {
                             $rowValues[] = 0;
                         } else {
