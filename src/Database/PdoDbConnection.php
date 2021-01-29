@@ -404,7 +404,7 @@ abstract class PdoDbConnection extends DbConnection
                     if (empty($rowData[$fieldDbName])
                         && $rowData[$fieldDbName] !== 0
                         && $rowData[$fieldDbName] !== '0') {
-                        if (strcasecmp($redcapType, 'checkbox') === 0) {
+                        if (strcasecmp($redcapType, 'checkbox') === 0 || strcasecmp($redcapType, "radio") === 0) {
                             $rowValues[] = 0;
                         } else {
                             $rowValues[] = 'null';
