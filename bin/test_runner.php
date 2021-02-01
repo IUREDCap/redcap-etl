@@ -70,13 +70,15 @@ foreach ($configFiles as $configFile) {
         for ($runNumber = 1; $runNumber <= $numberOfRuns; $runNumber++) {
             print "PROCESSING CONFIG FILE: {$configFile} WITH BATCH SIZE {$batchSize} - RUN NUMBER {$runNumber}\n";
             $result = system("{$testEtl} -c {$configFile} -b {$batchSize}");
+            print "RESULT: {$result}\n";
             $result = explode(',', $result);
 
             # Add the run number to the results returned
-            array_splice($result, 4, 0, array($runNumber));
+            array_splice($result, 4, 0, $runNumber);
 
             array_push($results, $result);
         }
+        array_push($results, array('')); # Add blank line between groups of runs for same config file and batch size
     }
 }
 
