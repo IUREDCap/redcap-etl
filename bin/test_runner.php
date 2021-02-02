@@ -9,9 +9,8 @@
 # Options:
 #    -c <configuration-file>  (can specify this option multiple times)
 #    -b <batch-size>          (can specify this option multiple times)
-#    -n <number-of-runs>    (the number of runs for each config file/batch size,
-#                           defaults to 1)
-#    -o <output-file>  (optional, defaults to test.csv)
+#    -n <number-of-runs>      (the number of runs for each config file/batch size, defaults to 1)
+#    -o <output-file>         (optional, defaults to test.csv)
 #
 # Example:
 #     php test_runner.php -c ../config/test.ini -b 10 -b 100 -n 3 -o test.csv
@@ -70,10 +69,15 @@ foreach ($configFiles as $configFile) {
         for ($runNumber = 1; $runNumber <= $numberOfRuns; $runNumber++) {
             print "PROCESSING CONFIG FILE: {$configFile} WITH BATCH SIZE {$batchSize} - RUN NUMBER {$runNumber}\n";
             $result = system("{$testEtl} -c {$configFile} -b {$batchSize}");
+            print "RESULT: {$result}\n";
             $result = explode(',', $result);
-            array_splice($result, 3, 0, array($runNumber));
+
+            # Add the run number to the results returned
+            array_splice($result, 4, 0, $runNumber);
+
             array_push($results, $result);
         }
+        array_push($results, array('')); # Add blank line between groups of runs for same config file and batch size
     }
 }
 
@@ -81,8 +85,11 @@ foreach ($configFiles as $configFile) {
 # Output test results to a CSV file
 #------------------------------------------------------------
 $header = [
-    'config file', 'record id count', 'batch size', 'run number', 'peak memory used (bytes)', 'time (seconds)',
-    'pre-processing time', 'extract time', 'transform time', 'load time', 'post-processing time'
+    'start time', 'config file', 'record id count', 'batch size', 'run number',
+    'REDCap version', 'REDCap-ETL version',
+    'peak memory used (bytes)', 'total time (seconds)',
+    'pre-processing time', 'extract time', 'transform time', 'load time', 'post-processing time',
+    'overhead time'
 ];
 
 $fh = fopen($outputCsvFile, 'w');

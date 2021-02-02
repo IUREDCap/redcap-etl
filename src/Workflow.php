@@ -41,13 +41,28 @@ class Workflow
     /** @var string generated unique ID, which can be used to tell which tasks belong to the same workflow. */
     private $id;
 
+    /** @var float time in seconds to extract the data form REDCap. */
     private $extractTime;
+
+    /** @var float time in seconds to transform the extracted data. */
     private $transformTime;
+
+    /** @var float time in seconds to load the transformed data into the database. */
     private $loadTime;
 
+    /** @var float time in seconds for pre-processing, which includes inital logging, dropping existing load
+                   tables (if any), creating the load tables, and running any user-defined pre-processing SQL. */
     private $preProcessingTime;
+
+    /** @var float time in seconds for creating primary and foreign keys (if configured), and running any
+                   user-defined post-processing SQL. */
     private $postProcessingTime;
 
+    /** @var float time for overhead that doesn't fit into other categories, including some logging, and
+                   batch processing overhead. */
+    private $overheadTime;
+
+    /** @var float total time in seconds for the entire ETL process. */
     private $totalTime;
 
     /**
@@ -69,7 +84,9 @@ class Workflow
         $this->preProcessingTime  = 0.0;
         $this->postProcessingTime = 0.0;
 
-        $this->totalTime      = 0.0;
+        $this->overheadTime = 0.0;
+
+        $this->totalTime = 0.0;
     }
 
     public function set($workflowConfig, $logger, $redcapProjectClass = null)
@@ -219,6 +236,13 @@ class Workflow
         $endTime = microtime(true);
         $this->postProcessingTime = $endTime - $postProcessingStartTime;
         $this->totalTime = $endTime - $startTime;
+
+        $this->overheadTime = $this->totalTime
+            - $this->extractTime
+            - $this->transformTime
+            - $this->loadTime
+            - $this->preProcessingTime
+            - $this->postProcessingTime;
 
         return $numberOfRecordIds;
     }
@@ -574,6 +598,11 @@ class Workflow
     public function getLoadTime()
     {
         return $this->loadTime;
+    }
+
+    public function getOverheadTime()
+    {
+        return $this->overheadTime;
     }
 
     public function getTotalTime()
