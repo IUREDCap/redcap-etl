@@ -9,9 +9,8 @@
 # Options:
 #    -c <configuration-file>  (can specify this option multiple times)
 #    -b <batch-size>          (can specify this option multiple times)
-#    -n <number-of-runs>    (the number of runs for each config file/batch size,
-#                           defaults to 1)
-#    -o <output-file>  (optional, defaults to test.csv)
+#    -n <number-of-runs>      (the number of runs for each config file/batch size, defaults to 1)
+#    -o <output-file>         (optional, defaults to test.csv)
 #
 # Example:
 #     php test_runner.php -c ../config/test.ini -b 10 -b 100 -n 3 -o test.csv
@@ -88,8 +87,9 @@ foreach ($configFiles as $configFile) {
 $header = [
     'start time', 'config file', 'record id count', 'batch size', 'run number',
     'REDCap version', 'REDCap-ETL version',
-    'peak memory used (bytes)', 'time (seconds)',
-    'pre-processing time', 'extract time', 'transform time', 'load time', 'post-processing time'
+    'peak memory used (bytes)', 'total time (seconds)',
+    'pre-processing time', 'extract time', 'transform time', 'load time', 'post-processing time',
+    'overhead time'
 ];
 
 $fh = fopen($outputCsvFile, 'w');

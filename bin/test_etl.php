@@ -2,11 +2,8 @@
 <?php
 
 #-------------------------------------------------------------
-# This is the batch script for REDCap-ETL: Extracting data
-# from REDCap, transforming REDCap Records into Tables/Rows,
-# and loading the data into a data store.
-# This is the script that would typically be used for cron
-# jobs to run ETL automatically at scheduled times.
+# This is a test script for running REDCap-ETL that
+# outputs time statistics for the process.
 #
 # Options:
 #    -c <configuration-file> [-b <batch-size>]
@@ -58,9 +55,6 @@ try {
         $redcapVersion = ($tasks[0])->getDataProject()->exportRedCapVersion();
         $redcapEtlVersion = Version::RELEASE_NUMBER;
         $phpVersion = PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION.".".PHP_RELEASE_VERSION;
-        #print "*********************** REDCap Version {$redcapVersion}\n";
-        #print "*********************** REDCap-ETL Version {$redcapEtlVersion}\n";
-        #print "*********************** PHP Version ".$phpVersion."\n";
         foreach ($tasks as $task) {
             $task->getTaskConfig()->setBatchSize($batchSize);
         }
@@ -75,6 +69,7 @@ try {
     $transformTime      = $workflow->getTransformTime();
     $loadTime           = $workflow->getLoadTime();
     $postProcessingTime = $workflow->getPostProcessingTime();
+    $overheadTime       = $workflow->getOverheadTime();
 
     $totalTime     = $workflow->getTotalTime();
 } catch (EtlException $exception) {
@@ -91,4 +86,4 @@ $memoryUsed = memory_get_peak_usage();
 print "{$currentDateTime},{$configFile},{$count},{$batchSize},"
     ."{$redcapVersion},{$redcapEtlVersion},"
     ."{$memoryUsed},{$totalTime},"
-    ."{$preProcessingTime},{$extractTime},{$transformTime},{$loadTime},{$postProcessingTime}\n";
+    ."{$preProcessingTime},{$extractTime},{$transformTime},{$loadTime},{$postProcessingTime},{$overheadTime}\n";

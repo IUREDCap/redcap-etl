@@ -57,8 +57,13 @@ class Task
 
     private $transformationRulesText;
 
+    /** @var float time in seconds to extract the data form REDCap. */
     private $extractTime;
+
+    /** @var float time in seconds to transform the extracted data. */
     private $transformTime;
+
+    /** @var float time in seconds to load the transformed data into the database. */
     private $loadTime;
 
     /**
