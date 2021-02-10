@@ -79,7 +79,7 @@ class RedCapEtl
      *     be set if the properties are passed as an array (instead of a file).
      */
     public function __construct(
-        & $logger,
+        &$logger,
         $properties,
         $redcapProjectClass = null,
         $baseDir = null

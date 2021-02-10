@@ -344,8 +344,8 @@ class MysqlDbConnection extends DbConnection
                         . "'".$label."'"
                         . ' ELSE 0'
                         . ' END as '.$this->escapeName($field->dbName);
-                } // The field uses the lookup table and is not a checkbox field
-                else {
+                } else {
+                    # The field uses the lookup table and is not a checkbox field
                     $select = 'CASE '.$this->escapeName($field->dbName);
                     $map = $lookup->getValueLabelMap($table->getName(), $fname);
                     foreach ($map as $value => $label) {

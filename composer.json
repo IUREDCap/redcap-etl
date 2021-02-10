@@ -15,7 +15,7 @@
     "require-dev" : {
         "apigen/apigen" : "v4.1.2",
         "phpunit/phpunit" : "6.5.8",
-        "squizlabs/php_codesniffer" : "3.2.3",
+        "squizlabs/php_codesniffer" : "3.5.8",
         "kzykhys/php-csv-parser" : "1.4.1"
     },
     "autoload" : {
