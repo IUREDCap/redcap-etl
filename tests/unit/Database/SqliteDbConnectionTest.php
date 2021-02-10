@@ -24,20 +24,26 @@ class SqliteDbConnectionTest extends TestCase
         $caCertFile = null;
         $labelViewSuffix = null;
         $tablePrefix = null;
-        $dbString = './tests/output/sqliteTest.db';
+        $dbString = './tests/output/sqliteDoesNotExistTest.db';
+        $dbString = null;
 
-        $sqliteDbConnection = new SqliteDbConnection(
-            $dbString,
-            $ssl,
-            $sslVerify,
-            $caCertFile,
-            $tablePrefix,
-            $labelViewSuffix
-        );
+        $exceptionCaught = false;
+        try {
+            $sqliteDbConnection = new SqliteDbConnection(
+                $dbString,
+                $ssl,
+                $sslVerify,
+                $caCertFile,
+                $tablePrefix,
+                $labelViewSuffix
+            );
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
 
-        $this->assertNotNull(
-            $sqliteDbConnection,
-            'sqliteDbConnection object created successfully check'
+        $this->assertNotFalse(
+            $exceptionCaught,
+            'Constructor exception caught check'
         );
     }
 }
