@@ -44,6 +44,7 @@ class BasicDemographySystemTest extends TestCase
             self::$dbConnection = $firstTask->getDbConnection();
         } catch (\Exception $exception) {
             print "\nEXCEPTION in test ".__FILE__.": {$exception->getMessage()}\n";
+            # print "\n".$exception->getTraceAsString()."\n";
             $logger->logException($exception);
             $logger->log('Processing failed.');
         }
@@ -89,6 +90,7 @@ class BasicDemographySystemTest extends TestCase
             'comments',
         ];
         $columns = self::$dbConnection->getTableColumnNames('basic_demography');
+
         $this->assertEquals($expectedColumns, $columns, 'Column name check');
 
         # Row ID check

@@ -77,10 +77,17 @@ works.
     To create the a database, schema and user that match the values in the test configuration file, use:
 
         create database etl_test;
+        \connection etl_test
         create schema etl_test;
 
         create user etl_user with password 'etlPassword';
         grant all privileges on database etl_test to etl_user;
+        grant usage on schema etl_test to etl_user;
+        grant create on schema etl_test to etl_user;
+
+    To test the account created:
+
+        psql -U etl_user -h localhost -d etl_test -W
 
 
 8. **Install SQL Server**
@@ -241,8 +248,7 @@ in the steps for setting up integration tests, then you need to do that now.
 __SQLite Database Setup.__ You need to create SQLite test databases. Use the following commands
 
     cd tests/output
-    sqlite3 repeating-events.db
-    sqlite3 visits.db
+    sqlite3 sqliteTest.db
 
 When in the sqlite shell from executing the above sqlite3 commands, enter the following:
 

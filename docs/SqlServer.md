@@ -10,8 +10,8 @@ If you do not have Ubuntu 18.04 LTS installed, check the ubuntu wiki to see if 1
 
 If 18.04 is the listed as the LTS version, then update/upgrade Ubuntu Server in your home directory:
 
-    sudo apt-get update
-    sudo apt-get upgrade
+    sudo apt update
+    sudo apt upgrade
 
 Reboot the server, if necessary:
 
@@ -27,9 +27,9 @@ In your home directory, import the public repository GPG keys:
 
 Then register the Microsoft SQL Server Ubuntu repository:
 
-    sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/16.04/mssql-server-2017.list)"
+    sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/18.04/mssql-server-2019.list)"
 
-(Packages for Ubuntu 16.04 will be used for this. There are no packages at the time of this document for Ubuntu 18.04.)
+(Packages for Ubuntu 18.04 will be used for this even if Ubuntu 20 is being used.)
 
 
 Run the following commands to install SQL Server:
@@ -63,7 +63,7 @@ Note: If you plan to connect remotely, you might also need to open the SQL Serve
 
 Install curl if needed:
 
-    sudo apt-get install curl -y
+    sudo apt install curl -y
 
 Import the public repository GPG keys:
 
@@ -71,12 +71,12 @@ Import the public repository GPG keys:
 
 Register the Microsoft Ubuntu repository:
 
-    curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+    curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
 
 Update the sources list and run the installation command with the unixODBC developer package.
 
-    sudo apt-get update
-    sudo apt-get install mssql-tools unixodbc-dev
+    sudo apt update
+    sudo apt install mssql-tools unixodbc-dev
 
 Add /opt/mssql-tools/bin/ to your PATH environment variable in a bash shell.
 
@@ -234,6 +234,9 @@ Create a database and verify it was created:
 
 
 Create a login and verify it was created:
+
+    1> use etl_test
+    2> GO
 
     1> CREATE LOGIN etl_user WITH PASSWORD=N'etlPassword123', DEFAULT_DATABASE=etl_test
     2> GO

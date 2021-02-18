@@ -464,8 +464,7 @@ abstract class PdoDbConnection extends DbConnection
                 $this->processQueries($queries);
             }
         } else {
-            $error = "Could not access query file $queryFile: "
-                 .error_get_last()['message'];
+            $error = "Could not access query file $queryFile: ";
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         }

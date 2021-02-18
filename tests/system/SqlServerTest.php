@@ -426,9 +426,9 @@ class SqlServerTest extends TestCase
             'SqlServerTest, SqlServerDbConnection insertRow expected error error code check'
         );
 
-        $this->assertEquals(
-            $expectedMessage6,
-            substr($exception->getMessage(), -1*strlen($expectedMessage6)),
+        $this->assertRegexp(
+            '/'.$expectedMessage6.'/',
+            $exception->getMessage(),
             'SqlServerTest, SqlServerDbConnection insertRow expected error error message check'
         );
 
@@ -649,9 +649,9 @@ class SqlServerTest extends TestCase
             'SqlServerTest, SqlServerDbConnection insertRows exception error code check'
         );
 
-        $this->assertEquals(
-            $expectedMessage,
-            substr($exception->getMessage(), -1*strlen($expectedMessage)),
+        $this->assertRegexp(
+            '/'.$expectedMessage.'/',
+            $exception->getMessage(),
             'SqlServerTest, SqlServerDbConnection insertRows exception error message check'
         );
 

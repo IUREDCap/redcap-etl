@@ -151,7 +151,8 @@ class PostgreSqlDbConnection extends PdoDbConnection
         $columnNames = array();
 
         $query = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS '
-            .' WHERE TABLE_CATALOG = :database AND TABLE_SCHEMA = :schema AND TABLE_NAME = :table';
+            .' WHERE TABLE_CATALOG = :database AND TABLE_SCHEMA = :schema AND TABLE_NAME = :table'
+            .' ORDER BY ORDINAL_POSITION';
         $statement = $this->db->prepare($query);
 
         $statement->execute(['database' => $this->databaseName, 'schema' => $this->schemaName, 'table' => $tableName]);

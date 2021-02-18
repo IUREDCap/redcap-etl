@@ -6,6 +6,8 @@
 
 namespace IU\REDCapETL;
 
+use IU\REDCapETL\Database\SqliteDbConnection;
+
 use PHPUnit\Framework\TestCase;
 
 /**
