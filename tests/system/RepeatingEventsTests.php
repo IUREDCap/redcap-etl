@@ -110,6 +110,9 @@ abstract class RepeatingEventsTests extends TestCase
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
+        SystemTestsUtil::convertMapValues($expectedData);
+        SystemTestsUtil::convertMapValues($actualData);
+
         $this->assertEquals($expectedData, $actualData);
     }
 
@@ -144,6 +147,9 @@ abstract class RepeatingEventsTests extends TestCase
         $expectedData = $parser2->parse();
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
+
+        SystemTestsUtil::convertMapValues($expectedData);
+        SystemTestsUtil::convertMapValues($actualData);
 
         $this->assertEquals($expectedData, $actualData);
     }
@@ -183,6 +189,9 @@ abstract class RepeatingEventsTests extends TestCase
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
+        SystemTestsUtil::convertMapValues($expectedData);
+        SystemTestsUtil::convertMapValues($actualData);
+
         $this->assertEquals($expectedData, $actualData);
     }
 
@@ -217,6 +226,9 @@ abstract class RepeatingEventsTests extends TestCase
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_visits.csv');
         $expectedData = $parser2->parse();
+
+        SystemTestsUtil::convertMapValues($expectedData);
+        SystemTestsUtil::convertMapValues($actualData);
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -323,6 +335,9 @@ abstract class RepeatingEventsTests extends TestCase
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
+        SystemTestsUtil::convertMapValues($expectedData);
+        SystemTestsUtil::convertMapValues($actualData);
+
         $this->assertEquals($expectedData, $actualData);
     }
 
@@ -356,6 +371,9 @@ abstract class RepeatingEventsTests extends TestCase
 
         $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits.csv');
         $expectedData = $parser2->parse();
+
+        SystemTestsUtil::convertMapValues($expectedData);
+        SystemTestsUtil::convertMapValues($actualData);
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -398,6 +416,9 @@ abstract class RepeatingEventsTests extends TestCase
         $expectedData = $parser2->parse();
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
+
+        SystemTestsUtil::convertMapValues($expectedData);
+        SystemTestsUtil::convertMapValues($actualData);
 
         $this->assertEquals($expectedData, $actualData);
     }

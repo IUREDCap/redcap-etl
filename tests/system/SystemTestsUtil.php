@@ -32,4 +32,36 @@ class SystemTestsUtil
         }
         return $map;
     }
+
+    public static function convertMapValues(&$csv)
+    {
+        for ($i = 0; $i < count($csv); $i++) {
+            foreach ($csv[$i] as $key => $value) {
+                if (is_numeric($value)) {
+                    $csv[$i][$key] = floatval($csv[$i][$key]);
+                }
+            }
+        }
+    }
+
+    public static function convertCsvValues(&$csv)
+    {
+        $header = $csv[0];
+        for ($i = 1; $i < count($csv); $i++) {
+            for ($j = 0; $j < count($header); $j++) {
+                if (is_numeric($csv[$i][$j])) {
+                    $csv[$i][$j] = floatval($csv[$i][$j]);
+                }
+            }
+        }
+    }
+
+    public static function convertCsvRowValues(&$csvRow)
+    {
+        foreach ($csvRow as $key => $value) {
+            if (is_numeric($value)) {
+                $csvRow[$key] = floatval($csvRow[$key]);
+            }
+        }
+    }
 }

@@ -135,6 +135,10 @@ class BasicDemographySystemTest extends TestCase
         $firstRow = $data[0];
         # rtrim phone because it has type char, and some databases right pad with blanks
         $firstRow['phone'] = rtrim($firstRow['phone']);
+
+        SystemTestsUtil::convertCsvRowValues($expectedFirstRow);
+        SystemTestsUtil::convertCsvRowValues($firstRow);
+
         $this->assertEquals($expectedFirstRow, $firstRow, 'First row check');
 
         $expectedLastRow = [
@@ -164,6 +168,10 @@ class BasicDemographySystemTest extends TestCase
         $lastRow = $data[count($data) - 1];
         # rtrim phone because it has type char, and some databases right pad with blanks
         $lastRow['phone'] = rtrim($lastRow['phone']);
+
+        SystemTestsUtil::convertCsvRowValues($expectedLastRow);
+        SystemTestsUtil::convertCsvRowValues($lastRow);
+
         $this->assertEquals($expectedLastRow, $lastRow, 'Last row check');
 
         #----------------------------------------------

@@ -208,6 +208,9 @@ class VisitsTestUtility
         $statement  = $dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
+        SystemTestsUtil::convertMapValues($expectedData);
+        SystemTestsUtil::convertMapValues($actualData);
+
         $testCase->assertEquals($expectedData, $actualData, 'Labs table test');
     }
 

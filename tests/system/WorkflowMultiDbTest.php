@@ -204,6 +204,10 @@ class WorkflowMultiDbTest extends TestCase
         ];
 
         $actualFirstRow = $mysqlData[0];
+
+        SystemTestsUtil::convertCsvRowValues($expectedFirstRow);
+        SystemTestsUtil::convertCsvRowValues($actualFirstRow);
+
         $this->assertEquals($expectedFirstRow, $actualFirstRow, 'MySQL first row check');
 
         #--------------------------------
@@ -247,6 +251,12 @@ class WorkflowMultiDbTest extends TestCase
             $sqlserverData[$i]['redcap_data_source']  = 1;
             $csvData[$i]['redcap_data_source']        = 1;
         }
+
+        SystemTestsUtil::convertMapValues($mysqlData);
+        SystemTestsUtil::convertMapValues($postgresqlData);
+        SystemTestsUtil::convertMapValues($sqliteData);
+        SystemTestsUtil::convertMapValues($sqlserverData);
+        SystemTestsUtil::convertMapValues($csvData);
 
         $this->assertEquals($mysqlData, $postgresqlData, 'MySQL vs. PostgreSQL data');
         $this->assertEquals($mysqlData, $sqliteData, 'MySQL vs. SQLite data');

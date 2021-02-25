@@ -190,6 +190,9 @@ class RepeatingEventsTest extends TestCase
         $header = $csv[0];
         $this->assertEquals(101, count($csv), 'Row count check.');
         
+        SystemTestsUtil::convertCsvValues($expectedCsv);
+        SystemTestsUtil::convertCsvValues($csv);
+        
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
 
@@ -205,6 +208,8 @@ class RepeatingEventsTest extends TestCase
         $header = $csv[0];
         $this->assertEquals(201, count($csv), 'Row count check.');
 
+        SystemTestsUtil::convertCsvValues($expectedCsv);
+        SystemTestsUtil::convertCsvValues($csv);
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
@@ -221,6 +226,8 @@ class RepeatingEventsTest extends TestCase
         $header = $csv[0];
         $this->assertEquals(201, count($csv), 'Row count check.');
 
+        SystemTestsUtil::convertCsvValues($expectedCsv);
+        SystemTestsUtil::convertCsvValues($csv);
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
@@ -236,7 +243,6 @@ class RepeatingEventsTest extends TestCase
 
         $header = $csv[0];
         $this->assertEquals(201, count($csv), 'Row count check.');
-
         
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
@@ -253,6 +259,9 @@ class RepeatingEventsTest extends TestCase
         $header = $csv[0];
         $this->assertEquals(301, count($csv), 'Row count check.');
 
+        SystemTestsUtil::convertCsvValues($expectedCsv);
+        SystemTestsUtil::convertCsvValues($csv);
+
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
 
@@ -267,6 +276,9 @@ class RepeatingEventsTest extends TestCase
 
         $header = $csv[0];
         $this->assertEquals(501, count($csv), 'Row count check.');
+
+        SystemTestsUtil::convertCsvValues($expectedCsv);
+        SystemTestsUtil::convertCsvValues($csv);
 
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
@@ -283,6 +295,9 @@ class RepeatingEventsTest extends TestCase
         $header = $csv[0];
         $this->assertEquals(601, count($csv), 'Row count check.');
 
+        SystemTestsUtil::convertCsvValues($expectedCsv);
+        SystemTestsUtil::convertCsvValues($csv);
+
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }
 
@@ -297,6 +312,9 @@ class RepeatingEventsTest extends TestCase
 
         $header = $csv[0];
         $this->assertEquals(701, count($csv), 're_all_visits row count check.');
+
+        SystemTestsUtil::convertCsvValues($expectedCsv);
+        SystemTestsUtil::convertCsvValues($csv);
 
         $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
     }

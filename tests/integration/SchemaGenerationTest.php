@@ -55,7 +55,7 @@ class SchemaGenerationTest extends TestCase
         # Test that the schema object was created
         $this->assertNotNull($schema, 'SchemaGenerator, generateSchema object not null');
 
-        $expectedTableNames = ['Demography'];
+        $expectedTableNames = ['basic_demography'];
 
         $tables = $schema->getTables();
         $actualTableNames = array();

@@ -151,6 +151,9 @@ class WorkflowBasicDemographySystemTest extends TestCase
             $expectedFirstRow['redcap_data_source'] = 1;
         }
 
+        SystemTestsUtil::convertCsvRowValues($expectedFirstRow);
+        SystemTestsUtil::convertCsvRowValues($actualFirstRow);
+
         $this->assertEquals($expectedFirstRow, $actualFirstRow, 'First row check');
 
         #--------------------------------
