@@ -62,7 +62,16 @@ if (array_key_exists('n', $options)) {
 #------------------------------------------------------------------------
 # Run tests
 #------------------------------------------------------------------------
-$results = array();
+$fh = fopen($outputCsvFile, 'w');
+
+$header = [
+    'start time', 'config file', 'record id count', 'batch size', 'run number',
+    'REDCap version', 'REDCap-ETL version',
+    'peak memory used (bytes)', 'total time (seconds)',
+    'pre-processing time', 'extract time', 'transform time', 'load time', 'post-processing time',
+    'overhead time'
+];
+fputcsv($fh, $header);
 
 foreach ($configFiles as $configFile) {
     foreach ($batchSizes as $batchSize) {
@@ -71,30 +80,12 @@ foreach ($configFiles as $configFile) {
             $result = system("{$testEtl} -c {$configFile} -b {$batchSize}");
             print "RESULT: {$result}\n";
             $result = explode(',', $result);
-
-            # Add the run number to the results returned
             array_splice($result, 4, 0, $runNumber);
-
-            array_push($results, $result);
+            fputcsv($fh, $result);
+            fflush($fh);
         }
-        array_push($results, array('')); # Add blank line between groups of runs for same config file and batch size
+        fputcsv($fh, array('')); # Add blank line between groups of runs for same config file and batch size
     }
 }
 
-#------------------------------------------------------------
-# Output test results to a CSV file
-#------------------------------------------------------------
-$header = [
-    'start time', 'config file', 'record id count', 'batch size', 'run number',
-    'REDCap version', 'REDCap-ETL version',
-    'peak memory used (bytes)', 'total time (seconds)',
-    'pre-processing time', 'extract time', 'transform time', 'load time', 'post-processing time',
-    'overhead time'
-];
-
-$fh = fopen($outputCsvFile, 'w');
-fputcsv($fh, $header);
-foreach ($results as $result) {
-    fputcsv($fh, $result);
-}
 fclose($fh);
