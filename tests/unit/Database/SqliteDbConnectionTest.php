@@ -19,25 +19,18 @@ class SqliteDbConnectionTest extends TestCase
 {
     public function testConstructor()
     {
-        $ssl = null;
-        $sslVerify = null;
-        $caCertFile = null;
-        $labelViewSuffix = null;
-        $tablePrefix = null;
-        $dbString = './tests/output/sqliteTest.db';
+        $dbString = '/notarealdirectory/test.db';
 
-        $sqliteDbConnection = new SqliteDbConnection(
-            $dbString,
-            $ssl,
-            $sslVerify,
-            $caCertFile,
-            $tablePrefix,
-            $labelViewSuffix
-        );
+        $exceptionCaught = false;
+        try {
+            $sqliteDbConnection = SqliteDbConnection::getPdoConnection($dbString);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
 
-        $this->assertNotNull(
-            $sqliteDbConnection,
-            'sqliteDbConnection object created successfully check'
+        $this->assertTrue(
+            $exceptionCaught,
+            'Constructor exception caught check'
         );
     }
 }

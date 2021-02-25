@@ -73,7 +73,7 @@ class WorkflowConfig
      * @param string $baseDir base directory for $properties, if it is an array.
      *     This is used for file properties that are specified as relative paths.
      */
-    public function set(& $logger, $properties, $baseDir = null)
+    public function set(&$logger, $properties, $baseDir = null)
     {
         $this->logger = $logger;
         $this->baseDir = $baseDir;

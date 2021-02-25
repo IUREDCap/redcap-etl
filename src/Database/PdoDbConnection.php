@@ -235,8 +235,8 @@ abstract class PdoDbConnection extends DbConnection
                         . $label
                         . " ELSE '0'"
                         . ' END as '.$this->escapeName($field->dbName);
-                } // The field uses the lookup table and is not a checkbox field
-                else {
+                } else {
+                    # The field uses the lookup table and is not a checkbox field
                     $select = 'CASE '.$this->escapeName($field->dbName);
                     $map = $lookup->getValueLabelMap($table->getName(), $fname);
                     foreach ($map as $value => $label) {
@@ -464,8 +464,7 @@ abstract class PdoDbConnection extends DbConnection
                 $this->processQueries($queries);
             }
         } else {
-            $error = "Could not access query file $queryFile: "
-                 .error_get_last()['message'];
+            $error = "Could not access query file $queryFile: ";
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         }

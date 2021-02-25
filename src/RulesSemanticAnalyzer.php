@@ -29,7 +29,7 @@ class RulesSemanticAnalyzer
      *
      * @param Rules $rules the rules to check.
      */
-    public function check(& $rules)
+    public function check(&$rules)
     {
         #print "TRANSFORMATION RULES:\n";
         #print_r($rules);

@@ -344,8 +344,8 @@ class MysqlDbConnection extends DbConnection
                         . "'".$label."'"
                         . ' ELSE 0'
                         . ' END as '.$this->escapeName($field->dbName);
-                } // The field uses the lookup table and is not a checkbox field
-                else {
+                } else {
+                    # The field uses the lookup table and is not a checkbox field
                     $select = 'CASE '.$this->escapeName($field->dbName);
                     $map = $lookup->getValueLabelMap($table->getName(), $fname);
                     foreach ($map as $value => $label) {
@@ -563,7 +563,8 @@ class MysqlDbConnection extends DbConnection
     {
         $columnNames = array();
 
-        $query = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?';
+        $query = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? '
+            .' ORDER BY ORDINAL_POSITION';
         $statement = $this->mysqli->prepare($query);
         $statement->bind_param('ss', $this->databaseName, $tableName);
 
@@ -591,8 +592,7 @@ class MysqlDbConnection extends DbConnection
                 $this->processQueries($queries);
             }
         } else {
-            $error = "Could not access query file $queryFile: "
-                 .error_get_last()['message'];
+            $error = "Could not access query file $queryFile: ";
             $code = EtlException::DATABASE_ERROR;
             throw new EtlException($error, $code);
         }
