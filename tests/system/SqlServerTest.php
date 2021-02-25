@@ -40,12 +40,12 @@ class SqlServerTest extends TestCase
     protected $rowsType = RowsType::ROOT;
     protected $recordidFieldName = 'recordid';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$logger = new Logger('sqlserver_databases_system_test');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         #These tests depend on the sqlsrv and pdo_sqlsrv drivers being installed.
         #If they are not loaded in PHP, all tests will be skipped.

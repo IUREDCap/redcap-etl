@@ -20,7 +20,7 @@ class RedCapEtlTest extends TestCase
     private static $properties;
     private static $originalTimezone;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $app = basename(__FILE__, '.php');
         self::$logger = new Logger($app);

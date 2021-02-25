@@ -18,7 +18,7 @@ class BasicDemographyJsonTest extends TestCase
 
     const CONFIG_FILE = __DIR__.'/../config/basic-demography.json';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
     }
 

@@ -21,7 +21,7 @@ class LoggerTest extends TestCase
     private $project;
     private static $customLog;
 
-    public function setUp()
+    public function setUp(): void
     {
         $apiUrl   = 'https://someplace.edu/api/';
         $apiToken = '11111111112222222222333333333344';

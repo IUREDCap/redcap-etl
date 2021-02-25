@@ -15,7 +15,7 @@ use IU\REDCapETL\Rules\Rules;
  */
 class RulesSemanticAnalyzerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
     }
      

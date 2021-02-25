@@ -25,7 +25,7 @@ class DynamicRulesMultipleRootFormTest extends TestCase
     private static $locationCsvFile;
     private static $combinedFormsCsvFile;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
 
         if (file_exists(self::CONFIG_FILE)) {
@@ -56,7 +56,7 @@ class DynamicRulesMultipleRootFormTest extends TestCase
         self::$combinedFormsCsvFile = self::$csvDir . 'combined_forms.csv';
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!file_exists(self::CONFIG_FILE)) {
             $this->markTestSkipped("Required configuration not set for this test.");

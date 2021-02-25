@@ -18,7 +18,7 @@ class Workflow1Test extends TestCase
 
     const CONFIG_FILE = __DIR__.'/../config/workflow1.ini';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
     }
 

@@ -39,7 +39,7 @@ class RepeatingEventsTest extends TestCase
     const TEST_DATA_DIR   = __DIR__.'/../data/';     # directory with test data comparison files
 
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $app = basename(__FILE__, '.php');
         self::$logger = new Logger($app);

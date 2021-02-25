@@ -16,7 +16,7 @@ use IU\REDCapETL\Rules\TableRule;
  */
 class RulesParserTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
     }
     

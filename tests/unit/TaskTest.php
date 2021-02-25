@@ -16,7 +16,7 @@ use IU\REDCapETL\TestProject;
 class TaskTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
     }
     

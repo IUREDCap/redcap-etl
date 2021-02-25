@@ -38,13 +38,13 @@ class MysqlSslTest extends TestCase
     protected $rowsType = RowsType::ROOT;
     protected $recordIdFieldName = 'record_id';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$logger = new Logger('databases_integration_test');
     }
 
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!file_exists(self::CONFIG_FILE)) {
             $this->markTestSkipped("Required configuration not set for this test.");

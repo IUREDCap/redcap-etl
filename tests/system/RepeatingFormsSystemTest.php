@@ -21,14 +21,14 @@ class RepeatingFormsSystemTest extends TestCase
     protected static $logger;
 
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (file_exists(static::CONFIG_FILE)) {
             self::$logger = new Logger('repeating-forms-mysql-system-test');
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!file_exists(static::CONFIG_FILE)) {
             $this->markTestSkipped("Required configuration not set for this test.");

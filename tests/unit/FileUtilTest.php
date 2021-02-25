@@ -15,7 +15,7 @@ use IU\REDCapETL\TestProject;
  */
 class FileUtilTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
     }
 

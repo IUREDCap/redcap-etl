@@ -15,7 +15,7 @@ use IU\REDCapETL\TestProject;
  */
 class ConfigPropertiesTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
     }
 

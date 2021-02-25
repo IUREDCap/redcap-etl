@@ -18,7 +18,7 @@ class TaskConfigTest extends TestCase
     private $properties;
     private $logger;
     
-    public function setUp()
+    public function setUp(): void
     {
         $this->properties = [
             ConfigProperties::REDCAP_API_URL => 'http://localhost/redcap/api',
@@ -587,7 +587,7 @@ class TaskConfigTest extends TestCase
 
         $expectedCaCertFileEnding = 'test-cert-file';
         $caCertFile = $config->getCaCertFile();
-        $this->assertContains(
+        $this->assertStringContainsString(
             $expectedCaCertFileEnding,
             $caCertFile,
             'CaCertFile check'
@@ -738,7 +738,7 @@ class TaskConfigTest extends TestCase
 
         $expectedPostProcessingSqlFileEnding = 'post.sql';
         $postProcessingSqlFile = $config->getPostProcessingSqlFile();
-        $this->assertContains(
+        $this->assertStringContainsString(
             $expectedPostProcessingSqlFileEnding,
             $postProcessingSqlFile,
             'PostProcessingSqlFile check'

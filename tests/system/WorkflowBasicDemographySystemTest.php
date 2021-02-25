@@ -19,14 +19,14 @@ class WorkflowBasicDemographySystemTest extends TestCase
     protected static $logger;
 
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (file_exists(static::CONFIG_FILE)) {
             self::$logger = new Logger(basename(static::CONFIG_FILE));
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!file_exists(static::CONFIG_FILE)) {
             $this->markTestSkipped('Required configuration file "'.static::CONFIG_FILE.'"'

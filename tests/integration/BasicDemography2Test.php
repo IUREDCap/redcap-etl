@@ -18,7 +18,7 @@ class BasicDemography2Test extends TestCase
     const CONFIG_FILE = __DIR__.'/../config/basic-demography-2.ini';
     const OUTPUT_FILE_NAME = 'demographics.csv';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
     }
 

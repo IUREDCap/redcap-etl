@@ -20,7 +20,7 @@ class DynamicRulesTest extends TestCase
     private static $csvDir;
     private static $logger;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
 
         if (file_exists(self::CONFIG_FILE)) {
@@ -43,7 +43,7 @@ class DynamicRulesTest extends TestCase
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!file_exists(self::CONFIG_FILE)) {
             $this->markTestSkipped("Required configuration not set for this test.");

@@ -18,7 +18,7 @@ class WorkflowFileIncludeTest extends TestCase
 
     const CONFIG_FILE = __DIR__.'/../config/workflow-file-include.ini';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
     }
 

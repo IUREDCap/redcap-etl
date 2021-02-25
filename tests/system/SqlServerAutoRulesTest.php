@@ -20,7 +20,7 @@ class SqlServerAutoRulesTest extends TestCase
     private static $dbh;
     private static $logger;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (extension_loaded('sqlsrv') && extension_loaded('pdo_sqlsrv') && file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('repeating_events_system_test');
@@ -43,7 +43,7 @@ class SqlServerAutoRulesTest extends TestCase
     }
 
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!extension_loaded('sqlsrv') || !extension_loaded('pdo_sqlsrv')) {
             $this->markTestSkipped('The sqlsrv and pdo_sqlsrv drivers are not available.');

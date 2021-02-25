@@ -43,7 +43,7 @@ class DynamicRulesLongitudinalTest extends TestCase
     const CONFIG_FILE = __DIR__.'/../config/repeating-events-dynamic-rules.ini';
     const TEST_DATA_DIR   =__DIR__.'/../data/';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('dynamic_rules_longitudinal_test');
@@ -142,7 +142,7 @@ class DynamicRulesLongitudinalTest extends TestCase
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!file_exists(self::CONFIG_FILE)) {
             $this->markTestSkipped("Required configuration not set for this test.");

@@ -15,7 +15,7 @@ class RulesGenerationTest extends TestCase
 
     const CONFIG_FILE = __DIR__.'/../config/basic-demography.ini';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $app = basename(__FILE__, '.php');
         self::$logger = new Logger($app);
@@ -32,9 +32,9 @@ class RulesGenerationTest extends TestCase
         $task = self::$redCapEtl->getWorkflow()->getTask(0);
         $rules = $task->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
-        $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
-        $this->assertNotContains('redcap_data_access_group', $rules, 'DAG field check');
-        $this->assertNotContains('demographics_complete', $rules, 'complete field check');
+        $this->assertStringContainsString('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
+        $this->assertStringNotContainsString('redcap_data_access_group', $rules, 'DAG field check');
+        $this->assertStringNotContainsString('demographics_complete', $rules, 'complete field check');
     }
 
     public function testRulesGenerationWithDagFields()
@@ -46,9 +46,9 @@ class RulesGenerationTest extends TestCase
         $task = self::$redCapEtl->getWorkflow()->getTask(0);
         $rules = $task->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
-        $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
-        $this->assertContains('redcap_data_access_group', $rules, 'DAG field check');
-        $this->assertNotContains('demographics_complete', $rules, 'complete field check');
+        $this->assertStringContainsString('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
+        $this->assertStringContainsString('redcap_data_access_group', $rules, 'DAG field check');
+        $this->assertStringNotContainsString('demographics_complete', $rules, 'complete field check');
     }
 
     public function testRulesGenerationWithCompleteFields()
@@ -60,8 +60,8 @@ class RulesGenerationTest extends TestCase
         $task = self::$redCapEtl->getWorkflow()->getTask(0);
         $rules = $task->autoGenerateRules($addFormCompleteFields, $addDagFields, $addFileFields);
         $this->assertNotNull($rules, 'rules not null');
-        $this->assertContains('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
-        $this->assertNotContains('redcap_data_access_group', $rules, 'DAG field check');
-        $this->assertContains('demographics_complete', $rules, 'complete field check');
+        $this->assertStringContainsString('TABLE,demographics,demographics_id,ROOT', $rules, 'table statement check');
+        $this->assertStringNotContainsString('redcap_data_access_group', $rules, 'DAG field check');
+        $this->assertStringContainsString('demographics_complete', $rules, 'complete field check');
     }
 }

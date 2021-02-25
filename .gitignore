@@ -12,6 +12,9 @@
 # ignore swap files
 *.swp
 
+# ignore cache files
+*.cache
+
 # Composer 3rd-party software
 /vendor
 

@@ -18,7 +18,7 @@ class WorkflowBasicDemographyTest extends TestCase
 
     const CONFIG_FILE = __DIR__.'/../config/workflow-basic-demography.ini';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
     }
 

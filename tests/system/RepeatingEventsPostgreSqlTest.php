@@ -23,7 +23,7 @@ class RepeatingEventsPostgreSqlTest extends RepeatingEventsTests
     protected static $dbh;
     protected static $logger;
 
-    public function setUp()
+    public function setUp(): void
     {
         # These tests depend on the pdo_pgsql driver being installed.
         # If it isn't loaded, all tests will be skipped.
@@ -34,7 +34,7 @@ class RepeatingEventsPostgreSqlTest extends RepeatingEventsTests
         }
     }
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (extension_loaded('pdo_pgsql') && file_exists(self::CONFIG_FILE)) {
             self::$logger = new Logger('repeating_events_postgresql_system_test');

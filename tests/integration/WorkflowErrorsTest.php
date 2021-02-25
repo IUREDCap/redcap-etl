@@ -18,7 +18,7 @@ class WorkflowErrorsTest extends TestCase
 
     const CONFIG_FILE = __DIR__.'/../config/workflow-error1.json';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
     }
 
