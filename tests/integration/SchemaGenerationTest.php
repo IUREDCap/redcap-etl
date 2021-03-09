@@ -14,7 +14,7 @@ class SchemaGenerationTest extends TestCase
 {
     private static $logger;
 
-    public static function setupBeforeClass()
+    public static function setupBeforeClass(): void
     {
         self::$logger = new Logger('schema_generator_generate_schema_test');
     }

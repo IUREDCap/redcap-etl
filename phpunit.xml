@@ -1,13 +1,18 @@
+<?xml version="1.0"?>
 <!-- =================================================
 Copyright (C) 2019 The Trustees of Indiana University
 SPDX-License-Identifier: BSD-3-Clause
 ================================================== -->
-
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
-         bootstrap="vendor/autoload.php">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" bootstrap="vendor/autoload.php">
+  <coverage>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <exclude>
+      <file>src/Database/MysqlPdoDbConnection.php</file>
+    </exclude>
+  </coverage>
   <testsuites>
-
     <!--
         Unit Tests
     -->
@@ -29,19 +34,16 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/unit/TaskConfigTest.php</file>
       <file>tests/unit/WorkflowConfigTest.php</file>
       <file>tests/unit/WorkflowTest.php</file>
-
       <file>tests/unit/Database/DbConnectionFactoryTest.php</file>
       <file>tests/unit/Database/DbConnectionTest.php</file>
       <file>tests/unit/Database/CsvDbConnectionTest.php</file>
       <file>tests/unit/Database/MysqlDbConnectionTest.php</file>
       <file>tests/unit/Database/SqliteDbConnectionTest.php</file>
       <file>tests/unit/Database/SqlServerDbConnectionTest.php</file>
-
       <file>tests/unit/Rules/RuleTest.php</file>
       <file>tests/unit/Rules/TableRuleTest.php</file>
       <file>tests/unit/Rules/FieldRuleTest.php</file>
       <file>tests/unit/Rules/RulesTest.php</file>
-      
       <file>tests/unit/Schema/FieldTest.php</file>
       <file>tests/unit/Schema/FieldTypeTest.php</file>
       <file>tests/unit/Schema/FieldTypeSpecifierTest.php</file>
@@ -49,10 +51,8 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/unit/Schema/RowsTypeTest.php</file>
       <file>tests/unit/Schema/SchemaTest.php</file>
       <file>tests/unit/Schema/TableTest.php</file>
-
       <file>tests/unit/RulesGeneratorTest.php</file>
     </testsuite>
-
     <!--
         Integration Tests
         - tests integration of REDCap-ETL classes
@@ -68,14 +68,13 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/RedCapEtlTest.php</file>
       <file>tests/integration/RepeatingEventsTest.php</file>
       <file>tests/integration/RulesGenerationTest.php</file>
-      <file>tests/integration/SchemaGeneration.php</file>
+      <file>tests/integration/SchemaGenerationTest.php</file>
       <file>tests/integration/Workflow1Test.php</file>
       <file>tests/integration/WorkflowBasicDemographyTest.php</file>
       <file>tests/integration/WorkflowBasicDemographyJsonTest.php</file>
       <file>tests/integration/WorkflowErrorsTest.php</file>
       <file>tests/integration/WorkflowFileIncludeTest.php</file>
     </testsuite>
-
     <!--
         System Tests
         - test a REDCap-ETL installed system
@@ -88,7 +87,6 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/BasicDemographyPostgreSqlTest.php</file>
       <file>tests/system/BasicDemographySqliteTest.php</file>
       <file>tests/system/BasicDemographySqlServerTest.php</file>
-      <file>tests/system/DynamicRulesTest.php</file>
       <file>tests/system/MysqlAutoRulesTest.php</file>
       <file>tests/system/MysqlSslTest.php</file>
       <file>tests/system/MysqlTest.php</file>
@@ -99,7 +97,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/RepeatingEventsSqlServerTest.php</file>
       <file>tests/system/RepeatingFormsCsvTest.php</file>
       <file>tests/system/RepeatingFormsMysqlTest.php</file>
-      <file>tests/system/RepeatingFormsPostgresqlTest.php</file>
+      <file>tests/system/RepeatingFormsPostgreSqlTest.php</file>
       <file>tests/system/RepeatingFormsSqliteTest.php</file>
       <file>tests/system/RepeatingFormsSqlServerTest.php</file>
       <file>tests/system/SqlServerTest.php</file>
@@ -107,7 +105,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/VisitsMysqlTest.php</file>
       <file>tests/system/VisitsMysqlCodeTest.php</file>
       <file>tests/system/VisitsSqliteCodeTest.php</file>
-      <file>tests/system/Workflow1Test.php</file>
+      <file>tests/system/Workflow1MysqlTest.php</file>
       <file>tests/system/WorkflowBasicDemographyCsvTest.php</file>
       <file>tests/system/WorkflowBasicDemographyMysqlTest.php</file>
       <file>tests/system/WorkflowBasicDemographyPostgreSqlTest.php</file>
@@ -115,15 +113,5 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/system/WorkflowBasicDemographySqlServerTest.php</file>
       <file>tests/system/WorkflowMultiDbTest.php</file>
     </testsuite>
-
   </testsuites>
-  <filter>
-    <whitelist>
-      <directory suffix=".php">src</directory>
-      <exclude>
-        <file>src/Database/MysqlPdoDbConnection.php</file>
-      </exclude>
-    </whitelist>
-  </filter>
 </phpunit>
-

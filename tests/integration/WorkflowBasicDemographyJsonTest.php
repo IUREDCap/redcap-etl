@@ -38,7 +38,7 @@ class WorkflowBasicDemographyJsonTest extends TestCase
 
                 $dbConnection = $config->getDbConnection();
                 $this->assertNotNull($dbConnection, "DB connection {$i} not null check");
-                $this->assertRegExp('/^CSV:/', $dbConnection, "DB connection {$i} pattern check");
+                $this->assertMatchesRegularExpression('/^CSV:/', $dbConnection, "DB connection {$i} pattern check");
             }
 
             $redCapEtl->run();

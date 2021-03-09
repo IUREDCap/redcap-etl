@@ -36,6 +36,6 @@ class WorkflowFileIncludeTest extends TestCase
 
         $dbConnection = $config->getDbConnection();
         $this->assertNotNull($dbConnection, "DB connection not null check");
-        $this->assertRegExp('/^CSV:/', $dbConnection, "DB connection pattern check");
+        $this->assertMatchesRegularExpression('/^CSV:/', $dbConnection, "DB connection pattern check");
     }
 }

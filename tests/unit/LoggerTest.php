@@ -57,9 +57,9 @@ class LoggerTest extends TestCase
         }
 
         $contents = file_get_contents($logFile);
-        $this->assertRegexp('/Test 1/', $contents, 'Test1 log contents test');
-        $this->assertRegexp('/Test 2/', $contents, 'Test2 log contents test');
-        $this->assertRegexp('/Test 3/', $contents, 'Test3 log contents test');
+        $this->assertMatchesRegularExpression('/Test 1/', $contents, 'Test1 log contents test');
+        $this->assertMatchesRegularExpression('/Test 2/', $contents, 'Test2 log contents test');
+        $this->assertMatchesRegularExpression('/Test 3/', $contents, 'Test3 log contents test');
     }
     
     public function testGetApp()
@@ -76,7 +76,7 @@ class LoggerTest extends TestCase
 
         $logId = $logger->getLogId();
         $this->assertNotNull($logId, 'Log ID not null check');
-        $this->assertRegExp('/^[a-fA-F0-9]+\.[0-9]+$/', $logId, 'Log ID pattern match');
+        $this->assertMatchesRegularExpression('/^[a-fA-F0-9]+\.[0-9]+$/', $logId, 'Log ID pattern match');
     }
 
     public function testLogEmail()
@@ -120,7 +120,7 @@ class LoggerTest extends TestCase
         $mailArguments = SystemFunctions::getMailArguments();
         list($to, $mailSubject, $message, $additionalHeaders, $addtionalParameters) = array_pop($mailArguments);
         $this->assertEquals($newTo, $to, 'To e-mail send check');
-        $this->assertRegexp('/'.$errorMessage.'/', $message, 'Message send check');
+        $this->assertMatchesRegularExpression('/'.$errorMessage.'/', $message, 'Message send check');
         $this->assertEquals($subject, $mailSubject, 'Message send check');
 
         # Test array of to e-mails
