@@ -85,6 +85,7 @@ class RedCap
  
     /**
      * Creates a REDCap project with the specified data.
+     * A super token must have been specified for this method to be used.
      *
      * The data fields that can be set are as follows:
      * <ul>
@@ -130,7 +131,9 @@ class RedCap
      *       <li> 'json' - string of JSON encoded values</li>
      *       <li> 'xml' - string of XML encoded data</li>
      *     </ul>
-     * @param string $odm
+     * @param string $odm string in CDISC ODM XML format that contains metadata and optionally data
+     *     to be imported into the created project.
+     *
      * @return RedCapProject the project that was created.
      */
     public function createProject(
@@ -187,7 +190,28 @@ class RedCap
         
         return $project;
     }
-    
+
+
+    /**
+     * Gets the REDCap version number of the REDCap instance being used.
+     * A super token must have been specified for this method to be used.
+     *
+     * @return string the REDCap version number of the REDCap instance being used by the project.
+     */
+    public function exportRedcapVersion()
+    {
+        $data = array(
+            'token' => $this->superToken,
+            'content' => 'version'
+        );
+
+        $redcapVersion = $this->connection->callWithArray($data);
+        # ideally should have export processing here
+
+        return $redcapVersion;
+    }
+
+
     /**
      * Gets the REDCap project for the specified API token.
      *

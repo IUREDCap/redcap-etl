@@ -126,7 +126,7 @@ REDCap project.</p>
 		<b>Namespace:</b> <a href="namespace-IU.html">IU</a>\<a href="namespace-IU.PHPCap.html">PHPCap</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-IU.PHPCap.RedCap.html#9-502" title="Go to source code">RedCap.php</a>
+			<b>Located at</b> <a href="source-class-IU.PHPCap.RedCap.html#9-526" title="Go to source code">RedCap.php</a>
 		<br>
 	</div>
 
@@ -207,14 +207,16 @@ REDCap project.</p>
 		<!-- <a class="anchor" title="expand/collapse" href="#_createProject">+/-</a> -->
 		<a class="anchor" title="expand/collapse">+/-</a>
 				
-		<code><a href="source-class-IU.PHPCap.RedCap.html#86-189" title="Go to source code">createProject</a>( <span>mixed <var>$projectData</var></span>, <span> <var>$format</var> = <span class="php-quote">'php'</span></span>, <span>string <var>$odm</var> = <span class="php-keyword1">null</span> </span> )</code>
+		<code><a href="source-class-IU.PHPCap.RedCap.html#86-192" title="Go to source code">createProject</a>( <span>mixed <var>$projectData</var></span>, <span> <var>$format</var> = <span class="php-quote">'php'</span></span>, <span>string <var>$odm</var> = <span class="php-keyword1">null</span> </span> )</code>
 
 		<div class="description short">
-			<p>Creates a REDCap project with the specified data.</p>
+			<p>Creates a REDCap project with the specified data.
+A super token must have been specified for this method to be used.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Creates a REDCap project with the specified data.</p>
+			<p>Creates a REDCap project with the specified data.
+A super token must have been specified for this method to be used.</p>
 
 <p>The data fields that can be set are as follows:</p>
 
@@ -238,12 +240,53 @@ REDCap project.</p>
       <li> 'xml' - string of XML encoded data</li>
     </ul></dd>
 					<dt><var>$odm</var></dt>
-					<dd></dd>
+					<dd><p>string in CDISC ODM XML format that contains metadata and optionally data
+    to be imported into the created project.</p></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code><a href="class-IU.PHPCap.RedCapProject.html">IU\PHPCap\RedCapProject</a></code><br>the project that was created.
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="exportRedcapVersion" id="_exportRedcapVersion">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		
+		<!-- PHPCap change -->
+		<!-- <a class="anchor" title="expand/collapse" href="#_exportRedcapVersion">+/-</a> -->
+		<a class="anchor" title="expand/collapse">+/-</a>
+				
+		<code><a href="source-class-IU.PHPCap.RedCap.html#195-212" title="Go to source code">exportRedcapVersion</a>( )</code>
+
+		<div class="description short">
+			<p>Gets the REDCap version number of the REDCap instance being used.
+A super token must have been specified for this method to be used.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Gets the REDCap version number of the REDCap instance being used.
+A super token must have been specified for this method to be used.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					string<br>the REDCap version number of the REDCap instance being used by the project.
 				</div>
 
 
@@ -268,7 +311,7 @@ REDCap project.</p>
 		<!-- <a class="anchor" title="expand/collapse" href="#_getProject">+/-</a> -->
 		<a class="anchor" title="expand/collapse">+/-</a>
 				
-		<code><a href="source-class-IU.PHPCap.RedCap.html#191-219" title="Go to source code">getProject</a>( <span>string <var>$apiToken</var></span> )</code>
+		<code><a href="source-class-IU.PHPCap.RedCap.html#215-243" title="Go to source code">getProject</a>( <span>string <var>$apiToken</var></span> )</code>
 
 		<div class="description short">
 			<p>Gets the REDCap project for the specified API token.</p>
@@ -311,7 +354,7 @@ REDCap project.</p>
 		<!-- <a class="anchor" title="expand/collapse" href="#_getProjectConstructorCallback">+/-</a> -->
 		<a class="anchor" title="expand/collapse">+/-</a>
 				
-		<code><a href="source-class-IU.PHPCap.RedCap.html#221-229" title="Go to source code">getProjectConstructorCallback</a>( )</code>
+		<code><a href="source-class-IU.PHPCap.RedCap.html#245-253" title="Go to source code">getProjectConstructorCallback</a>( )</code>
 
 		<div class="description short">
 			<p>Gets the function used to create projects.</p>
@@ -349,7 +392,7 @@ REDCap project.</p>
 		<!-- <a class="anchor" title="expand/collapse" href="#_setProjectConstructorCallback">+/-</a> -->
 		<a class="anchor" title="expand/collapse">+/-</a>
 				
-		<code><a href="source-class-IU.PHPCap.RedCap.html#231-245" title="Go to source code">setProjectConstructorCallback</a>( <span>callable <var>$projectConstructorCallback</var></span> )</code>
+		<code><a href="source-class-IU.PHPCap.RedCap.html#255-269" title="Go to source code">setProjectConstructorCallback</a>( <span>callable <var>$projectConstructorCallback</var></span> )</code>
 
 		<div class="description short">
 			<p>Sets the function used to create projects in this class.
@@ -396,7 +439,7 @@ projects using your extended class.</p>
 		<!-- <a class="anchor" title="expand/collapse" href="#_getErrorHandler">+/-</a> -->
 		<a class="anchor" title="expand/collapse">+/-</a>
 				
-		<code><a href="source-class-IU.PHPCap.RedCap.html#247-255" title="Go to source code">getErrorHandler</a>( )</code>
+		<code><a href="source-class-IU.PHPCap.RedCap.html#271-279" title="Go to source code">getErrorHandler</a>( )</code>
 
 		<div class="description short">
 			<p>Gets the error handler being used.</p>
@@ -434,7 +477,7 @@ projects using your extended class.</p>
 		<!-- <a class="anchor" title="expand/collapse" href="#_setErrorHandler">+/-</a> -->
 		<a class="anchor" title="expand/collapse">+/-</a>
 				
-		<code><a href="source-class-IU.PHPCap.RedCap.html#257-265" title="Go to source code">setErrorHandler</a>( <span><code><a href="class-IU.PHPCap.ErrorHandlerInterface.html">IU\PHPCap\ErrorHandlerInterface</a></code> <var>$errorHandler</var></span> )</code>
+		<code><a href="source-class-IU.PHPCap.RedCap.html#281-289" title="Go to source code">setErrorHandler</a>( <span><code><a href="class-IU.PHPCap.ErrorHandlerInterface.html">IU\PHPCap\ErrorHandlerInterface</a></code> <var>$errorHandler</var></span> )</code>
 
 		<div class="description short">
 			<p>Set the error handler that is used.</p>
@@ -473,7 +516,7 @@ projects using your extended class.</p>
 		<!-- <a class="anchor" title="expand/collapse" href="#_getConnection">+/-</a> -->
 		<a class="anchor" title="expand/collapse">+/-</a>
 				
-		<code><a href="source-class-IU.PHPCap.RedCap.html#267-275" title="Go to source code">getConnection</a>( )</code>
+		<code><a href="source-class-IU.PHPCap.RedCap.html#291-299" title="Go to source code">getConnection</a>( )</code>
 
 		<div class="description short">
 			<p>Gets the connection being used.</p>
@@ -511,7 +554,7 @@ projects using your extended class.</p>
 		<!-- <a class="anchor" title="expand/collapse" href="#_setConnection">+/-</a> -->
 		<a class="anchor" title="expand/collapse">+/-</a>
 				
-		<code><a href="source-class-IU.PHPCap.RedCap.html#277-285" title="Go to source code">setConnection</a>( <span><code><a href="class-IU.PHPCap.RedCapApiConnectionInterface.html">IU\PHPCap\RedCapApiConnectionInterface</a></code> <var>$connection</var></span> )</code>
+		<code><a href="source-class-IU.PHPCap.RedCap.html#301-309" title="Go to source code">setConnection</a>( <span><code><a href="class-IU.PHPCap.RedCapApiConnectionInterface.html">IU\PHPCap\RedCapApiConnectionInterface</a></code> <var>$connection</var></span> )</code>
 
 		<div class="description short">
 			<p>Sets the connection that is used.</p>
@@ -560,7 +603,7 @@ projects using your extended class.</p>
 	</div>
 </div>
 </div>
-<script src="resources/combined.js?59502ae7364075a9225b536644cad63e5b9d9cc8"></script>
+<script src="resources/combined.js?c19d45e65c81e562ea13b773cf977c5ef16cc7b2"></script>
 <script src="elementlist.js?4e6c9b575e78e7be2fabecca82bcec1bf8da7c64"></script>
 </body>
 </html>

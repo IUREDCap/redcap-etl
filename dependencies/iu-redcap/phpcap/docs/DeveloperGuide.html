@@ -188,9 +188,19 @@ as follows:</p>
 <li>In your project window in REDCap, click on the &quot;API&quot; link on the left and request (or create if you are an admin) an API token with at least API Export rights</li>
 <li>
 <p>Once you have your API token, use it and the e-mail and identifier entered earlier to set the following properties in the config.ini file in the tests directory:</p>
-<div class="description"><pre><code>        repeatable.survey.api.token=
-        survey.participant.email=
-        survey.participant.identifier=</code></pre></div>
+<div class="description"><pre><code>repeatable.survey.api.token
+survey.participant.email
+survey.participant.identifier</code></pre></div>
+</li>
+</ol>
+<h4>Setup for the Optional Repeating Forms Tests</h4>
+<p>To run the repeating forms tests, use the following steps:</p>
+<ol>
+<li>In REDCap, create a project for the &quot;Repeating Forms&quot; project test file in the <strong>tests/projects</strong> directory, and import the project test file into that project.</li>
+<li>In your project window in REDCap, click on the &quot;API&quot; link on the left and request (or create if you are an admin) an API token with at least API Export rights</li>
+<li>
+<p>Once you have your API token, use it to set the following property in the config.ini file in the tests directory:</p>
+<div class="description"><pre><code>repeating.forms.api.token</code></pre></div>
 </li>
 </ol>
 <h4>Setup for Optional Project Creation Tests</h4>

@@ -1,17 +1,17 @@
 [
     {
         "name": "iu-redcap/phpcap",
-        "version": "1.0.5",
-        "version_normalized": "1.0.5.0",
+        "version": "1.1.0",
+        "version_normalized": "1.1.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/IUREDCap/phpcap.git",
-            "reference": "e557781aa4cfae8c4531d3e2cd81b078714d6c2a"
+            "reference": "c9392813fbd8a7001fa5695409475808b2a48213"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/e557781aa4cfae8c4531d3e2cd81b078714d6c2a",
-            "reference": "e557781aa4cfae8c4531d3e2cd81b078714d6c2a",
+            "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/c9392813fbd8a7001fa5695409475808b2a48213",
+            "reference": "c9392813fbd8a7001fa5695409475808b2a48213",
             "shasum": ""
         },
         "require": {
@@ -26,7 +26,7 @@
             "phpunit/phpunit": "6.5.8",
             "squizlabs/php_codesniffer": "3.2.3"
         },
-        "time": "2019-10-01T13:28:17+00:00",
+        "time": "2020-03-24T18:42:48+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

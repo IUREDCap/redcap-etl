@@ -110,4 +110,37 @@ class PdfFormsTest extends TestCase
         }
         $this->assertTrue($exceptionCaught, 'Exception caught.');
     }
+
+    public function testPdfFormsToFileCompact()
+    {
+        $file = __DIR__.'/../local/test-blank-compact.pdf';
+        
+        # Make sure that the file is deleted.
+        if (file_exists($file)) {
+            unlink($file);
+        }
+        $result = self::$longitudinalDataProject->exportPdfFileOfInstruments($file, null, null, null, null, true);
+        $this->assertFileExists($file, 'Compacted PDF file exsists.');
+
+        $regularSize = filesize(__DIR__.'/../local/test-blank.pdf');
+        $compactSize = filesize($file);
+        $this->assertGreaterThan($compactSize, $regularSize, 'Compacted PDF file size check.');
+    }
+
+    public function testPdfFormsToFileCompactInvalidCompactValue()
+    {
+        $exceptionCaught = false;
+        try {
+            $result = self::$longitudinalDataProject->exportPdfFileOfInstruments(null, null, null, null, null, 1);
+        } catch (PhpCapException $exception) {
+            $code = $exception->getCode();
+            $this->assertEquals(
+                ErrorHandlerInterface::INVALID_ARGUMENT,
+                $code,
+                'Compacted PDF file Exception code check.'
+            );
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'Exception caught.');
+    }
 }

@@ -29,8 +29,11 @@ class RedCapIntegrationTest extends TestCase
         
         if (array_key_exists('super.token', self::$config)) {
             self::$superToken = self::$config['super.token'];
-        } else {
-            self::$superToken = null;
+            if (self::$superToken) {
+                self::$redCap = new RedCap(self::$config['api.url'], self::$superToken);
+            } else {
+                self::$superToken = null;
+            }
         }
         
         self::$basicDemographyApiToken = self::$config['basic.demography.api.token'];
@@ -94,7 +97,7 @@ class RedCapIntegrationTest extends TestCase
     }
     
     /**
-     * Note: there is no way for this test to delete the project that
+     * Note: there is no way for this test to delete the projects that
      * it creates.
      */
     public function testCreateProject()
@@ -335,5 +338,46 @@ class RedCapIntegrationTest extends TestCase
             $this->assertEquals(ErrorHandlerInterface::INVALID_ARGUMENT, $code, 'Exception code check.');
         }
         $this->assertTrue($exceptionCaught, 'Exception caught check.');
+    }
+
+    public function testImportRepeatingIntrumentsAndEventsWithSuperToken()
+    {
+        if (isset(self::$superToken)) {
+            #create a new project with no a repeatable forms
+            $projectTitle = 'PHPCap Created Project for Repeating Forms Test';
+            $purpose = 1;
+            $purposeOther = 'PHPCap project creation for testing Import Repeating Instruments and Events';
+            $projectData = '[{'
+               .'"project_title": "'.$projectTitle.'",'
+               .'"purpose": "1",'
+               .'"purpose_other": "'.$purposeOther.'"'
+               .'}]';
+            $odmFile = __DIR__.'/../projects/PHPCapRepeatingForms.REDCap.xml';
+            $projectOdmData = FileUtil::fileToString($odmFile);
+            
+            $project = self::$redCap->createProject($projectData, 'json', $projectOdmData);
+
+            #use the Import Repeating Instruments and Events to make the
+            #weight form repeatable
+            $records = FileUtil::fileToString(__DIR__.'/../data/repeatable-survey-forms-events.csv');
+            $count = $project->importRepeatingInstrumentsAndEvents(
+                $records,
+                $format = 'csv'
+            );
+            $this->assertEquals(
+                1,
+                $count,
+                'Integration test, Import Repeating Instruments and Events record count.'
+            );
+        
+            $result = $project->exportRepeatingInstrumentsAndEvents($format = 'csv');
+            $expected = 'form_name,custom_form_label';
+            $expected .= chr(10) . 'weight,[weight_date] [weight_time]' . chr(10);
+            $this->assertEquals(
+                $expected,
+                $result,
+                'Integration test, Import Repeating Instruments and Events form now repeatable check.'
+            );
+        }
     }
 }

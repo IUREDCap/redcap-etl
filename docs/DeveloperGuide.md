@@ -398,6 +398,20 @@ to check for coding standards compliance:
 The coding standards checks that are done (by default) are configured in the file __phpcs.xml__ in the top-level directory.
 
 
+Updating Dependencies
+--------------------------
+To avoid requiring Composer to be run when the REDCap-ETL is installed, the non-development dependencies
+are copied to the __dependencies/__ directory, and this directory is committed to Git.
+To update the contents of this directory, the following commands
+can be used from the top-level directory:
+
+    composer update
+    composer install --no-dev
+    rm -rf dependencies
+    mv vendor dependencies
+    composer install
+
+
 
 ### REDCap-ETL Software Architecture
 
