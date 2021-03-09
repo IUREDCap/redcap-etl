@@ -366,16 +366,15 @@ in GitHub.
 To generate the API documentation, execute the following command in the
 top-level REDCap-ETL directory:
 
-    ./vendor/bin/apigen generate
+    ./vendor/bin/phpdoc
     
 To view the API documentation, open the following file with a web browser:
 
     ./docs/api/index.html
 
-Note that the version of apigen used does not appear to work 
-with PHP 7.2.
 
 ---
+
 
 Modifying the Code
 ------------------------------
@@ -442,7 +441,7 @@ that uses the auto-generation feature for transformation rules generation (trans
 ```
 
 The basic structure of a JSON workflow configuration is shown below. In this example
-"task1" and "task2" are the task names for the workflow, and they can be set to abitrary values.
+"task1" and "task2" are the task names for the workflow, and they can be set to arbitrary values.
 The "workflow", "global_properties" and "tasks" labels are in effect keywords that must
 appear as shown. Each property defined in "global_properties" will apply to all tasks that
 do not explicitly override the property. The "workflow_name" property can only appear in

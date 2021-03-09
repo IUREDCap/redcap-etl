@@ -15,6 +15,9 @@
 # ignore cache files
 *.cache
 
+# ignore cache directory
+/cache
+
 # Composer 3rd-party software
 /vendor
 
