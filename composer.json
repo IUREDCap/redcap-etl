@@ -10,7 +10,7 @@
         "ext-curl" : "*",
         "ext-dom" : "*",
         "ext-openssl" : "*",
-        "iu-redcap/phpcap" : "1.0.5"
+        "iu-redcap/phpcap" : "1.1.0"
     },
     "require-dev" : {
         "phpdocumentor/phpdocumentor" : "3.0.0",

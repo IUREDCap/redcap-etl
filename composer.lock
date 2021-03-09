@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8b206c94e0beb7c9d72b53697ba66b4a",
+    "content-hash": "f5b960201c2a4a24689520eff4c7e4c1",
     "packages": [
         {
             "name": "iu-redcap/phpcap",
-            "version": "1.0.5",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IUREDCap/phpcap.git",
-                "reference": "e557781aa4cfae8c4531d3e2cd81b078714d6c2a"
+                "reference": "c9392813fbd8a7001fa5695409475808b2a48213"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/e557781aa4cfae8c4531d3e2cd81b078714d6c2a",
-                "reference": "e557781aa4cfae8c4531d3e2cd81b078714d6c2a",
+                "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/c9392813fbd8a7001fa5695409475808b2a48213",
+                "reference": "c9392813fbd8a7001fa5695409475808b2a48213",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
             "keywords": [
                 "redcap"
             ],
-            "time": "2019-10-01T13:28:17+00:00"
+            "time": "2020-03-24T18:42:48+00:00"
         }
     ],
     "packages-dev": [
