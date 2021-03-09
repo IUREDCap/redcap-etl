@@ -411,6 +411,13 @@ can be used from the top-level directory:
     mv vendor dependencies
     composer install
 
+To check for out of date dependencies, use:
+
+    composer outdated --direct
+
+The "--direct" option above only checks dependencies directly used by REDCap-ETL (i.e., specified in the
+composer.json file).
+
 
 
 ### REDCap-ETL Software Architecture
