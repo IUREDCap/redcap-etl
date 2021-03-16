@@ -374,7 +374,7 @@ class Table
      * that determines whether a data row extracted from REDCap will be stored in the
      * table.
      *
-     * @param array $data the data values used to create the rowi; represented as a map from
+     * @param array $data the data values used to create the row; represented as a map from
      *     field names to field values.
      * @param string $foreignKey the name of the foreign key field for the row.
      * @param string $suffix the suffix value for the row (if any).

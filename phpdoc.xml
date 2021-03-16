@@ -15,6 +15,7 @@
             <source dsn=".">
                 <path>src</path>
             </source>
+            <include-source>true</include-source>
         </api>
     </version>
     <template name="default">
