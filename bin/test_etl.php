@@ -53,6 +53,11 @@ try {
     if (isset($batchSize)) {
         $tasks = $redCapEtl->getTasks();
         $redcapVersion = ($tasks[0])->getDataProject()->exportRedCapVersion();
+
+        $metadata    = ($tasks[0])->getDataProject()->exportMetadata();
+        $projectInfo = ($tasks[0])->getDataProject()->exportProjectInfo();
+        $projectTitle = $projectInfo['project_title'];
+
         $redcapEtlVersion = Version::RELEASE_NUMBER;
         $phpVersion = PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION.".".PHP_RELEASE_VERSION;
         foreach ($tasks as $task) {

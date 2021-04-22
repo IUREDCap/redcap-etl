@@ -117,6 +117,15 @@ works.
 
         composer install
 
+12. **Install phpDocumentor**
+
+    Install [phpDocumentor](https://phpdoc.org/), which is used for
+    generating API documentation from PHPDoc comments in the code.
+    It should be set up so that it can be run from the command line using:
+
+        phpdoc
+
+
 ### REDCap-ETL Directory Structure
 
 After the steps above have been successfully completed,
@@ -366,12 +375,17 @@ in GitHub.
 To generate the API documentation, execute the following command in the
 top-level REDCap-ETL directory:
 
-    ./vendor/bin/phpdoc
+    phpdoc
     
-To view the API documentation, open the following file with a web browser:
+To view the API documentation, open the following file (relative to the
+top-level REDCap-ETL directory) with a web browser:
 
     ./docs/api/index.html
 
+The configuration information for the phpdoc command is in the following file
+in the top-level REDCap-ETL directory:
+
+    phpdoc.xml
 
 ---
 
