@@ -12,6 +12,9 @@ PHPCap's __RedCapProject__ class provides the following 3 methods for exporting 
 3. __exportReports__ - method that exports the records produced by a report that
                        is defined for the project in REDCap.
 
+The detailed documentation for the RedCapProject class can be found in the PHPCap API documentation:
+[RedCapProject Class](api/classes/IU-PHPCap-RedCapProject.html)
+
 __Batch Processing__. The methods above return all of their records at once, but
 the method __getRecordIdBatches__ can be used with the first 2 methods above
 to export records in batches. This will cut down on the memory requirements of the export, which
@@ -22,8 +25,8 @@ exportRecords
 The exportRecords method is a standard PHP method that has 12 parameters that can
 be set to modify the records that are exported and their format.
 
-The complete documentation for this method can be found in the PHPCap API documentation:
-https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html
+The detailed documentation for this method can be found in the PHPCap API documentation here:
+[exportRecords()](api/classes/IU-PHPCap-RedCapProject.html#method_exportRecords)
 
 Since this method corresponds very closely to the REDCap API Export Records method, the
 REDCap API documentation can also be checked for more information. And the REDCap
@@ -89,6 +92,9 @@ doesn't matter, so the above export could also be specified as:
 $records = $project->exportRecordsAp(['exportDataAccessGroups' => true, 'format' => 'csv']);
 ```
 
+The detailed documentation for this method can be found in the PHPCap API documentation here:
+[exportRecordsAp()](api/classes/IU-PHPCap-RedCapProject.html#method_exportRecordsAp)
+
 exportReports
 ----------------------------
 To use the exportReports method, you first need to define one or more reports in REDCap
@@ -99,6 +105,8 @@ you could export the records for that report in CSV format using the following:
 ```php
 $records = $project->exportReports('18999', 'csv');
 ```
+
+API documentation: [exportReports()](api/classes/IU-PHPCap-RedCapProject.html#method_exportReports)
 
 getRecordIdBatches
 ---------------------------
@@ -131,3 +139,5 @@ above might return, for example:
     [1091, 1092, 1093, 1094, 1095, 1096, 1097, 1098, 1099, 1100]
 ]
 ```
+
+API documentation: [getRecorIdBatches()](api/classes/IU-PHPCap-RedCapProject.html#method_getRecordIdBatches)

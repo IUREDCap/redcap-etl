@@ -13,7 +13,7 @@ class RedCapApiConnectionTest extends TestCase
 {
     private $apiUrl;
     
-    public function setUp()
+    public function setUp(): void
     {
         $this->apiUrl = 'https://redcap.someplace.edu/api/';
         $this->connection = new RedCapApiConnection($this->apiUrl);
@@ -213,7 +213,7 @@ class RedCapApiConnectionTest extends TestCase
                 'Exception code check.'
             );
             # The error code should be contained in the error message
-            $this->assertContains(strval($code), $exception->getMessage(), 'Message check.');
+            $this->assertStringContainsString(strval($code), $exception->getMessage(), 'Message check.');
         }
         $this->assertTrue($caughtException, 'Caught exception.');
         SystemFunctions::setCurlErrorInfo(0, '', '');

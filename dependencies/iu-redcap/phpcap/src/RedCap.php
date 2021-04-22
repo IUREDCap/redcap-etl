@@ -386,7 +386,7 @@ class RedCap
         return $errorHandler;
     }
     
-    protected function processFormatArgument(& $format, $legalFormats)
+    protected function processFormatArgument(&$format, $legalFormats)
     {
         if (gettype($format) !== 'string') {
             $message = 'The format specified has type "'.gettype($format).'", but it should be a string.';
@@ -449,7 +449,7 @@ class RedCap
         return $data;
     }
     
-    protected function processNonExportResult(& $result)
+    protected function processNonExportResult(&$result)
     {
         $matches = array();
         $hasMatch = preg_match('/^[\s]*{"error":\s*"([^"]+)"}[\s]*$/', $result, $matches);

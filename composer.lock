@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81d55e59f22edec0e1eff840d50db3a4",
+    "content-hash": "9c9d494647f455d3255dfecc074a0f02",
     "packages": [
         {
             "name": "iu-redcap/phpcap",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IUREDCap/phpcap.git",
-                "reference": "c9392813fbd8a7001fa5695409475808b2a48213"
+                "reference": "1659f843ccf84f037df925eeb2f533287f272741"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/c9392813fbd8a7001fa5695409475808b2a48213",
-                "reference": "c9392813fbd8a7001fa5695409475808b2a48213",
+                "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/1659f843ccf84f037df925eeb2f533287f272741",
+                "reference": "1659f843ccf84f037df925eeb2f533287f272741",
                 "shasum": ""
             },
             "require": {
@@ -26,11 +26,10 @@
                 "php": ">=5.6.0"
             },
             "require-dev": {
-                "apigen/apigen": "v4.1.2",
-                "erusev/parsedown": "1.6.2",
+                "erusev/parsedown": "1.7.4",
                 "kzykhys/php-csv-parser": "1.4.1",
-                "phpunit/phpunit": "6.5.8",
-                "squizlabs/php_codesniffer": "3.2.3"
+                "phpunit/phpunit": "9.5.4",
+                "squizlabs/php_codesniffer": "3.6.0"
             },
             "type": "library",
             "autoload": {
@@ -46,7 +45,7 @@
             "keywords": [
                 "redcap"
             ],
-            "time": "2020-03-24T18:42:48+00:00"
+            "time": "2021-04-22T14:26:17+00:00"
         }
     ],
     "packages-dev": [

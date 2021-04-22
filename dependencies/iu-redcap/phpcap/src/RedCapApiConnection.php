@@ -153,8 +153,9 @@ class RedCapApiConnection implements RedCapApiConnectionInterface
      * @throws PhpCapException if an error occurs and the default error handler is being used.
      * @return array an associative array of values of call information for the most recent call made.
      *
-     * @see <a href="http://php.net/manual/en/function.curl-getinfo.php">http://php.net/manual/en/function.curl-getinfo.php</a>
-     *      for information on what values are returned.
+     * See {@link href="http://php.net/manual/en/function.curl-getinfo.php
+     *     http://php.net/manual/en/function.curl-getinfo.php}
+     *     for information on what values are returned.
      */
     public function getCallInfo()
     {
@@ -245,8 +246,9 @@ class RedCapApiConnection implements RedCapApiConnectionInterface
      *     NOT be used internally by PHPCap outside of this class.
      * }
      *
-     * @see <a href="http://php.net/manual/en/function.curl-setopt.php">http://php.net/manual/en/function.curl-setopt.php</a>
-     *      for information on cURL options.
+     * See {@link http://php.net/manual/en/function.curl-setopt.php
+     *     http://php.net/manual/en/function.curl-setopt.php}
+     *     for information on cURL options.
      *
      * @param integer $option the cURL option that is being set.
      * @param mixed $value the value that the cURL option is being set to.
@@ -268,8 +270,9 @@ class RedCapApiConnection implements RedCapApiConnectionInterface
      *     NOT be used internally by PHPCap outside of this class.
      * }
      *
-     * @see <a href="http://php.net/manual/en/function.curl-setopt.php">http://php.net/manual/en/function.curl-setopt.php</a>
-     * for information on cURL options.
+     * See {@link http://php.net/manual/en/function.curl-setopt.php
+     *     http://php.net/manual/en/function.curl-setopt.php}
+     *     for information on cURL options.
      *
      * @param integer $option cURL option number.
      * @return mixed if the specified option has a value that has been set in the code,

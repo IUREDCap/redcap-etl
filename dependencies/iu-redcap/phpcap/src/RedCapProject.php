@@ -30,7 +30,8 @@ class RedCapProject
      * Creates a REDCapProject object for the specifed project.
      *
      * Example Usage:
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * $apiUrl = 'https://redcap.someplace.edu/api/'; # replace with your API URL
      * $apiToken = '11111111112222222222333333333344'; # replace with your API token
      * $sslVerify = true;
@@ -40,6 +41,7 @@ class RedCapProject
      *
      * $project = new RedCapProject($apiUrl, $apiToken, $sslVerify, $caCertificateFile);
      * </code>
+     * </pre>
      *
      * @param string $apiUrl the URL for the API for the REDCap site that has the project.
      * @param string $apiToken the API token for this project.
@@ -205,13 +207,15 @@ class RedCapProject
      * Exports information about the specified events.
      *
      * Example usage:
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * #export information about all events in CSV (Comma-Separated Values) format.
      * $eventInfo = $project->exportEvents('csv');
      *
      * # export events in XML format for arms 1 and 2.
      * $eventInfo = $project->exportEvents('xml', [1, 2]);
      * </code>
+     * </pre>
      *
      * @param string $format the format for the export.
      *     <ul>
@@ -422,7 +426,8 @@ class RedCapProject
      * with the specified event and/or repeat instance, if any.
      *
      * Example usage:
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * ...
      * $file     = '../data/consent1001.txt';
      * $recordId = '1001';
@@ -431,6 +436,7 @@ class RedCapProject
      * $project->importFile($file, $recordId, $field, $event);
      * ...
      * </code>
+     * </pre>
      *
      * @param string $filename the name of the file to import.
      * @param string $recordId the record ID of the record to import the file into.
@@ -514,12 +520,14 @@ class RedCapProject
      * Exports information about the instruments (data entry forms) for the project.
      *
      * Example usage:
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * $instruments = $project->getInstruments();
      * foreach ($instruments as $instrumentName => $instrumentLabel) {
      *     print "{$instrumentName} : {$instrumentLabel}\n";
      * }
      * </code>
+     * </pre>
      *
      * @param $format string format instruments are exported in:
      *     <ul>
@@ -619,10 +627,12 @@ class RedCapProject
      * Gets the instrument to event mapping for the project.
      *
      * For example, the following code:
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * $map = $project->exportInstrumentEventMappings();
      * print_r($map[0]); # print first element of map
      * </code>
+     * </pre>
      * might generate the following output:
      * <pre>
      * Array
@@ -855,13 +865,15 @@ class RedCapProject
      *
      * You do not need to specify all of these fields when doing an import,
      * only the ones that you actually want to change. For example:
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * ...
      * # Set the project to be longitudinal and enable surveys
      * $projectInfo = ['is_longitudinal' => 1, 'surveys_enabled' => 1];
      * $project->importProjectInfo($projectInfo);
      * ...
      * </code>
+     * </pre>
      *
      * @param mixed $projectInfo the project information to import. This will
      *     be a PHP associative array if no format, or 'php' format was specified,
@@ -1002,11 +1014,14 @@ class RedCapProject
      * Exports the specified records.
      *
      * Example usage:
-     * <code>
+     *
+     * <pre>
+     * <code class="phpdocumentor-code">
      * $records = $project->exportRecords($format = 'csv', $type = 'flat');
      * $recordIds = [1001, 1002, 1003];
      * $records = $project->exportRecords('xml', 'eav', $recordIds);
      * </code>
+     * </pre>
      *
      * Note: date ranges do not work for records that were imported at
      * the time the project was created.
@@ -1171,7 +1186,8 @@ class RedCapProject
      *
      * Example usage:
      *
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * # return all records with last name "Smith" in CSV format
      * $records = $project->exportRecordsAp(['format' => 'csv', 'filterLogic' => "[last_name] = 'Smith'"]);
      *
@@ -1181,6 +1197,7 @@ class RedCapProject
      * # export only the fields on the 'lab_data' form and field 'study_id'
      * $records = $project->exportRecordsAp(['forms' => ['lab_data'], 'fields' => ['study_id']]);
      * </code>
+     * </pre>
      *
      * @see exportRecords()
      *
@@ -1827,7 +1844,8 @@ class RedCapProject
      * data that is imported.
      *
      * The available field names for user import are:
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * username, expiration, data_access_group, design,
      * user_rights, data_access_groups, data_export, reports, stats_and_charts,
      * manage_survey_participants, calendar, data_import_tool, data_comparison_tool,
@@ -1837,6 +1855,7 @@ class RedCapProject
      * lock_records_customization, lock_records, lock_records_all_forms,
      * forms
      * </code>
+     * </pre>
      *
      *
      * Privileges for fields above can be set as follows:
@@ -1901,7 +1920,8 @@ class RedCapProject
      *
      * These can be used for batch
      * processing of records exports to lessen memory requirements, for example:
-     * <code>
+     * <pre>
+     * <code class="phpdocumentor-code">
      * ...
      * # Get all the record IDs of the project in 10 batches
      * $recordIdBatches = $project->getRecordIdBatches(10);
@@ -1911,6 +1931,7 @@ class RedCapProject
      * }
      * ...
      * </code>
+     * </pre>
      *
      * @param integer $batchSize the batch size in number of record IDs.
      *     The last batch may have less record IDs. For example, if you had 500
@@ -2332,7 +2353,7 @@ class RedCapProject
      * @param string $format
      * @throws PhpCapException
      */
-    protected function processExportResult(& $result, $format)
+    protected function processExportResult(&$result, $format)
     {
         if ($format == 'php') {
             $phpResult = json_decode($result, true); // true => return as array instead of object
@@ -2518,7 +2539,7 @@ class RedCapProject
         return $form;
     }
     
-    protected function processFormatArgument(& $format, $legalFormats)
+    protected function processFormatArgument(&$format, $legalFormats)
     {
         if (!isset($format)) {
             $format = 'php';
@@ -2623,7 +2644,7 @@ class RedCapProject
      * @param string $result a result returned from the REDCap API, which
      *     should be for a non-export method.
      */
-    protected function processNonExportResult(& $result)
+    protected function processNonExportResult(&$result)
     {
         $matches = array();
         #$hasMatch = preg_match('/^[\s]*{"error":[\s]*"(.*)"}[\s]*$/', $result, $matches);

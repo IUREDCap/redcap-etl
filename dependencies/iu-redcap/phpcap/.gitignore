@@ -2,12 +2,18 @@
 # Files to be ignored by Git
 #-------------------------------------------------
 
+# phpDocumentor build and cache files
+src/.phpdoc
+
 # Eclipse project file and settings directory
 .project
 .settings/
 
 # ignore swap files
 *.swp
+
+# ignore cache files
+*.cache
 
 # Composer 3rd-party software
 /vendor
@@ -20,6 +26,7 @@ composer.phar
 
 # certificate files
 *.crt
+*.pem
 
 # tests configuration file
 /tests/config.ini

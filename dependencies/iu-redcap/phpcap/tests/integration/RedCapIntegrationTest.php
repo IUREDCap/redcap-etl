@@ -22,7 +22,7 @@ class RedCapIntegrationTest extends TestCase
     private static $basicDemographyApiToken;
     private static $redCap;
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         self::$apiUrl     = self::$config['api.url'];

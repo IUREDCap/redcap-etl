@@ -19,8 +19,9 @@ class ProjectInfoTest extends TestCase
     private static $config;
     private static $basicDemographyProject;
     private static $longitudinalDataProject;
+    private static $repeatingFormsProject;
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         self::$basicDemographyProject = new RedCapProject(
@@ -35,5 +36,17 @@ class ProjectInfoTest extends TestCase
         $result = self::$basicDemographyProject->exportProjectInfo();
         
         $this->assertEquals($result['project_language'], 'English', 'Project info "project_language" test.');
+    }
+ 
+    public function testExportProjectInfoExternalModules()
+    {
+        $dateCalculateField = 'vanderbilt_datecalculatedfields';
+        $result = self::$basicDemographyProject->exportProjectInfo();
+
+        $this->assertStringContainsString(
+            $dateCalculateField,
+            $result['external_modules'],
+            'Project info "external modules" test.'
+        );
     }
 }

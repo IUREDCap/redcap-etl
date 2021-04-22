@@ -47,22 +47,21 @@ SPDX-License-Identifier: BSD-3-Clause
 <li><strong>importFile</strong> - method for importing a file (e.g., a document or image) into an existing REDCap record.</li>
 </ol>
 <h2 id="importRecords">importRecords</h2>
-<p>Detailed documentation for the importRecords method can be found in
-the PHPCap API documentation:
-<a href="https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html">https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html</a></p>
+<p>This method is used to import records into a REDCap project.</p>
+<p>API documentation: <a href="api/classes/IU-PHPCap-RedCapProject.html#method_importRecords">importRecords()</a></p>
 <p>Since this method corresponds very closely to the REDCap API Import Records method, the
 REDCap API documentation can also be checked for more information. And the REDCap
 API Playground can be used to get a sense of the functionality provided by this method.</p>
 <p>Here is example PHPCap code that uses the importRecords method to import records from a CSV (Comma-Separated Value) file:</p>
-<div class="description"><pre><code class="language-php"><span class="xlang">&lt;?php</span>
+<div class="description"><pre><code class="language-php">&lt;?php
 ...
-<span class="php-comment">// import records from a CSV file</span>
-<span class="php-keyword1">try</span> {
-    <span class="php-var">$records</span> = FileUtil::fileToString(<span class="php-quote">'data.csv'</span>);
-    <span class="php-var">$number</span> = <span class="php-var">$project</span>-&gt;importRecords(<span class="php-var">$records</span>, <span class="php-quote">'csv'</span>);
-    <span class="php-keyword1">print</span> <span class="php-quote">&quot;</span><span class="php-var">{$number}</span><span class="php-quote"> records were imported.\n&quot;</span>;
-} <span class="php-keyword1">catch</span> (Exception <span class="php-var">$exception</span>) {
-    <span class="php-keyword1">print</span> <span class="php-quote">&quot;*** Import Error: &quot;</span>.<span class="php-var">$exception</span>-&gt;getMessage().<span class="php-quote">&quot;\n&quot;</span>;
+// import records from a CSV file
+try {
+    $records = FileUtil::fileToString('data.csv');
+    $number = $project-&gt;importRecords($records, 'csv');
+    print "{$number} records were imported.\n";
+} catch (Exception $exception) {
+    print "*** Import Error: ".$exception-&gt;getMessage()."\n";
 }</code></pre></div>
 <p>The importRecords method imports CSV records from a string, so if your data is stored
 in a file, you need to read the file into a string first, as is done above.
@@ -84,23 +83,21 @@ but the subsequent imports would fail.</p>
 <h2 id="importFile">importFile</h2>
 <p>The importFile method is used for importing a file, such as a consent form for a patient,
 into an existing REDCap record.</p>
-<p>Detailed documentation for the importRecords method can be found in
-the PHPCap API documentation:
-<a href="https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html">https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html</a> </p>
+<p>API documentation: <a href="api/classes/IU-PHPCap-RedCapProject.html#method_importFile">importFile()</a></p>
 <p>Below is example code for importing a consent form file for a patient into the patient's record:</p>
-<div class="description"><pre><code class="language-php">project-&gt;importFile(<span class="php-quote">'consent1001.pdf'</span>,<span class="php-quote">'1001'</span>,<span class="php-quote">'patient_consent'</span>);</code></pre></div>
+<div class="description"><pre><code class="language-php">project-&gt;importFile('consent1001.pdf','1001','patient_consent');</code></pre></div>
 <p>Or, using variables to indicate what the arguments represent:</p>
-<div class="description"><pre><code class="language-php"><span class="php-var">$file</span> = <span class="php-quote">'consent1001.pdf'</span>;
-<span class="php-var">$recordId</span> = <span class="php-quote">'1001'</span>;
-<span class="php-var">$field</span> = <span class="php-quote">'patient_consent'</span>;
-project-&gt;importFile(<span class="php-var">$file</span>, <span class="php-var">$recordId</span>, <span class="php-var">$field</span>);</code></pre></div>
+<div class="description"><pre><code class="language-php">$file = 'consent1001.pdf';
+$recordId = '1001';
+$field = 'patient_consent';
+project-&gt;importFile($file, $recordId, $field);</code></pre></div>
 <p>Both of the above examples are importing the file &quot;consent1001.pdf&quot; into field &quot;patient_consent&quot; in the record with an ID of 1001.</p>
 <p>A similar example for a longitudinal study is as follows:</p>
-<div class="description"><pre><code class="language-php"><span class="php-var">$file</span> = <span class="php-quote">'consent.pdf'</span>;
-<span class="php-var">$recordId</span> = <span class="php-quote">'1001'</span>;
-<span class="php-var">$field</span> = <span class="php-quote">'patient_consent'</span>;
-<span class="php-var">$event</span> = <span class="php-quote">'enrollment_arm_1'</span>;
-project-&gt;importFile(<span class="php-var">$file</span>, <span class="php-var">$recordId</span>, <span class="php-var">$field</span>, <span class="php-var">$event</span>); </code></pre></div>
+<div class="description"><pre><code class="language-php">$file = 'consent.pdf';
+$recordId = '1001';
+$field = 'patient_consent';
+$event = 'enrollment_arm_1';
+project-&gt;importFile($file, $recordId, $field, $event); </code></pre></div>
 <p>In this case, the event needs to be specified also.</p></div>
 <div id="footer">
 PHPCap documentation

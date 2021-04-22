@@ -22,7 +22,7 @@ class ImportAndDeleteMetadataTest extends TestCase
     private static $emptyProject;
     private static $longitudinalDataProject;
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         self::$emptyProject = new RedCapProject(
@@ -66,10 +66,9 @@ class ImportAndDeleteMetadataTest extends TestCase
         $expectedMetadata = self::$longitudinalDataProject->exportMetadata();
         $actualMetadata   = self::$emptyProject->exportMetadata();
 
-#        print_r($expectedMetadata);
-#        foreach ($expectedMetadata as &$str) {
-#            $str = str_replace(" | ", "|", $str);
-#        }
+        #foreach ($actualMetadata as &$str) {
+        #    $str = str_replace(" | ", "|", $str);
+        #}
 
         $this->assertEquals($expectedMetadata, $actualMetadata, 'Metadata comparison.');
          

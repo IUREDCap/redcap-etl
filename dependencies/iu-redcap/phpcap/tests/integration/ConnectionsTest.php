@@ -22,7 +22,7 @@ class ConnectionsTest extends TestCase
     private static $caCertificateFile;
     
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         

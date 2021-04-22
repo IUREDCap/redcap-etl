@@ -20,7 +20,7 @@ class PhpCapVersionTest extends TestCase
     private static $basicDemographyProject;
     private static $longitudinalDataProject;
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         self::$basicDemographyProject = new RedCapProject(
@@ -32,6 +32,6 @@ class PhpCapVersionTest extends TestCase
     public function testGetPhpCapVersion()
     {
         $result = self::$basicDemographyProject->getPhpCapVersion();
-        $this->assertRegExp('/^[0-9]+\.[0-9]+\.[0-9]+$/', $result, 'PHPCap version format test.');
+        $this->assertMatchesRegularExpression('/^[0-9]+\.[0-9]+\.[0-9]+$/', $result, 'PHPCap version format test.');
     }
 }

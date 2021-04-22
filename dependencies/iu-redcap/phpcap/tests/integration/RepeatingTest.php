@@ -21,7 +21,7 @@ class RepeatingTest extends TestCase
     private static $superToken;
     private static $redCap;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
 

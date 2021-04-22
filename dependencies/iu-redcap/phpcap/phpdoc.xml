@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor
+        configVersion="3"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://www.phpdoc.org"
+        xsi:noNamespaceSchemaLocation="https://docs.phpdoc.org/latest/phpdoc.xsd"
+>
+    <title>PHPCap API</title>
+    <paths>
+        <output>docs/api</output>
+        <cache>cache</cache>
+    </paths>
+    <version number="3.0.0">
+        <api>
+            <source dsn=".">
+                <path>src</path>
+            </source>
+            <visibility>public</visibility>
+            <include-source>true</include-source>
+        </api>
+    </version>
+    <template name="default">
+    </template>
+</phpdocumentor>

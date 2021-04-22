@@ -16,11 +16,12 @@ class RedCapProjectTest extends TestCase
     private $connection;
     private $redCapProject;
     
-    public function setUp()
+    public function setUp(): void
     {
         $this->apiUrl   = 'https://redcap.somplace.edu/api/';
         $this->apiToken = '12345678901234567890123456789012';
         $this->connection = $this->getMockBuilder(__NAMESPACE__.'\RedCapApiConnectionInterface')
+            ->disableOriginalConstructor()
             ->getMock();
         
         $this->redCapProject = new RedCapProject(
@@ -63,7 +64,7 @@ class RedCapProjectTest extends TestCase
                 $exception->getCode(),
                 'Exception code check.'
             );
-            $this->assertContains('integer', $exception->getMessage(), 'Message content check.');
+            $this->assertStringContainsString('integer', $exception->getMessage(), 'Message content check.');
         }
         $this->assertTrue($exceptionCaught, 'Exception caught.');
     }

@@ -23,7 +23,7 @@ class RedCapVersionTest extends TestCase
     private static $superToken;
     private static $redcap;
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         self::$basicDemographyProject = new RedCapProject(
@@ -44,14 +44,18 @@ class RedCapVersionTest extends TestCase
     public function testExportRedcapVersion()
     {
         $result = self::$basicDemographyProject->exportRedcapVersion();
-        $this->assertRegExp('/^[0-9]+\.[0-9]+\.[0-9]+$/', $result, 'REDCap version format test.');
+        $this->assertMatchesRegularExpression('/^[0-9]+\.[0-9]+\.[0-9]+$/', $result, 'REDCap version format test.');
     }
 
     public function testExportRedcapVersionWithSuperToken()
     {
         if (self::$redcap) {
             $result = self::$redcap->exportRedcapVersion();
-            $this->assertRegExp('/^[0-9]+\.[0-9]+\.[0-9]+$/', $result, 'REDCap version super token format test.');
+            $this->assertMatchesRegularExpression(
+                '/^[0-9]+\.[0-9]+\.[0-9]+$/',
+                $result,
+                'REDCap version super token format test.'
+            );
         }
     }
 }

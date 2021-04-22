@@ -24,12 +24,12 @@ class MyParsedown extends \Parsedown
     public function __construct()
     {
         # Syntax highlighter for PHP
-        $this->highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html());
-        $this->highlighter->setLexer(new \FSHL\Lexer\Php());
+        # $this->highlighter = new \FSHL\Highlighter(new \FSHL\Output\Html());
+        # $this->highlighter->setLexer(new \FSHL\Lexer\Php());
         
         # Syntax highlighter for shell commands/scripts
-        $this->minimalHighlighter = new \FSHL\Highlighter(new \FSHL\Output\Html());
-        $this->minimalHighlighter->setLexer(new \FSHL\Lexer\Minimal());
+        # $this->minimalHighlighter = new \FSHL\Highlighter(new \FSHL\Output\Html());
+        # $this->minimalHighlighter->setLexer(new \FSHL\Lexer\Minimal());
     }
 
     /**
@@ -46,10 +46,10 @@ class MyParsedown extends \Parsedown
         preg_match('/\[class\] => language-([a-zA-Z]+)/', $text, $matches);
         
         if (count($matches) > 1 && $matches[1] === 'shell') {
-            $block['element']['text']['text'] = $this->minimalHighlighter->highlight($block['element']['text']['text']);
+            #$block['element']['text']['text'] = $this->minimalHighlighter->highlight($block['element']['text']['text']);
         }
         else {
-            $block['element']['text']['text'] = $this->highlighter->highlight($block['element']['text']['text']);
+            #$block['element']['text']['text'] = $this->highlighter->highlight($block['element']['text']['text']);
         }
 
         return $block;

@@ -13,9 +13,9 @@ PHPCap's __RedCapProject__ class provides the following methods for importing da
 
 importRecords
 ---------------------------
-Detailed documentation for the importRecords method can be found in
-the PHPCap API documentation:
-https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html
+This method is used to import records into a REDCap project.
+
+API documentation: [importRecords()](api/classes/IU-PHPCap-RedCapProject.html#method_importRecords)
 
 Since this method corresponds very closely to the REDCap API Import Records method, the
 REDCap API documentation can also be checked for more information. And the REDCap
@@ -61,9 +61,7 @@ importFile
 The importFile method is used for importing a file, such as a consent form for a patient,
 into an existing REDCap record.
 
-Detailed documentation for the importRecords method can be found in
-the PHPCap API documentation:
-https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html 
+API documentation: [importFile()](api/classes/IU-PHPCap-RedCapProject.html#method_importFile)
 
 Below is example code for importing a consent form file for a patient into the patient's record:
 ```php

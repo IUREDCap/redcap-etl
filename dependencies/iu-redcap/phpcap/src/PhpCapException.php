@@ -16,7 +16,8 @@ namespace IU\PHPCap;
  *
  * Example usage:
  *
- * <code>
+ * <pre>
+ * <code class="phpdocumentor-code">
  * try {
  *     $projectInfo = $project->exportProjectInfo();
  * }
@@ -31,6 +32,7 @@ namespace IU\PHPCap;
  *     print "Stack trace:\n{$exception->getTraceAsString()}\n";
  * }
  * </code>
+ * </pre>
  *
  * @see http://php.net/manual/en/class.exception.php
  *         Information on additional methods provided by parent class Exception.

@@ -47,28 +47,28 @@ where you can define custom methods.</p>
 <p>For example, if you wanted to have a method that returns the
 title of the project, you could create a class
 similar to the following that extends PHPCap's RedCapProject class:</p>
-<div class="description"><pre><code class="language-php"><span class="php-keyword1">class</span> MyRedCapProject <span class="php-keyword1">extends</span> IU\PHPCap\RedCapProject
+<div class="description"><pre><code class="language-php">class MyRedCapProject extends IU\PHPCap\RedCapProject
 {
-    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> exportProjectTitle() {
-       <span class="php-var">$projectInfo</span> = <span class="php-var">$this</span>-&gt;exportProjectInfo();
-       <span class="php-var">$projectTitle</span> = <span class="php-var">$projectInfo</span>[<span class="php-quote">'project_title'</span>];
-       <span class="php-keyword1">return</span> <span class="php-var">$projectTitle</span>;
+    public function exportProjectTitle() {
+       $projectInfo = $this-&gt;exportProjectInfo();
+       $projectTitle = $projectInfo['project_title'];
+       return $projectTitle;
     }
 }</code></pre></div>
 <p>The new class would have all of the methods of RedCapProject as well as the
 new method defined above, and you would then use this new class instead of
 RedCapProject, for example:</p>
 <div class="description"><pre><code class="language-php">...
-<span class="php-var">$project</span> = <span class="php-keyword1">new</span> MyRedCapProject(<span class="php-var">$apiUrl</span>, <span class="php-var">$apiToken</span>);
-<span class="php-var">$projectTitle</span> = <span class="php-var">$project</span>-&gt;exportProjectTitle();
-<span class="php-keyword1">print</span>(<span class="php-quote">&quot;Project Title: </span><span class="php-var">$projectTitle</span><span class="php-quote">\n&quot;</span>);
+$project = new MyRedCapProject($apiUrl, $apiToken);
+$projectTitle = $project-&gt;exportProjectTitle();
+print("Project Title: $projectTitle\n");
 
-<span class="php-var">$records</span> = <span class="php-var">$project</span>-&gt;exportRecords();</code></pre></div>
+$records = $project-&gt;exportRecords();</code></pre></div>
 <p>The RedCapProject class also has a connection property that gives you direct access to
 the REDCap API. So within a method of your class extending RedCapProject, you
 could use the following to send data to, and get the results from, your REDCap API:</p>
-<div class="description"><pre><code class="language-php"><span class="php-comment"># Pass data to the REDCap API, and get back the result</span>
-<span class="php-var">$result</span> = <span class="php-var">$this</span>-&gt;connection-&gt;call(<span class="php-var">$data</span>);</code></pre></div>
+<div class="description"><pre><code class="language-php"># Pass data to the REDCap API, and get back the result
+$result = $this-&gt;connection-&gt;call($data);</code></pre></div>
 <p>This is useful for accessing methods provided by the REDCap API that
 have not been implemented in PHPCap.</p>
 <p>If you do define your own project class, and want to use it in conjunction with PHPCap's
@@ -76,15 +76,15 @@ RedCap class, you can use the <strong>setProjectConstructorCallback</strong> met
 class to get RedCap to use your project class for projects that it returns from its
 methods to create and get projects. For example:</p>
 <div class="description"><pre><code class="language-php">...
-<span class="php-var">$callback</span> = <span class="php-keyword1">function</span> (<span class="php-var">$apiUrl</span>, <span class="php-var">$apiToken</span>, <span class="php-var">$sslVerify</span> = <span class="php-keyword1">false</span>,
-                      <span class="php-var">$caCertificateFile</span> = <span class="php-keyword1">null</span>, <span class="php-var">$errorHandler</span> = <span class="php-keyword1">null</span>,
-                      <span class="php-var">$connection</span> = <span class="php-keyword1">null</span>) {
-        <span class="php-keyword1">return</span> <span class="php-keyword1">new</span> MyRedCapProject(<span class="php-var">$apiUrl</span>, <span class="php-var">$apiToken</span>, <span class="php-var">$sslVerify</span>,
-                                   <span class="php-var">$caCertificateFile</span>, <span class="php-var">$errorHandler</span>, <span class="php-var">$connection</span>);
+$callback = function ($apiUrl, $apiToken, $sslVerify = false,
+                      $caCertificateFile = null, $errorHandler = null,
+                      $connection = null) {
+        return new MyRedCapProject($apiUrl, $apiToken, $sslVerify,
+                                   $caCertificateFile, $errorHandler, $connection);
     };
 ...        
-<span class="php-var">$redCap</span> = <span class="php-keyword1">new</span> RedCap(<span class="php-var">$apiUrl</span>);
-<span class="php-var">$redCap</span>-&gt;setProjectConstructorCallback(<span class="php-var">$callback</span>);</code></pre></div>
+$redCap = new RedCap($apiUrl);
+$redCap-&gt;setProjectConstructorCallback($callback);</code></pre></div>
 <h2 id="Extending the ErrorHandler class">Extending the ErrorHandler class</h2>
 <p>The ErrorHandler class handles errors that occur in PHPCap,
 and it handles them by throwing a PhpCapException. This

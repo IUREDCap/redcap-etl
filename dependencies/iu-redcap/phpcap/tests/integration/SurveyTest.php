@@ -22,7 +22,7 @@ class SurveyTest extends TestCase
     private static $participantEmail;
     private static $participantIdentifier;
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         

@@ -19,7 +19,7 @@ class ReportsTest extends TestCase
     private static $basicDemographyProject;
     private static $longitudinalDataProject;
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         self::$basicDemographyProject = new RedCapProject(
@@ -189,7 +189,7 @@ class ReportsTest extends TestCase
 
     public function testExportReportsWithDecimalCharacter()
     {
-        $reportId = self::$config['basicdemography.report.id'];
+        $reportId = self::$config['basic.demography.report.id'];
         #print "\n\nreport id is $reportId\n\n";
 
         if (isset($reportId) && trim($reportId) != '') {

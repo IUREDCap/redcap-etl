@@ -17,7 +17,7 @@ The four main classes provided by PHPCap for users are:
 <tbody>
   <tr>
     <td>
-      <a href="https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCapProject.html">RedCapProject</a>
+      <a href="api/classes/IU-PHPCap-RedCapProject.html">RedCapProject</a>
     </td>
     <td>
       Used to retrieve data from, and modify, a project in REDCap.
@@ -25,7 +25,7 @@ The four main classes provided by PHPCap for users are:
   </tr>
   <tr>
     <td>
-      <a href="https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.RedCap.html">RedCap</a> 
+      <a href="api/classes/IU-PHPCap-RedCap.html">RedCap</a>
     </td>
     <td>
       Represents a REDCap instance/site. This class is only required for creating new REDCap
@@ -36,7 +36,7 @@ The four main classes provided by PHPCap for users are:
   </tr>  
   <tr>
     <td>
-      <a href="https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.FileUtil.html">FileUtil</a> 
+      <a href="api/classes/IU-PHPCap-FileUtil.html">FileUtil</a>
     </td>
     <td>
       Used to read from, and write to, files. FileUtil is
@@ -46,7 +46,7 @@ The four main classes provided by PHPCap for users are:
   </tr>
   <tr>
     <td>
-      <a href="https://iuredcap.github.io/phpcap/api/class-IU.PHPCap.PhpCapException.html">PhpCapException</a>
+      <a href="api/classes/IU-PHPCap-PhpCapException.html">PhpCapException</a>
     </td>
     <td>
       Exception class used by PHPCap when an error occurs. 

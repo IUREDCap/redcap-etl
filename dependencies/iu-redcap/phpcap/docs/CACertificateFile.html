@@ -47,18 +47,18 @@ only be used for initial testing with non-critical data.</p>
 <p>It is possible that your system may already be set up to use a correct CA certificate file.
 This can be tested by trying to access a project with SSL verification set to true, but with
 no CA certificate file specified, for example:</p>
-<div class="description"><pre><code class="language-php"><span class="xlang">&lt;?php</span>
+<div class="description"><pre><code class="language-php">&lt;?php
 
-<span class="php-keyword1">require</span>(<span class="php-quote">'PHPCap/autoloader.php'</span>);
+require('PHPCap/autoloader.php');
 
-<span class="php-keyword1">use</span> IU\PHPCap\RedCapProject;
+use IU\PHPCap\RedCapProject;
 
-<span class="php-var">$apiUrl</span> = <span class="php-quote">'https://redcap.someplace.edu/api/'</span>; <span class="php-comment"># Replace with your REDCap's API URL</span>
-<span class="php-var">$apiToken</span> = <span class="php-quote">'1234567890A1234567890B1234567890'</span>;  <span class="php-comment"># Replace with your API token</span>
+$apiUrl = 'https://redcap.someplace.edu/api/'; # Replace with your REDCap's API URL
+$apiToken = '1234567890A1234567890B1234567890';  # Replace with your API token
 
-<span class="php-var">$sslVerify</span> = <span class="php-keyword1">true</span>;
-<span class="php-var">$project</span> = RedCapProject(<span class="php-var">$apiUrl</span>, <span class="php-var">$apiToken</span>, <span class="php-var">$sslVerify</span>);
-<span class="php-var">$project</span>-&gt;exportProjectInfo();</code></pre></div>
+$sslVerify = true;
+$project = RedCapProject($apiUrl, $apiToken, $sslVerify);
+$project-&gt;exportProjectInfo();</code></pre></div>
 <p>If this works, then that would indicate that your system is already set up with a CA certificate
 file. If it fails, and you get an error message about a security certificate, such as</p>
 <blockquote>

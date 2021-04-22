@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>PHPCap API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/js/all.min.js" integrity="sha256-0vuk8LXoyrmCjp1f0O300qo1M75ZQyhH9X3J6d+scmk=" crossorigin="anonymous"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">PHPCap API</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+    
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                                <h4 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/iu.html"><abbr title="\IU">IU</abbr></a></h4>
+                <ul class="phpdocumentor-list">
+                                            <li><a href="namespaces/iu-phpcap.html"><abbr title="\IU\PHPCap">PHPCap</abbr></a></li>
+                                    </ul>
+                        </section>
+
+    
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -eight phpdocumentor-content">
+                    <ul class="phpdocumentor-breadcrumbs">
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/iu.html">IU</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/iu-phpcap.html">PHPCap</a></li>
+    </ul>
+
+    <article class="phpdocumentor-element -class">
+        <h2 class="phpdocumentor-content__title">
+    RedCap
+
+    
+    
+    
+    </h2>
+
+        <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">15</span>
+</aside>
+
+            <p class="phpdocumentor-summary">REDCap class used to represent a REDCap instance/site. This class
+is typically only useful if your progam needs to create
+REDCap projects and/or needs to access more than one
+REDCap project.</p>
+
+    <section class="phpdocumentor-description"></section>
+
+
+
+
+
+
+
+
+<h3 id="toc">
+    Table of Contents
+    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+</h3>
+
+<dl class="phpdocumentor-table-of-contents">
+                    <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method___construct">__construct()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_createProject">createProject()</a>
+    <span>
+                        &nbsp;: <a href="classes/IU-PHPCap-RedCapProject.html"><abbr title="\IU\PHPCap\RedCapProject">RedCapProject</abbr></a>    </span>
+</dt>
+<dd>Creates a REDCap project with the specified data.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_exportRedcapVersion">exportRedcapVersion()</a>
+    <span>
+                        &nbsp;: string    </span>
+</dt>
+<dd>Gets the REDCap version number of the REDCap instance being used.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_getConnection">getConnection()</a>
+    <span>
+                        &nbsp;: <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html"><abbr title="\IU\PHPCap\RedCapApiConnectionInterface">RedCapApiConnectionInterface</abbr></a>    </span>
+</dt>
+<dd>Gets the connection being used.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_getErrorHandler">getErrorHandler()</a>
+    <span>
+                        &nbsp;: <a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a>    </span>
+</dt>
+<dd>Gets the error handler being used.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_getProject">getProject()</a>
+    <span>
+                        &nbsp;: <a href="classes/IU-PHPCap-RedCapProject.html"><abbr title="\IU\PHPCap\RedCapProject">RedCapProject</abbr></a>    </span>
+</dt>
+<dd>Gets the REDCap project for the specified API token.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_getProjectConstructorCallback">getProjectConstructorCallback()</a>
+    <span>
+                        &nbsp;: callable    </span>
+</dt>
+<dd>Gets the function used to create projects.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_setConnection">setConnection()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd>Sets the connection that is used.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_setErrorHandler">setErrorHandler()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd>Set the error handler that is used.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCap.html#method_setProjectConstructorCallback">setProjectConstructorCallback()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd>Sets the function used to create projects in this class.</dd>
+
+        </dl>
+
+
+
+        
+
+        
+
+            <section class="phpdocumentor-methods">
+        <h3 class="phpdocumentor-elements__header" id="methods">
+            Methods
+            <a href="classes/IU-PHPCap-RedCap.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+        </h3>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___construct">
+        __construct()
+        <a href="classes/IU-PHPCap-RedCap.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">44</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$apiUrl</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$superToken</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sslVerify</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$caCertificateFile</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errorHandler</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html"><abbr title="\IU\PHPCap\RedCapApiConnectionInterface">RedCapApiConnectionInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$connection</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$apiUrl</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the URL for the API for your REDCap site.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$superToken</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the user's super token. This needs to be provided if
+you are going to create projects.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$sslVerify</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>indicates if SSL connection to REDCap web site should be verified.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$caCertificateFile</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the full path name of the CA (Certificate Authority)
+certificate file.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$errorHandler</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the error handler that will be
+used. This would normally only be set if you want to override the PHPCap's default
+error handler.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$connection</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html"><abbr title="\IU\PHPCap\RedCapApiConnectionInterface">RedCapApiConnectionInterface</abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the connection that will be used.
+This would normally only be set if you want to override the PHPCap's default
+connection. If this argument is specified, the $apiUrl, $sslVerify, and
+$caCertificateFile arguments will be ignored, and the values for these
+set in the connection will be used.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_createProject">
+        createProject()
+        <a href="classes/IU-PHPCap-RedCap.html#method_createProject" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">139</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Creates a REDCap project with the specified data.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">createProject</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$projectData</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$odm</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/IU-PHPCap-RedCapProject.html"><abbr title="\IU\PHPCap\RedCapProject">RedCapProject</abbr></a></span></code>
+
+        <section class="phpdocumentor-description"><p>A super token must have been specified for this method to be used.</p>
+<p>The data fields that can be set are as follows:</p>
+<ul>
+  <li>
+    <b>project_title</b> - the title of the project.
+  </li>
+  <li>
+    <b>purpose</b> - the purpose of the project:
+    <ul>
+      <li>0 - Practice/Just for fun</li>
+      <li>1 - Other</li>
+      <li>2 - Research</li>
+      <li>3 - Quality Improvement</li>
+      <li>4 - Operational Support</li>
+    </ul>
+  </li>
+  <li>
+    <b>purpose_other</b> - text descibing purpose if purpose above is specified as 1.
+  </li>
+  <li>
+    <b>project_notes</b> - notes about the project.
+  </li>
+  <li>
+    <b>is_longitudinal</b> - indicates if the project is longitudinal (0 = False [default],
+    1 = True).
+  </li>
+  <li>
+    <b>surveys_enabled</b> - indicates if surveys are enabled (0 = False [default], 1 = True).
+  </li>
+  <li>
+    <b>record_autonumbering_enabled</b> - indicates id record autonumbering is enabled
+    (0 = False [default], 1 = True).
+  </li>
+</ul>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$projectData</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the data used for project creation. Note that if
+'php' format is used, the data needs to be an array where the keys are
+the field names and the values are the field values.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$format</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>string the format used to export the arm data.</p>
+<ul>
+  <li> 'php' - [default] array of maps of values</li>
+  <li> 'csv' - string of CSV (comma-separated values)</li>
+  <li> 'json' - string of JSON encoded values</li>
+  <li> 'xml' - string of XML encoded data</li>
+</ul>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$odm</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>string in CDISC ODM XML format that contains metadata and optionally data
+to be imported into the created project.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/IU-PHPCap-RedCapProject.html"><abbr title="\IU\PHPCap\RedCapProject">RedCapProject</abbr></a></span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the project that was created.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_exportRedcapVersion">
+        exportRedcapVersion()
+        <a href="classes/IU-PHPCap-RedCap.html#method_exportRedcapVersion" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">201</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Gets the REDCap version number of the REDCap instance being used.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">exportRedcapVersion</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+        <section class="phpdocumentor-description"><p>A super token must have been specified for this method to be used.</p>
+</section>
+
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the REDCap version number of the REDCap instance being used by the project.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getConnection">
+        getConnection()
+        <a href="classes/IU-PHPCap-RedCap.html#method_getConnection" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">296</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Gets the connection being used.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getConnection</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html"><abbr title="\IU\PHPCap\RedCapApiConnectionInterface">RedCapApiConnectionInterface</abbr></a></span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html"><abbr title="\IU\PHPCap\RedCapApiConnectionInterface">RedCapApiConnectionInterface</abbr></a></span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the connection being used.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getErrorHandler">
+        getErrorHandler()
+        <a href="classes/IU-PHPCap-RedCap.html#method_getErrorHandler" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">276</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Gets the error handler being used.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getErrorHandler</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a></span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a></span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the error handler being used.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getProject">
+        getProject()
+        <a href="classes/IU-PHPCap-RedCap.html#method_getProject" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">222</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Gets the REDCap project for the specified API token.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getProject</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$apiToken</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/IU-PHPCap-RedCapProject.html"><abbr title="\IU\PHPCap\RedCapProject">RedCapProject</abbr></a></span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$apiToken</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the API token for the project to get.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/IU-PHPCap-RedCapProject.html"><abbr title="\IU\PHPCap\RedCapProject">RedCapProject</abbr></a></span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the project for the specified API token.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getProjectConstructorCallback">
+        getProjectConstructorCallback()
+        <a href="classes/IU-PHPCap-RedCap.html#method_getProjectConstructorCallback" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">250</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Gets the function used to create projects.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getProjectConstructorCallback</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">callable</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">callable</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the function used by this class to create projects.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_setConnection">
+        setConnection()
+        <a href="classes/IU-PHPCap-RedCap.html#method_setConnection" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">306</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Sets the connection that is used.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">setConnection</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html"><abbr title="\IU\PHPCap\RedCapApiConnectionInterface">RedCapApiConnectionInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$connection</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$connection</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html"><abbr title="\IU\PHPCap\RedCapApiConnectionInterface">RedCapApiConnectionInterface</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the connection to use.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_setErrorHandler">
+        setErrorHandler()
+        <a href="classes/IU-PHPCap-RedCap.html#method_setErrorHandler" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">286</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Set the error handler that is used.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">setErrorHandler</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errorHandler</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$errorHandler</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the error handler to use.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_setProjectConstructorCallback">
+        setProjectConstructorCallback()
+        <a href="classes/IU-PHPCap-RedCap.html#method_setProjectConstructorCallback" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCap.php"><a href="files/src-redcap.html"><abbr title="src/RedCap.php">RedCap.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">265</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Sets the function used to create projects in this class.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">setProjectConstructorCallback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">callable&nbsp;</span><span class="phpdocumentor-signature__argument__name">$projectConstructorCallback</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+        <section class="phpdocumentor-description"><p>This method would normally only be used if you have extended
+the RedCapProject class and want RedCap to return
+projects using your extended class.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$projectConstructorCallback</span>
+                : <span class="phpdocumentor-signature__argument__return-type">callable</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the function to call to create a new project.
+The function will be passed the same arguments as the RedCapProject
+constructor gets.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+            </section>
+
+    </article>
+                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+            </div>
+        </div>
+        <a href="classes/IU-PHPCap-RedCap.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+</body>
+</html>

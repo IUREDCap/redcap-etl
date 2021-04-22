@@ -21,7 +21,7 @@ class PdfFormsTest extends TestCase
     private static $basicDemographyProject;
     private static $longitudinalDataProject;
     
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
         self::$basicDemographyProject = new RedCapProject(
@@ -65,7 +65,7 @@ class PdfFormsTest extends TestCase
         if (file_exists($file)) {
             unlink($file);
         }
-        $this->assertFileNotExists($file, 'PDF file deleted check.');
+        $this->assertFileDoesNotExist($file, 'PDF file deleted check.');
         
         $result = self::$longitudinalDataProject->exportPdfFileOfInstruments($file);
         

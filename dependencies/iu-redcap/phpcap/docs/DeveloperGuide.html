@@ -34,6 +34,7 @@
     <li class="active"><a href="#Coding Standard Compliance">Coding Standard Compliance</a></li>
     <li class="active"><a href="#Documentation">Documentation</a></li>
     <li class="active"><a href="#Tagging Releases">Tagging Releases</a></li>
+    <li class="active"><a href="#Developer Dependencies">Developer Dependencies</a></li>
 </ul>
 </ul>
 </ul>
@@ -52,45 +53,62 @@ SPDX-License-Identifier: BSD-3-Clause
 user guides.</p>
 <h2 id="Setup">Setup</h2>
 <ol>
-<li>Install PHP 5.6 or greater with the following extensions:
+<li>
+<p>Install PHP 5.6 or greater with the following extensions:</p>
 <ul>
 <li>cURL</li>
 <li>DOM/XML</li>
 <li>mbstring</li>
 <li>OpenSSL</li>
-</ul></li>
-<li>(Optional) Install XDebug. This is needed for PHPUnit code coverage analysis.</li>
-<li>Install Git. The code for PHPCap is stored in GitHub, and Git is required to be able to download it for development.
-See: <a href="https://git-scm.com/downloads">https://git-scm.com/downloads</a></li>
+</ul>
+</li>
+<li>
+<p>(Optional) Install XDebug. This is needed for PHPUnit code coverage analysis.</p>
+</li>
+<li>
+<p>Install Git. The code for PHPCap is stored in GitHub, and Git is required to be able to download it for development. See: <a href="https://git-scm.com/downloads">https://git-scm.com/downloads</a></p>
+</li>
 <li>
 <p>Get PHPCap:</p>
-<div class="description"><pre><code class="language-shell">git clone https://github.com/iuredcap/phpcap</code></pre></div>
+<div class="description"><pre><code>git clone https://github.com/iuredcap/phpcap</code></pre></div>
 </li>
-<li>Get Composer. Composer is needed to download the development dependencies for PHPCap.
+<li>
+<p>Get Composer. Composer is needed to download the development dependencies for PHPCap.
 See: <a href="https://getcomposer.org/download/">https://getcomposer.org/download/</a>.
 You can either install the composer.phar file to the root directory of PHPCap (the .gitignore
-file is set to ignore this file), or install it globally at the system or account level.</li>
+file is set to ignore this file), or install it globally at the system or account level.</p>
+</li>
 <li>
 <p>Install PHPCap's development dependencies:</p>
-<div class="description"><pre><code class="language-shell"># If you installed the composer.phar file in PHPCap's root directory:
+<div class="description"><pre><code># If you installed the composer.phar file in PHPCap's root directory:
 php composer.phar install
 
 # If you installed composer globally:
 composer install
 
-# The dependencies should be installed into a &quot;vendor&quot; directory
+# The dependencies should be installed into a "vendor" directory
 # (which will be ignored by Git).    </code></pre></div>
+</li>
+<li>
+<p>Install <a href="https://phpdoc.org/">phpDocumentor</a>, which is used for
+generating API documentation from PHPDoc comments in the code.
+It should be set up so that it can be run from the command line using:</p>
+<div class="description"><pre><code>phpdoc</code></pre></div>
 </li>
 </ol>
 <h3 id="Example Setup on Ubuntu 16">Example Setup on Ubuntu 16</h3>
 <p>To set up PHPCap for development on Ubuntu 16, execute the following commands:</p>
-<div class="description"><pre><code class="language-shell">sudo apt-get install php php-curl php-xml php-mbstring
+<div class="description"><pre><code>sudo apt-get install php php-curl php-xml php-mbstring
 sudo apt-get install php-xdebug
 sudo apt-get install git
 git clone https://github.com/iuredcap/phpcap
 sudo apt-get install composer
-cd PHPCap
-composer install</code></pre></div>
+cd phpcap
+composer install
+# Install phpDocumentor:
+wget https://phpdoc.org/phpDocumentor.phar
+chmod +x phpDocumentor.phar
+sudo mv phpDocumentor.phar /usr/local/bin/phpdoc</code></pre></div>
 <h2 id="Development">Development</h2>
 <h3 id="Automated Tests">Automated Tests</h3>
 <p>PHPCap uses PHPUnit for running automated tests. PHPUnit should get installed as a dependency for your PHPCap project when you run the &quot;composer install&quot; command.
@@ -126,6 +144,7 @@ following setup steps are completed:</p>
 named &quot;config.ini&quot; and then set the URL in that file to be the
 URL for the API of your REDCap instance, and set the tokens to be
 the tokens requested in the previous step.</li>
+<li>In REDCap, enable the &quot;Date Calculated Fields&quot; external module for the &quot;Basic Demography&quot; project.</li>
 </ol>
 <h4>Setup for Optional CA Certificate File Integration Tests</h4>
 <p>To run the optional tests involving the CA certificate file, you will need to set up
@@ -135,8 +154,20 @@ isn't set, the tests for this will be skipped.
 See <a href="CACertificateFile.html">CA Certificate File Info</a> for more information on how to
 do this.</p>
 <h4>Setup for Optional Report Integration Tests</h4>
-<p>To run all of the optional report tests, you will need to manually set up a report for the
-longitudinal data project and then set the
+<p>To run all of the optional report tests, you will need to manually set up 2 reports.</p>
+<p>You need to set up a report for the
+basic demography project.
+and then set the
+<strong>basic.emography.report.id</strong> property in your <strong>tests/config.ini</strong> file
+to the ID of the report. If the ID property is not set, then the tests
+that use the report will not be run. You need to set up an &quot;Exercise&quot; report
+as follows:</p>
+<ul>
+<li>Include these fields in this order: record_id, bmi</li>
+</ul>
+<p>You need to set up a report for the
+longitudinal data project
+and then set the
 <strong>longitudinal.data.report.id</strong> property in your <strong>tests/config.ini</strong> file
 to the ID of the report. If the ID property is not set, then the tests
 that use the report will not be run. You need to set up an &quot;Exercise&quot; report
@@ -149,8 +180,8 @@ as follows:</p>
 <p>To run the survey tests, use the following steps:</p>
 <ol>
 <li>In REDCap, create a project for the &quot;Repeatable Survey&quot; project test file in the <strong>tests/projects</strong> directory, and import the project test file into that project.</li>
-<li>In the &quot;Project Setup&quot; tab for the project created in the step above, click on the <strong>Enable</strong> button for &quot;User surveys for this project?&quot;</li>
-<li>In the &quot;Project Setup&quot; tab, click on the <strong>Online Designer</strong> button</li>
+<li>In the &quot;Project Setup&quot; tab for the project created in the step above, click on the <strong>Enable</strong> button for &quot;Use surveys for this project?&quot;</li>
+<li>In the &quot;Project Setup&quot; tab, click on the <strong>Designer</strong> button</li>
 <li>In the &quot;Online Designer&quot; tab, click on the <strong>Enable</strong> button for instrument &quot;Basic Information&quot;, and then:
 <ol>
 <li>Select &quot;Yes&quot; for &quot;Allow 'Save &amp; Return Later' option for respondents?&quot;</li>
@@ -170,8 +201,8 @@ as follows:</p>
 <li>In the selection below &quot;When the following survey is completed:&quot;, select &quot;Basic Information&quot;</li>
 <li>Click on the <strong>Save</strong> button</li>
 </ol></li>
-<li>Click on the &quot;Manage Survey Participants&quot; link on the left</li>
-<li>In the &quot;Manage Survey Participants&quot; panel, go to the &quot;Participant List&quot; tab</li>
+<li>Click on the &quot;Manage Survey Participants&quot; or &quot;Survey Distribution Tools&quot; link on the left (depending on your REDCap version)</li>
+<li>Go to the &quot;Participant List&quot; tab</li>
 <li>Click on the <strong>Add participants</strong> button</li>
 <li>Add an e-mail that you have access to and click on the <strong>Add participants</strong> button</li>
 <li>Click on the <strong>Enable</strong> button for participant identifiers, and confirm this action</li>
@@ -238,10 +269,10 @@ ignore the tests/coverage directory.</p>
 <p>Note that when writing code, it is sometimes necessary to use the <strong>@codeCoverageIgnore</strong> annotation
 to reach 100% line coverage. The one problem that has come up is that the code coverage check will
 mark the closing bracket after a method that throws an exception as a line that was not covered. To avoid this, you can add the @codeCoverageIgnore annotation as shown in the example below. </p>
-<div class="description"><pre><code class="language-php"><span class="php-keyword1">if</span> (<span class="php-var">$required</span>) {
-    <span class="php-var">$message</span> = <span class="php-quote">'No field was specified.'</span>;
-    <span class="php-var">$this</span>-&gt;errorHandler-&gt;throwException(<span class="php-var">$message</span>, ErrorHandlerInterface::INVALID_ARGUMENT);
-} <span class="php-comment">// @codeCoverageIgnore</span></code></pre></div>
+<div class="description"><pre><code class="language-php">if ($required) {
+    $message = 'No field was specified.';
+    $this-&gt;errorHandler-&gt;throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
+} // @codeCoverageIgnore</code></pre></div>
 <h3 id="Local Tests">Local Tests</h3>
 <p>The directory <strong>tests/local/</strong> has been set up so that all files in it, except for the README file, will be ignored by Git.
 This directory is intended as a place for developers to places tests for changes they are working on.</p>
@@ -277,19 +308,30 @@ PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
 <li>Top-level README.md file</li>
 <li>Markdown documents that have been manually created in the <strong>docs-md/</strong> directory</li>
 <li>HTML API documentation generated from the PHPDoc comments in the code, which are stored in the <strong>docs/api/</strong> directory</li>
-<li>HTML versions of the Markdown documentation in the docs-md/ directory, which are generated programmatically, stored in the <strong>docs/</strong> directory, and use the same style as the API documentation.</li>
+<li>HTML versions of the Markdown documentation in the docs-md/ directory, which are generated programmatically, stored in the <strong>docs/</strong> directory.</li>
 </ul>
+<p>Since all documentation in the <strong>docs/</strong> directory (except for the README.md file) is automatically
+generated, these files should not be editied manaully.</p>
 <h4>API Document Generation</h4>
 <p>To generate the API documentation (stored in <strong>./docs/api</strong>), execute the following command in PHPCap's root directory:</p>
-<div class="description"><pre><code>./vendor/bin/apigen generate</code></pre></div>
-<p>Note: ApiGen uses the <strong>apigen.neon</strong> configuration file in the root directory of PHPCap.</p>
-<p>The API documentation is stored in Git to eliminate the need for non-developer users to install Composer and the developer dependencies.</p>
+<div class="description"><pre><code>phpdoc</code></pre></div>
+<p>Note: For this command to work, phpDocumentor needs to have been installed as command &quot;phpdoc&quot;.
+The configuration file used by this command is <strong>phpdoc.xml</strong> in the root directory of PHPCap.</p>
+<p>The API documentation <em>is</em> stored in Git to eliminate the need for non-developer users
+to install Composer and the developer dependencies.</p>
 <h4>HTML Document Generation</h4>
-<p>To generate an HTML version for the Markdown documents in the <strong>docs-md/</strong> directory, execute the following command in PHPCap's root directory:</p>
+<p>To generate an HTML version for the Markdown documents in the <strong>docs-md/</strong> directory,
+execute the following command in PHPCap's root directory:</p>
 <div class="description"><pre><code>php generate-html-docs.php</code></pre></div>
 <h3 id="Tagging Releases">Tagging Releases</h3>
 <p>Releases should be tagged in accordance with semantic versioning:
-<a href="http://semver.org/">http://semver.org/</a></p></div>
+<a href="http://semver.org/">http://semver.org/</a></p>
+<h3 id="Developer Dependencies">Developer Dependencies</h3>
+<p>PHPCap uses a few development dependencies.</p>
+<p>To check for out of date dependencies, use:</p>
+<div class="description"><pre><code>composer outdated --direct</code></pre></div>
+<p>The &quot;--direct&quot; option above only checks dependencies directly used by PHPCap (i.e., specified in the
+composer.json file).</p></div>
 <div id="footer">
 PHPCap documentation
 </div>

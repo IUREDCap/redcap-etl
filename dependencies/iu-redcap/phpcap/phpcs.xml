@@ -29,7 +29,9 @@ SPDX-License-Identifier: BSD-3-Clause
     <file>tests/integration</file>
     <file>tests/unit</file>
 
-    <!-- How to exclude files: -->
-    <!--<exclude-pattern>...pattern...</exclude-pattern> -->
+    <!-- =================================
+    Excluded paths
+    ================================== -->
+    <exclude-pattern>src/.phpdoc/</exclude-pattern>
 
 </ruleset>
