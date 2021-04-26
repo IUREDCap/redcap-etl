@@ -228,9 +228,10 @@ class WorkflowConfig
             }
         }
 
+        // Reset boolean property values to be string values
         foreach ($properties as $key => $value) {
             if (is_bool($value)) {
-                if ($key) {
+                if ($value) {
                     $properties[$key] = 'true';
                 } else {
                     $properties[$key] = 'false';
