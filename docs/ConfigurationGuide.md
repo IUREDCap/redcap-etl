@@ -380,7 +380,7 @@ if the ETL process encounters an error.
 </tbody>
 </table>
 
-### Tranformation Rules Auto-Generation Properties
+### Transformation Rules Auto-Generation Properties
 
 For configurations where the **transform_rules_source** property is set to 3 (auto-generation), the following
 properties can be used to control the auto-generation of transformation rules:
