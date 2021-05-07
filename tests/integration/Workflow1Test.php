@@ -48,4 +48,58 @@ class Workflow1Test extends TestCase
             self::$logger->log('Processing failed.');
         }
     }
+
+    public function testArrayConfig()
+    {
+        $configurationArray = [
+            'workflow_name' => "workflow1",
+            'ssl_verify'    => 1,
+            'db_connection' => 'CSV:../output/workflow1/',
+            'log_file'      => '../logs/workflow1.log',
+            'print_logging' => false,
+            'transform_rules_source' => 3,
+            'batch_size'    => 10,
+
+            'basic-demography' => [
+                'redcap_api_url'        => 'http://localhost/redcap/api/',
+                'data_source_api_token' => '34D499569034F206F4A97E45AB424A4B'
+            ],
+
+            'repeating-events' => [
+                'redcap_api_url'        => 'http://localhost/redcap/api/',
+                'data_source_api_token' => '1F574895CEFC6495798962F2B30D9F77'
+            ],
+
+            'repeating-forms' => [
+                'redcap_api_url'        => 'http://localhost/redcap/api/',
+                'data_source_api_token' => '2C94D35E42823B388AD2D9618D1F9D36',
+                'table_prefix'          => 'rf_'
+            ]
+        ];
+
+        try {
+            $app = 'array_test';
+            self::$logger = new Logger($app);
+
+            $baseDir = __DIR__;
+            $redCapEtl = new RedCapEtl(self::$logger, $configurationArray, null, $baseDir);
+
+            $workflowConfig = $redCapEtl->getWorkflowConfig();
+
+            $this->assertNotNull($redCapEtl, 'redCapEtl not null');
+
+            $config0 = $redCapEtl->getTaskConfig(0);
+            $this->assertNotNull($config0, 'redCapEtl configuration 0 not null');
+
+            $config1 = $redCapEtl->getTaskConfig(1);
+            $this->assertNotNull($config1, 'redCapEtl configuration 1 not null');
+
+            $redCapEtl->run();
+        } catch (EtlException $exception) {
+            print "\n*** ERROR: {$exception->getMessage()}\n";
+            print "\n".$exception->getTraceAsString()."\n";
+            self::$logger->logException($exception);
+            self::$logger->log('Processing failed.');
+        }
+    }
 }

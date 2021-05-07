@@ -61,6 +61,9 @@ class RedCapEtl
     /** @var Workflow */
     private $workflow;
 
+    /** @var WorkflowConfig the workflow configuration. */
+    private $workflowConfig;
+
     /**
      * Constructor.
      *
@@ -86,11 +89,11 @@ class RedCapEtl
     ) {
         $this->app = $logger->getApp();
 
-        $workflowConfig = new WorkflowConfig();
-        $workflowConfig->set($logger, $properties, $baseDir);
+        $this->workflowConfig = new WorkflowConfig();
+        $this->workflowConfig->set($logger, $properties, $baseDir);
 
         $this->workflow = new Workflow();
-        $this->workflow->set($workflowConfig, $logger, $redcapProjectClass);
+        $this->workflow->set($this->workflowConfig, $logger, $redcapProjectClass);
         
         $this->logger = $logger;
         $this->redcapProjectClass = $redcapProjectClass;
@@ -147,6 +150,11 @@ class RedCapEtl
         return $this->workflow;
     }
     
+    public function getWorkflowConfig()
+    {
+        return $this->workflowConfig;
+    }
+
     public function getTaskConfig($index)
     {
         $taskConfig = $this->workflow->getTaskConfig($index);

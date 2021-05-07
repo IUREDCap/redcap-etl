@@ -87,9 +87,7 @@ class WorkflowConfig
             throw new EtlException($message, $code);
         } elseif (is_array($properties)) {
             # TaskConfig specified as an array of properties
-            $taskConfig = new TaskConfig();
-            $taskConfig->set($logger, $properties, '', $this->baseDir);
-            $this->taskConfigs[] = $taskConfig;
+            $this->processPropertiesArrayConfig($properties);
         } elseif (is_string($properties)) {
             # Configuration is in a file (properties is the name/path of the file)
             $this->configurationFile = trim($properties);
@@ -243,15 +241,24 @@ class WorkflowConfig
 
     public function parseIniWorkflowConfigFile($configurationFile)
     {
-        $baseDir = realpath(dirname($configurationFile));
+        if (!isset($this->baseDir)) {
+            $this->baseDir = realpath(dirname($configurationFile));
+        }
 
         $processSections = true;
-        $config = parse_ini_file($configurationFile, $processSections);
+        $configurationArray = parse_ini_file($configurationFile, $processSections);
 
-        $isWorkflowConfig = $this->isIniWorkflowConfig($config);
+        $this->processPropertiesArrayConfig($configurationArray);
+    }
+
+
+    public function processPropertiesArrayConfig($configurationArray)
+    {
+        $baseDir = $this->baseDir;
+        $isWorkflowConfig = $this->isIniWorkflowConfig($configurationArray);
 
         if ($isWorkflowConfig) {
-            foreach ($config as $propertyName => $propertyValue) {
+            foreach ($configurationArray as $propertyName => $propertyValue) {
                 if (is_array($propertyValue)) {
                     #-------------------------------------------------
                     # Section (that defines a task configuration)
@@ -261,10 +268,7 @@ class WorkflowConfig
                     $sectionProperties = TaskConfig::makeFilePropertiesAbsolute($sectionProperties, $baseDir);
                     $configFile = null;
 
-                    #----------------------------
-                    # Global properties
-                    #----------------------------
-                    $globalProperties = TaskConfig::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
+                    $globalProperties = $this->globalProperties;
 
                     # Process the workflow name
                     if (!array_key_exists(ConfigProperties::WORKFLOW_NAME, $globalProperties)
@@ -307,15 +311,23 @@ class WorkflowConfig
                     #------------------------------
                     # Global property
                     #------------------------------
-                    $this->globalProperties[$propertyName] =  $propertyValue;
+                    $this->globalProperties[$propertyName] =  TaskConfig::getAbsoluteFilePropertyValue(
+                        $propertyName,
+                        $propertyValue,
+                        $baseDir
+                    );
                 }
             }
         } else {
+            #---------------------------------
+            # Stand alone task
+            #---------------------------------
             $taskConfig = new TaskConfig();
-            $taskConfig->set($this->logger, $configurationFile, '', $this->baseDir);
+            $taskConfig->set($this->logger, $configurationArray, '', $this->baseDir);
             array_push($this->taskConfigs, $taskConfig);
         }
     }
+
 
 
     /**
@@ -354,6 +366,21 @@ class WorkflowConfig
         return $string;
     }
     */
+
+    public function toArray()
+    {
+        $config = array();
+        $config[ConfigProperties::WORKFLOW_NAME] = $this->workflowName;
+        foreach ($this->globalProperties as $key => $value) {
+            $config[$key] = $value;
+        }
+        foreach ($this->taskConfigs as $taskConfig) {
+            $taskName = $taskConfig->getTaskName();
+            $properties = $taskConfig->getProperties();
+            $config[$taskName] = $properties;
+        }
+        return $config;
+    }
 
     public function getTaskConfigs()
     {

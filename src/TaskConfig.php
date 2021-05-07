@@ -961,21 +961,31 @@ class TaskConfig
     public static function makeFilePropertiesAbsolute($properties, $baseDir)
     {
         foreach ($properties as $name => $value) {
-            if (ConfigProperties::isFileProperty($name) && !empty($value)) {
-                if ($name === ConfigProperties::LOG_FILE) {
-                    $properties[$name] = self::processFileProperty($value, $baseDir, false);
-                } else {
-                    $properties[$name] = self::processFileProperty($value, $baseDir);
-                }
-            } elseif ($name === ConfigProperties::DB_CONNECTION) {
-                list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($value);
-                if ($dbType === DbConnectionFactory::DBTYPE_CSV) {
-                    $dbString = self::processDirectorySpecification($dbString, $baseDir);
-                    $properties[$name] = DbConnectionFactory::createConnectionString($dbType, $dbString);
-                }
-            }
+            $properties[$name] = self::getAbsoluteFilePropertyValue($name, $value, $baseDir);
         }
         return $properties;
+    }
+
+    /**
+     * If the specified property has a file value, get the absolute
+     * (i.e., non-relative) file value
+     */
+    public static function getAbsoluteFilePropertyValue($propertyName, $propertyValue, $baseDir)
+    {
+        if (ConfigProperties::isFileProperty($propertyName) && !empty($propertyValue)) {
+            if ($propertyName === ConfigProperties::LOG_FILE) {
+                $propertyValue = self::processFileProperty($propertyValue, $baseDir, false);
+            } else {
+                $propertyValue = self::processFileProperty($propertyValue, $baseDir);
+            }
+        } elseif ($propertyName === ConfigProperties::DB_CONNECTION) {
+            list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($propertyValue);
+            if ($dbType === DbConnectionFactory::DBTYPE_CSV) {
+                $dbString = self::processDirectorySpecification($dbString, $baseDir);
+                $propertyValue = DbConnectionFactory::createConnectionString($dbType, $dbString);
+            }
+        }
+        return $propertyValue;
     }
 
 
