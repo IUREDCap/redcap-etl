@@ -68,7 +68,7 @@ class WorkflowConfig
      *     it is assumed to be a map from property names to values.
      *     If a properties file name string is used, then it is assumed
      *     to be a JSON file if the file name ends with .json, and a
-     *     .ini file otherwise.
+     *     .ini file if it ends with .ini.
      *
      * @param string $baseDir base directory for $properties, if it is an array.
      *     This is used for file properties that are specified as relative paths.
@@ -86,7 +86,7 @@ class WorkflowConfig
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         } elseif (is_array($properties)) {
-            # TaskConfig specified as an array of properties
+            # Configuration properties specified as an array
             $this->processPropertiesArrayConfig($properties);
         } elseif (is_string($properties)) {
             # Configuration is in a file (properties is the name/path of the file)
@@ -239,6 +239,10 @@ class WorkflowConfig
         return $properties;
     }
 
+    /** Parses a .ini configuration file
+     *
+     * @param string $configurationFile full path of .ini configuration file to parse
+     */
     public function parseIniWorkflowConfigFile($configurationFile)
     {
         if (!isset($this->baseDir)) {
@@ -251,7 +255,11 @@ class WorkflowConfig
         $this->processPropertiesArrayConfig($configurationArray);
     }
 
-
+    /**
+     * Processes configuration that is specified as an array of properties
+     *
+     * @param array $configurationArray array of configuration properties.
+     */
     public function processPropertiesArrayConfig($configurationArray)
     {
         $baseDir = $this->baseDir;

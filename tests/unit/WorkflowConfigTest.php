@@ -94,4 +94,167 @@ class WorkflowConfigTest extends TestCase
         $dbForeignKeys = $taskConfig->getProperty(ConfigProperties::DB_FOREIGN_KEYS);
         $this->assertEquals('true', $dbForeignKeys, 'DB_FOREIGN_KEYS check');
     }
+
+
+    public function testWorkflowArrayConfig()
+    {
+        $propertiesArray = [
+            'workflow_name' => "workflow1",
+            'ssl_verify'    => 1,
+            'db_connection' => 'CSV:../output/workflow1/',
+            'log_file'      => '../logs/workflow1.log',
+            'print_logging' => false,
+            'transform_rules_source' => 3,
+            'batch_size'    => 10,
+
+            'basic-demography' => [
+                'redcap_api_url'        => 'http://localhost/redcap/api/',
+                'data_source_api_token' => '34D499569034F206F4A97E45AB424A4B'
+            ],
+
+            'repeating-events' => [
+                'redcap_api_url'        => 'http://localhost/redcap/api/',
+                'data_source_api_token' => '1F574895CEFC6495798962F2B30D9F77'
+            ],
+
+            'repeating-forms' => [
+                'redcap_api_url'        => 'http://localhost/redcap/api/',
+                'data_source_api_token' => '2C94D35E42823B388AD2D9618D1F9D36',
+                'table_prefix'          => 'rf_'
+            ]
+        ];
+
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $baseDir = __DIR__;
+        $workflowConfig->set($logger, $propertiesArray, $baseDir);
+
+        $workflowName = $workflowConfig->getWorkflowName();
+        $this->assertEquals($propertiesArray['workflow_name'], $workflowName, 'Workflow name check');
+
+        $taskConfigs = $workflowConfig->getTaskConfigs();
+
+        $this->assertEquals(3, count($taskConfigs), 'Task configs count check');
+
+        #----------------------------------------------------------------
+        # Basic demography task
+        #----------------------------------------------------------------
+        $basicDemographyTaskConfig = $taskConfigs[0];
+        $this->assertNotNull($basicDemographyTaskConfig, 'Basic demography task config not null check');
+
+        $logFile = $basicDemographyTaskConfig->getLogFile();
+        $expectedLogFile = realpath($baseDir . '/'. $propertiesArray['log_file']);
+        $this->assertEquals($expectedLogFile, $logFile, 'Basic demography log file check');
+
+        $rulesSource = $basicDemographyTaskConfig->getTransformRulesSource();
+        $this->assertEquals(3, $rulesSource, 'Basic demography transformation rules source check');
+
+        $token = $basicDemographyTaskConfig->getDataSourceApiToken();
+        $this->assertEquals(
+            $propertiesArray['basic-demography']['data_source_api_token'],
+            $token,
+            'Basic demography data source API token check'
+        );
+
+        $taskName = $basicDemographyTaskConfig->getTaskName();
+        $this->assertEquals('basic-demography', $taskName, 'Basic demography task config name check');
+
+        #----------------------------------------------------------------
+        # Repeating events task
+        #----------------------------------------------------------------
+        $repeatingEventsTaskConfig = $taskConfigs[1];
+        $this->assertNotNull($repeatingEventsTaskConfig, 'Repeating events task config not null check');
+
+        $logFile = $repeatingEventsTaskConfig->getLogFile();
+        $expectedLogFile = realpath($baseDir . '/'. $propertiesArray['log_file']);
+        $this->assertEquals($expectedLogFile, $logFile, 'Repeating events log file check');
+
+        $rulesSource = $repeatingEventsTaskConfig->getTransformRulesSource();
+        $this->assertEquals(3, $rulesSource, 'Repeating events transformation rules source check');
+
+        $token = $repeatingEventsTaskConfig->getDataSourceApiToken();
+        $this->assertEquals(
+            $propertiesArray['repeating-events']['data_source_api_token'],
+            $token,
+            'Repeating events data source API token check'
+        );
+
+        $taskName = $repeatingEventsTaskConfig->getTaskName();
+        $this->assertEquals('repeating-events', $taskName, 'Repeating events task config name check');
+
+        #----------------------------------------------------------------
+        # Repeating forms task
+        #----------------------------------------------------------------
+        $repeatingFormsTaskConfig = $taskConfigs[2];
+        $this->assertNotNull($repeatingFormsTaskConfig, 'Repeating forms task config not null check');
+
+        $logFile = $repeatingFormsTaskConfig->getLogFile();
+        $expectedLogFile = realpath($baseDir . '/'. $propertiesArray['log_file']);
+        $this->assertEquals($expectedLogFile, $logFile, 'Repeating forms log file check');
+
+        $rulesSource = $repeatingFormsTaskConfig->getTransformRulesSource();
+        $this->assertEquals(3, $rulesSource, 'Repeating forms transformation rules source check');
+
+        $token = $repeatingFormsTaskConfig->getDataSourceApiToken();
+        $this->assertEquals(
+            $propertiesArray['repeating-forms']['data_source_api_token'],
+            $token,
+            'Repeating forms data source API token check'
+        );
+
+        $taskName = $repeatingFormsTaskConfig->getTaskName();
+        $this->assertEquals('repeating-forms', $taskName, 'Repeating forms task config name check');
+    }
+
+    public function testWorkflowSingleTaskArrayConfig()
+    {
+        $propertiesArray = [
+            'ssl_verify'    => 1,
+            'db_connection' => 'CSV:../output/workflow1/',
+            'log_file'      => '../logs/workflow1.log',
+            'print_logging' => false,
+            'transform_rules_source' => 3,
+            'batch_size'    => 10,
+            'redcap_api_url'        => 'http://localhost/redcap/api/',
+            'data_source_api_token' => '34D499569034F206F4A97E45AB424A4B'
+        ];
+
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $baseDir = __DIR__;
+        $workflowConfig->set($logger, $propertiesArray, $baseDir);
+
+        $taskConfigs = $workflowConfig->getTaskConfigs();
+
+        $this->assertEquals(1, count($taskConfigs), 'Task configs count check');
+
+        #----------------------------------------------------------------
+        # Basic demography task
+        #----------------------------------------------------------------
+        $taskConfig = $taskConfigs[0];
+        $this->assertNotNull($taskConfig, 'Task config not null check');
+
+        $logFile = $taskConfig->getLogFile();
+        $expectedLogFile = realpath($baseDir . '/'. $propertiesArray['log_file']);
+        $this->assertEquals($expectedLogFile, $logFile, 'Log file check');
+
+        $rulesSource = $taskConfig->getTransformRulesSource();
+        $this->assertEquals(3, $rulesSource, 'Transformation rules source check');
+
+        $token = $taskConfig->getDataSourceApiToken();
+        $this->assertEquals(
+            $propertiesArray['data_source_api_token'],
+            $token,
+            'Data source API token check'
+        );
+
+        $taskName = $taskConfig->getTaskName();
+        $this->assertEquals('', $taskName, 'Task config name check');
+    }
 }
