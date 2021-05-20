@@ -31,6 +31,9 @@ class ConfigProperties
     const CONFIG_OWNER              = 'config_owner'; # REDCap user who created the configuration,
                                                       #  if from the external module
 
+    const TASK_CONFIG               = 'task_config';  # For including a task configuration in place within a workflow
+                                                      # Can only be represented in JSON files and properties arrays
+
     const TASK_CONFIG_FILE          = 'task_config_file'; # For including task configuration file;
                                                           # only allowed in workflows;
 
