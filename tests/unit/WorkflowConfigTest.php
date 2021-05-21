@@ -259,7 +259,7 @@ class WorkflowConfigTest extends TestCase
     }
 
 
-    public function testWorkflowSConfigWithTaskConfig()
+    public function testWorkflowsArrayConfigWithTaskConfig()
     {
         $propertiesArray = [
             'workflow_name' => "workflow_with_task_config",
@@ -291,6 +291,53 @@ class WorkflowConfigTest extends TestCase
 
         $baseDir = __DIR__;
         $workflowConfig->set($logger, $propertiesArray, $baseDir);
+
+        $taskConfigs = $workflowConfig->getTaskConfigs();
+
+        $this->assertEquals(2, count($taskConfigs), 'Task configs count check');
+
+        #----------------------------------------------------------------
+        # Task 1
+        #----------------------------------------------------------------
+        $taskConfig = $taskConfigs[0];
+        $this->assertNotNull($taskConfig, 'Task 1 config not null check');
+
+        $taskName = $taskConfig->getTaskName();
+        $this->assertEquals('task1', $taskName, 'Task 1 config name check');
+
+        $batchSize = $taskConfig->getBatchSize();
+        $this->assertEquals(20, $batchSize, 'Task 1 config batch size check');
+
+        #----------------------------------------------------------------
+        # Task 2
+        #----------------------------------------------------------------
+        $taskConfig = $taskConfigs[1];
+        $this->assertNotNull($taskConfig, 'Task 2 config not null check');
+
+        $taskName = $taskConfig->getTaskName();
+        $this->assertEquals('task2', $taskName, 'Task 2 config name check');
+
+        $batchSize = $taskConfig->getBatchSize();
+        $this->assertEquals(10, $batchSize, 'Task 2 config batch size check');
+
+        $emailToList = $taskConfig->getEmailToList();
+        $this->assertEquals('user@someplace.edu', $emailToList, 'Task 2 email to-list check');
+
+        $apiUrl = $taskConfig->getRedCapApiUrl();
+        $this->assertEquals('http://localhost/redcap/api/', $apiUrl, 'Task 2 API URL check');
+    }
+
+    public function testWorkflowsJsonConfigWithTaskConfig()
+    {
+        $configFile = __DIR__.'/../data/workflow1.json';
+
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $baseDir = __DIR__;
+        $workflowConfig->set($logger, $configFile, $baseDir);
 
         $taskConfigs = $workflowConfig->getTaskConfigs();
 

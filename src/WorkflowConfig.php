@@ -244,8 +244,8 @@ class WorkflowConfig
                             TaskConfig::makeFilePropertiesAbsolute($includedTaskProperties, $baseDir);
                     } elseif (array_key_exists(ConfigProperties::TASK_CONFIG, $taskProperties)) {
                         # Task config property - task included in place (as array)
-                        $includedTaskProperties = $sectionProperties[ConfigProperties::TASK_CONFIG];
-                        unset($sectionProperties[ConfigProperties::TASK_CONFIG]);
+                        $includedTaskProperties = $taskProperties[ConfigProperties::TASK_CONFIG];
+                        unset($taskProperties[ConfigProperties::TASK_CONFIG]);
                     }
 
                     $properties = $includedTaskProperties;
