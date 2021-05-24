@@ -292,39 +292,7 @@ class WorkflowConfigTest extends TestCase
         $baseDir = __DIR__;
         $workflowConfig->set($logger, $propertiesArray, $baseDir);
 
-        $taskConfigs = $workflowConfig->getTaskConfigs();
-
-        $this->assertEquals(2, count($taskConfigs), 'Task configs count check');
-
-        #----------------------------------------------------------------
-        # Task 1
-        #----------------------------------------------------------------
-        $taskConfig = $taskConfigs[0];
-        $this->assertNotNull($taskConfig, 'Task 1 config not null check');
-
-        $taskName = $taskConfig->getTaskName();
-        $this->assertEquals('task1', $taskName, 'Task 1 config name check');
-
-        $batchSize = $taskConfig->getBatchSize();
-        $this->assertEquals(20, $batchSize, 'Task 1 config batch size check');
-
-        #----------------------------------------------------------------
-        # Task 2
-        #----------------------------------------------------------------
-        $taskConfig = $taskConfigs[1];
-        $this->assertNotNull($taskConfig, 'Task 2 config not null check');
-
-        $taskName = $taskConfig->getTaskName();
-        $this->assertEquals('task2', $taskName, 'Task 2 config name check');
-
-        $batchSize = $taskConfig->getBatchSize();
-        $this->assertEquals(10, $batchSize, 'Task 2 config batch size check');
-
-        $emailToList = $taskConfig->getEmailToList();
-        $this->assertEquals('user@someplace.edu', $emailToList, 'Task 2 email to-list check');
-
-        $apiUrl = $taskConfig->getRedCapApiUrl();
-        $this->assertEquals('http://localhost/redcap/api/', $apiUrl, 'Task 2 API URL check');
+        $this->taskConfigsCheck($workflowConfig);
     }
 
     public function testWorkflowsJsonConfigWithTaskConfig()
@@ -339,6 +307,14 @@ class WorkflowConfigTest extends TestCase
         $baseDir = __DIR__;
         $workflowConfig->set($logger, $configFile, $baseDir);
 
+        $this->taskConfigsCheck($workflowConfig);
+    }
+
+    /**
+     * Common code for tests for test_config property.
+     */
+    public function taskConfigsCheck($workflowConfig)
+    {
         $taskConfigs = $workflowConfig->getTaskConfigs();
 
         $this->assertEquals(2, count($taskConfigs), 'Task configs count check');
