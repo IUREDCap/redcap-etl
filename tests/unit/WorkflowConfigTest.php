@@ -214,7 +214,7 @@ class WorkflowConfigTest extends TestCase
         $propertiesArray = [
             'ssl_verify'    => 1,
             'db_connection' => 'CSV:../output/workflow1/',
-            'log_file'      => '../logs/workflow1.log',
+            'log_file'      => '../logs/workflow-task.log',
             'print_logging' => false,
             'transform_rules_source' => 3,
             'batch_size'    => 10,
@@ -230,36 +230,67 @@ class WorkflowConfigTest extends TestCase
         $baseDir = __DIR__;
         $workflowConfig->set($logger, $propertiesArray, $baseDir);
 
+        $this->checkSingleTask($workflowConfig, $baseDir);
+    }
+
+    public function testWorkflowSingleTaskIniConfig()
+    {
+        $configFile = __DIR__.'/../data/task1.ini';
+
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $baseDir = __DIR__;
+        $workflowConfig->set($logger, $configFile, $baseDir);
+
+        $this->checkSingleTask($workflowConfig, $baseDir);
+    }
+
+    public function testWorkflowSingleTaskJsonConfig()
+    {
+        $configFile = __DIR__.'/../data/task1.json';
+
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $baseDir = __DIR__;
+        $workflowConfig->set($logger, $configFile, $baseDir);
+
+        $this->checkSingleTask($workflowConfig, $baseDir);
+    }
+
+    public function checkSingleTask($workflowConfig, $baseDir)
+    {
+        #----------------------------------------------------------------
+        # Single Task
+        #----------------------------------------------------------------
         $taskConfigs = $workflowConfig->getTaskConfigs();
 
         $this->assertEquals(1, count($taskConfigs), 'Task configs count check');
 
-        #----------------------------------------------------------------
-        # Basic demography task
-        #----------------------------------------------------------------
         $taskConfig = $taskConfigs[0];
         $this->assertNotNull($taskConfig, 'Task config not null check');
 
         $logFile = $taskConfig->getLogFile();
-        $expectedLogFile = realpath($baseDir . '/'. $propertiesArray['log_file']);
+        $expectedLogFile = realpath($baseDir . '/../logs') . '/'. 'workflow-task.log';
         $this->assertEquals($expectedLogFile, $logFile, 'Log file check');
 
         $rulesSource = $taskConfig->getTransformRulesSource();
         $this->assertEquals(3, $rulesSource, 'Transformation rules source check');
 
         $token = $taskConfig->getDataSourceApiToken();
-        $this->assertEquals(
-            $propertiesArray['data_source_api_token'],
-            $token,
-            'Data source API token check'
-        );
+        $this->assertEquals('34D499569034F206F4A97E45AB424A4B', $token, 'Data source API token check');
 
         $taskName = $taskConfig->getTaskName();
         $this->assertEquals('', $taskName, 'Task config name check');
     }
 
 
-    public function testWorkflowsArrayConfigWithTaskConfig()
+    public function testWorkflowArrayConfigWithTaskConfig()
     {
         $propertiesArray = [
             'workflow_name' => "workflow_with_task_config",
@@ -295,7 +326,7 @@ class WorkflowConfigTest extends TestCase
         $this->taskConfigsCheck($workflowConfig);
     }
 
-    public function testWorkflowsJsonConfigWithTaskConfig()
+    public function testWorkflowJsonConfigWithTaskConfig()
     {
         $configFile = __DIR__.'/../data/workflow1.json';
 
