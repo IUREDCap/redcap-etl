@@ -434,7 +434,8 @@ composer.json file).
 
 
 
-### REDCap-ETL Software Architecture
+REDCap-ETL Software Architecture
+----------------------------------------
 
 For more information, see: [REDCap-ETL Software Architecture](SoftwareArchitecture.md)
 
@@ -456,11 +457,31 @@ do the following:
 ![REDCap-ETL Database Connection Classes](redcap-etl-db-connections.png)
 
 
+ETL Configuration Formats
+--------------------------------
+
+REDCap-ETL supports 3 different ETL configuration formats:
+
+1. **Array** - a PHP array with configuration data is passed to REDCap-ETL. This format is for
+programmatic access to REDCap-ETL. Specific uses include automated
+testing and use by the [REDCap-ETL External Module](https://github.com/IUREDCap/redcap-etl-module/)
+to pass data to its embedded REDCap-ETL server. The array format corresponds to the array format generated
+by calling PHP's parse_ini_file on an INI ETL configuration file.
+2. **INI** - the path of a ".ini" file is passed to REDCap-ETL. This format is intended for use
+by users of REDCap-ETL.
+3. **JSON** - the path of a ".json" file is passed to REDCap-ETL. This format is intended for programmatic
+use, although it could be used by users.
+
+Notes:
+* The task_config property can only be represented correctly in the array and JSON formats.
+* Only the JSON format can represent task names that are the same as REDCap-ETL configuration
+    property names.
+
 ### JSON Configuration Format
 
-The JSON configuration format is intended for programmatic use of REDCap-ETL. This format is used, for example,
-by the REDCap-ETL External Module that includes REDCap-ETL as a dependency. The JSON format supports the complete specification
-of a configuration, including transformation rules and pre and post-processing SQL, in a single file.
+The JSON format supports the complete specification
+of a configuration, including transformation rules and pre and post-processing SQL, in a single file, 
+which is not possible with the INI format.
 
 Examples of the JSON format can be seen in the .json files in the tests/config-init/ directory.
 Below is an example of a very simple JSON configuration file for a single task
