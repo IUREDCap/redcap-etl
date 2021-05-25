@@ -116,62 +116,6 @@ class WorkflowConfig
         }
     }
 
-    /* WORK IN PROGRESS - try to convert to array, and then process as array
-     *
-     */
-    public function parseJsonWorkflowConfigFile2($configurationFile)
-    {
-        $properties = array();
-
-        $baseDir = realpath(dirname($configurationFile));
-        $this->baseDir = $baseDir;
-
-        $configurationFileContents = file_get_contents($configurationFile);
-        if ($configurationFileContents === false) {
-            $message = 'The workflow configuration file "'.$this->configurationFile.'" could not be read.';
-            $code    = EtlException::INPUT_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-        $config = json_decode($configurationFileContents, true);
-        if ($config == null && json_last_error() !== JSON_ERROR_NONE) {
-            $message = 'Error parsing JSON configuration file "'.$this->configurationFile.'": '.json_last_error();
-            $code    = EtlException::INPUT_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-        if (array_key_exists(self::JSON_WORKFLOW_KEY, $config)) {
-            # WorkflowConfig
-            if (count($config) > 1) {
-                throw new \Exception("Non-workflow properties at top-level of workflow configuration.");
-            }
-
-            $workflowConfig = $config[self::JSON_WORKFLOW_KEY];
-
-            if (array_key_exists(self::JSON_GLOBAL_PROPERTIES_KEY, $workflowConfig)) {
-                # Get the global properties
-                $properties = $workflowConfig[self::JSON_GLOBAL_PROPERTIES_KEY];
-                $properties = $this->processJsonProperties($this->globalProperties);
-            }
-
-            if (array_key_exists(self::JSON_TASKS_KEY, $workflowConfig)) {
-                $taskConfigs = $workflowConfig[self::JSON_TASKS_KEY];
-                foreach ($taskConfigs as $taskName => $properties) {
-                    $properties = $this->processJsonProperties($properties);
-                    #$properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
-                }
-            } else {
-                throw new \Exception("No tasks defined for workflow.");
-            }
-
-            $this->processPropertiesArrayConfig($properties);
-        } else {
-            # Single configuration
-            $properties = $this->processJsonProperties($config);
-            #$properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
-            $this->processPropertiesArrayConfig($properties);
-        }
-    }
 
     /**
      * Parses a JSON format workflow configuration file.
@@ -179,6 +123,7 @@ class WorkflowConfig
     public function parseJsonWorkflowConfigFile($configurationFile)
     {
         $baseDir = realpath(dirname($configurationFile));
+        $this->baseDir = $baseDir;
 
         $configurationFileContents = file_get_contents($configurationFile);
         if ($configurationFileContents === false) {
@@ -234,19 +179,7 @@ class WorkflowConfig
                     $taskProperties = $this->processJsonProperties($taskProperties);
                     $taskProperties = TaskConfig::makeFilePropertiesAbsolute($taskProperties, $baseDir);
 
-                    $includedTaskProperties = array();
-                    if (array_key_exists(ConfigProperties::TASK_CONFIG_FILE, $taskProperties)) {
-                        # Task config file property - task included as file
-                        $configFile = $sectionProperties[ConfigProperties::TASK_CONFIG_FILE];
-                        unset($sectionProperties[ConfigProperties::TASK_CONFIG_FILE]);
-                        $includedTaskProperties = TaskConfig::getPropertiesFromFile($configFile);
-                        $includedTaskProperties =
-                            TaskConfig::makeFilePropertiesAbsolute($includedTaskProperties, $baseDir);
-                    } elseif (array_key_exists(ConfigProperties::TASK_CONFIG, $taskProperties)) {
-                        # Task config property - task included in place (as array)
-                        $includedTaskProperties = $taskProperties[ConfigProperties::TASK_CONFIG];
-                        unset($taskProperties[ConfigProperties::TASK_CONFIG]);
-                    }
+                    $includedTaskProperties = $this->extractIncludedTaskProperties($taskProperties);
 
                     $properties = $includedTaskProperties;
                     $properties = TaskConfig::overrideProperties($properties, $this->globalProperties);
@@ -332,11 +265,11 @@ class WorkflowConfig
         }
 
         # Check to make sure that no section names use config property names
-        $sections = $this->getSections($configurationFile);
+        $sections = self::getSections($configurationFile);
         $configPropertyNames = ConfigProperties::getProperties();
         foreach ($sections as $section) {
             if (in_array($section, $configPropertyNames)) {
-                $message = 'Task "'.$section.'" uses the same name as a REDCap-ETL configuration property';
+                $message = 'Task "'.$section.'" uses the same name as a REDCap-ETL configuration property.';
                 $code    = EtlException::INPUT_ERROR;
                 throw new EtlException($message, $code);
             }
@@ -386,19 +319,7 @@ class WorkflowConfig
                     #-----------------------------------------------------
                     # Add included task config properties, if any
                     #-----------------------------------------------------
-                    $includedTaskProperties = array();
-                    if (array_key_exists(ConfigProperties::TASK_CONFIG_FILE, $sectionProperties)) {
-                        # Task config file property - task included as file
-                        $configFile = $sectionProperties[ConfigProperties::TASK_CONFIG_FILE];
-                        unset($sectionProperties[ConfigProperties::TASK_CONFIG_FILE]);
-                        $includedTaskProperties = TaskConfig::getPropertiesFromFile($configFile);
-                        $includedTaskProperties =
-                            TaskConfig::makeFilePropertiesAbsolute($includedTaskProperties, $baseDir);
-                    } elseif (array_key_exists(ConfigProperties::TASK_CONFIG, $sectionProperties)) {
-                        # Task config property - task included in place (as array)
-                        $includedTaskProperties = $sectionProperties[ConfigProperties::TASK_CONFIG];
-                        unset($sectionProperties[ConfigProperties::TASK_CONFIG]);
-                    }
+                    $includedTaskProperties = $this->extractIncludedTaskProperties($sectionProperties);
 
                     #--------------------------------------------------------------
                     # Combine the config file, global and section properties
@@ -440,9 +361,9 @@ class WorkflowConfig
         $includedTaskProperties = array();
 
         if (array_key_exists(ConfigProperties::TASK_CONFIG_FILE, $properties)) {
-            if (array_key_exists(ConfigProperties::TASK_CONFIG, $taskProperties)) {
+            if (array_key_exists(ConfigProperties::TASK_CONFIG, $properties)) {
                 $message = 'Only one of the following properties can be used in the same task: '
-                    . '"' . ConfigProperties::TASK_CONFIG . '"'
+                    . '"' . ConfigProperties::TASK_CONFIG . '"' . ", "
                     . '"' . ConfigProperties::TASK_CONFIG_FILE . '"'
                     ;
                 $code = EtlException::INPUT_ERROR;
@@ -453,8 +374,8 @@ class WorkflowConfig
             unset($properties[ConfigProperties::TASK_CONFIG_FILE]);
             $includedTaskProperties = TaskConfig::getPropertiesFromFile($configFile);
             $includedTaskProperties =
-            TaskConfig::makeFilePropertiesAbsolute($includedTaskProperties, $baseDir);
-        } elseif (array_key_exists(ConfigProperties::TASK_CONFIG, $taskProperties)) {
+            TaskConfig::makeFilePropertiesAbsolute($includedTaskProperties, $this->baseDir);
+        } elseif (array_key_exists(ConfigProperties::TASK_CONFIG, $properties)) {
             # Task config property - task included in place (as array)
             $includedTaskProperties = $properties[ConfigProperties::TASK_CONFIG];
             unset($properties[ConfigProperties::TASK_CONFIG]);
@@ -506,21 +427,6 @@ class WorkflowConfig
     }
     */
 
-    public function toArray()
-    {
-        $config = array();
-        $config[ConfigProperties::WORKFLOW_NAME] = $this->workflowName;
-        foreach ($this->globalProperties as $key => $value) {
-            $config[$key] = $value;
-        }
-        foreach ($this->taskConfigs as $taskConfig) {
-            $taskName = $taskConfig->getTaskName();
-            $properties = $taskConfig->getProperties();
-            $config[$taskName] = $properties;
-        }
-        return $config;
-    }
-
     public function getTaskConfigs()
     {
         return $this->taskConfigs;
@@ -542,11 +448,18 @@ class WorkflowConfig
      *
      * @return array an array of strings with the names of the sections in the .ini file.
      */
-    public function getSections($iniFile)
+    public static function getSections($iniFile)
     {
         $sections = array();
         $matches = array();
-        $fp = fopen($iniFile, "r");
+
+        $fp = false;
+        $errorMessage = null;
+        try {
+            $fp = fopen($iniFile, "r");
+        } catch (\Exception $exception) {
+            ;
+        }
 
         if (!$fp) {
             $message = 'Unable to read file "'.$iniFile.'"';

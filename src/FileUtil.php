@@ -23,6 +23,7 @@ class FileUtil
     {
         $isAbsolute = false;
         $path = trim($path);
+
         if (DIRECTORY_SEPARATOR === '/') {
             if (preg_match('/^\/.*/', $path) === 1) {
                 $isAbsolute = true;

@@ -380,4 +380,165 @@ class WorkflowConfigTest extends TestCase
         $apiUrl = $taskConfig->getRedCapApiUrl();
         $this->assertEquals('http://localhost/redcap/api/', $apiUrl, 'Task 2 API URL check');
     }
+
+    public function testGetSectionsWithNonExistentFile()
+    {
+        $exceptionCaught = false;
+        try {
+            $sections = WorkflowConfig::getSections('../not/a/real/file/path');
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $code = $exception->getCode();
+        }
+        $this->assertTrue($exceptionCaught, 'Exception caught');
+        $this->assertEquals(EtlException::INPUT_ERROR, $code, 'Exception code check');
+    }
+
+    public function testTaskConfigError()
+    {
+        $propertiesArray = [
+            'workflow_name' => "workflow1",
+            'redcap_api_url' => 'http://localhost/redcap/api/',
+            'data_source_api_token' => '34D499569034F206F4A97E45AB424A4B',
+            'ssl_verify'    => 1,
+            'db_connection' => 'CSV:../output/workflow1/',
+            'log_file'      => '../logs/workflow1.log',
+            'print_logging' => false,
+            'transform_rules_source' => 3,
+
+            'task1' => [
+                'task_config'        => [
+                    'batch_size' => 20
+                ],
+                'task_config_file'   => __DIR__.'/../data/task1.json'
+            ]
+        ];
+
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $baseDir = __DIR__;
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $propertiesArray, $baseDir);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $code = $exception->getCode();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught');
+        $this->assertEquals(EtlException::INPUT_ERROR, $code, 'Error code check');
+    }
+
+    public function testNoWorkflowNameInArray()
+    {
+        $propertiesArray = [
+            'redcap_api_url' => 'http://localhost/redcap/api/',
+            'data_source_api_token' => '34D499569034F206F4A97E45AB424A4B',
+            'ssl_verify'    => 1,
+            'db_connection' => 'CSV:../output/workflow1/',
+            'log_file'      => '../logs/workflow1.log',
+            'print_logging' => false,
+            'transform_rules_source' => 3,
+
+            'task1' => [
+                'batch_size' => 20
+            ]
+        ];
+
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $baseDir = __DIR__;
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $propertiesArray, $baseDir);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $code = $exception->getCode();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught');
+        $this->assertEquals(EtlException::INPUT_ERROR, $code, 'Error code check');
+    }
+
+    public function testMissingProperties()
+    {
+        $properties = null;
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught);
+    }
+
+    public function testIncorrectFileType()
+    {
+        $properties = __FILE__;
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught);
+    }
+
+    public function testPropertiesType()
+    {
+        $properties = true;
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $properties);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+
+        $this->assertTrue($exceptionCaught);
+    }
+
+    public function testIllegalIniTaskNamw()
+    {
+        $propertiesFile = __DIR__.'/../data/workflow-error1.ini';
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $propertiesFile);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $message = $exception->getMessage();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught check');
+        $this->assertStringContainsString('uses the same name', $message, 'Message check');
+    }
 }

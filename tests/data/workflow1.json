@@ -15,7 +15,13 @@
                 "batch_size":  20,
                 "task_config": {
                     "batch_size": 30
-                }
+                },
+                "pre_processing_sql": [
+                    "create table abc if not exists (i int)"
+                ],
+                "post_processing_sql": [
+                    "insert into abc values (10)"
+                ]
             },
             "task2": {
                 "task_config": {
