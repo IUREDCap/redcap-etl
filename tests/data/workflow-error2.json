@@ -1,0 +1,6 @@
+{
+    "workflow": {
+        "redcap_api_url": "http://localhost/redcap/api/"
+    },
+    "illegal_top_level_value": 123
+}

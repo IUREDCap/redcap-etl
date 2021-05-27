@@ -1,8 +1,6 @@
 {
     "workflow": {
         "global_properties": {
-            "workflow_name": "workflow_with_task_config",
-            "create_lookup_table": "true",
             "db_connection": "CSV:../output/workflow1/",
             "log_file":      "../logs/workflow1.log",
             "print_logging": "false",

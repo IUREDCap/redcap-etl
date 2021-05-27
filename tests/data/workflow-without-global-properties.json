@@ -1,16 +1,5 @@
 {
     "workflow": {
-        "global_properties": {
-            "workflow_name": "workflow_with_task_config",
-            "create_lookup_table": "true",
-            "db_connection": "CSV:../output/workflow1/",
-            "log_file":      "../logs/workflow1.log",
-            "print_logging": "false",
-            "transform_rules_source": 3,
-            "batch_size": 10,
-            "redcap_api_url":        "http://localhost/redcap/api/",
-            "data_source_api_token": "34D499569034F206F4A97E45AB424A4B"
-        },
         "tasks": {
             "task1": {
                 "batch_size":  20,

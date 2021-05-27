@@ -395,22 +395,6 @@ class Workflow
         }
     }
     
-    protected function loadTableRows($dbConnection, $table, $deleteRowsAfterLoad = true)
-    {
-        foreach ($table->getRows() as $row) {
-            $rc = $dbConnection->storeRow($row);
-            if (false === $rc) {
-                $this->log("Error storing row in '".$table->getName()."': ".$this->dbcon->errorString);
-            }
-        }
-
-        if ($deleteRowsAfterLoad) {
-            // Empty the rows for this table
-            $table->emptyRows();
-        }
-    }
-        
-
     /**
      * Indicates if the specified database needs to have primary keys generated for its tables.
      */

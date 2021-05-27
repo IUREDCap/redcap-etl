@@ -541,4 +541,104 @@ class WorkflowConfigTest extends TestCase
         $this->assertTrue($exceptionCaught, 'Exception caught check');
         $this->assertStringContainsString('uses the same name', $message, 'Message check');
     }
+
+    public function testNonExistantJsonConfigFile()
+    {
+        $propertiesFile = __DIR__.'/../data/workflow-does-not-exist.json';
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $propertiesFile);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $message = $exception->getMessage();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught check');
+        $this->assertStringContainsString('could not be read', $message, 'Message check');
+    }
+
+    public function testInvalidJsonConfigFile1()
+    {
+        $propertiesFile = __DIR__.'/../data/workflow-error1.json';
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $propertiesFile);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $message = $exception->getMessage();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught check');
+        $this->assertStringContainsString('Error parsing JSON configuration file', $message, 'Message check');
+    }
+
+    public function testInvalidJsonConfigFile2()
+    {
+        $propertiesFile = __DIR__.'/../data/workflow-error2.json';
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $propertiesFile);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $message = $exception->getMessage();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught check');
+        $this->assertStringContainsString('Non-workflow properties at top-level', $message, 'Message check');
+    }
+
+    public function testJsonWorkflowWithoutName()
+    {
+        $propertiesFile = __DIR__.'/../data/workflow-without-name.json';
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $propertiesFile);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $message = $exception->getMessage();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught check');
+        $this->assertStringContainsString('No workflow name was specified', $message, 'Message check');
+    }
+
+    public function testJsonWorkflowWithoutGlobalProperties()
+    {
+        $propertiesFile = __DIR__.'/../data/workflow-without-global-properties.json';
+        $logger = new Logger('test-app');
+
+        $workflowConfig = new WorkflowConfig();
+        $this->assertNotNull($workflowConfig, 'Workflow config not null check');
+
+        $exceptionCaught = false;
+        try {
+            $workflowConfig->set($logger, $propertiesFile);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $message = $exception->getMessage();
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught check');
+        $this->assertStringContainsString('No global properties section', $message, 'Message check');
+    }
 }

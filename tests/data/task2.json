@@ -1,0 +1,22 @@
+{
+    "ssl_verify"    : 1,
+    "db_connection" : "CSV:../output/workflow1/",
+    "log_file"      : "../logs/workflow-task.log",
+    "print_logging" : false,
+    "transform_rules_source" : 1,
+    "transform_rules_text" : [
+        "TABLE,basic_demography,basic_demography_id,ROOT",
+        "FIELD,record_id,int",
+        "FIELD,first_name,varchar(40)",
+        "FIELD,last_name,varchar(40)"
+    ],
+    "pre_processing_sql" : [
+        "create table if not exists test (i int)"
+    ],
+    "post_processing_sql" : [
+        "insert into test values (1)"
+    ],
+    "batch_size"    : 10,
+    "redcap_api_url"        : "http://localhost/redcap/api/",
+    "data_source_api_token" : "34D499569034F206F4A97E45AB424A4B"
+}

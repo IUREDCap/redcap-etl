@@ -1456,4 +1456,63 @@ class TaskConfigTest extends TestCase
         
         $this->assertEquals($expectedResult, $properties, 'Override test');
     }
+
+    /*
+    public function testMissingTransformationRules()
+    {
+        $config = new TaskConfig();
+        $properties = $this->properties;
+        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_TEXT;
+        $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = null;
+        $config->set($this->logger, $this->properties);
+
+        $exceptionCaught = false;
+        try {
+            $config->hasValidSetOfProperties();
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'Exception caught');
+
+    }
+     */
+
+    public function testGettingPropertiesFromMissingFile()
+    {
+        $exceptionCaught = false;
+        try {
+            TaskConfig::getPropertiesFromFile("");
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'Exception for blank file check');
+    }
+
+    public function testGettingPropertiesFromJsonFile()
+    {
+        $file = __DIR__.'/../data/task2.json';
+
+        $properties =  TaskConfig::getPropertiesFromFile($file);
+
+        $this->assertNotNull($properties, 'Properties not null');
+        $this->assertTrue(is_array($properties), 'Properties is array');
+
+        $rules = $properties[ConfigProperties::TRANSFORM_RULES_TEXT];
+        $this->assertStringContainsString(
+            "TABLE,basic_demography,basic_demography_id,ROOT",
+            $rules,
+            'Rules line 1 check'
+        );
+        $this->assertStringContainsString(
+            "FIELD,record_id,int",
+            $rules,
+            'Rules line 2 check'
+        );
+
+        $preSql = $properties[ConfigProperties::PRE_PROCESSING_SQL];
+        $this->assertEquals('create table if not exists test (i int)', $preSql, 'Pre-processing SQL check');
+
+        $postSql = $properties[ConfigProperties::POST_PROCESSING_SQL];
+        $this->assertEquals('insert into test values (1)', $postSql, 'Post-processing SQL check');
+    }
 }

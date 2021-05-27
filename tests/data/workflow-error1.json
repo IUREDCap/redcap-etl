@@ -1,0 +1,5 @@
+; This file tests an invalid JSON file
+
+This = not JSON
+
+Testing illegally formatted JSON file.

@@ -125,7 +125,13 @@ class WorkflowConfig
         $baseDir = realpath(dirname($configurationFile));
         $this->baseDir = $baseDir;
 
-        $configurationFileContents = file_get_contents($configurationFile);
+        $configurationFileContents = false;
+        try {
+            $configurationFileContents = file_get_contents($configurationFile);
+        } catch (\Exception $exception) {
+            $configurationFileContents = false;
+        }
+
         if ($configurationFileContents === false) {
             $message = 'The workflow configuration file "'.$this->configurationFile.'" could not be read.';
             $code    = EtlException::INPUT_ERROR;

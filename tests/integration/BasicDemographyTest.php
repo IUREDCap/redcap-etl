@@ -32,6 +32,10 @@ class BasicDemographyTest extends TestCase
             $redCapEtl = new RedCapEtl(self::$logger, self::CONFIG_FILE);
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
+            $workflow = $redCapEtl->getWorkflow();
+            $isStandaloneTask = $workflow->isStandaloneTask();
+            $this->assertTrue($isStandaloneTask, 'Standalone task check');
+
             $config = $redCapEtl->getTaskConfig(0);
             $this->assertNotNull($config, 'redCapEtl configuration not null');
 

@@ -23,7 +23,7 @@ class Workflow1Test extends TestCase
     }
 
 
-    public function testConfigs()
+    public function testConfigAndSomeMethods()
     {
         try {
             $app = basename(__FILE__, '.php');
@@ -42,6 +42,49 @@ class Workflow1Test extends TestCase
 #            print "\n".$config1->getDbConnection()."\n";
             
             $redCapEtl->run();
+
+            $workflow = $redCapEtl->getWorkflow();
+
+            $isStandaloneTask = $workflow->isStandaloneTask();
+            $this->assertFalse($isStandaloneTask, 'Is standalone task check');
+
+            $dbSchemas = $workflow->getDbSchemas();
+            $this->assertNotNull($dbSchemas, 'Db Schemas not null check');
+
+            $task0 = $workflow->getTask(0);
+            $this->assertNotNull($task0, 'Task 0 not null');
+
+            $dbId = $task0->getDbId();
+            $this->assertNotEmpty($dbId);
+
+            $dbSchema = $workflow->getDbSchema($dbId);
+            $this->assertNotNull($dbSchema);
+            $this->assertInstanceOf(Schema\Schema::class, $dbSchema, 'Db Schema instance check');
+
+
+            #---------------------------------------
+            # Test workflow timing methods
+            #---------------------------------------
+            $preProcessingTime = $workflow->getPreProcessingTime();
+            $this->assertTrue(is_float($preProcessingTime), 'Pre-processing time check');
+
+            $extractTime = $workflow->getExtractTime();
+            $this->assertTrue(is_float($extractTime), 'Extract time check');
+
+            $transformTime = $workflow->getTransformTime();
+            $this->assertTrue(is_float($transformTime), 'Transform time check');
+
+            $loadTime = $workflow->getLoadTime();
+            $this->assertTrue(is_float($loadTime), 'Load time check');
+
+            $postProcessingTime = $workflow->getPostProcessingTime();
+            $this->assertTrue(is_float($postProcessingTime), 'Post-processing time check');
+
+            $overheadTime = $workflow->getOverheadTime();
+            $this->assertTrue(is_float($overheadTime), 'Overhead time check');
+
+            $totalTime = $workflow->getTotalTime();
+            $this->assertTrue(is_float($totalTime), 'Total time check');
         } catch (EtlException $exception) {
             print "\n*** ERROR: {$exception->getMessage()}\n";
             self::$logger->logException($exception);
