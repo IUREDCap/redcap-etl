@@ -1457,25 +1457,24 @@ class TaskConfigTest extends TestCase
         $this->assertEquals($expectedResult, $properties, 'Override test');
     }
 
-    /*
     public function testMissingTransformationRules()
     {
         $config = new TaskConfig();
         $properties = $this->properties;
-        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = TaskConfig::TRANSFORM_RULES_TEXT;
+        $properties[ConfigProperties::TRANSFORM_RULES_SOURCE] = null;
         $properties[ConfigProperties::TRANSFORM_RULES_TEXT] = null;
-        $config->set($this->logger, $this->properties);
 
         $exceptionCaught = false;
         try {
-            $config->hasValidSetOfProperties();
+            $config->set($this->logger, $properties);
         } catch (\Exception $exception) {
+            $message = $exception->getMessage();
             $exceptionCaught = true;
         }
         $this->assertTrue($exceptionCaught, 'Exception caught');
+        $this->assertStringContainsString('No transformation rules specified', $message, 'Exception message check');
 
     }
-     */
 
     public function testGettingPropertiesFromMissingFile()
     {
