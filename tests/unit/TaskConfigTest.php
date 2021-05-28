@@ -1473,7 +1473,6 @@ class TaskConfigTest extends TestCase
         }
         $this->assertTrue($exceptionCaught, 'Exception caught');
         $this->assertStringContainsString('No transformation rules specified', $message, 'Exception message check');
-
     }
 
     public function testGettingPropertiesFromMissingFile()
