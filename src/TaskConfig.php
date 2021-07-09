@@ -220,9 +220,11 @@ class TaskConfig
      *     as "post.sql", then the file "/home/etluser/post.sql" would be used
      *     for the post-processing SQL commands.
      */
-    public function set(&$logger, $properties, $taskName = '', $baseDir = null)
+    public function set($logger, $properties, $taskName = '', $baseDir = null)
     {
-        $this->logger = $logger;
+        # $this->logger = $logger;
+        $this->logger = clone $logger;
+        $this->logger->setTaskConfig($this);
         $this->app = $this->logger->getApp();
         $this->taskName = $taskName;
 

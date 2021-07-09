@@ -106,9 +106,14 @@ class RedCapEtl
     /**
      * Runs the entire ETL process.
      *
+     * @param Logger $logger if a logger argument is used, REDCap-ETL will try to set it
+     *     to the logger of the current task being processed, so that if there is an
+     *     exception, when REDCap-ETL returns from the run call, the logger will be
+     *     set correctly to log the exception.
+     *
      * @return int the number of record IDs found (and hopefully processed).
      */
-    public function run()
+    public function run(&$logger = null)
     {
         $numberOfRecordIds = $this->workflow->run();
         return $numberOfRecordIds;

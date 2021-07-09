@@ -89,7 +89,7 @@ class Workflow
         $this->totalTime = 0.0;
     }
 
-    public function set($workflowConfig, $logger, $redcapProjectClass = null)
+    public function set($workflowConfig, &$logger, $redcapProjectClass = null)
     {
         $this->logger = $logger;
 
@@ -103,7 +103,8 @@ class Workflow
         foreach ($workflowConfig->getTaskConfigs() as $taskConfig) {
             # Create task for this task configuration
             $task = new Task($taskId);
-            $task->initialize($this->logger, $taskConfig, $redcapProjectClass);
+            $logger = $taskConfig->getLogger();
+            $task->initialize($logger, $taskConfig, $redcapProjectClass);
 
             $this->tasks[] = $task;
 
@@ -139,7 +140,7 @@ class Workflow
     }
 
 
-    public function run()
+    public function run(&$logger = null)
     {
         $startTime = microtime(true);
         $preProcessingStartTime = $startTime;
@@ -227,6 +228,7 @@ class Workflow
         # For each task, run post-processing SQL and log as complete
         #------------------------------------------------------------------
         foreach ($this->getTasks() as $task) {
+            $logger = $task->getLogger();
             $task->runPostProcessingSql();
                 
             $logger->log(RedCapEtl::PROCESSING_COMPLETE);
@@ -391,7 +393,15 @@ class Workflow
                 $msg .= '; Lookup table created';
             }
 
-            $this->logger->log($msg);
+            #------------------------------------------------------------
+            # Log table creation for each task that contains the table
+            #------------------------------------------------------------
+            foreach ($this->getTasks() as $task) {
+                if ($task->getSchema()->hasTable($table->getName())) {
+                    $logger = $task->getLogger();
+                    $logger->log($msg);
+                }
+            }
         }
     }
     

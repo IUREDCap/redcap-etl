@@ -64,7 +64,7 @@ class SchemaGenerator
         $this->dataProject   = $dataProject;
         $this->taskConfig    = $taskConfig;
         $this->tablePrefix   = $taskConfig->getTablePrefix();
-        $this->logger        = $logger;
+        $this->logger        = $taskConfig->getLogger();
         $this->taskId        = $taskId;
     }
 

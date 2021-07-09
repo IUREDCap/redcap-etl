@@ -92,7 +92,7 @@ class DynamicRulesTest extends TestCase
             $properties[ConfigProperties::AUTOGEN_NON_REPEATING_FIELDS_TABLE] = '';
 
             $redCapEtl = new RedCapEtl(self::$logger, $properties);
-            $redCapEtl->run();
+            $redCapEtl->run($logger);
         } catch (EtlException $exception) {
             self::$logger->logException($exception);
             self::$logger->log('Processing failed.');

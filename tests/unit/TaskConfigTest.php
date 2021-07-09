@@ -544,7 +544,22 @@ class TaskConfigTest extends TestCase
         $this->assertNotNull($config, 'config not null check');
 
         $retrievedLogger = $config->getLogger();
-        $this->assertEquals($logger, $retrievedLogger, 'Logger check');
+        $this->assertEquals('/tmp/logfile', $retrievedLogger->getLogFile(), 'Logger log file check');
+        $this->assertEquals(
+            'foo@bar.com',
+            $retrievedLogger->getLogFromEmail(),
+            'Logger from e-mail check'
+        );
+        $this->assertEquals(
+            'email subject',
+            $retrievedLogger->getLogEmailSubject(),
+            'Logger e-mail subject'
+        );
+        $this->assertEquals(
+            'bang@bucks.net,what@my.com',
+            $retrievedLogger->getLogToEmail(),
+            'Logger e-mail to list check'
+        );
 
         $this->assertEquals(
             $logger->getApp(),

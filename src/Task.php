@@ -102,9 +102,9 @@ class Task
     public function initialize($logger, $taskConfig, $redcapProjectClass = null, $workflow = null)
     {
         $this->app = $logger->getApp();
-        $this->logger = $logger;
+        $this->logger = $taskConfig->getLogger();
         $this->name = $taskConfig->getTaskName();
-        $this->logger->setTaskConfig($taskConfig);
+        # $this->logger->setTaskConfig($taskConfig);    // Handled in TaskConfig
 
         $this->rootTablesWithMultiValues = array();
 
