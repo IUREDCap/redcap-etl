@@ -326,3 +326,48 @@ resolved manually.
     error is resolved by changing the workflow configuration to eliminate the different names.
 
 
+#### Logging
+
+When REDCap-ETL is running, it will log status messages to multiple places, which depend
+on the configuration settings.
+
+
+| Logging  | Description                                                    |
+| -------- | -------------------------------------------------------------- |
+| Array    | Logging to memory (for programmatic access of log messages)    |
+| Callback | Logging to user-defined function                               |
+| Database | Logging to tables in ETL load database                         |
+| E-mail   | Summary and/or errors (if any) e-mailed to user-specified list |
+| File     | Loggin to a file on the REDCap-ETL server                      |
+| Print    | Printing of log messages to user's screen                      |
+
+REDCap-ETL is usually used as an application, however, it is also possible to use REDCap-ETL
+as a software library that is accessed by a custom PHP program. **Array** and **Callback**
+logging only apply to the case where REDCap-ETL is being used as a software library.
+
+**Array Logging.** REDCap-ETL logs messages to an array in memory. This can be accessed
+by programs that use REDCap-ETL as a library (such as the REDCap-ETL external module) to
+get the logging messages. This is also used internally by REDCap-eTL
+to get the content for e-mailing the log summary to users.
+
+**Callback Logging.** Callback logging allows users (who are using REDCap-ETL as a software
+library for their own PHP program) to specify a custom logging function to be defined that
+will be called whenever REDCap-ETL logs a message,
+
+**Database Logging.** REDCap-ETL can log messages to tables (described above)
+in the load database specfied on the ETL configuration, i.e.,
+in the same database where the extracted and transformed
+data from REDCap are loaded. The database log is useful for users who do not have access to
+the ETL server. It can also be used to check the status of ETL jobs programmatically.
+
+**E-mail Logging.** E-mail logging can be configures to e-mail a summary of an ETL process after
+it finishes and/or an error report (if one occurs) to sa user-specified e-mail list.
+
+**File Logging.** REDCap-ETL can log messages to a file on the REDCap-ETL server.
+Typically, one file would be used for all ETL jobs, so that there is a single place
+that can be checked. For the case where admins set up the ETL process for users, this would
+be the place they would check to see the status of the ETL processes.
+
+**Print Logging.** Print logging logs messages to the user's screen. It is used when
+ETL processes are run interactivley from the command line, and gives the user
+imediate feedback about the status of the process.

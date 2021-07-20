@@ -20,6 +20,12 @@ use IU\RedCapEtl\Database\CsvDbConnection;
  */
 class Logger
 {
+    // Error message to pass to logEmailSummary when you want to log an error, but don't
+    // want to add an error message the output.
+    const NO_PRINT_ERROR_MESSAGE = 'no-print-error-message';
+
+    private $workflowLogger;  // For a logger for a task, the logger for the workflow that the task belongs to
+
     private $logId;
     
     private $isOn;
@@ -93,6 +99,8 @@ class Logger
      */
     public function __construct($app)
     {
+        $this->workflowLogger = null;
+
         $this->logId = uniqid('', true);
         
         $this->app = $app;
@@ -209,6 +217,23 @@ class Logger
     }
 
     /**
+     * Prepends the task name (if any) to the mesage and returns it. Generally only
+     * loggers associated with a task in a workflow will have a task name set.
+     * Prepending the task name to the log message enables one to see which log
+     * messages are associated with which tasks in a workflow.
+     */
+    private function prependTaskName($message)
+    {
+        if (isset($this->taskConfig)) {
+            $taskName = $this->taskConfig->getTaskName();
+            if (!empty($taskName)) {
+                $message = '[' . $taskName . '] ' . $message;
+            }
+        }
+        return $message;
+    }
+
+    /**
      * Log the specified information to all logging sources that
      * have been enabled.
      *
@@ -216,12 +241,23 @@ class Logger
      */
     public function log($message)
     {
+        $message = $this->prependTaskName($message);
+
+        if (isset($this->workflowLogger)) {
+            # Log each of a workflow's task's messages to the workflow's logging array to
+            # make it possible to e-mail a summary of logging messages for the entire workflow
+            $this->workflowLogger->logToArray($message);
+        }
+
         static $printLoggingErrorLogged    = false;
         static $fileLoggingErrorLogged     = false;
         static $dbLoggingErrorLogged       = false;
         static $projectLoggingErrorLogged  = false;
         static $callbackLoggingErrorLogged = false;
         
+        #------------------------------------------
+        # In-memory loggin to an array
+        #------------------------------------------
         $this->logToArray($message);
         
         try {
@@ -315,6 +351,7 @@ class Logger
     {
         $message = $exception->getMessage();
         $message = preg_replace('/\s+$/', '', $message);
+        $message = $this->prependTaskName($message);
 
         #--------------------------------------------------------------------
         # if this was an error caused by PHPCap, then include information
@@ -325,6 +362,12 @@ class Logger
             if (isset($previousException)) {
                 $message .= ' - Caused by PHPCap exception: '.$previousException->getMessage();
             }
+        }
+
+        if (isset($this->workflowLogger)) {
+            # Log each of a workflow's task's messages to the workflow's logging array to
+            # make it possible to e-mail a summary of logging messages for the entire workflow
+            $this->workflowLogger->logToArray($message);
         }
 
         $this->logToArray($message);
@@ -344,7 +387,8 @@ class Logger
         # The exception message should already get included in the
         # e-mail summary from the logging array, so just send the
         # stack trace
-        $this->logEmailSummary($stackTrace);
+        //$this->logEmailSummary($stackTrace);
+        $this->logEmailSummary(self::NO_PRINT_ERROR_MESSAGE);
     }
 
 
@@ -504,38 +548,48 @@ class Logger
 
         $message = implode($eol, $this->logArray);
         
-        if (!empty($this->logFromEmail) && !empty($this->logToEmail) && $this->isOn) {
-            if (($this->emailErrors && isset($errorMessage)) || ($this->emailSummary && empty($errorMessage))) {
-                if (isset($errorMessage)) {
+        if ($this->canLogEmailSummary($errorMessage)) {
+            if (isset($errorMessage)) {
+                if ($errorMessage !== self::NO_PRINT_ERROR_MESSAGE) {
                     $message .= $eol.$errorMessage.$eol.'Processing failed'.$eol;
                 }
+            }
                 
-                try {
-                    $failedSendTos = $this->sendMail(
-                        $this->logToEmail,
-                        $attachments = array(),
-                        $message,
-                        $this->logEmailSubject,
-                        $this->logFromEmail
-                    );
+            try {
+                $failedSendTos = $this->sendMail(
+                    $this->logToEmail,
+                    $attachments = array(),
+                    $message,
+                    $this->logEmailSubject,
+                    $this->logFromEmail
+                );
 
-                    if (count($failedSendTos) > 0) {
-                        $message = 'Logging to e-mail failed for the following e-mail addreses: '
-                                .(implode(', ', $failedSendTos));
-                        $this->logLoggingError($message);
-                        $logged = false;
-                    } else {
-                        $logged = true;
-                    }
-                } catch (Exception $exception) {
-                    $this->logLoggingError($exception);
+                if (count($failedSendTos) > 0) {
+                    $message = 'Logging to e-mail failed for the following e-mail addreses: '
+                            .(implode(', ', $failedSendTos));
+                    $this->logLoggingError($message);
                     $logged = false;
+                } else {
+                    $logged = true;
                 }
+            } catch (Exception $exception) {
+                $this->logLoggingError($exception);
+                $logged = false;
             }
         }
         return $logged;
     }
 
+    public function canLogEmailSummary($errorMessage = null)
+    {
+        $canLog = false;
+        if (!empty($this->logFromEmail) && !empty($this->logToEmail) && $this->isOn) {
+            if (($this->emailErrors && isset($errorMessage)) || ($this->emailSummary && empty($errorMessage))) {
+                $canLog = true;
+            }
+        }
+        return $canLog;
+    }
 
     /**
      * Sends an email.
@@ -771,5 +825,15 @@ class Logger
     public function getApp()
     {
         return $this->app;
+    }
+
+    public function getWorkflowLogger()
+    {
+        return $this->workflowLogger;
+    }
+
+    public function setWorkflowLogger($workflowLogger)
+    {
+        $this->workflowLogger = $workflowLogger;
     }
 }

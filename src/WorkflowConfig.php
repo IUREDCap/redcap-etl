@@ -43,11 +43,11 @@ class WorkflowConfig
 
     private $workflowName;
 
-    /** @var boolean true if the workflow configuration represents a standalone task, false
-     *               if the configuration has multiple tasks, or has a single task defined
-     *               within a workflow. Standalone tasks will not have a task name.
+    /** @var boolean true if the workflow configuration represents a workflow (has global properties
+     *               or has multiple tasks, or is explicitly marked as a workflow), false
+     *               if the configuration has represents a standalone task.
      */
-    private $isStandaloneTask;
+    private $isWorkflow;
 
     /**
      * Creates a WorkflowConfig object from a workflow config file.
@@ -56,6 +56,7 @@ class WorkflowConfig
     {
         $this->logger = null;
         $this->baseDir = null;
+        $this->isWorkflow = false;
     }
 
     /**
@@ -146,6 +147,8 @@ class WorkflowConfig
         }
 
         if (array_key_exists(self::JSON_WORKFLOW_KEY, $config)) {
+            $this->isWorkflow = true;
+
             # WorkflowConfig
             if (count($config) > 1) {
                 throw new \Exception("Non-workflow properties at top-level of workflow configuration.");
@@ -160,6 +163,9 @@ class WorkflowConfig
                 $this->globalProperties = $workflowConfig[self::JSON_GLOBAL_PROPERTIES_KEY];
                 $this->globalProperties = $this->processJsonProperties($this->globalProperties);
                 $this->globalProperties = TaskConfig::makeFilePropertiesAbsolute($this->globalProperties, $baseDir);
+
+                # Set workflow logger based on the global properties
+                $this->setLoggerWithProperties($this->globalProperties);
 
                 if (!array_key_exists(ConfigProperties::WORKFLOW_NAME, $this->globalProperties)
                         || empty(trim($this->globalProperties[ConfigProperties::WORKFLOW_NAME]))) {
@@ -195,12 +201,15 @@ class WorkflowConfig
                     #print_r($properties);
                     $taskConfig = new TaskConfig();
                     $taskConfig->set($this->logger, $properties, $taskName, $this->baseDir);
+                    $taskConfig->setWorkflowLogger($this->logger);
                     $this->taskConfigs[] = $taskConfig;
                 }
             } else {
                 throw new \Exception("No tasks defined for workflow.");
             }
         } else {
+            $this->isWorkflow = false;
+
             # Single configuration
             $properties = $this->processJsonProperties($config);
             $properties = TaskConfig::makeFilePropertiesAbsolute($properties, $baseDir);
@@ -271,13 +280,13 @@ class WorkflowConfig
         }
 
         # Check to make sure that no section names use config property names
+        $sectionErrorMessage = '';
         $sections = self::getSections($configurationFile);
         $configPropertyNames = ConfigProperties::getProperties();
         foreach ($sections as $section) {
             if (in_array($section, $configPropertyNames)) {
-                $message = 'Task "'.$section.'" uses the same name as a REDCap-ETL configuration property.';
-                $code    = EtlException::INPUT_ERROR;
-                throw new EtlException($message, $code);
+                $sectionErrorMessage= 'Task "'.$section.'" uses the same name as a REDCap-ETL configuration property.';
+                break;
             }
         }
 
@@ -285,6 +294,12 @@ class WorkflowConfig
         $configurationArray = parse_ini_file($configurationFile, $processSections);
 
         $this->processPropertiesArrayConfig($configurationArray);
+
+        # If there was a section name error, throw the exception now that logging has been set
+        if (!empty($sectionErrorMessage)) {
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($sectionErrorMessage, $code);
+        }
     }
 
     /**
@@ -299,6 +314,8 @@ class WorkflowConfig
         $isWorkflowConfig = $this->isIniWorkflowConfig($configurationArray);
 
         if ($isWorkflowConfig) {
+            $this->isWorkflow = true;
+
             foreach ($configurationArray as $propertyName => $propertyValue) {
                 if (is_array($propertyValue)) {
                     #-------------------------------------------------
@@ -310,6 +327,8 @@ class WorkflowConfig
                     $configFile = null;
 
                     $globalProperties = $this->globalProperties;
+
+                    $this->setLoggerWithProperties($globalProperties);
 
                     # Process the workflow name
                     if (!array_key_exists(ConfigProperties::WORKFLOW_NAME, $globalProperties)
@@ -339,6 +358,7 @@ class WorkflowConfig
 
                     $taskConfig = new TaskConfig();
                     $taskConfig->set($this->logger, $properties, $section, $this->baseDir);
+                    $taskConfig->setWorkflowLogger($this->logger);
 
                     $this->taskConfigs[] = $taskConfig;
                 } else {
@@ -356,6 +376,7 @@ class WorkflowConfig
             #---------------------------------
             # Stand alone task
             #---------------------------------
+            $this->isWorkflow = false;
             $taskConfig = new TaskConfig();
             $taskConfig->set($this->logger, $configurationArray, '', $this->baseDir);
             array_push($this->taskConfigs, $taskConfig);
@@ -433,6 +454,11 @@ class WorkflowConfig
     }
     */
 
+    public function getGlobalProperties()
+    {
+        return $this->globalProperties;
+    }
+
     public function getTaskConfigs()
     {
         return $this->taskConfigs;
@@ -441,6 +467,45 @@ class WorkflowConfig
     public function getWorkflowName()
     {
         return $this->workflowName;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * Sets the logger based on global properties.
+     * Values are set so that logging can be done for the cases outside of task
+     * processing when an error can occur:
+     * 1) There is an error in the workflow cofiguration file
+     * 2) For the remote server case with the external module, REDCap-ETL is unable
+     *    to connect to the remote server.
+     *
+     * Note that only print logging and e-mail logging are set, because
+     * file logging will not work in general (e.g., the remote server case), and
+     * database logging might not work (remote server case).
+     *
+     * Also used for case e-mailing a single summary for a workflow, instead of
+     * one for each task.
+     *
+     * @param array $properties properties array.
+     */
+    public function setLoggerWithProperties($properties)
+    {
+        $globalTaskConfig = new TaskConfig();
+        $globalTaskConfig->setLogging($properties);
+
+        $this->logger->setPrintLogging($globalTaskConfig->getPrintLogging());
+
+        $this->logger->setEmailErrors($globalTaskConfig->getEmailErrors());
+        $this->logger->setEmailSummary($globalTaskConfig->getEmailSummary());
+
+        $this->logger->setLogEmail(
+            $globalTaskConfig->getEmailFromAddress(),
+            $globalTaskConfig->getEmailToList(),
+            $globalTaskConfig->getEmailSubject()
+        );
     }
 
     /**
@@ -482,5 +547,13 @@ class WorkflowConfig
         }
         fclose($fp);
         return $sections;
+    }
+
+    /**
+     * Indicates if the workflow configuration represents a workflow.
+     */
+    public function isWorkflow()
+    {
+        return $this->isWorkflow;
     }
 }

@@ -161,7 +161,7 @@ class TaskConfig
      */
     public function __construct()
     {
-        $this->logger = null;
+        $this->logger = new Logger('');
         $this->app    = '';
         $this->propertiesFile = null;
 
@@ -257,116 +257,8 @@ class TaskConfig
             $this->baseDir = realpath(__DIR__);
         }
 
+        $this->setLogging($this->properties);
 
-        #-------------------------------------------
-        # Print logging
-        #-------------------------------------------
-        if (array_key_exists(ConfigProperties::PRINT_LOGGING, $this->properties)) {
-            $printLogging = $this->properties[ConfigProperties::PRINT_LOGGING];
-            if ($printLogging === true || strcasecmp($printLogging, 'true') === 0 || $printLogging === '1') {
-                $this->printLogging = true;
-            } elseif ($printLogging === false || strcasecmp($printLogging, 'false') === 0 || $printLogging === '0') {
-                $this->printLogging = false;
-            }
-        }
-        $this->logger->setPrintLogging($this->printLogging);
-        
-        #-----------------------------------------------------------------------------
-        # Get the log file and set it in the logger, so that messages
-        # will start to log to the file
-        #-----------------------------------------------------------------------------
-        if (array_key_exists(ConfigProperties::LOG_FILE, $this->properties)) {
-            $this->logFile = $this->properties[ConfigProperties::LOG_FILE];
-        }
-        
-        if (!empty($this->logFile)) {
-            $this->logFile = $this->processFile($this->logFile, $fileShouldExist = false);
-            $this->logger->setLogFile($this->logFile);
-        }
- 
-        #-------------------------------------------------------------------
-        # Database logging
-        #-------------------------------------------------------------------
-        if (array_key_exists(ConfigProperties::DB_LOGGING, $this->properties)) {
-            $dbLogging = $this->properties[ConfigProperties::DB_LOGGING];
-            if ($dbLogging === true || strcasecmp($dbLogging, 'true') === 0 || $dbLogging === '1') {
-                $this->dbLogging = true;
-            } elseif ($dbLogging === false || strcasecmp($dbLogging, 'false') === 0 || $dbLogging === '0') {
-                $this->dbLogging = false;
-            }
-        }
-        
-        if (array_key_exists(ConfigProperties::DB_LOG_TABLE, $this->properties)) {
-            $dbLogTable = trim($this->properties[ConfigProperties::DB_LOG_TABLE]);
-            if (!empty($dbLogTable)) {
-                $this->dbLogTable = $dbLogTable;
-            }
-        }
-
-        if (array_key_exists(ConfigProperties::DB_EVENT_LOG_TABLE, $this->properties)) {
-            $dbEventLogTable = trim($this->properties[ConfigProperties::DB_EVENT_LOG_TABLE]);
-            if (!empty($dbEventLogTable)) {
-                $this->dbEventLogTable = $dbEventLogTable;
-            }
-        }
-
-        #-----------------------------------------------------------
-        # Email logging
-        #-----------------------------------------------------------
-        if (array_key_exists(ConfigProperties::EMAIL_ERRORS, $this->properties)) {
-            $emailErrors = $this->properties[ConfigProperties::EMAIL_ERRORS];
-            if ($emailErrors === true || strcasecmp($emailErrors, 'true') === 0 || $emailErrors === '1') {
-                $this->emailErrors = true;
-            } elseif ($emailErrors === false || strcasecmp($emailErrors, 'false') === 0 || $emailErrors === '0') {
-                $this->emailErrors = false;
-            }
-        }
-        $this->logger->setEmailErrors($this->emailErrors);
-
-        # E-mail summary notification
-        if (array_key_exists(ConfigProperties::EMAIL_SUMMARY, $this->properties)) {
-            $send = $this->properties[ConfigProperties::EMAIL_SUMMARY];
-            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
-                $this->emailSummary  = true;
-            }
-        }
-        $this->logger->setEmailSummary($this->emailSummary);
-        
-        # E-mail from address
-        if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $this->properties)) {
-            $this->emailFromAddress = trim($this->properties[ConfigProperties::EMAIL_FROM_ADDRESS]);
-        }
-
-        # E-mail to list
-        if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $this->properties)) {
-            $this->emailToList = trim($this->properties[ConfigProperties::EMAIL_TO_LIST]);
-        }
-        
-        # E-mail subject
-        if (array_key_exists(ConfigProperties::EMAIL_SUBJECT, $this->properties)) {
-            $this->emailSubject = $this->properties[ConfigProperties::EMAIL_SUBJECT];
-        }
-
-        # Check and set email logging information
-        if (empty($this->emailFromAddress)) {
-            if ($this->emailErrors || $this->emailSummary) {
-                $message = 'E-mailing of errors and/or summary specified without an e-mail from address.'
-                    ." errors: ".$this->emailErrors.", summary: ".$this->emailSummary;
-                throw new EtlException($message, EtlException::INPUT_ERROR);
-            }
-        } elseif (empty($this->emailToList)) {
-            if ($this->emailErrors || $this->emailSummary) {
-                $message = 'E-mailing of errors and/or summary specified without an e-mail to address.';
-                throw new EtlException($message, EtlException::INPUT_ERROR);
-            }
-        } else {
-            # Both an e-mail from address and to address were specified
-            $this->logger->setLogEmail(
-                $this->emailFromAddress,
-                $this->emailToList,
-                $this->emailSubject
-            );
-        }
 
         #-------------------------------------------------------------------------
         # Check for illegal workflow name property withing a task configuration
@@ -402,33 +294,7 @@ class TaskConfig
                 $this->redcapProjectInfoTable = $this->properties[ConfigProperties::REDCAP_PROJECT_INFO_TABLE];
             }
         }
-        
-        #--------------------------------------------------------
-        # Get configuration information used for file logging
-        #--------------------------------------------------------
-        if (array_key_exists(ConfigProperties::PROJECT_ID, $this->properties)) {
-            $this->projectId = $this->properties[ConfigProperties::PROJECT_ID];
-        }
-        
-        if (array_key_exists(ConfigProperties::CONFIG_OWNER, $this->properties)) {
-            $this->configOwner = $this->properties[ConfigProperties::CONFIG_OWNER];
-        }
-        
-        if (array_key_exists(ConfigProperties::CONFIG_NAME, $this->properties)) {
-            $this->configName = $this->properties[ConfigProperties::CONFIG_NAME];
-        }
-        
-        if (array_key_exists(ConfigProperties::CRON_JOB, $this->properties)) {
-            $cronJob = $this->properties[ConfigProperties::CRON_JOB];
-            
-            if ((is_bool($cronJob) && $cronJob) || strcasecmp($cronJob, 'true') === 0 || $cronJob === '1') {
-                $this->cronJob = 'true';
-            } elseif ((is_bool($cronJob) && !$cronJob) || strcasecmp($cronJob, 'false') === 0 || $cronJob === '0'
-                    || trim($cronJob) === '') {
-                $this->cronJob = 'false';
-            }
-        }
-        
+
         #------------------------------------------------------
         # Check for invalid task configuration property
         #------------------------------------------------------
@@ -820,6 +686,146 @@ class TaskConfig
         }
 
         $this->hasValidSetOfProperties();
+    }
+
+
+    public function setLogging($properties)
+    {
+        #-------------------------------------------
+        # Print logging
+        #-------------------------------------------
+        if (array_key_exists(ConfigProperties::PRINT_LOGGING, $properties)) {
+            $printLogging = $properties[ConfigProperties::PRINT_LOGGING];
+            if ($printLogging === true || strcasecmp($printLogging, 'true') === 0 || $printLogging === '1') {
+                $this->printLogging = true;
+            } elseif ($printLogging === false || strcasecmp($printLogging, 'false') === 0 || $printLogging === '0') {
+                $this->printLogging = false;
+            }
+        }
+        $this->logger->setPrintLogging($this->printLogging);
+        
+        #-----------------------------------------------------------------------------
+        # Get the log file and set it in the logger, so that messages
+        # will start to log to the file
+        #-----------------------------------------------------------------------------
+        if (array_key_exists(ConfigProperties::LOG_FILE, $properties)) {
+            $this->logFile = $properties[ConfigProperties::LOG_FILE];
+        }
+        
+        if (!empty($this->logFile)) {
+            $this->logFile = $this->processFile($this->logFile, $fileShouldExist = false);
+            $this->logger->setLogFile($this->logFile);
+        }
+ 
+        #-------------------------------------------------------------------
+        # Database logging
+        #-------------------------------------------------------------------
+        if (array_key_exists(ConfigProperties::DB_LOGGING, $properties)) {
+            $dbLogging = $properties[ConfigProperties::DB_LOGGING];
+            if ($dbLogging === true || strcasecmp($dbLogging, 'true') === 0 || $dbLogging === '1') {
+                $this->dbLogging = true;
+            } elseif ($dbLogging === false || strcasecmp($dbLogging, 'false') === 0 || $dbLogging === '0') {
+                $this->dbLogging = false;
+            }
+        }
+        
+        if (array_key_exists(ConfigProperties::DB_LOG_TABLE, $properties)) {
+            $dbLogTable = trim($properties[ConfigProperties::DB_LOG_TABLE]);
+            if (!empty($dbLogTable)) {
+                $this->dbLogTable = $dbLogTable;
+            }
+        }
+
+        if (array_key_exists(ConfigProperties::DB_EVENT_LOG_TABLE, $properties)) {
+            $dbEventLogTable = trim($properties[ConfigProperties::DB_EVENT_LOG_TABLE]);
+            if (!empty($dbEventLogTable)) {
+                $this->dbEventLogTable = $dbEventLogTable;
+            }
+        }
+
+        #-----------------------------------------------------------
+        # Email logging
+        #-----------------------------------------------------------
+        if (array_key_exists(ConfigProperties::EMAIL_ERRORS, $properties)) {
+            $emailErrors = $properties[ConfigProperties::EMAIL_ERRORS];
+            if ($emailErrors === true || strcasecmp($emailErrors, 'true') === 0 || $emailErrors === '1') {
+                $this->emailErrors = true;
+            } elseif ($emailErrors === false || strcasecmp($emailErrors, 'false') === 0 || $emailErrors === '0') {
+                $this->emailErrors = false;
+            }
+        }
+        $this->logger->setEmailErrors($this->emailErrors);
+
+        # E-mail summary notification
+        if (array_key_exists(ConfigProperties::EMAIL_SUMMARY, $properties)) {
+            $send = $properties[ConfigProperties::EMAIL_SUMMARY];
+            if ($send === true || strcasecmp($send, 'true') === 0 || $send === '1') {
+                $this->emailSummary  = true;
+            }
+        }
+        $this->logger->setEmailSummary($this->emailSummary);
+        
+        # E-mail from address
+        if (array_key_exists(ConfigProperties::EMAIL_FROM_ADDRESS, $properties)) {
+            $this->emailFromAddress = trim($properties[ConfigProperties::EMAIL_FROM_ADDRESS]);
+        }
+
+        # E-mail to list
+        if (array_key_exists(ConfigProperties::EMAIL_TO_LIST, $properties)) {
+            $this->emailToList = trim($properties[ConfigProperties::EMAIL_TO_LIST]);
+        }
+        
+        # E-mail subject
+        if (array_key_exists(ConfigProperties::EMAIL_SUBJECT, $properties)) {
+            $this->emailSubject = $properties[ConfigProperties::EMAIL_SUBJECT];
+        }
+
+        # Check and set email logging information
+        if (empty($this->emailFromAddress)) {
+            if ($this->emailErrors || $this->emailSummary) {
+                $message = 'E-mailing of errors and/or summary specified without an e-mail from address.'
+                    ." errors: ".$this->emailErrors.", summary: ".$this->emailSummary;
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+        } elseif (empty($this->emailToList)) {
+            if ($this->emailErrors || $this->emailSummary) {
+                $message = 'E-mailing of errors and/or summary specified without an e-mail to address.';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+        } else {
+            # Both an e-mail from address and to address were specified
+            $this->logger->setLogEmail(
+                $this->emailFromAddress,
+                $this->emailToList,
+                $this->emailSubject
+            );
+        }
+
+        #--------------------------------------------------------
+        # Get configuration information used for file logging
+        #--------------------------------------------------------
+        if (array_key_exists(ConfigProperties::PROJECT_ID, $properties)) {
+            $this->projectId = $properties[ConfigProperties::PROJECT_ID];
+        }
+        
+        if (array_key_exists(ConfigProperties::CONFIG_OWNER, $properties)) {
+            $this->configOwner = $properties[ConfigProperties::CONFIG_OWNER];
+        }
+        
+        if (array_key_exists(ConfigProperties::CONFIG_NAME, $properties)) {
+            $this->configName = $properties[ConfigProperties::CONFIG_NAME];
+        }
+        
+        if (array_key_exists(ConfigProperties::CRON_JOB, $properties)) {
+            $cronJob = $properties[ConfigProperties::CRON_JOB];
+            
+            if ((is_bool($cronJob) && $cronJob) || strcasecmp($cronJob, 'true') === 0 || $cronJob === '1') {
+                $this->cronJob = 'true';
+            } elseif ((is_bool($cronJob) && !$cronJob) || strcasecmp($cronJob, 'false') === 0 || $cronJob === '0'
+                    || trim($cronJob) === '') {
+                $this->cronJob = 'false';
+            }
+        }
     }
 
 
@@ -1680,5 +1686,15 @@ class TaskConfig
     public function getTaskName()
     {
         return $this->taskName;
+    }
+
+    /**
+     * Sets the workflow logger for this task's logger.
+     *
+     * @param Logger $workflowLogger the logger for the workflow that contains this task.
+     */
+    public function setWorkflowLogger($workflowLogger)
+    {
+        $this->logger->setWorkflowLogger($workflowLogger);
     }
 }

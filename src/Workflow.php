@@ -65,12 +65,16 @@ class Workflow
     /** @var float total time in seconds for the entire ETL process. */
     private $totalTime;
 
+    private $workflowConfig;
+
     /**
      * Constructor.
      *
      */
     public function __construct()
     {
+        $this->workflowConfig = null;
+
         $this->dbSchemas     = array();
         $this->dbConnections = array();
         $this->dbTasks       = array();
@@ -91,6 +95,8 @@ class Workflow
 
     public function set($workflowConfig, &$logger, $redcapProjectClass = null)
     {
+        $this->workflowConfig = $workflowConfig;
+
         $this->logger = $logger;
 
         $this->name = $workflowConfig->getWorkflowName();
@@ -224,6 +230,11 @@ class Workflow
             $this->createDatabaseKeys($dbId);
         }
 
+        $logWorkflowEmailSummary = false;
+        if ($this->workflowConfig->isWorkflow() && $this->workflowConfig->getLogger()->canLogEmailSummary()) {
+            $logWorkflowEmailSummary = true;
+        }
+
         #------------------------------------------------------------------
         # For each task, run post-processing SQL and log as complete
         #------------------------------------------------------------------
@@ -232,7 +243,14 @@ class Workflow
             $task->runPostProcessingSql();
                 
             $logger->log(RedCapEtl::PROCESSING_COMPLETE);
-            $logger->logEmailSummary();
+
+            if (!$logWorkflowEmailSummary) {
+                $logger->logEmailSummary();
+            }
+        }
+
+        if ($logWorkflowEmailSummary) {
+            $this->workflowConfig->getLogger()->logEmailSummary();
         }
 
         $endTime = microtime(true);
@@ -602,6 +620,11 @@ class Workflow
     public function getTotalTime()
     {
         return $this->totalTime;
+    }
+
+    public function getWorkflowConfig()
+    {
+        return $this->workflowConfig;
     }
 
     /**
