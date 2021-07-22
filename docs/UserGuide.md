@@ -338,7 +338,7 @@ on the configuration settings.
 | Callback | Logging to user-defined function                               |
 | Database | Logging to tables in ETL load database                         |
 | E-mail   | Summary and/or errors (if any) e-mailed to user-specified list |
-| File     | Loggin to a file on the REDCap-ETL server                      |
+| File     | Logging to a file on the REDCap-ETL server                     |
 | Print    | Printing of log messages to user's screen                      |
 
 REDCap-ETL is usually used as an application, however, it is also possible to use REDCap-ETL
@@ -355,7 +355,7 @@ library for their own PHP program) to specify a custom logging function to be de
 will be called whenever REDCap-ETL logs a message,
 
 **Database Logging.** REDCap-ETL can log messages to tables (described above)
-in the load database specfied on the ETL configuration, i.e.,
+in the load database specified on the ETL configuration, i.e.,
 in the same database where the extracted and transformed
 data from REDCap are loaded. The database log is useful for users who do not have access to
 the ETL server. It can also be used to check the status of ETL jobs programmatically.
@@ -369,5 +369,5 @@ that can be checked. For the case where admins set up the ETL process for users,
 be the place they would check to see the status of the ETL processes.
 
 **Print Logging.** Print logging logs messages to the user's screen. It is used when
-ETL processes are run interactivley from the command line, and gives the user
-imediate feedback about the status of the process.
+ETL processes are run interactively from the command line, and gives the user
+immediate feedback about the status of the process.
