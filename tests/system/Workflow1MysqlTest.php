@@ -90,6 +90,40 @@ class Workflow1MysqlTest extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchColumn(0);
         $this->assertEquals(100, $actualData, 'Contact information row count check');
+ 
+        #------------------------------------------------------
+        # table "redcap_project_info" row count check
+        # there are 2 tasks in the workflow, so there should
+        # be 2 entries in the project info table.
+        #------------------------------------------------------
+        $sql = 'SELECT redcap_data_source FROM redcap_project_info';
+
+        $statement  = static::$dbh->query($sql);
+        $actualData = $statement->fetchAll(\PDO::FETCH_COLUMN);
+        $this->assertEquals([1, 2], $actualData, 'redcap_project_info row id check');
+
+        #------------------------------------------------------
+        # table "redcap_metadata" row id check
+        # there are 2 tasks in the workflow, so there should
+        # be entries with row IDs 1 and 2.
+        #------------------------------------------------------
+        $sql = 'SELECT distinct redcap_data_source FROM redcap_metadata';
+
+        $statement  = static::$dbh->query($sql);
+        $actualData = $statement->fetchAll(\PDO::FETCH_COLUMN);
+        $this->assertEquals([1, 2], $actualData, 'redcap_metadata row id check');
+
+        # Check tables
+        $sql = 'SELECT distinct `table` FROM redcap_metadata';
+
+        $statement  = static::$dbh->query($sql);
+        $actualData = $statement->fetchAll(\PDO::FETCH_COLUMN);
+        $expectedData = [
+            'demographics', 'root', 'enrollment', 'contact_information', 'emergency_contacts',
+            'weight', 'weight_repeating_events', 'weight_repeating_instruments',
+            'cardiovascular', 'cardiovascular_repeating_events', 'cardiovascular_repeating_instruments'
+        ];
+        $this->assertEquals($expectedData, $actualData, 'redcap_metadata table check');
     }
 
 
