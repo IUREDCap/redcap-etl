@@ -146,7 +146,7 @@ class Schema
         #------------------------------------------------------------------
         # Merge the REDCap project info and metadata tables
         #------------------------------------------------------------------
-        $mergeData = false;
+        $mergeData = true;
         $mergedSchema->projectInfoTable =
             $this->projectInfoTable->merge($schema->projectInfoTable, $mergeData, $task);
         $mergedSchema->metadataTable =
