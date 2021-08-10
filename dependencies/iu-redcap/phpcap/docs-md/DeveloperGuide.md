@@ -93,13 +93,14 @@ following setup steps are completed:
 
 1. Log in to your REDCap site.
 2. Create an empty project in REDCap.
-3. Create a project in REDCap for the "Basic Demography" and "Longitudinal Data" test projects in directory __tests/projects/__, and import each of those test project files into the REDCap project created for it.
+3. Create a project in REDCap for the "Basic Demography," "DAG," and "Longitudinal Data" test projects in directory __tests/projects/__, and import each of those test project files into the REDCap project created for it.
 4. In REDCap, request API tokens for the empty project and the projects imported in the step above.
 5. Once you have your tokens, copy the "config-example.ini" file to a file
    named "config.ini" and then set the URL in that file to be the
    URL for the API of your REDCap instance, and set the tokens to be
    the tokens requested in the previous step.
 6. In REDCap, enable the "Date Calculated Fields" external module for the "Basic Demography" project.
+7. In REDCap, add a test user to the DAG project, assigning only default, basic permissions. Add that user to the 'group1' DAG.
  
 #### Setup for Optional CA Certificate File Integration Tests
 To run the optional tests involving the CA certificate file, you will need to set up
@@ -115,7 +116,7 @@ To run all of the optional report tests, you will need to manually set up 2 repo
 You need to set up a report for the
 basic demography project.
 and then set the 
-__basic.emography.report.id__ property in your __tests/config.ini__ file
+__basic.demography.report.id__ property in your __tests/config.ini__ file
 to the ID of the report. If the ID property is not set, then the tests
 that use the report will not be run. You need to set up an "Exercise" report
 as follows:
@@ -295,7 +296,7 @@ Documentation consists of the following:
 * HTML versions of the Markdown documentation in the docs-md/ directory, which are generated programmatically, stored in the __docs/__ directory.
 
 Since all documentation in the __docs/__ directory (except for the README.md file) is automatically
-generated, these files should not be editied manaully.
+generated, these files should not be editied manually.
 
 #### API Document Generation
 To generate the API documentation (stored in **./docs/api**), execute the following command in PHPCap's root directory:

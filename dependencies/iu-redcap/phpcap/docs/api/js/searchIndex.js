@@ -601,6 +601,31 @@ Search.appendIndex(
             "summary": "Sets\u0020the\u0020error\u0020handler\u0020used\u0020by\u0020the\u0020project.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_setErrorHandler"
         },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportDags\u0028\u0029",
+            "name": "exportDags",
+            "summary": "Exports\u0020the\u0020Data\u0020Access\u0020Groups\u0020for\u0020a\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportDags"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportDags\u0028\u0029",
+            "name": "importDags",
+            "summary": "Imports\u0020the\u0020specified\u0020dags\u0020into\u0020the\u0020project.\u0020Allows\u0020import\u0020of\u0020new\u0020DAGs\u0020or\u0020update\u0020of\u0020the\ndata_access_group_name\u0020of\u0020any\u0020existing\u0020DAGs.\u0020DAGs\u0020can\u0020be\u0020renamed\u0020by\u0020changing\nthe\u0020data_access_group_name.\u0020A\u0020DAG\u0020can\u0020be\u0020created\u0020by\u0020providing\u0020group\u0020name\u0020value\u0020with\n\u0020unique\u0020group\u0020name\u0020set\u0020to\u0020blank.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_importDags"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AdeleteDags\u0028\u0029",
+            "name": "deleteDags",
+            "summary": "Deletes\u0020the\u0020specified\u0020dags\u0020from\u0020the\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteDags"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportUserDagAssignment\u0028\u0029",
+            "name": "exportUserDagAssignment",
+            "summary": "Exports\u0020the\u0020User\u002DDataAccessGroup\u0020assignaments\u0020for\u0020a\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportUserDagAssignment"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportUserDagAssignment\u0028\u0029",
+            "name": "importUserDagAssignment",
+            "summary": "Imports\u0020User\u002DDAG\u0020assignments,\u0020allowing\u0020you\u0020to\u0020assign\u0020users\u0020to\u0020any\ndata\u0020access\u0020group.o\u0020the\u0020project.\u0020If\u0020you\u0020wish\u0020to\u0020modify\u0020an\u0020existing\nmapping,\u0020you\u0020must\u0020provide\u0020its\u0020unique\u0020username\u0020and\u0020group\u0020name.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_importUserDagAssignment"
+        },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AJSON_RESULT_ERROR_PATTERN",
             "name": "JSON_RESULT_ERROR_PATTERN",
             "summary": "",

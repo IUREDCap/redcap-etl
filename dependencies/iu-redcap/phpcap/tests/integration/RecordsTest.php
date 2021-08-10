@@ -1634,4 +1634,69 @@ class RecordsTest extends TestCase
 
         $this->assertTrue($exceptionCaught, 'Exception caught check');
     }
+
+    public function testImportRecordsWithCsvDelimiter()
+    {
+        $records = FileUtil::fileToString(__DIR__.'/../data/basic-demography-import.csv');
+        $delimiters = array(',', ';', '|', '^', 'tab');
+        $maxIndex = count($delimiters)-1;
+
+        $i = 0;
+        $delimiter = $delimiters[$i];
+
+        $recordIds = [1101];
+
+        do {
+            $result = self::$basicDemographyProject->importRecords(
+                $records,
+                $format = 'csv',
+                $type = null,
+                $overwriteBehavior = null,
+                $dateFormat = null,
+                $returnContent = 'ids',
+                $forceAutoNumber = false,
+                $csvDelimiter = $delimiter
+            );
+            $this->assertEquals(1, count($result), 'testImportRecordsWithCsvDelimiter Record count for delimiter: '
+                . $delimiter . '.');
+            $this->assertEquals(
+                $recordIds,
+                $result,
+                'testImportRecordsWithCsvDelimiter Import IDs check for delimiter: '
+                . $delimiter . '.'
+            );
+
+            $result = self::$basicDemographyProject->exportRecords();
+            $this->assertEquals(
+                101,
+                count($result),
+                'testImportRecordsWithCsvDelimiter Record count after import for delimiter: '
+                . $delimiter . '.'
+            );
+
+            $key = array_search($recordIds[0], array_column($result, 'record_id'));
+            $email = $result[$key]['email'];
+            $this->assertEquals(
+                'joe.schmidt@mailinator.com',
+                $email,
+                'testImportRecordsWithCsvDelimiter record-value check for delimiter: ' . $delimiter . '.'
+            );
+
+            #clear out the record for the next delimiter test
+            $result = self::$basicDemographyProject->deleteRecords($recordIds);
+            # wait a minute after delete
+            sleep(self::DELETE_WAIT_TIME);
+
+            $oldDelimiter = $delimiter;
+            $i++;
+            if ($i <= $maxIndex) {
+                $delimiter = $delimiters[$i];
+                if ($delimiter === 'tab') {
+                    $records = str_replace($oldDelimiter, chr(9), $records);
+                } else {
+                    $records = str_replace($oldDelimiter, $delimiter, $records);
+                }
+            }
+        } while ($i <= $maxIndex);
+    }
 }

@@ -23,7 +23,8 @@ class TestProject extends EtlRedCapProject
         $overwriteBehavior = 'normal',
         $dateFormat = 'YMD',
         $returnContent = 'count',
-        $forceAutoNumber = false
+        $forceAutoNumber = false,
+        $csvDelimiter = ','
     ) {
         # This check added so that there is
         # an easy way to cause this method to

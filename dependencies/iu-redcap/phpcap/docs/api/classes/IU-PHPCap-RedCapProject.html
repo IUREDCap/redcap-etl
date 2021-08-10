@@ -131,6 +131,13 @@
 <dd>Deletes the specified arms from the project.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCapProject.html#method_deleteDags">deleteDags()</a>
+    <span>
+                        &nbsp;: int    </span>
+</dt>
+<dd>Deletes the specified dags from the project.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapProject.html#method_deleteEvents">deleteEvents()</a>
     <span>
                         &nbsp;: int    </span>
@@ -157,6 +164,13 @@
                         &nbsp;: mixed    </span>
 </dt>
 <dd>Exports the numbers and names of the arms in the project.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCapProject.html#method_exportDags">exportDags()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd>Exports the Data Access Groups for a project.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapProject.html#method_exportEvents">exportEvents()</a>
@@ -289,6 +303,13 @@ longitudinal studies, event.</dd>
 <dd>Exports the code for returning to a survey that was not completed.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCapProject.html#method_exportUserDagAssignment">exportUserDagAssignment()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd>Exports the User-DataAccessGroup assignaments for a project.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapProject.html#method_exportUsers">exportUsers()</a>
     <span>
                         &nbsp;: mixed    </span>
@@ -355,6 +376,16 @@ where Data Access Groups are being used).</dd>
 <dd>Imports the specified arms into the project.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCapProject.html#method_importDags">importDags()</a>
+    <span>
+                        &nbsp;: int    </span>
+</dt>
+<dd>Imports the specified dags into the project. Allows import of new DAGs or update of the
+data_access_group_name of any existing DAGs. DAGs can be renamed by changing
+the data_access_group_name. A DAG can be created by providing group name value with
+ unique group name set to blank.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapProject.html#method_importEvents">importEvents()</a>
     <span>
                         &nbsp;: int    </span>
@@ -403,6 +434,15 @@ with the specified event and/or repeat instance, if any.</dd>
                         &nbsp;: int    </span>
 </dt>
 <dd>Imports the repeating instruments and events.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/IU-PHPCap-RedCapProject.html#method_importUserDagAssignment">importUserDagAssignment()</a>
+    <span>
+                        &nbsp;: int    </span>
+</dt>
+<dd>Imports User-DAG assignments, allowing you to assign users to any
+data access group.o the project. If you wish to modify an existing
+mapping, you must provide its unique username and group name.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapProject.html#method_importUsers">importUsers()</a>
@@ -669,6 +709,69 @@ set in the connection will be used.</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_deleteDags">
+        deleteDags()
+        <a href="classes/IU-PHPCap-RedCapProject.html#method_deleteDags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3113</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Deletes the specified dags from the project.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">deleteDags</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dags</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dags</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>an array of the unique_group_names to delete.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/IU-PHPCap-PhpCapException.html"><abbr title="\IU\PHPCap\PhpCapException">PhpCapException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>if an error occurs.</p>
+</section>
+
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">int</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the number of DAGs imported.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_deleteEvents">
         deleteEvents()
         <a href="classes/IU-PHPCap-RedCapProject.html#method_deleteEvents" class="headerlink"><i class="fas fa-link"></i></a>
@@ -815,7 +918,7 @@ and/or instruments).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1448</span>
+    <span class="phpdocumentor-element-found-in__line">1462</span>
 </aside>
 
         <p class="phpdocumentor-summary">Deletes the specified records from the project.</p>
@@ -942,6 +1045,63 @@ If no arms are specified, then information for all arms will be returned.</p>
   <li>'arm_num'</li>
   <li>'name'</li>
 </ul>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_exportDags">
+        exportDags()
+        <a href="classes/IU-PHPCap-RedCapProject.html#method_exportDags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3005</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Exports the Data Access Groups for a project.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">exportDags</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$format</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>string the format used to export the data.</p>
+<ul>
+  <li> 'php' - [default] array of maps of values</li>
+  <li> 'csv' - string of CSV (comma-separated values)</li>
+  <li> 'json' - string of JSON encoded values</li>
+  <li> 'xml' - string of XML encoded data</li>
+</ul>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>For 'php' format, array of arrays that have the following keys:
+<ul>
+<li>'data_access_group_name'</li></p>
+<li>'unique_group_name'</li>
+    </ul>
 </section>
 
     
@@ -2056,7 +2216,7 @@ $records = $project->exportRecordsAp(['forms' => ['lab_data'], 'fields' => ['stu
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1562</span>
+    <span class="phpdocumentor-element-found-in__line">1576</span>
 </aside>
 
         <p class="phpdocumentor-summary">Gets the REDCap version number of the REDCap instance being used by the project.</p>
@@ -2091,7 +2251,7 @@ $records = $project->exportRecordsAp(['forms' => ['lab_data'], 'fields' => ['stu
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1488</span>
+    <span class="phpdocumentor-element-found-in__line">1502</span>
 </aside>
 
         <p class="phpdocumentor-summary">Exports the repeating instruments and events.</p>
@@ -2151,7 +2311,7 @@ value will be returned for the 'custom form label' if it is not defined.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1629</span>
+    <span class="phpdocumentor-element-found-in__line">1643</span>
 </aside>
 
         <p class="phpdocumentor-summary">Exports the records produced by the specified report.</p>
@@ -2291,7 +2451,7 @@ numeric values being returned. Options are:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1681</span>
+    <span class="phpdocumentor-element-found-in__line">1695</span>
 </aside>
 
         <p class="phpdocumentor-summary">Exports the survey link for the specified inputs.</p>
@@ -2366,7 +2526,7 @@ to return a link for.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1722</span>
+    <span class="phpdocumentor-element-found-in__line">1736</span>
 </aside>
 
         <p class="phpdocumentor-summary">Exports the list of survey participants for the specified form and, for
@@ -2441,7 +2601,7 @@ in the specified format as a string.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1751</span>
+    <span class="phpdocumentor-element-found-in__line">1765</span>
 </aside>
 
         <p class="phpdocumentor-summary">Exports the survey queue link for the specified record ID.</p>
@@ -2488,7 +2648,7 @@ in the specified format as a string.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1780</span>
+    <span class="phpdocumentor-element-found-in__line">1794</span>
 </aside>
 
         <p class="phpdocumentor-summary">Exports the code for returning to a survey that was not completed.</p>
@@ -2556,6 +2716,63 @@ to return to.</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_exportUserDagAssignment">
+        exportUserDagAssignment()
+        <a href="classes/IU-PHPCap-RedCapProject.html#method_exportUserDagAssignment" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3148</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Exports the User-DataAccessGroup assignaments for a project.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">exportUserDagAssignment</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$format</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>string the format used to export the data.</p>
+<ul>
+  <li> 'php' - [default] array of maps of values</li>
+  <li> 'csv' - string of CSV (comma-separated values)</li>
+  <li> 'json' - string of JSON encoded values</li>
+  <li> 'xml' - string of XML encoded data</li>
+</ul>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>For 'php' format, array of arrays that have the following keys:</p>
+<ul>
+  <li>'username'</li>
+  <li>'redcap_data_access_group'</li>
+</ul>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_exportUsers">
         exportUsers()
         <a href="classes/IU-PHPCap-RedCapProject.html#method_exportUsers" class="headerlink"><i class="fas fa-link"></i></a>
@@ -2563,7 +2780,7 @@ to return to.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1819</span>
+    <span class="phpdocumentor-element-found-in__line">1833</span>
 </aside>
 
         <p class="phpdocumentor-summary">Exports the users of the project.</p>
@@ -2658,7 +2875,7 @@ where Data Access Groups are being used).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2012</span>
+    <span class="phpdocumentor-element-found-in__line">2026</span>
 </aside>
 
         <p class="phpdocumentor-summary">Gets the API token for the project.</p>
@@ -2693,7 +2910,7 @@ where Data Access Groups are being used).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2026</span>
+    <span class="phpdocumentor-element-found-in__line">2040</span>
 </aside>
 
         <p class="phpdocumentor-summary">Returns the underlying REDCap API connection being used by the project.</p>
@@ -2731,7 +2948,7 @@ used by the project.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2047</span>
+    <span class="phpdocumentor-element-found-in__line">2061</span>
 </aside>
 
         <p class="phpdocumentor-summary">Gets the error handler.</p>
@@ -2766,7 +2983,7 @@ used by the project.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1913</span>
+    <span class="phpdocumentor-element-found-in__line">1927</span>
 </aside>
 
         <p class="phpdocumentor-summary">Gets the PHPCap version number.</p>
@@ -2800,7 +3017,7 @@ used by the project.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1950</span>
+    <span class="phpdocumentor-element-found-in__line">1964</span>
 </aside>
 
         <p class="phpdocumentor-summary">Gets an array of record ID batches.</p>
@@ -2888,7 +3105,7 @@ for the records IDs parameter for an export records method.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2000</span>
+    <span class="phpdocumentor-element-found-in__line">2014</span>
 </aside>
 
         <p class="phpdocumentor-summary">Gets the record ID field name for the project.</p>
@@ -3001,6 +3218,90 @@ are: arm_num, name</p>
     <span class="phpdocumentor-signature__response_type">int</span>
             &mdash;
             <section class="phpdocumentor-description"><p>the number of arms imported.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_importDags">
+        importDags()
+        <a href="classes/IU-PHPCap-RedCapProject.html#method_importDags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3043</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Imports the specified dags into the project. Allows import of new DAGs or update of the
+data_access_group_name of any existing DAGs. DAGs can be renamed by changing
+the data_access_group_name. A DAG can be created by providing group name value with
+ unique group name set to blank.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">importDags</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dags</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dags</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the DAGs to import. This will
+be a PHP array of associative arrays if no format, or 'php' format was specified,
+and a string otherwise. The field names (keys) used in both cases
+are: data_access_group_name, unique_group_name</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$format</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the format for the export.</p>
+<ul>
+  <li> 'php' - [default] array of maps of values</li>
+  <li> 'csv' - string of CSV (comma-separated values)</li>
+  <li> 'json' - string of JSON encoded values</li>
+  <li> 'xml' - string of XML encoded data</li>
+</ul>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/IU-PHPCap-PhpCapException.html"><abbr title="\IU\PHPCap\PhpCapException">PhpCapException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>if an error occurs.</p>
+</section>
+
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">int</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the number of DAGs imported.</p>
 </section>
 
     
@@ -3488,14 +3789,14 @@ from the existing value before the method call).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1364</span>
+    <span class="phpdocumentor-element-found-in__line">1374</span>
 </aside>
 
         <p class="phpdocumentor-summary">Imports the specified records into the project.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">importRecords</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$records</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;flat&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$overwriteBehavior</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;normal&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dateFormat</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;YMD&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnContent</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;count&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$forceAutoNumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                <span class="phpdocumentor-signature__name">importRecords</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$records</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;flat&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$overwriteBehavior</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;normal&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dateFormat</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;YMD&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnContent</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;count&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$forceAutoNumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$csvDelimiter</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;,&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
         <section class="phpdocumentor-description"></section>
 
@@ -3596,6 +3897,23 @@ auto-numbering of imported records will be enabled.</p>
 </section>
 
             </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$csvDelimiter</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">&#039;,&#039;</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>specifies which delimiter separates the values in the CSV
+data file (for CSV format only).</p>
+<ul>
+  <li> ',' - comman [default] </li>
+  <li> 'tab' </li>
+  <li> ';' - semi-colon </li>
+  <li> '|' - pipe </li>
+  <li> '^' - caret </li>
+</ul>
+</section>
+
+            </dd>
             </dl>
 
     
@@ -3625,7 +3943,7 @@ to sent IDs will be returned.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1527</span>
+    <span class="phpdocumentor-element-found-in__line">1541</span>
 </aside>
 
         <p class="phpdocumentor-summary">Imports the repeating instruments and events.</p>
@@ -3682,6 +4000,92 @@ this will be a string formatted in the specified format (e.g. json).</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_importUserDagAssignment">
+        importUserDagAssignment()
+        <a href="classes/IU-PHPCap-RedCapProject.html#method_importUserDagAssignment" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3189</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Imports User-DAG assignments, allowing you to assign users to any
+data access group.o the project. If you wish to modify an existing
+mapping, you must provide its unique username and group name.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">importUserDagAssignment</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dagAssignments</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+
+        <section class="phpdocumentor-description"><p>If the 'redcap_data_access_group' column is not provided, user
+will not be assigned to any group. There should be only one record
+per username.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dagAssignments</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the User-DAG assignments to import.
+This will be a PHP array of associative arrays if no format, or 'php'
+format was specified, and a string otherwise. The field names (keys)
+used in both cases are: username, recap_data_access_group</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$format</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>the format for the export.</p>
+<ul>
+  <li> 'php' - [default] array of maps of values</li>
+  <li> 'csv' - string of CSV (comma-separated values)</li>
+  <li> 'json' - string of JSON encoded values</li>
+  <li> 'xml' - string of XML encoded data</li>
+</ul>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/IU-PHPCap-PhpCapException.html"><abbr title="\IU\PHPCap\PhpCapException">PhpCapException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>if an error occurs.</p>
+</section>
+
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">int</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>the number of DAGs imported.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_importUsers">
         importUsers()
         <a href="classes/IU-PHPCap-RedCapProject.html#method_importUsers" class="headerlink"><i class="fas fa-link"></i></a>
@@ -3689,7 +4093,7 @@ this will be a string formatted in the specified format (e.g. json).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1886</span>
+    <span class="phpdocumentor-element-found-in__line">1900</span>
 </aside>
 
         <p class="phpdocumentor-summary">Imports the specified users into the project. This method
@@ -3780,7 +4184,7 @@ should be used that has the data in the correct format.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2037</span>
+    <span class="phpdocumentor-element-found-in__line">2051</span>
 </aside>
 
         <p class="phpdocumentor-summary">Sets the connection used for calling the REDCap API.</p>
@@ -3827,7 +4231,7 @@ for calls to the REDCap API.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2057</span>
+    <span class="phpdocumentor-element-found-in__line">2071</span>
 </aside>
 
         <p class="phpdocumentor-summary">Sets the error handler used by the project.</p>

@@ -22,6 +22,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/ArmsTest.php</file>
       <file>tests/integration/BatchesTest.php</file>
       <file>tests/integration/ConnectionsTest.php</file>
+      <file>tests/integration/DagsTest.php</file>
       <file>tests/integration/EventsTest.php</file>
       <file>tests/integration/FieldNamesTest.php</file>
       <file>tests/integration/FilesTest.php</file>

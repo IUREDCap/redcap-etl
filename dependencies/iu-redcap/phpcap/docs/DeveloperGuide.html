@@ -138,13 +138,14 @@ following setup steps are completed:</p>
 <ol>
 <li>Log in to your REDCap site.</li>
 <li>Create an empty project in REDCap.</li>
-<li>Create a project in REDCap for the &quot;Basic Demography&quot; and &quot;Longitudinal Data&quot; test projects in directory <strong>tests/projects/</strong>, and import each of those test project files into the REDCap project created for it.</li>
+<li>Create a project in REDCap for the &quot;Basic Demography,&quot; &quot;DAG,&quot; and &quot;Longitudinal Data&quot; test projects in directory <strong>tests/projects/</strong>, and import each of those test project files into the REDCap project created for it.</li>
 <li>In REDCap, request API tokens for the empty project and the projects imported in the step above.</li>
 <li>Once you have your tokens, copy the &quot;config-example.ini&quot; file to a file
 named &quot;config.ini&quot; and then set the URL in that file to be the
 URL for the API of your REDCap instance, and set the tokens to be
 the tokens requested in the previous step.</li>
 <li>In REDCap, enable the &quot;Date Calculated Fields&quot; external module for the &quot;Basic Demography&quot; project.</li>
+<li>In REDCap, add a test user to the DAG project, assigning only default, basic permissions. Add that user to the 'group1' DAG.</li>
 </ol>
 <h4>Setup for Optional CA Certificate File Integration Tests</h4>
 <p>To run the optional tests involving the CA certificate file, you will need to set up
@@ -158,7 +159,7 @@ do this.</p>
 <p>You need to set up a report for the
 basic demography project.
 and then set the
-<strong>basic.emography.report.id</strong> property in your <strong>tests/config.ini</strong> file
+<strong>basic.demography.report.id</strong> property in your <strong>tests/config.ini</strong> file
 to the ID of the report. If the ID property is not set, then the tests
 that use the report will not be run. You need to set up an &quot;Exercise&quot; report
 as follows:</p>
@@ -311,7 +312,7 @@ PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
 <li>HTML versions of the Markdown documentation in the docs-md/ directory, which are generated programmatically, stored in the <strong>docs/</strong> directory.</li>
 </ul>
 <p>Since all documentation in the <strong>docs/</strong> directory (except for the README.md file) is automatically
-generated, these files should not be editied manaully.</p>
+generated, these files should not be editied manually.</p>
 <h4>API Document Generation</h4>
 <p>To generate the API documentation (stored in <strong>./docs/api</strong>), execute the following command in PHPCap's root directory:</p>
 <div class="description"><pre><code>phpdoc</code></pre></div>
