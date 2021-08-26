@@ -104,4 +104,10 @@ class FileUtil
 
         return $realFile;
     }
+
+    public static function getSafePath($path)
+    {
+        $path = realpath($path);
+        return $path;
+    }
 }

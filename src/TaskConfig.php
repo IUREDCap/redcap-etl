@@ -910,7 +910,7 @@ class TaskConfig
                 #-----------------------------------------------------------------
                 # JSON configuration file
                 #-----------------------------------------------------------------
-                $configurationFileContents = file_get_contents($configurationFile);
+                $configurationFileContents = file_get_contents(FileUtil::getSafePath($configurationFile));
                 if ($configurationFileContents === false) {
                     $message = 'The JSON configuration file "'.$configurationFile.'" could not be read.';
                     $code    = EtlException::INPUT_ERROR;
@@ -948,7 +948,7 @@ class TaskConfig
                 #-------------------------------------------------------------
                 # suppress errors for this, because it should be
                 # handled by the check for $properties being false
-                @ $properties = parse_ini_file($configurationFile);
+                @ $properties = parse_ini_file(FileUtil::getSafePath($configurationFile));
                 if ($properties === false) {
                     $error = error_get_last();
                     $parseError = '';
