@@ -113,7 +113,7 @@ class DynamicRulesLongitudinalTest extends TestCase
             }
 
             if (file_exists(self::$contactInformationCsvLabelFile)) {
-                unlink(self::$contactInformationCsvLabelFile);
+                unlink(FileUtil::getSafePath(self::$contactInformationCsvLabelFile));
             }
 
             if (file_exists(self::$weightCsvFile)) {
