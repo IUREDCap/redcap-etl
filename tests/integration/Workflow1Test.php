@@ -139,8 +139,7 @@ class Workflow1Test extends TestCase
 
             $redCapEtl->run();
         } catch (EtlException $exception) {
-            print "\n*** ERROR: {$exception->getMessage()}\n";
-            print "\n".$exception->getTraceAsString()."\n";
+            print $exception."\n";
             self::$logger->logException($exception);
             self::$logger->log('Processing failed.');
         }
