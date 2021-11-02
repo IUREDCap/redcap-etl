@@ -286,9 +286,8 @@ class RulesGenerator
             # so use a varchar here unless suitable min and max values are set
             $min = $field['text_validation_min'];
             $max = $field['text_validation_max'];
-            if (!empty($min) && !empty($max)
-                    && is_numeric($min) && is_numeric($max)
-                    && $min >= -2147483648 && $max <= 2147483647) {   // min >= -(2^32); max <= 2^32 - 1
+            if (is_numeric($min) && is_numeric($max)
+                && $min >= -2147483648 && $max <= 2147483647) {   // min >= -(2^32); max <= 2^32 - 1
                 # MySQL int:      [-2147483648, 2147483647]  https://dev.mysql.com/doc/refman/5.7/en/integer-types.html
                 # PostgreSQL int: [-2147483648, 2147483647]  https://www.postgresql.org/docs/9.1/datatype-numeric.html
                 # SQLite int:     [-2147483648, 2147483647]  (at least?) https://www.sqlite.org/datatype3.html

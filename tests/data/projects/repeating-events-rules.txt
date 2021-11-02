@@ -45,7 +45,7 @@ FIELD,height_m,float
 TABLE,cardiovascular,root,EVENTS
 FIELD,cardiovascular_date,date
 FIELD,hdl_mg_dl,varchar(255)
-FIELD,ldl_mg_dl,varchar(255)
+FIELD,ldl_mg_dl,int
 FIELD,triglycerides_mg_dl,varchar(255)
 FIELD,diastolic1,varchar(255)
 FIELD,diastolic2,varchar(255)
@@ -57,7 +57,7 @@ FIELD,systolic3,varchar(255)
 TABLE,cardiovascular_repeating_events,root,REPEATING_EVENTS
 FIELD,cardiovascular_date,date
 FIELD,hdl_mg_dl,varchar(255)
-FIELD,ldl_mg_dl,varchar(255)
+FIELD,ldl_mg_dl,int
 FIELD,triglycerides_mg_dl,varchar(255)
 FIELD,diastolic1,varchar(255)
 FIELD,diastolic2,varchar(255)
@@ -69,7 +69,7 @@ FIELD,systolic3,varchar(255)
 TABLE,cardiovascular_repeating_instruments,root,REPEATING_INSTRUMENTS
 FIELD,cardiovascular_date,date
 FIELD,hdl_mg_dl,varchar(255)
-FIELD,ldl_mg_dl,varchar(255)
+FIELD,ldl_mg_dl,int
 FIELD,triglycerides_mg_dl,varchar(255)
 FIELD,diastolic1,varchar(255)
 FIELD,diastolic2,varchar(255)
