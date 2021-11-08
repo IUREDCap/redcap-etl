@@ -67,6 +67,9 @@ class Workflow
 
     private $workflowConfig;
 
+    /* Max batch size for metadata row insert; over 1,000 causes an error for SQL Server */
+    const METADATA_BATCH_SIZE = 1000;
+
     /**
      * Constructor.
      *
@@ -374,7 +377,7 @@ class Workflow
         $dbConnection->createTable($metadataTable, $ifNotExists);
             
         $dbConnection->storeRows($projectInfoTable);
-        $dbConnection->storeRows($metadataTable);
+        $dbConnection->storeRows($metadataTable, self::METADATA_BATCH_SIZE);
 
         #------------------------------------------------------------------------------------
         # If configured, create the lookup table that maps multiple choice values to labels,

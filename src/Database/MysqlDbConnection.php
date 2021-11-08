@@ -434,7 +434,7 @@ class MysqlDbConnection extends DbConnection
      *
      * @param Table $table the table object containing the rows to be inserted in the database.
      */
-    protected function insertRows($table)
+    protected function insertRows($table, $batchSize = null)
     {
         $rows = $table->getRows();
 
@@ -446,31 +446,41 @@ class MysqlDbConnection extends DbConnection
             #--------------------------------------------------
             $fields = $table->getAllNonAutoIncrementFields();
 
-            $queryValues = array();
-            foreach ($rows as $row) {
-                $rowValues = $this->getRowValues($row, $fields);
-                $queryValues[] = '('.implode(",", $rowValues).')';
+            $rowBatches = array();
+            if (isset($batchSize) && is_int($batchSize) && $batchSize > 0) {
+                $rowBatches = array_chunk($rows, $batchSize, true);
+            } else {
+                $rowBatches[] = $rows;
             }
-    
-            $query = $this->createInsertStatement($table->getName(), $fields, $queryValues);
-            # print "QUERY: {$query}\n";
-    
-            $rc = $this->mysqli->query($query);
-    
-            #---------------------------------------------------
-            # If there's an error executing the statement
-            #---------------------------------------------------
-            if ($rc === false) {
-                $this->errorString = $this->mysqli->error;
-                $result = false;
 
-                # Note: do not print out the specific query here, because it will
-                #     be logged, and could contain PHI
-                $message = 'MySQL error while trying to insert values into table "'
-                    .$this->escapeName($table->getName()).'": '
-                    .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
-                $code = EtlException::DATABASE_ERROR;
-                throw new EtlException($message, $code);
+            foreach ($rowBatches as $rows) {
+                $queryValues = array();
+
+                foreach ($rows as $row) {
+                    $rowValues = $this->getRowValues($row, $fields);
+                    $queryValues[] = '('.implode(",", $rowValues).')';
+                }
+    
+                $query = $this->createInsertStatement($table->getName(), $fields, $queryValues);
+                # print "QUERY: {$query}\n";
+    
+                $rc = $this->mysqli->query($query);
+    
+                #---------------------------------------------------
+                # If there's an error executing the statement
+                #---------------------------------------------------
+                if ($rc === false) {
+                    $this->errorString = $this->mysqli->error;
+                    $result = false;
+
+                    # Note: do not print out the specific query here, because it will
+                    #     be logged, and could contain PHI
+                    $message = 'MySQL error while trying to insert values into table "'
+                        .$this->escapeName($table->getName()).'": '
+                        .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+                    $code = EtlException::DATABASE_ERROR;
+                    throw new EtlException($message, $code);
+                }
             }
         }
     

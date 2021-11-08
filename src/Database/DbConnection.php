@@ -119,7 +119,7 @@ abstract class DbConnection
      *     a description of the table where the rows are to be inserted,
      *     and the rows of data to be inserted.
      */
-    abstract protected function insertRows($table);
+    abstract protected function insertRows($table, $batchSize = null);
     
     /**
      * Process the specified file of queries.
@@ -172,9 +172,9 @@ abstract class DbConnection
         return $rc;
     }
 
-    public function storeRows($table)
+    public function storeRows($table, $batchSize = null)
     {
-        $rc = $this->insertRows($table);
+        $rc = $this->insertRows($table, $batchSize);
         return $rc;
     }
     

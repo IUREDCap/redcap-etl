@@ -330,7 +330,7 @@ abstract class PdoDbConnection extends DbConnection
      *
      * @param Table $table the table object containing the rows to be inserted in the database.
      */
-    protected function insertRows($table)
+    protected function insertRows($table, $batchSize = null)
     {
         $rows = $table->getRows();
 
@@ -342,22 +342,32 @@ abstract class PdoDbConnection extends DbConnection
             #--------------------------------------------------
             $fields = $table->getAllNonAutoIncrementFields();
 
-            $queryValues = array();
-            foreach ($rows as $row) {
-                $rowValues = $this->getRowValues($row, $fields);
-                $queryValues[] = '('.implode(",", $rowValues).')';
+            $rowBatches = array();
+            if (isset($batchSize) && is_int($batchSize) && $batchSize > 0) {
+                $rowBatches = array_chunk($rows, $batchSize, true);
+            } else {
+                $rowBatches[] = $rows;
             }
+
+            foreach ($rowBatches as $rows) {
+                $queryValues = array();
+
+                foreach ($rows as $row) {
+                    $rowValues = $this->getRowValues($row, $fields);
+                    $queryValues[] = '('.implode(",", $rowValues).')';
+                }
     
-            $query = $this->createInsertStatement($table->getName(), $fields, $queryValues);
-            #print "\n\nQUERY:\n----------------------------\n$query\n\n";
+                $query = $this->createInsertStatement($table->getName(), $fields, $queryValues);
+                #print "\n\nQUERY:\n----------------------------\n$query\n\n";
     
-            try {
-                $rc = $this->db->exec($query);
-            } catch (\Exception $exception) {
-                $message = 'Database error while trying to insert values into table "'
-                    .$this->escapeName($table->getName()).'": '.$exception->getMessage();
-                $code = EtlException::DATABASE_ERROR;
-                throw new EtlException($message, $code);
+                try {
+                    $rc = $this->db->exec($query);
+                } catch (\Exception $exception) {
+                    $message = 'Database error while trying to insert values into table "'
+                        .$this->escapeName($table->getName()).'": '.$exception->getMessage();
+                    $code = EtlException::DATABASE_ERROR;
+                    throw new EtlException($message, $code);
+                }
             }
         }
     

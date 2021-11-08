@@ -159,7 +159,7 @@ class CsvDbConnection extends DbConnection
      * Inserts the rows from the specified table
      * into the database.
      */
-    protected function insertRows($table)
+    protected function insertRows($table, $batchSize = null)
     {
         $rows = $table->getRows();
         foreach ($rows as $row) {
