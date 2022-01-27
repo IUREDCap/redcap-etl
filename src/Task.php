@@ -156,7 +156,8 @@ class Task
         #-------------------------------------------------
         $dbLogTable      = null;
         $dbEventLogTable = null;
-        if ($this->taskConfig->getDbLogging()) {
+        # if ($this->taskConfig->getDbLogging()) {
+        if ($this->taskConfig->getDbLogging() && !($this->dbcon instanceof CsvDbConnection)) {
             $this->logger->setDbConnection($this->dbcon);
             $this->logger->setDbLogging(true);
             
@@ -193,7 +194,8 @@ class Task
             $this->schema = new Schema();
         }
         
-        if ($this->taskConfig->getDbLogging()) {
+        # if ($this->taskConfig->getDbLogging()) {
+        if ($this->taskConfig->getDbLogging() && !($this->dbcon instanceof CsvDbConnection)) {
             $this->schema->setDbLogTable($dbLogTable);
             $this->schema->setDbEventLogTable($dbEventLogTable);
         }
