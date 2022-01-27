@@ -268,6 +268,8 @@ The logging tables "etl_log" and "etl_event_log" are intended for
 logging a history of all ETL activity in a database,
 so unlike all other tables, the logging tables are not dropped and re-created after each run.
 They also will not use the table prefix (if any).
+The logging tables are not supported for
+the CSV (comma-separated values) files database option.
 
 **Lookup Table**.
 The lookup table provides a map for multiple choice fields in the database from the value for the choice
@@ -359,6 +361,8 @@ in the load database specified on the ETL configuration, i.e.,
 in the same database where the extracted and transformed
 data from REDCap are loaded. The database log is useful for users who do not have access to
 the ETL server. It can also be used to check the status of ETL jobs programmatically.
+The logging tables require auto-increment fields, so they are not supported for
+the CSV (comma-separated values) files database option.
 
 **E-mail Logging.** E-mail logging can be configures to e-mail a summary of an ETL process after
 it finishes and/or an error report (if one occurs) to sa user-specified e-mail list.
