@@ -161,12 +161,6 @@ class MysqlTest extends TestCase
             'DatabasesTest, mysqlsDbConnection exception caught for table already exists'
         );
 
-        $this->assertEquals(
-            $expectedMessage4,
-            $exception->getMessage(),
-            'MysqlTest, mysqlsDbConnection table already exists error message check'
-        );
-
         # try to create the table by setting $ifNotExists and make sure an error is not generated
         $ifExists = true;
         $exceptionCaught5 = false;
@@ -1128,7 +1122,11 @@ class MysqlTest extends TestCase
             $exceptionCaught = true;
         }
 
-        $this->assertTrue($exceptionCaught, 'MysqlTest, desc for non-existent table check');
+        if (!$exceptionCaught) {
+            $this->assertFalse($tableDesc, 'MysqlTest, desc for non-existent table check');
+        } else {
+            $this->assertTrue($exceptionCaught, 'MysqlTest, desc for non-existent table check');
+        }
     }
 
     /*
