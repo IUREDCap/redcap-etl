@@ -54,17 +54,15 @@ class SqlServerAutoRulesTest extends TestCase
 
     private static function dropTablesAndViews($dbh)
     {
-        $dbh->exec("DROP TABLE IF EXISTS root");
-        $dbh->exec("DROP TABLE IF EXISTS all_visits");
-        $dbh->exec("DROP TABLE IF EXISTS baseline");
-        $dbh->exec("DROP TABLE IF EXISTS baseline_and_home_visits");
-        $dbh->exec("DROP TABLE IF EXISTS baseline_and_visits");
-        $dbh->exec("DROP TABLE IF EXISTS enrollment");
-        $dbh->exec("DROP VIEW  IF EXISTS enrollment_label_view");
-        $dbh->exec("DROP TABLE IF EXISTS home_cardiovascular_visits");
-        $dbh->exec("DROP TABLE IF EXISTS home_weight_visits");
-        $dbh->exec("DROP TABLE IF EXISTS visits");
-        $dbh->exec("DROP TABLE IF EXISTS visits_and_home_visits");
+        $dbh->exec("DROP TABLE IF EXISTS re_baseline");
+        $dbh->exec("DROP TABLE IF EXISTS re_home_weight_visits");
+        $dbh->exec("DROP TABLE IF EXISTS re_home_cardiovascular_visits");
+        $dbh->exec("DROP TABLE IF EXISTS re_visits");
+        $dbh->exec("DROP TABLE IF EXISTS re_baseline_and_visits");
+        $dbh->exec("DROP TABLE IF EXISTS re_baseline_and_home_visits");
+        $dbh->exec("DROP TABLE IF EXISTS re_visits_and_home_visits");
+        $dbh->exec("DROP TABLE IF EXISTS re_all_visits");
+        $dbh->exec("DROP TABLE IF EXISTS re_enrollment");
     }
 
 

@@ -948,7 +948,15 @@ class TaskConfig
                 #-------------------------------------------------------------
                 # suppress errors for this, because it should be
                 # handled by the check for $properties being false
-                @ $properties = parse_ini_file(FileUtil::getSafePath($configurationFile));
+                $safePath = FileUtil::getSafePath($configurationFile);
+
+                if ($safePath == null || empty($safePath)) {
+                    $message = 'The configuration file "'.$configurationFile.'" does not exist.';
+                    $code    = EtlException::INPUT_ERROR;
+                    throw new EtlException($message, $code);
+                }
+
+                @ $properties = parse_ini_file($safePath);
                 if ($properties === false) {
                     $error = error_get_last();
                     $parseError = '';

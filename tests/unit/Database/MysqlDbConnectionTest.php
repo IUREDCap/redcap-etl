@@ -104,7 +104,7 @@ class MysqlDbConnectionTest extends TestCase
         $ssl = true;
         $dbString3 = 'someserver.here.there.edu:idonotexist:somewonderfulpassword:adb';
         $exceptionCaught3 = false;
-        $expectedMessage3 = "php_network_getaddresses: getaddrinfo failed: Name or service not known";
+        $expectedMessage3 = "Name or service not known";
         $mysqlDbConnection = null;
 
         try {

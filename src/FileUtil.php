@@ -48,7 +48,7 @@ class FileUtil
      *
      * @return string absolute path for the specified path.
      */
-    public function getAbsoluteDir($path)
+    public static function getAbsoluteDir($path)
     {
         if ($path == null) {
             $path = '';
@@ -78,7 +78,7 @@ class FileUtil
      *
      * @return string absolute path for the specified path.
      */
-    public function getAbsolutePath($path, $baseDir = null)
+    public static function getAbsolutePath($path, $baseDir = null)
     {
         if ($path == null) {
             $path = '';
