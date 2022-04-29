@@ -431,10 +431,10 @@ abstract class PdoDbConnection extends DbConnection
                     }
                     break;
                 case FieldType::FLOAT:
-                    if (empty($rowData[$fieldDbName]) && $rowData[$fieldDbName] !== 0.0) {
-                        $rowValues[] = 'null';
-                    } else {
+                    if (isset($rowData[$fieldDbName]) && is_numeric($rowData[$fieldDbName])) {
                         $rowValues[] = (float) $rowData[$fieldDbName];
+                    } else {
+                        $rowValues[] = 'null';
                     }
                     break;
                 case FieldType::STRING:
