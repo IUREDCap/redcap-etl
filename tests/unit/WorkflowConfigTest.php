@@ -102,7 +102,7 @@ class WorkflowConfigTest extends TestCase
             'workflow_name' => "workflow1",
             'ssl_verify'    => 1,
             'db_connection' => 'CSV:../output/workflow1/',
-            'log_file'      => '../logs/workflow1.log',
+            'log_file'      => '../data/workflow1.log',
             'print_logging' => false,
             'transform_rules_source' => 3,
             'batch_size'    => 10,
