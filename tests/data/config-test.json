@@ -41,7 +41,7 @@
     "label_view_suffix": "_label_view",
     "print_logging": "",
     "project_id": "46",
-    "log_file": "\/var\/log\/redcap-etl\/redcap-etl.log",
+    "log_file": ".\/redcap-etl.log",
     "email_errors": true,
     "email_summary": true,
     "email_from_address": "redcap-admin@someplace.edu",
