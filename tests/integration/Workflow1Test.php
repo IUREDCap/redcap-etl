@@ -94,6 +94,9 @@ class Workflow1Test extends TestCase
 
     public function testArrayConfig()
     {
+        $processSections = true;
+        $properties = parse_ini_file(self::CONFIG_FILE, $processSections);
+        
         $configurationArray = [
             'workflow_name' => "workflow1",
             'ssl_verify'    => 1,
@@ -104,18 +107,18 @@ class Workflow1Test extends TestCase
             'batch_size'    => 10,
 
             'basic-demography' => [
-                'redcap_api_url'        => 'http://localhost/redcap/api/',
-                'data_source_api_token' => '34D499569034F206F4A97E45AB424A4B'
+                'redcap_api_url'        => $properties['basic-demography']['redcap_api_url'],
+                'data_source_api_token' => $properties['basic-demography']['data_source_api_token']
             ],
 
             'repeating-events' => [
-                'redcap_api_url'        => 'http://localhost/redcap/api/',
-                'data_source_api_token' => '1F574895CEFC6495798962F2B30D9F77'
+                'redcap_api_url'        => $properties['repeating-events']['redcap_api_url'],
+                'data_source_api_token' => $properties['repeating-events']['data_source_api_token']
             ],
 
             'repeating-forms' => [
-                'redcap_api_url'        => 'http://localhost/redcap/api/',
-                'data_source_api_token' => '2C94D35E42823B388AD2D9618D1F9D36',
+                'redcap_api_url'        => $properties['repeating-forms']['redcap_api_url'],
+                'data_source_api_token' => $properties['repeating-forms']['data_source_api_token'],
                 'table_prefix'          => 'rf_'
             ]
         ];
