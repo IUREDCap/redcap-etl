@@ -73,6 +73,8 @@ class Schema
 
         $this->projectInfoTable = null;
         $this->metadataTable = null;
+
+        $this->extractFilterLogic = null;
     }
 
     /**

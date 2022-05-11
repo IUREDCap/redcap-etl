@@ -6,6 +6,7 @@
 
 namespace IU\REDCapETL;
 
+use IU\REDCapETL\Rules\ExtractFilterRule;
 use IU\REDCapETL\Rules\FieldRule;
 use IU\REDCapETL\Rules\Rule;
 use IU\REDCapETL\Rules\Rules;
@@ -99,7 +100,7 @@ class RulesParser
                         }
                         break;
                     case self::ELEMENT_EXTRACT_FILTER:
-                        $rule = $this->parseExtractRule($values, $line, $lineNumber);
+                        $rule = $this->parseExtractFilterRule($values, $line, $lineNumber);
                         break;
                     default:
                         $msg = 'Unrecognized rule type "'.$ruleType.'" on line '.$lineNumber.': "'
@@ -231,24 +232,20 @@ class RulesParser
 
     private function parseExtractFilterRule($values, $line, $lineNumber)
     {
-        $extractFilterRule = new ExtractFiltereRule($line, $lineNumber);
+        $extractFilterRule = new ExtractFilterRule($line, $lineNumber);
         
         if (count($values) < 2) {
             $error = 'Not enough values (less than 2) on line '.$lineNumber.': "'
                     .$line.'"';
             $extractFilterRule->addError($error);
         } else {
-            /*
-            $extractFilterRule->filterLogic = $this->cleanTableName($values[self::EXTRACT_FILTER_LOGIC_POS]);
+            $extractFilterRule->filterLogic = $values[self::EXTRACT_FILTER_LOGIC_POS];
 
             if (empty($extractFilterRule->filterLogic)) {
                 $error = 'Missing filter logic on line '.$lineNumber.': "'
                     .$line.'"';
                 $extractFilterRule->addError($error);
-            } else {
-                // ??? - need to check filter logic
             }
-             */
         }
         
         return $extractFilterRule;
