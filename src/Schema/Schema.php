@@ -10,7 +10,7 @@ use IU\REDCapETL\EtlException;
 
 /**
  * A Schema object is used for holding information about the tables where
- * extracted and transformated data are stored that
+ * extracted and transformated data are loaded that
  * are described in transformation rules for an ETL configuration.
  *
  * Schema objects also contain information about several system generated
@@ -54,6 +54,9 @@ class Schema
      *    These views are created for tables that have multiple choice values,
      *    and have the labels for the multiple choice fields instead of the values. */
     private $labelViewSuffix;
+
+    /** @var string filter logic applied to data extracted from REDCap */
+    private $extractFilterLogic;
 
     public function __construct()
     {
@@ -347,6 +350,16 @@ class Schema
     public function setMetadataTable($metadataTable)
     {
         $this->metadataTable = $metadataTable;
+    }
+
+    public function getExtractFilterLogic()
+    {
+        return $this->extractFilterLogic;
+    }
+
+    public function setExtractFilterLogic($extractFilterLogic)
+    {
+        $this->extractFilterLogic = $extractFilterLogic;
     }
 
     public function getDataTableNames()

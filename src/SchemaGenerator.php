@@ -15,9 +15,7 @@ use IU\REDCapETL\Schema\Schema;
 use IU\REDCapETL\Schema\Table;
 
 /**
- * Transformation rules used for transforming data from
- * the extracted format to the load format used in the
- * target database.
+ * Class for generating a load database schema.
  */
 class SchemaGenerator
 {
@@ -28,9 +26,6 @@ class SchemaGenerator
     const PARSE_VALID = 'valid';
     const PARSE_ERROR = 'error';
     const PARSE_WARN  = 'warn';
-
-
-    private $rules;
 
     /** @var array for multiple-choice fields, a map of field names to a map of values to labels
      *  for the choices for that field name. */
@@ -351,6 +346,8 @@ class SchemaGenerator
                         }
                     }
                 } // End foreach field to be created
+            } elseif ($rule instanceof ExtractFilterRule) {
+                $schema->setExtractFilterLogic($rule->filterLogic);
             } // End if for rule types
         } // End foreach
         

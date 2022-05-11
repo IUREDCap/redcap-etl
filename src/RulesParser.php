@@ -24,8 +24,9 @@ class RulesParser
     const SUFFIXES_SEPARATOR   = ';';
     const ROWSTYPE_SEPARATOR   = '&';
     
-    const ELEMENT_TABLE       = 'TABLE';
-    const ELEMENT_FIELD       = 'FIELD';
+    const ELEMENT_TABLE          = 'TABLE';
+    const ELEMENT_FIELD          = 'FIELD';
+    const ELEMENT_EXTRACT_FILTER = 'EXTRACT_FILTER';
     
     const RULE_TYPE_POS       = 0;
 
@@ -36,6 +37,8 @@ class RulesParser
     const FIELD_NAME_POS      = 1;
     const FIELD_TYPE_POS      = 2;
     const FIELD_DB_NAME_POS   = 3;
+
+    const EXTRACT_FILTER_LOGIC_POS = 1;
     
     # Table types (non-ROOT types represent 1:many relationships)
     const ROOT                  = 'ROOT';
@@ -51,6 +54,10 @@ class RulesParser
     /**
      * Parses rules text and translates it into an array of Rule objects,
      * in effect an AST (Abstract Syntax Tree).
+     *
+     * @param string $rulesString transformation rules.
+     *
+     * @return array an array of Rule objects.
      */
     public function parse($rulesString)
     {
@@ -91,6 +98,9 @@ class RulesParser
                                 . $lineNumber . ': "'.$line.'"');
                         }
                         break;
+                    case self::ELEMENT_EXTRACT_FILTER:
+                        $rule = $this->parseExtractRule($values, $line, $lineNumber);
+                        break;
                     default:
                         $msg = 'Unrecognized rule type "'.$ruleType.'" on line '.$lineNumber.': "'
                                 .$line.'"';
@@ -108,7 +118,7 @@ class RulesParser
         return $rules;
     }
     
-    
+
     private function parseTableRule($values, $line, $lineNumber)
     {
         $tableRule = new TableRule($line, $lineNumber);
@@ -216,6 +226,32 @@ class RulesParser
         }
 
         return $fieldRule;
+    }
+
+
+    private function parseExtractFilterRule($values, $line, $lineNumber)
+    {
+        $extractFilterRule = new ExtractFiltereRule($line, $lineNumber);
+        
+        if (count($values) < 2) {
+            $error = 'Not enough values (less than 2) on line '.$lineNumber.': "'
+                    .$line.'"';
+            $extractFilterRule->addError($error);
+        } else {
+            /*
+            $extractFilterRule->filterLogic = $this->cleanTableName($values[self::EXTRACT_FILTER_LOGIC_POS]);
+
+            if (empty($extractFilterRule->filterLogic)) {
+                $error = 'Missing filter logic on line '.$lineNumber.': "'
+                    .$line.'"';
+                $extractFilterRule->addError($error);
+            } else {
+                // ??? - need to check filter logic
+            }
+             */
+        }
+        
+        return $extractFilterRule;
     }
 
 

@@ -43,6 +43,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/unit/Rules/RuleTest.php</file>
       <file>tests/unit/Rules/TableRuleTest.php</file>
       <file>tests/unit/Rules/FieldRuleTest.php</file>
+      <file>tests/unit/Rules/ExtractFilterRuleTest.php</file>
       <file>tests/unit/Rules/RulesTest.php</file>
       <file>tests/unit/Schema/FieldTest.php</file>
       <file>tests/unit/Schema/FieldTypeTest.php</file>

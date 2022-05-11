@@ -207,20 +207,33 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
      *    for which records should be retrieved and returned
      *    in the batch of records.
      *
+     * @param string $filterLogic a relational expression used to
+     *     filter records extracted from REDCap. Only records for
+     *     which the expression is true will be extracted.
+     *
      * @return array a map from record IDs to the records for each
      *    record ID. A record ID can have multiple records because
      *    of multiple and/or repeatable events and repeatable forms.
      */
-    public function getRecordBatch($recordIds)
+    public function getRecordBatch($recordIds, $filterLogic = null)
     {
         $primaryKey = $this->getPrimaryKey();
         $batch = array();
 
-        $results = $this->exportRecordsAp(
-            ['recordIds' => $recordIds,
-            'exportSurveyFields' => true,
-            'exportDataAccessGroups' => true]
-        );
+        if (empty($filterLogic)) {
+            $results = $this->exportRecordsAp(
+                ['recordIds' => $recordIds,
+                'exportSurveyFields' => true,
+                'exportDataAccessGroups' => true]
+            );
+        } else {
+            $results = $this->exportRecordsAp(
+                ['recordIds' => $recordIds,
+                'exportSurveyFields' => true,
+                'exportDataAccessGroups' => true,
+                'filterLogic' => $filterLogic]
+            );
+        }
 
         // Set up $batch results
         foreach ($results as $result) {
