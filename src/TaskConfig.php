@@ -80,6 +80,7 @@ class TaskConfig
     private $autogenRemoveIdentifierFields;
     private $autogenCombineNonRepeatingFields;
     private $autogenNonRepeatingFieldsTable;
+    private $autogenExtractFilterLogic;   // extract filter logic to be added to auto-generate rules
 
     private $batchSize;
 
@@ -1689,6 +1690,11 @@ class TaskConfig
     public function getAutogenNonRepeatingFieldsTable()
     {
         return $this->autogenNonRepeatingFieldsTable;
+    }
+
+    public function getAutogenExtractFilterLogic()
+    {
+        return $this->autogenExtractFilterLogic;
     }
 
     public function getTaskName()

@@ -22,6 +22,7 @@ class ConfigProperties
     const AUTOGEN_REMOVE_IDENTIFIER_FIELDS     = 'autogen_remove_identifier_fields';
     const AUTOGEN_COMBINE_NON_REPEATING_FIELDS = 'autogen_combine_non_repeating_fields';
     const AUTOGEN_NON_REPEATING_FIELDS_TABLE   = 'autogen_non_repeating_fields_table';
+    const AUTOGEN_EXTRACT_FILTER_LOGIC         = 'autogen_extract_filter_logic';
 
     const BATCH_SIZE             = 'batch_size';
     

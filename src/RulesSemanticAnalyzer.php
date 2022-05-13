@@ -63,6 +63,22 @@ class RulesSemanticAnalyzer
             }
         }
 
+        # Check for duplicate extract filter rules
+        $extractFilterCount = 0;
+        foreach ($rules->getRules() as $rule) {
+            if ($rule instanceof ExtractFilterRule) {
+                $extractFilterCount++;
+            }
+
+            if ($extractFilterCount > 1) {
+                $error = 'Duplicare EXTRACT_FILTER statement found'
+                    .' on line '.$rule->getLineNumber()
+                    .': "'.$rule->getLine().'"';
+                $rule->addError($error);
+            }
+        }
+
+
         return $rules;
     }
 }

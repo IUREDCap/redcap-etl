@@ -37,6 +37,8 @@ class RulesGenerator
 
     private $addSurveyFields;
 
+    private $extractFilterLogic;
+
     /**
      * Generates transformation rules for the
      * specified data project.
@@ -57,14 +59,20 @@ class RulesGenerator
      */
     public function generate(
         $dataProject,
-        $addFormCompleteFields = false,
+        $addFormCompleteFields = false,RulesParser.php:    const EXTRACT_FILTER_LOGIC_POS = 1;
+RulesParser.php:                    case self::ELEMENT_EXTRACT_FILTER:
+RulesParser.php:            $extractFilterRule->filterLogic = $values[self::EXTRACT_FILTER_LOGIC_POS];
+grep: Schema: Is a directory
+abitc@abitc-VirtualBox:~/redcap-etl/src$ vi RulesSemanticAnalyzer.php 
+
         $addDagFields = false,
         $addFileFields = false,
         $addSurveyFields = false,
         $removeNotesFields = false,
         $removeIdentifierFields = false,
         $combineNonRepeatingFields = false,
-        $nonRepeatingFieldsTable = ''
+        $nonRepeatingFieldsTable = '',
+        $extractFilterLogic = null
     ) {
         $this->addFormCompleteFields    = $addFormCompleteFields;
         $this->addDagFields             = $addDagFields;
@@ -75,6 +83,8 @@ class RulesGenerator
         $this->removeIdentifierFields   = $removeIdentifierFields;
         $this->combineNonRepeatingFields= $combineNonRepeatingFields;
         $this->nonRepeatingFieldsTable  = $nonRepeatingFieldsTable;
+
+        $this->extractFilterLogic       = $extractFilterLogic;
 
         $rules = '';
 
