@@ -59,6 +59,8 @@ class ConfigProperties
     const EMAIL_SUBJECT          = 'email_subject';
     const EMAIL_TO_LIST          = 'email_to_list';
     
+    const EXTRACT_FILTER_LOGIC   = 'extract_filter_logic';   // filter for records extracted from REDCap
+
     const EXTRACTED_RECORD_COUNT_CHECK = 'extracted_record_count_check';
 
     #---------------------------------------------------------------------------------------
@@ -85,7 +87,7 @@ class ConfigProperties
     
     const PRINT_LOGGING            = 'print_logging';   # true/false indicates if log messages should be printed
     const PROJECT_ID               = 'project_id';  # optional ID of REDCap project from which data are being extracted
-    const REDCAP_API_URL             = 'redcap_api_url';
+    const REDCAP_API_URL           = 'redcap_api_url';
 
     const REDCAP_METADATA_TABLE      = 'redcap_metadata_table';
     const REDCAP_PROJECT_INFO_TABLE  = 'redcap_project_info_table';

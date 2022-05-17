@@ -105,6 +105,8 @@ class TaskConfig
     private $dbLogTable;
     private $dbEventLogTable;
 
+    private $extractFilterLogic;
+
     private $extractedRecordCountCheck;
 
     private $generatedInstanceType;
@@ -332,6 +334,14 @@ class TaskConfig
                     .' property; a true or false value should be specified.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
+        }
+
+        #-------------------------------------------------------
+        # Get extract filter logic property
+        #-------------------------------------------------------
+        $this->extractFilterLogic = null;
+        if (array_key_exists(ConfigProperties::EXTRACT_FILTER_LOGIC, $this->properties)) {
+            $this->extractFilterLogic = $this->properties[ConfigProperties::EXTRACT_FILTER_LOGIC];
         }
 
 
@@ -1509,6 +1519,11 @@ class TaskConfig
     public function getEmailToList()
     {
         return $this->emailToList;
+    }
+
+    public function getExtractFilterLogic()
+    {
+        return $this->extractFilterLogic;
     }
 
     public function getExtractedRecordCountCheck()

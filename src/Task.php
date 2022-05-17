@@ -426,8 +426,10 @@ class Task
         # Extract the record ID batches
         #--------------------------------------------------
         $startExtractTime = microtime(true);
+        $extractFilterLogic = $this->taskConfig->getExtractFilterLogic();
         $recordIdBatches = $this->dataProject->getRecordIdBatches(
-            (int) $this->taskConfig->getBatchSize()
+            (int) $this->taskConfig->getBatchSize(),
+            $extractFilterLogic
         );
         $endExtractTime = microtime(true);
         $this->extractTime += $endExtractTime - $startExtractTime;
