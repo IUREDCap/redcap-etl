@@ -229,8 +229,8 @@ is being extracted from REDCap.</td>
 For example, <pre>extract_filter_logic='[record_id] < 1020'</pre> would cause only records
 with a record ID less than 1020 to be extracted from REDCap. Note that REDCap-ETL just passes
 the extract filter logic value to REDCap, and REDCap does very little error checking. Instead, in many
-cases, if you have an error in your filter, no error message will be generated and records
-will be returned. You can test out your filter logic in the API Playground within REDCap to make
+cases, if you have an error in your filter, REDCap will return no records and not generate an error
+message. You can test out your filter logic in the API Playground within REDCap to make
 sure that it returns the records expected.
 </td>
 </tbody>
