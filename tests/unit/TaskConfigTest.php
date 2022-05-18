@@ -1528,4 +1528,19 @@ class TaskConfigTest extends TestCase
         $postSql = $properties[ConfigProperties::POST_PROCESSING_SQL];
         $this->assertEquals('insert into test values (1)', $postSql, 'Post-processing SQL check');
     }
+
+    public function testExtractFilterLogic()
+    {
+        $expectedLogic = '[record_id] < 1010';
+
+        $config = new TaskConfig();
+        $properties = $this->properties;
+        $properties[ConfigProperties::EXTRACT_FILTER_LOGIC] = $expectedLogic;
+
+        $config->set($this->logger, $properties);
+
+        $logic = $config->getExtractFilterLogic();
+
+        $this->assertEquals($expectedLogic, $logic, 'Extract filter logic check');
+    }
 }

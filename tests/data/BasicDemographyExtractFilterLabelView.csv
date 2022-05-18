@@ -1,0 +1,15 @@
+"basic_demography_id","redcap_data_source","record_id","first_name","last_name","address","phone","email","birthdate","ethnicity","race___0","race___1","race___2","race___3","race___4","race___5","sex","height","weight","bmi","comments"
+"1",1,"1001","Katherine","Huels","316 Goodwin Lights Suite 463
+Port Marietta, NV 35323-5627","(759) 257-3524","katherine.huels@mailinator.com","1955-05-07",Hispanic or Latino,0,0,0,0,White,0,Female,174,57,18.8,""
+"2",1,"1002","Sienna","Howe","2345 Jaquelin Ways
+Lake Talia, TN 40738-9264","(452) 258-2718","sienna.howe@mailinator.com","1939-06-28",NOT Hispanic or Latino,0,0,0,Black or African American,0,0,Female,176,93,30,""
+"3",1,"1003","Shanna","Fritsch","4926 Garrick Ferry
+Tremblayville, MN 75997","(439) 802-2184","shanna.fritsch@mailinator.com","1940-01-01",NOT Hispanic or Latino,0,0,0,0,White,0,Female,179,113,35.3,""
+"4",1,"1004","Brett","Schuppe","8974 Paolo Ridge Apt. 745
+Rossborough, NE 07878-5634","(358) 728-2618","brett.schuppe@mailinator.com","1929-12-09",NOT Hispanic or Latino,0,0,0,0,White,0,Male,180,62,19.1,""
+"5",1,"1098","Noel","VonRueden","1108 Powlowski Bridge
+Kulasfurt, WI 00524","(744) 975-6215","noel.vonrueden@mailinator.com","1933-12-01",Unknown / Not Reported,0,0,0,0,White,0,Male,175,106,34.6,""
+"6",1,"1099","Lillian","Wisoky","38165 Bechtelar Radial
+Glovermouth, MI 96241-8101","(947) 773-8102","lillian.wisoky@mailinator.com","1944-11-23",NOT Hispanic or Latino,0,0,0,0,White,0,Female,170,80,27.7,""
+"7",1,"1100","Ella","Kunze","26346 Kenyatta Fords
+Stoltenbergville, MN 57828-4095","(714) 207-0230","ella.kunze@mailinator.com","1988-01-19",NOT Hispanic or Latino,0,0,0,0,White,0,Female,172,64,21.6,""
