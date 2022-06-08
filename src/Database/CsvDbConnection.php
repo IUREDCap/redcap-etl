@@ -109,6 +109,24 @@ class CsvDbConnection extends DbConnection
         fwrite($fh, PHP_EOL);
     }
 
+    private function createLabelViewHeader($fh, $table)
+    {
+        $fields = $table->getAllFields();
+        $isFirst = true;
+        foreach ($fields as $field) {
+            if (!$field->isLabel()) {
+                if ($isFirst) {
+                    $isFirst = false;
+                } else {
+                    fwrite($fh, ',');
+                }
+                fwrite($fh, '"'.$field->dbName.'"');
+            }
+        }
+        fwrite($fh, PHP_EOL);
+    }
+
+
     public function addPrimaryKeyConstraint($table)
     {
         ; // CSV doesn't support primary keys, so this is not supported
@@ -150,7 +168,7 @@ class CsvDbConnection extends DbConnection
         $labelViewFile = $this->getLabelViewFile($table);
 
         $fileHandle = fopen($labelViewFile, 'w');
-        $this->createTableHeader($fileHandle, $table);
+        $this->createLabelViewHeader($fileHandle, $table);
         fclose($fileHandle);
     }
 

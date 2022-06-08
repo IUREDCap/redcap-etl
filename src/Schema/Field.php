@@ -38,6 +38,8 @@ class Field
     /** @var array map from values to labels for multiple-choice fields. */
     public $valueToLabelMap;
 
+    public $isLabel; // only set for label fields
+
     /**
      * Creates a Field object that is used to describe a field in REDCap and
      * mapping information for that field to the database where the extraced
@@ -230,5 +232,24 @@ class Field
     public function setUsesLookup($usesLookup)
     {
         $this->usesLookup = $usesLookup;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Indicates if this field is a label for a REDCAp mutliple choice (radio, checkbox, dropdown) field.
+     * If this is a label field, its redcapType should have "_label" appended to it.
+     */
+    public function isLabel()
+    {
+        return $this->isLabel;
     }
 }

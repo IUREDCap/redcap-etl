@@ -212,8 +212,10 @@ abstract class PdoDbConnection extends DbConnection
 
         // foreach field
         foreach ($table->getAllFields() as $field) {
-            // If the field does not use lookup table
-            if ($field->usesLookup() === false) {
+            if ($field->isLabel()) {
+                ; // don't add to view
+            } elseif ($field->usesLookup() === false) {
+                // If the field does not use lookup table
                 array_push($selects, $this->escapeName($field->dbName));
             } else {
                 // $field->usesLookup holds name of lookup field, if not false

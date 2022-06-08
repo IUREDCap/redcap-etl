@@ -89,9 +89,11 @@ class RedCapEtl
     ) {
         $this->app = $logger->getApp();
 
+        // Create the ETL configuration based on the specified inputs
         $this->workflowConfig = new WorkflowConfig();
         $this->workflowConfig->set($logger, $properties, $baseDir);
 
+        // Create an ETL workflow based on the ETL configuration
         $this->workflow = new Workflow();
         $this->workflow->set($this->workflowConfig, $logger, $redcapProjectClass);
         

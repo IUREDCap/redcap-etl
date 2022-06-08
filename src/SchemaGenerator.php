@@ -337,6 +337,24 @@ class SchemaGenerator
 
                         // If this field has category/label choices
                         if (array_key_exists($originalFieldName, $this->lookupChoices)) {
+                            // Add label field here???????????????
+                            // Need one label for each checkbox, because multiple values
+                            // can be selected
+                            // Types: dropdown, radio, checkbox (only checkbox can have multiple values)
+                            $labelFieldSuffix = $this->taskConfig->getLabelFieldSuffix();
+                            if (isset($labelFieldSuffix) && trim($labelFieldSuffix) !== '') {
+                                $labelField = clone $field;
+                                $labelFieldName = $field->getName() . $labelFieldSuffix;
+
+                                $labelField->dbName     = $labelFieldName;
+                                $labelField->type       = $this->taskConfig->getGeneratedLabelType()->getType();
+                                $labelField->size       = $this->taskConfig->getGeneratedLabelType()->getSize();
+                                $labelField->setUsesLookup(false);
+                                $labelField->isLabel    = true;
+
+                                $table->addField($labelField);
+                            }
+
                             $this->lookupTable->addLookupField(
                                 $table->getName(),
                                 $originalFieldName,

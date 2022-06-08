@@ -76,6 +76,7 @@ class ConfigProperties
 
     const IGNORE_EMPTY_INCOMPLETE_FORMS = 'ignore_empty_incomplete_forms';
 
+    const LABEL_FIELD_SUFFIX       = 'label_field_suffix';
     const LABEL_VIEW_SUFFIX        = 'label_view_suffix';
     const LOG_FILE                 = 'log_file';
     const LOOKUP_TABLE_NAME        = 'lookup_table_name';

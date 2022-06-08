@@ -21,6 +21,8 @@
     "label_view_suffix": "_label_view",
     "table_prefix": "", 
 
+    "label_field_suffix": "", 
+
     "create_lookup_table": "",
     "lookup_table_name": "basic_lookup",
 

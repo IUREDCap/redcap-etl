@@ -61,7 +61,8 @@ class TaskConfig
 
     const DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS = false;
 
-    const DEFAULT_LABEL_VIEW_SUFFIX = '_label_view';
+    const DEFAULT_LABEL_FIELD_SUFFIX = '_label';
+    const DEFAULT_LABEL_VIEW_SUFFIX  = '_label_view';
     
     const DEFAULT_PRINT_LOGGING = true;
     
@@ -118,6 +119,7 @@ class TaskConfig
 
     private $ignoreEmptyIncompleteForms;
     
+    private $labelFieldSuffix;
     private $labelViewSuffix;
     private $lookupTableName;
 
@@ -598,6 +600,22 @@ class TaskConfig
             }
         }
 
+
+        #----------------------------------------------------------------
+        # Get the label field suffix (if any)
+        #----------------------------------------------------------------
+        $this->labelFieldSuffix = self::DEFAULT_LABEL_FIELD_SUFFIX;
+        if (array_key_exists(ConfigProperties::LABEL_FIELD_SUFFIX, $this->properties)) {
+            $labelFieldSuffix = $this->properties[ConfigProperties::LABEL_FIELD_SUFFIX];
+
+            # If the suffix contains something other than letters, numbers or underscore
+            if (!empty($labelFieldSuffix) && preg_match("/[^a-zA-Z0-9_]+/", $labelFieldSuffix) === 1) {
+                $message = "Invalid ".ConfigProperties::LABEL_FIELD_SUFFIX." property."
+                    . " This property may only contain letters, numbers, and underscores.";
+                 throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+            $this->labelFieldSuffix = $labelFieldSuffix;
+        }
 
         #----------------------------------------------------------------
         # Get the label view suffix (if any)
@@ -1559,6 +1577,11 @@ class TaskConfig
     public function getGeneratedSuffixType()
     {
         return $this->generatedSuffixType;
+    }
+
+    public function getLabelFieldSuffix()
+    {
+        return $this->labelFieldSuffix;
     }
 
     public function getLabelViewSuffix()

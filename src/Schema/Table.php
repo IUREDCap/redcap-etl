@@ -469,18 +469,6 @@ class Table
             if (isset($this->recordIdFieldName) && $field->name === $this->recordIdFieldName) {
                 $row->data[$field->dbName] = $data[$field->name];
 
-                /*
-                if (count($allFields) === 1) {
-                    # If the record ID is the ONLY field in the table, (and it has been found if you get to here)
-                    # consider the data to be found
-                    $dataFound = true;
-                } elseif (count($allFields) === 2 && in_array(RedCapEtl::COLUMN_DAG, $fieldNames)) {
-                    # If the record ID and DAG (Data Access Group) are the only records in the table,
-                    # consider the data to be found (e.g., this is a root table of auto-generation where the DAG
-                    # fields option was selected)
-                    $dataFound = true;
-                }
-                 */
                 if ($this->isRecordIdTable()) {
                     # If the record ID is the ONLY field in the table, (and it has been found if you get to here)
                     # or if the record ID and DAG (Data Access Group) are the ONLY records in the table,

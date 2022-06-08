@@ -321,8 +321,10 @@ class MysqlDbConnection extends DbConnection
 
         // foreach field
         foreach ($table->getAllFields() as $field) {
-            // If the field does not use lookup table
-            if ($field->usesLookup() === false) {
+            if ($field->isLabel()) {
+                ; // don't add to view
+            } elseif ($field->usesLookup() === false) {
+                // If the field does not use lookup table
                 array_push($selects, $this->escapeName($field->dbName));
             } else {
                 // $field->usesLookup holds name of lookup field, if not false
@@ -560,7 +562,7 @@ class MysqlDbConnection extends DbConnection
                     }
                     break;
                 default:
-                    $message = 'Unrecognized database field type for MySQL: "'.$fieldType.'".';
+                    $message = 'Unrecognized database field type for MySQL: "'.print_r($fieldType, true).'".';
                     $code = EtlException::DATABASE_ERROR;
                     throw new EtlException($message, $code);
                     break;
