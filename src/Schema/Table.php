@@ -556,7 +556,11 @@ class Table
                     # print "\nAdded value {$value} to field {$field->dbName}\n";
                     if ($field->isLabel) {
                         if ($isCheckbox) {
-                            $labelValue = $field->checkboxLabel;
+                            if ($value == 1) {
+                                $labelValue = $field->checkboxLabel;
+                            } else {
+                                $labelValue = "";
+                            }
                         } else {
                             if (array_key_exists($value, $field->valueToLabelMap)) {
                                 $labelValue = $field->valueToLabelMap[$value];
