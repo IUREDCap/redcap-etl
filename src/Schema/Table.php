@@ -463,7 +463,7 @@ class Table
         $dataFound = false;
         
         $allFields = $this->getFields();
-        
+
         // Foreach field
         foreach ($allFields as $field) {
             if (isset($this->recordIdFieldName) && $field->name === $this->recordIdFieldName) {
@@ -504,7 +504,7 @@ class Table
             } elseif ($field->name === RedCapEtl::COLUMN_DATA_SOURCE) {
                 # Just copy the field and don't count it as a "data found" field
                 $row->data[$field->dbName] = $data[$field->name];
-            } elseif (preg_match('/_timestamp$/', $field->name) === 1 && $field->type === FieldType::DATETIME) {
+            } elseif ($field->isSurveyTimestamp()) {
                 # Handle survey timestamps differently; can have '[not completed]' value,
                 # which may cause an error for datetime fields
                 $value = $data[$field->name];
@@ -521,11 +521,11 @@ class Table
                 
                 $isCalcField     = false;
                 $isCheckbox      = false;
-                $isRadio         = false;
                 $isCompleteField = false;
 
                 // If this is a checkbox field
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
+                // if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->name)) {
+                if ($field->isCheckbox()) {
                     $isCheckbox = true;
                     list($rootName,$choiceValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
                     $choiceValue = str_replace('-', '_', $choiceValue);
@@ -536,8 +536,6 @@ class Table
                                         
                     if ($field->redcapType === 'calc') {
                         $isCalcField = true;
-                    } elseif ($field->redcapType === 'radio') {
-                        $isRadio = true;
                     }
 
                     if (preg_match('/_complete$/', $field->name)) {
@@ -556,7 +554,20 @@ class Table
                 if (array_key_exists($variableName, $data)) {
                     $value = $data[$variableName];
                     # print "\nAdded value {$value} to field {$field->dbName}\n";
-                    $row->data[$field->dbName] = $value;
+                    if ($field->isLabel) {
+                        if ($isCheckbox) {
+                            $labelValue = $field->checkboxLabel;
+                        } else {
+                            if (array_key_exists($value, $field->valueToLabelMap)) {
+                                $labelValue = $field->valueToLabelMap[$value];
+                            } else {
+                                $labelValue = "";
+                            }
+                        }
+                        $row->data[$field->dbName] = $labelValue;
+                    } else {
+                        $row->data[$field->dbName] = $value;
+                    }
                 }
 
                 if (isset($value)) {

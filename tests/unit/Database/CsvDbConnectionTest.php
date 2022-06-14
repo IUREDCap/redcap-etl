@@ -332,6 +332,7 @@ class CsvDbConnectionTest extends TestCase
             null
         );
         $field8->setUsesLookup('exercises___0');
+        $field8->redcapType = 'checkbox';
         $rootTable1->addField($field8);
 
         $field9 = new Field(
@@ -339,6 +340,7 @@ class CsvDbConnectionTest extends TestCase
             FieldType::CHECKBOX,
             null
         );
+        $field9->redcapType = 'checkbox';
         $field9->setUsesLookup('exercises___1');
         $rootTable1->addField($field9);
 
@@ -347,6 +349,7 @@ class CsvDbConnectionTest extends TestCase
             FieldType::CHECKBOX,
             null
         );
+        $fielda->redcapType = 'checkbox';
         $fielda->setUsesLookup('exercises___2');
         $rootTable1->addField($fielda);
 

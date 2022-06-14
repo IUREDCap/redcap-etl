@@ -233,6 +233,7 @@ class MysqlTest extends TestCase
             FieldType::CHECKBOX,
             null
         );
+        $field3->redcapType = 'checkbox';
         $rootTable->addField($field3);
 
         $foreignKey = null;

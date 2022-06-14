@@ -209,7 +209,7 @@ class SchemaGenerator
                 }
                 
                 $fields = $this->generateFields($rule, $table);
-                
+
 
                 # For a single checkbox, one field will be generated for each option.
                 # These generated fields will have type INT and an original field
@@ -233,9 +233,10 @@ class SchemaGenerator
                     #--------------------------------------------------------
                     $fname = str_replace('-', '_', $fname);
 
-                    //-------------------------------------------------------------
-                    // !SUFFIXES: Prep for and warn that map field is not in REDCap
-                    //-------------------------------------------------------------
+                    #-------------------------------------------------------------
+                    # For non-suffixes fields, create warning if field name is
+                    # not in REDCap
+                    #-------------------------------------------------------------
                     if (!RowsType::hasSuffixes($table->rowsType) &&
                             $fname !== 'redcap_data_access_group' &&
                             $fname !== 'redcap_survey_identifier' &&
@@ -298,11 +299,9 @@ class SchemaGenerator
                             break; // continue 2;
                         }
                     } else {
-                        //------------------------------------------------------------
-                        // !SUFFIXES: Prep for warning that REDCap field is not in Map
-                        //------------------------------------------------------------
-
-                        // Not BY_SUFFIXES, and field was found
+                        #-----------------------------------------------------------------
+                        # Non-suffixes field that was found in REDCap
+                        #-----------------------------------------------------------------
 
                         // In case this is a checkbox field
                         if ($originalFieldType === FieldType::CHECKBOX) {
@@ -319,11 +318,7 @@ class SchemaGenerator
                             $originalFieldName = $fname;
                         }
 
-                        //---------------------------------------------------------------
-                        // !SUFFIXES: Remove from warning that REDCap field is not in Map
-                        //---------------------------------------------------------------
-
-                        // Remove this field from the list of fields to be mapped
+                        # Remove this field from the list of unmapped fields
                         unset($unmappedRedCapFields[$fname]);
                     }
         
@@ -337,10 +332,10 @@ class SchemaGenerator
 
                         // If this field has category/label choices
                         if (array_key_exists($originalFieldName, $this->lookupChoices)) {
-                            // Add label field here???????????????
-                            // Need one label for each checkbox, because multiple values
-                            // can be selected
-                            // Types: dropdown, radio, checkbox (only checkbox can have multiple values)
+                            # Add label field here???????????????
+                            # Need one label for each checkbox, because multiple values
+                            # can be selected
+                            # Types: dropdown, radio, checkbox (only checkbox can have multiple values)
                             $labelFieldSuffix = $this->taskConfig->getLabelFieldSuffix();
                             if (isset($labelFieldSuffix) && trim($labelFieldSuffix) !== '') {
                                 $labelField = clone $field;
@@ -360,6 +355,7 @@ class SchemaGenerator
                                 $originalFieldName,
                                 $rule->dbFieldName
                             );
+
                             if (empty($rule->dbFieldName)) {
                                 $field->setUsesLookup($originalFieldName);
                             } else {
@@ -609,7 +605,7 @@ class SchemaGenerator
                 $lookupFieldName = $fieldName;
             }
 
-            $redcapFieldType = $this->dataProject->getFieldType($fieldName);
+            $redcapFieldType = $this->dataProject->getFieldType($lookupFieldName);
             
             # Process each value of the checkbox
             foreach ($this->lookupChoices[$lookupFieldName] as $value => $label) {
@@ -624,6 +620,7 @@ class SchemaGenerator
                 }
 
                 $field = new Field($checkBoxFieldName, FieldType::INT, null, $checkBoxDbFieldName, $redcapFieldType);
+                $field->checkboxLabel = $label;
                 $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value] = $field;
             }
         } else {  # Non-checkbox field
