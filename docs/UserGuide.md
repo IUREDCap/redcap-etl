@@ -43,6 +43,9 @@ REDCap-ETL uses REDCap's API (Application Programming Interface) to extract data
 so the API's URL and an API token, which indicates which REDCap project to access,
 need to be specified.
 
+An optional extract filter logic property has been added that enables you to restrict the records
+that are extracted from REDCap.
+
 ![REDCap-ETL Task](REDCap-ETL-Task.png)
 
 REDCap-ETL uses the PHP .ini file format for configurations.
@@ -244,9 +247,13 @@ Workflows used a merged database schema for their tasks that load data to the sa
 
 #### Label Views
 
-For each table that has at least one multiple-choice field, REDCap-ETL will generate a corresponding view that
+*(Deprecated)* For each table that has at least one multiple-choice field, REDCap-ETL will generate a corresponding view that
 has labels, instead of values, for the multiple choice fields. The name of the view will be the same as the name
 of the table with the value of the label_view_suffix property appended to it.
+
+Originally, REDCap-ETL only generated multiple-choice values in the database tables, but now 
+now also generates multiple choice labels, so the label views feature has been deprecated,
+and the current plan is to remove this feature in a future release of REDCap-ETL.
 
 #### System-Generated Database Tables
 
