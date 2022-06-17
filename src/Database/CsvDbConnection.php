@@ -34,8 +34,6 @@ class CsvDbConnection extends DbConnection
 
         $this->columnNamesMap = array();
 
-        $this->columnNamesMap = array();
-
         $idValues = array(DbConnectionFactory::DBTYPE_CSV, $dbString);
         $this->id = DbConnection::createConnectionString($idValues);
 
@@ -186,7 +184,8 @@ class CsvDbConnection extends DbConnection
     }
 
     /**
-     * Insert the specified row into its table.
+     * Insert the specified row into its table, and since CSV does not support
+     * views, also insert the corresponding row into the label view table.
      */
     public function insertRow($row)
     {
@@ -207,7 +206,7 @@ class CsvDbConnection extends DbConnection
 
         $fh  = fopen($file, 'a');
 
-        $this->insertRowIntoFile($fh, $lfh, $row);
+        $this->insertRowIntoFiles($fh, $lfh, $row);
 
         fclose($fh);
         if (isset($lfh)) {
@@ -218,31 +217,53 @@ class CsvDbConnection extends DbConnection
 
 
     /**
+     * Inserts a row into files. Since CSV does not support views, when a row is inserted
+     * into a table, a corresponding row will also be inserted into its label "view" table.
+     *
      * @param resource $fh table file handle
      * @param resource $lfh label "view" of table file handle
      * @param Row $row the row of data to insert
      */
-    private function insertRowIntoFile($fh, $lfh, $row)
+    private function insertRowIntoFiles($fh, $lfh, $row)
     {
         $table = $row->table;
-        $isFirst = true;
         $position = 0;
         $rowData = $row->getData();
+
+        $labelFileHandle = $lfh;
 
         # Fix row data to contain all the columns in the table
         $columns = $this->getTableColumnNames($table->GetName());
         $dbFieldNameMap = $table->getDbFieldNameMap();
-        foreach ($columns as $column) {
-            if ($isFirst) {
-                $isFirst = false;
-            } else {
-                $this->fileWrite($fh, $lfh, ',');
-            }
+        $this->fileWrite($fh, $lfh, '');
+        
+        $isFirst = true;
 
+        foreach ($columns as $column) {
             if (!array_key_exists($column, $dbFieldNameMap)) {
-                $this->fileWrite($fh, $lfh, '');
+                # Field is not in this task; could be field from another task in workflow
+                if ($isFirst) {
+                    $isFirst = false;
+                } else {
+                    $this->fileWrite($fh, $lfh, ',');
+                }
             } else {
+                $lfh = $labelFileHandle;
                 $field = $dbFieldNameMap[$column];
+
+                if ($field->isLabel) {
+                    # If this is a label field, set the label "view" file handle to
+                    # null, so the values for this field will not be saved in the
+                    # label "view" table.
+                    $lfh = null;
+                }
+
+                if ($isFirst) {
+                    $isFirst = false;
+                } else {
+                    $this->fileWrite($fh, $lfh, ',');
+                }
+
                 $fieldType = $field->type;
                 $value = $rowData[$field->dbName];
 
@@ -251,7 +272,7 @@ class CsvDbConnection extends DbConnection
                 #------------------------------------------------------
                 $label = null;
                 if ($field->usesLookup()) {
-                    if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
+                    if ($field->isCheckbox()) {
                         if ($value === 1 || $value === '1') {
                             list($rootName, $checkboxValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
                             $label = $this->lookupTable->getLabel(
@@ -305,6 +326,9 @@ class CsvDbConnection extends DbConnection
     /**
      * Writes the specified value (or it's label) to the
      * specified file or files.
+     *
+     * @param resource $fh table file handle
+     * @param resource $lfh label table file handle
      */
     private function fileWrite($fh, $lfh, $value, $label = null)
     {

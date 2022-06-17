@@ -63,6 +63,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/BasicDemography2Test.php</file>
       <file>tests/integration/BasicDemographyExtractFilterTest.php</file>
       <file>tests/integration/BasicDemographyJsonTest.php</file>
+      <file>tests/integration/BasicDemographyLabelFieldsTest.php</file>
       <file>tests/integration/DynamicRulesTest.php</file>
       <file>tests/integration/DynamicRulesLongitudinalTest.php</file>
       <file>tests/integration/DynamicRulesMultipleRootFormTest.php</file>

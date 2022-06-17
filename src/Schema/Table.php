@@ -280,6 +280,15 @@ class Table
         return $map;
     }
 
+    public function getFieldNameMap()
+    {
+        $map = array();
+        foreach ($this->getAllFields() as $field) {
+            $map[$field->name] = $field;
+        }
+        return $map;
+    }
+
 
     /**
      * Returns regular fields, primary field, and, if
