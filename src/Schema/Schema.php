@@ -50,6 +50,9 @@ class Schema
     /** @var MetadataTable table with REDCap metadata information */
     private $metadataTable;
     
+    /** @var boolean indicates if label views should be generated */
+    private $labelViews;
+
     /** @var string suffix string that is appended to the end of the label view names.
      *    These views are created for tables that have multiple choice values,
      *    and have the labels for the multiple choice fields instead of the values. */
@@ -157,6 +160,14 @@ class Schema
         #-----------------------------------------------
         $mergedSchema->dbLogTableMap      = array_merge($this->dbLogTableMap, $schema->dbLogTableMap);
         $mergedSchema->dbEventLogTableMap = array_merge($this->dbEventLogTableMap, $schema->dbEventLogTableMap);
+
+        #----------------------------------------------
+        # Merge label views
+        #----------------------------------------------
+        if ($schema->labelViews) {
+            # if the merged schema has label views set, set it here (else leave it as is)
+            $this->labelViews = true;
+        }
 
         #----------------------------------------------
         # Merge the label view suffix
@@ -372,6 +383,16 @@ class Schema
         return $tableNames;
     }
     
+    public function getLabelViews()
+    {
+        return $this->labelViews;
+    }
+    
+    public function setLabelViews($labelViews)
+    {
+        $this->labelViews = $labelViews;
+    }
+
     public function getLabelViewSuffix()
     {
         return $this->labelViewSuffix;

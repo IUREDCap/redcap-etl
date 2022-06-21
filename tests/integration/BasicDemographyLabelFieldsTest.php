@@ -89,13 +89,14 @@ class BasicDemographyLabelFieldsTest extends TestCase
         #-------------------------------------
         # Check Label View
         #-------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvLabelFile);
-        $csv = $parser->parse();
+        $this->assertFileDoesNotExist(self::$csvLabelFile, 'No label view check.');
+        # $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvLabelFile);
+        # $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/BasicDemographyLabelView.csv'
-        );
-        $expectedCsv = $parser2->parse();
-        $this->assertEquals($expectedCsv, $csv, 'CSV label file check.');
+        # $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
+            # __DIR__.'/../data/BasicDemographyLabelView.csv'
+        # );
+        # $expectedCsv = $parser2->parse();
+        # $this->assertEquals($expectedCsv, $csv, 'CSV label file check.');
     }
 }

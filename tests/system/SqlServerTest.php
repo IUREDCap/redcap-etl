@@ -180,6 +180,7 @@ class SqlServerTest extends TestCase
             $this->suffixes,
             $this->recordidFieldName
         );
+        $rootTable->setNeedsLabelView(true);
 
         #### Create fields in the Table object
         $field0 = new Field(
@@ -303,6 +304,7 @@ class SqlServerTest extends TestCase
             $this->suffixes,
             $this->recordidFieldName
         );
+        $rootTable->setNeedsLabelView(true);
 
        #create fields in the Table object
         $field0 = new Field(
@@ -455,6 +457,7 @@ class SqlServerTest extends TestCase
             $this->suffixes,
             $this->recordidFieldName
         );
+        $rootTable->setNeedsLabelView(true);
 
         #create fields in the Table object
         $field0 = new Field(
@@ -593,6 +596,7 @@ class SqlServerTest extends TestCase
             $this->suffixes,
             $this->recordidFieldName
         );
+        $rootTable2->setNeedsLabelView(true);
 
         #create fields in the Table object
         $field20 = new Field(
@@ -897,6 +901,7 @@ class SqlServerTest extends TestCase
             $this->suffixes,
             $this->recordidFieldName
         );
+        $rootTable->setNeedsLabelView(true);
 
         #create fields in the Table object
         $field0 = new Field(
@@ -1056,6 +1061,7 @@ class SqlServerTest extends TestCase
             $this->suffixes,
             $this->recordidFieldName
         );
+        $rootTable->setNeedsLabelView(true);
 
         # Create fields in the Table object
         $field0 = new Field(
@@ -1201,6 +1207,7 @@ class SqlServerTest extends TestCase
             $this->suffixes,
             $this->recordidFieldName
         );
+        $rootTable->setNeedsLabelView(true);
 
         #create the SqlServerDbConnection
         $configuration = new TaskConfig();

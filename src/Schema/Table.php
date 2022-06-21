@@ -52,6 +52,8 @@ class Table
     
     private $keyType;
 
+    private $needsLabelView;
+
     /**
      * Creates a Table object.
      *
@@ -103,6 +105,8 @@ class Table
             // Otherwise, create a new synthetic primary key
             $this->primary = $this->createPrimary();
         }
+
+        $this->needsLabelView = false;
     }
 
     /**
@@ -116,7 +120,8 @@ class Table
     {
         $mergedTable = clone $this;
 
-        $mergedTable->usesLookup = $this->usesLookup || $table->usesLookup;
+        $mergedTable->usesLookup     = $this->usesLookup || $table->usesLookup;
+        $mergedTable->needsLabelView = $this->needsLabelView || $table->needsLabelView;
 
         # Check the table name (tables with different names should not be merged in the first place,
         # so this error would tend to indicate some kind of logic error in the calling code).
@@ -779,6 +784,16 @@ class Table
     public function getNamePrefix()
     {
         return $this->namePrefix;
+    }
+
+    public function getNeedsLabelView()
+    {
+        return $this->needsLabelView;
+    }
+
+    public function setNeedsLabelView($needsLabelView)
+    {
+        $this->needsLabelView = $needsLabelView;
     }
 
 

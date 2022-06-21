@@ -721,6 +721,7 @@ class MysqlTest extends TestCase
             $this->suffixes,
             $this->recordIdFieldName
         );
+        $rootTable->setNeedsLabelView(true);
 
         #create fields in the Table object
         $field0 = new Field(

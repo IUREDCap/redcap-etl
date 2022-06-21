@@ -317,68 +317,68 @@ class MysqlDbConnection extends DbConnection
      */
     public function replaceLookupView($table, $lookup)
     {
-        $selects = array();
+        if ($table->getNeedsLabelView()) {
+            $selects = array();
 
-        // foreach field
-        foreach ($table->getAllFields() as $field) {
-            if ($field->isLabel()) {
-                ; // don't add to view
-            } elseif ($field->usesLookup() === false) {
-                // If the field does not use lookup table
-                array_push($selects, $this->escapeName($field->dbName));
-            } else {
-                // $field->usesLookup holds name of lookup field, if not false
-                // name of lookup field is root of field name for checkbox
-                $fname = $field->usesLookup();
-
-                // If the field uses the lookup table and is a checkbox field
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
-                // For checkbox fields, the join needs to be done based on
-                // the category embedded in the name of the checkbox field
-
-                // Separate root from category
-                    list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
-
-                    $label = $this->mysqli->real_escape_string(
-                        $lookup->getLabel($table->getName(), $fname, $cat)
-                    );
-                    $select = 'CASE '.$this->escapeName($field->dbName).' WHEN 1 THEN '
-                        . "'".$label."'"
-                        . ' ELSE 0'
-                        . ' END as '.$this->escapeName($field->dbName);
+            // foreach field
+            foreach ($table->getAllFields() as $field) {
+                if ($field->isLabel()) {
+                    ; // don't add to view
+                } elseif ($field->usesLookup() === false) {
+                    // If the field does not use lookup table
+                    array_push($selects, $this->escapeName($field->dbName));
                 } else {
-                    # The field uses the lookup table and is not a checkbox field
-                    $select = 'CASE '.$this->escapeName($field->dbName);
-                    $map = $lookup->getValueLabelMap($table->getName(), $fname);
-                    foreach ($map as $value => $label) {
-                        $select .= ' WHEN '."'".($this->mysqli->real_escape_string($value))."'"
-                            .' THEN '."'".($this->mysqli->real_escape_string($label))."'";
+                    // $field->usesLookup holds name of lookup field, if not false
+                    // name of lookup field is root of field name for checkbox
+                    $fname = $field->usesLookup();
+
+                    // If the field uses the lookup table and is a checkbox field
+                    if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
+                    // For checkbox fields, the join needs to be done based on
+                    // the category embedded in the name of the checkbox field
+
+                    // Separate root from category
+                        list($rootName, $cat) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
+
+                        $label = $this->mysqli->real_escape_string(
+                            $lookup->getLabel($table->getName(), $fname, $cat)
+                        );
+                        $select = 'CASE '.$this->escapeName($field->dbName).' WHEN 1 THEN '
+                            . "'".$label."'"
+                            . ' ELSE 0'
+                            . ' END as '.$this->escapeName($field->dbName);
+                    } else {
+                        # The field uses the lookup table and is not a checkbox field
+                        $select = 'CASE '.$this->escapeName($field->dbName);
+                        $map = $lookup->getValueLabelMap($table->getName(), $fname);
+                        foreach ($map as $value => $label) {
+                            $select .= ' WHEN '."'".($this->mysqli->real_escape_string($value))."'"
+                                .' THEN '."'".($this->mysqli->real_escape_string($label))."'";
+                        }
+                        $select .= ' END as '.$this->escapeName($field->dbName);
                     }
-                    $select .= ' END as '.$this->escapeName($field->dbName);
+                    array_push($selects, $select);
                 }
-                array_push($selects, $select);
+            }
+
+            $query = 'CREATE OR REPLACE VIEW '.$this->escapeName($table->getName().$this->labelViewSuffix).' AS ';
+
+            $select = 'SELECT '. implode(', ', $selects);
+            $from = 'FROM '.$this->escapeName($table->getName());
+
+            $query .= $select.' '.$from;
+
+            ###print("QUERY: $query\n");
+
+            // Execute query
+            $result = $this->mysqli->query($query);
+            if ($result === false) {
+                $message = 'MySQL error in query "'.$query.'"'
+                    .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
             }
         }
-
-        $query = 'CREATE OR REPLACE VIEW '.$this->escapeName($table->getName().$this->labelViewSuffix).' AS ';
-
-        $select = 'SELECT '. implode(', ', $selects);
-        $from = 'FROM '.$this->escapeName($table->getName());
-
-        $query .= $select.' '.$from;
-
-        ###print("QUERY: $query\n");
-
-        // Execute query
-        $result = $this->mysqli->query($query);
-        if ($result === false) {
-            $message = 'MySQL error in query "'.$query.'"'
-                .' ['.$this->mysqli->errno.']: '.$this->mysqli->error;
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
-
-
         return(1);
     }
 

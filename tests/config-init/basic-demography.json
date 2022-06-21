@@ -18,6 +18,7 @@
 
     "batch_size": "10",
 
+    "label_views": "true",
     "label_view_suffix": "_label_view",
     "table_prefix": "", 
 

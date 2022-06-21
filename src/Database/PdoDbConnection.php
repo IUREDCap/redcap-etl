@@ -208,80 +208,82 @@ abstract class PdoDbConnection extends DbConnection
      */
     public function replaceLookupView($table, $lookup)
     {
-        $selects = array();
+        if ($table->getNeedsLabelView()) {
+            $selects = array();
 
-        // foreach field
-        foreach ($table->getAllFields() as $field) {
-            if ($field->isLabel()) {
-                ; // don't add to view
-            } elseif ($field->usesLookup() === false) {
-                // If the field does not use lookup table
-                array_push($selects, $this->escapeName($field->dbName));
-            } else {
-                // $field->usesLookup holds name of lookup field, if not false
-                // name of lookup field is root of field name for checkbox
-                $fname = $field->usesLookup();
-
-                // If the field uses the lookup table and is a checkbox field
-                if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
-                    // For checkbox fields, the join needs to be done based on
-                    // the category embedded in the name of the checkbox field
-
-                    // Separate root from choice value
-                    list($rootName, $choiceValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
-
-                    $label = $this->db->quote(
-                        $lookup->getLabel($table->getName(), $fname, $choiceValue)
-                    );
-                    $select = 'CASE '.$this->escapeName($field->dbName).' WHEN 1 THEN '
-                        . $label
-                        . " ELSE '0'"
-                        . ' END as '.$this->escapeName($field->dbName);
+            // foreach field
+            foreach ($table->getAllFields() as $field) {
+                if ($field->isLabel()) {
+                    ; // don't add to view
+                } elseif ($field->usesLookup() === false) {
+                    // If the field does not use lookup table
+                    array_push($selects, $this->escapeName($field->dbName));
                 } else {
-                    # The field uses the lookup table and is not a checkbox field
-                    $select = 'CASE '.$this->escapeName($field->dbName);
-                    $map = $lookup->getValueLabelMap($table->getName(), $fname);
-                    foreach ($map as $value => $label) {
-                        $select .= ' WHEN '.($this->db->quote($value))
-                            .' THEN '.($this->db->quote($label));
+                    // $field->usesLookup holds name of lookup field, if not false
+                    // name of lookup field is root of field name for checkbox
+                    $fname = $field->usesLookup();
+
+                    // If the field uses the lookup table and is a checkbox field
+                    if (preg_match('/'.RedCapEtl::CHECKBOX_SEPARATOR.'/', $field->dbName)) {
+                        // For checkbox fields, the join needs to be done based on
+                        // the category embedded in the name of the checkbox field
+
+                        // Separate root from choice value
+                        list($rootName, $choiceValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->dbName);
+
+                        $label = $this->db->quote(
+                            $lookup->getLabel($table->getName(), $fname, $choiceValue)
+                        );
+                        $select = 'CASE '.$this->escapeName($field->dbName).' WHEN 1 THEN '
+                            . $label
+                            . " ELSE '0'"
+                            . ' END as '.$this->escapeName($field->dbName);
+                    } else {
+                        # The field uses the lookup table and is not a checkbox field
+                        $select = 'CASE '.$this->escapeName($field->dbName);
+                        $map = $lookup->getValueLabelMap($table->getName(), $fname);
+                        foreach ($map as $value => $label) {
+                            $select .= ' WHEN '.($this->db->quote($value))
+                                .' THEN '.($this->db->quote($label));
+                        }
+                        $select .= ' END as '.$this->escapeName($field->dbName);
                     }
-                    $select .= ' END as '.$this->escapeName($field->dbName);
+                    array_push($selects, $select);
                 }
-                array_push($selects, $select);
             }
-        }
 
-        #------------------------------------------------
-        # Drop the view if it exists
-        #------------------------------------------------
-        $query = 'DROP VIEW IF EXISTS '.$this->escapeName($table->getName().$this->labelViewSuffix);
+            #------------------------------------------------
+            # Drop the view if it exists
+            #------------------------------------------------
+            $query = 'DROP VIEW IF EXISTS '.$this->escapeName($table->getName().$this->labelViewSuffix);
 
-        # Execute query
-        try {
-            $result = $this->db->exec($query);
-        } catch (\Exception $exception) {
-            $message = 'Error in database query "'.$query.'": '.$exception->getMessage();
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
-        }
+            # Execute query
+            try {
+                $result = $this->db->exec($query);
+            } catch (\Exception $exception) {
+                $message = 'Error in database query "'.$query.'": '.$exception->getMessage();
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
+            }
 
-        #------------------------------------------------------------
-        # Create the view
-        #------------------------------------------------------------
-        $query = 'CREATE VIEW '.$this->escapeName($table->getName().$this->labelViewSuffix).' AS ';
+            #------------------------------------------------------------
+            # Create the view
+            #------------------------------------------------------------
+            $query = 'CREATE VIEW '.$this->escapeName($table->getName().$this->labelViewSuffix).' AS ';
 
-        $select = 'SELECT '. implode(', ', $selects);
-        $from = 'FROM '.$this->escapeName($table->getName());
+            $select = 'SELECT '. implode(', ', $selects);
+            $from = 'FROM '.$this->escapeName($table->getName());
 
-        $query .= $select.' '.$from;
+            $query .= $select.' '.$from;
 
-        // Execute query
-        try {
-            $result = $this->db->exec($query);
-        } catch (\Exception $exception) {
-            $message = 'Error in database query "'.$query.'": '.$exception->getMessage();
-            $code = EtlException::DATABASE_ERROR;
-            throw new EtlException($message, $code);
+            // Execute query
+            try {
+                $result = $this->db->exec($query);
+            } catch (\Exception $exception) {
+                $message = 'Error in database query "'.$query.'": '.$exception->getMessage();
+                $code = EtlException::DATABASE_ERROR;
+                throw new EtlException($message, $code);
+            }
         }
 
         return(1);

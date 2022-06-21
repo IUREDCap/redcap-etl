@@ -444,21 +444,6 @@ class Workflow
         return $needsPrimaryKeys;
     }
 
-    public function needsLookupTable($dbId)
-    {
-        $needsLookupTable = false;
-
-        if (!empty($dbId) && array_key_exists($dbId, $this->dbTasks)) {
-            foreach ($this->dbTasks[$dbId] as $task) {
-                if ($task->getTaskConfig()->getCreateLookupTable()) {
-                    $needsLookupTable = true;
-                }
-            }
-        }
-
-        return $needsLookupTable;
-    }
-
     /**
      * Indicates if the specified database needs to have foreign keys generated for its tables.
      */
@@ -475,6 +460,21 @@ class Workflow
         }
 
         return $needsForeignKeys;
+    }
+
+    /**
+     * Indicates if the specified database needs to have label views. If any task has this flag set,
+     * label views will be generated.
+     */
+    public function needsLookupTable($dbId)
+    {
+        $needsLookupTable = false;
+
+        if (!empty($dbId) && array_key_exists($dbId, $this->dbSchemas)) {
+            $needsLookupTable = $this->dbSchemas[$dbId]->getLabelViews();
+        }
+
+        return $needsLookupTable;
     }
 
     /**

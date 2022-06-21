@@ -62,6 +62,7 @@ class TaskConfig
     const DEFAULT_IGNORE_EMPTY_INCOMPLETE_FORMS = false;
 
     const DEFAULT_LABEL_FIELD_SUFFIX = '_label';
+    const DEFAULT_LABEL_VIEWS        = false;
     const DEFAULT_LABEL_VIEW_SUFFIX  = '_label_view';
     
     const DEFAULT_PRINT_LOGGING = true;
@@ -120,6 +121,7 @@ class TaskConfig
     private $ignoreEmptyIncompleteForms;
     
     private $labelFieldSuffix;
+    private $labelViews;
     private $labelViewSuffix;
     private $lookupTableName;
 
@@ -191,6 +193,8 @@ class TaskConfig
         $this->emailFromAddress = null;
         $this->emailToList      = null;
         $this->emailSubject     = self::DEFAULT_EMAIL_SUBJECT;
+
+        $this->labelViews       = self::DEFAULT_LABEL_VIEWS;
 
         $this->cronJob          = ''; # By default, make this blank
 
@@ -615,6 +619,19 @@ class TaskConfig
                  throw new EtlException($message, EtlException::INPUT_ERROR);
             }
             $this->labelFieldSuffix = $labelFieldSuffix;
+        }
+
+        #----------------------------------------------------------------
+        # Get the label views flag (if any)
+        #----------------------------------------------------------------
+        $this->labelViews = self::DEFAULT_LABEL_VIEWS;
+        if (array_key_exists(ConfigProperties::LABEL_VIEWS, $this->properties)) {
+            $labelViews = $this->properties[ConfigProperties::LABEL_VIEWS];
+            if ($labelViews === true || strcasecmp($labelViews, 'true') === 0 || $labelViews === '1') {
+                $this->labelViews = true;
+            } elseif ($labelViews === false || strcasecmp($labelViews, 'false') === 0 || $labelViews === '0') {
+                $this->labelViews = false;
+            }
         }
 
         #----------------------------------------------------------------
@@ -1582,6 +1599,11 @@ class TaskConfig
     public function getLabelFieldSuffix()
     {
         return $this->labelFieldSuffix;
+    }
+
+    public function getLabelViews()
+    {
+        return $this->labelViews;
     }
 
     public function getLabelViewSuffix()

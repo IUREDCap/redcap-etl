@@ -186,7 +186,14 @@ class SchemaGenerator
                 }
 
                 # Table creation will create the primary key
-                $table = $this->generateTable($rule, $parentTable, $this->tablePrefix, $recordIdFieldName);
+                $needsLabelView = $this->taskConfig->getLabelViews();
+                $table = $this->generateTable(
+                    $rule,
+                    $parentTable,
+                    $this->tablePrefix,
+                    $recordIdFieldName,
+                    $needsLabelView
+                );
 
                 $schema->addTable($table);
 
@@ -432,6 +439,7 @@ class SchemaGenerator
             $messages = array(self::PARSE_VALID,$info);
         }
 
+        $schema->setLabelViews($this->taskConfig->getLabelViews());
         $schema->setLabelViewSuffix($this->taskConfig->getLabelViewSuffix());
         $schema->setLookupTable($this->lookupTable);
         
@@ -439,7 +447,7 @@ class SchemaGenerator
     }
 
 
-    public function generateTable($rule, $parentTable, $tablePrefix, $recordIdFieldName)
+    public function generateTable($rule, $parentTable, $tablePrefix, $recordIdFieldName, $needsLabelView = true)
     {
         $tableName = $this->tablePrefix . $rule->tableName;
         $rowsType  = $rule->rowsType;
@@ -456,6 +464,8 @@ class SchemaGenerator
             $recordIdFieldName,
             $this->tablePrefix
         );
+
+        $table->setNeedsLabelView($this->taskConfig->getLabelViews());
 
         #-----------------------------------------------------
         # Add redcap_data_source field to all tables

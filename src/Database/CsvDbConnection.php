@@ -163,11 +163,13 @@ class CsvDbConnection extends DbConnection
             $this->lookupTable = $lookupTable;
         }
         
-        $labelViewFile = $this->getLabelViewFile($table);
+        if ($table->getNeedsLabelView()) {
+            $labelViewFile = $this->getLabelViewFile($table);
 
-        $fileHandle = fopen($labelViewFile, 'w');
-        $this->createLabelViewHeader($fileHandle, $table);
-        fclose($fileHandle);
+            $fileHandle = fopen($labelViewFile, 'w');
+            $this->createLabelViewHeader($fileHandle, $table);
+            fclose($fileHandle);
+        }
     }
 
 
@@ -191,6 +193,7 @@ class CsvDbConnection extends DbConnection
     {
         $table = $row->table;
         $usesLookup = $table->usesLookup;
+        $needsLabelView = $table->getNeedsLabelView();
 
         $file  = $this->getTableFile($table);
 
@@ -199,7 +202,7 @@ class CsvDbConnection extends DbConnection
         #----------------------------------
         $lfh = null;
         $lookup = null;
-        if ($usesLookup) {
+        if ($usesLookup && $needsLabelView) {
             $labelViewFile = $this->getLabelViewFile($table);
             $lfh = fopen($labelViewFile, 'a');
         }

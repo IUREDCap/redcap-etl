@@ -6,6 +6,7 @@
             "db_connection": "CSV:../output/workflow-basic-demography-json/",
             "log_file": "../logs/workflow-basic-demography-json.log",
             "print_logging": "false",
+            "label_views": "true",
             "label_view_suffix": "_label_view",
             "table_prefix": "",
             "batch_size": 10
