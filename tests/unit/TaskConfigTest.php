@@ -513,6 +513,9 @@ class TaskConfigTest extends TestCase
         $expectedPrintLogging = true;
         $properties[ConfigProperties::PRINT_LOGGING] = true;
 
+        $expectedLabelFieldSuffix = '_label_suffix';
+        $properties[ConfigProperties::LABEL_FIELD_SUFFIX] = $expectedLabelFieldSuffix;
+
         $config = new TaskConfig();
         $config->set($this->logger, $properties);
 
@@ -532,6 +535,13 @@ class TaskConfigTest extends TestCase
 
         $printLogging = $config->getPrintLogging();
         $this->assertEquals($expectedPrintLogging, $printLogging, 'Print logging check');
+
+        $labelFieldSuffix = $config->getLabelFieldSuffix();
+        $this->assertEquals($expectedLabelFieldSuffix, $labelFieldSuffix, 'Label field suffix check');
+
+        # label views has not been set above, so it should have the default value
+        $labelViews = $config->getLabelViews();
+        $this->assertEquals(TaskConfig::DEFAULT_LABEL_VIEWS, $labelViews, 'Default label views check');
     }
 
     public function testConfig()

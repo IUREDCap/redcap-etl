@@ -23,7 +23,7 @@ use IU\REDCapETL\Schema\Table;
 
 class CsvDbConnectionTest extends TestCase
 {
-    protected $dbString = './tests/output/';
+    protected $dbString = __DIR__ . '/../../output/csv-db-connection/';
     protected $ssl = null;
     protected $sslVerify = null;
     protected $caCertFile = null;
@@ -302,6 +302,7 @@ class CsvDbConnectionTest extends TestCase
             $this->recordIdFieldName
         );
         $rootTable1->usesLookup = true;
+        $rootTable1->setNeedsLabelView(true);
 
         # Create fields in the data table object
         $field4 = new Field(
@@ -490,6 +491,8 @@ class CsvDbConnectionTest extends TestCase
             $this->suffixes,
             $this->recordIdFieldName
         );
+        $rootTable->usesLookup = true;
+        $rootTable->setNeedsLabelView(true);
 
         # Create fields in the Table object
         $field0 = new Field(

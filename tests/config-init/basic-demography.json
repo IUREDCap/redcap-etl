@@ -8,7 +8,7 @@
     "email_subject": "",
     "email_to_list": "",
 
-    "db_connection": "CSV:../output/",
+    "db_connection": "CSV:../output/basic-demography-json/",
 
     "log_file": "",
     "print_logging": "false",
