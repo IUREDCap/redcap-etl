@@ -252,8 +252,18 @@ has labels, instead of values, for the multiple choice fields. The name of the v
 of the table with the value of the label_view_suffix property appended to it.
 
 Originally, REDCap-ETL only generated multiple-choice values in the database tables, but now 
-now also generates multiple choice labels, so the label views feature has been deprecated,
+it also generates multiple choice labels, so the label views feature has been deprecated,
 and the current plan is to remove this feature in a future release of REDCap-ETL.
+
+The label views feature has now been turned off by default. If you want to turn it on, set the
+following property in your REDCap-ETL configuration file:
+
+    label_views = 1
+
+If you want to turn off the new label fields, set the following property in your configuration file:
+
+    label_field_suffix = ""
+
 
 #### System-Generated Database Tables
 
