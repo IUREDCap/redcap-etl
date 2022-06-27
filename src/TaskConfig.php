@@ -120,7 +120,9 @@ class TaskConfig
 
     private $ignoreEmptyIncompleteForms;
     
+    /** @var string the suffix added to label fields corresponding to multiple choice value fields. */
     private $labelFieldSuffix;
+
     private $labelViews;
     private $labelViewSuffix;
     private $lookupTableName;
@@ -195,6 +197,8 @@ class TaskConfig
         $this->emailSubject     = self::DEFAULT_EMAIL_SUBJECT;
 
         $this->labelViews       = self::DEFAULT_LABEL_VIEWS;
+
+        $this->labelFieldSuffix = self::DEFAULT_LABEL_FIELD_SUFFIX;
 
         $this->cronJob          = ''; # By default, make this blank
 
