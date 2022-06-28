@@ -172,4 +172,80 @@ class FieldTest extends TestCase
         $this->assertEquals(FieldType::STRING, $mergedField->type, 'Field type check');
         $this->assertEquals(null, $mergedField->size, 'Field size check');
     }
+
+    public function testMergeIntAndFloat()
+    {
+        $name = 'score';
+        $type1 = FieldType::INT;
+
+        $field1 = new Field($name, $type1);
+
+        $type2 = FieldType::FLOAT;
+        $field2 = new Field($name, $type2);
+
+        $mergedField = $field1->merge($field2);
+
+        $this->assertNotNull($mergedField, 'Merged field not null check');
+
+        $this->assertEquals($name, $mergedField->name, 'Field name check');
+        $this->assertEquals(FieldType::FLOAT, $mergedField->type, 'Field type check');
+        $this->assertEquals(null, $mergedField->size, 'Field size check');
+    }
+
+    public function testMergeFloatAndInt()
+    {
+        $name = 'score';
+        $type1 = FieldType::FLOAT;
+
+        $field1 = new Field($name, $type1);
+
+        $type2 = FieldType::INT;
+        $field2 = new Field($name, $type2);
+
+        $mergedField = $field1->merge($field2);
+
+        $this->assertNotNull($mergedField, 'Merged field not null check');
+
+        $this->assertEquals($name, $mergedField->name, 'Field name check');
+        $this->assertEquals(FieldType::FLOAT, $mergedField->type, 'Field type check');
+        $this->assertEquals(null, $mergedField->size, 'Field size check');
+    }
+
+    public function testNameSetAndGet()
+    {
+        $name = 'mail';
+        $type = FieldType::CHAR;
+        $size = 40;
+
+        $field = new Field($name, $type, $size);
+
+        $getName = $field->getName();
+        $this->assertEquals($name, $getName, 'Initial get name check');
+
+        $name = 'email';
+        $field->setName($name);
+
+        $getName = $field->getName();
+        $this->assertEquals($name, $getName, 'After set call get name check');
+    }
+
+    public function testMergeWithDifferentDbNames()
+    {
+        $name = 'email';
+        $type = FieldType::CHAR;
+        $size = 40;
+
+        $field1 = new Field($name, $type, $size);
+        $field2 = new Field($name, $type, $size);
+        $field2->dbName = 'e_mail';
+
+        $excetionCaught = false;
+        try {
+            $mergedField = $field1->merge($field2);
+        } catch (\Exception $e) {
+            $exceptionCaught = true;
+        }
+        
+        $this->assertTrue($exceptionCaught, 'DbName exception caught check');
+    }
 }

@@ -92,30 +92,6 @@ class Field
     }
 
     /**
-     * Indicates if the specified field is equal to the field on which this method is invoked
-     * for the field that will be generated in the database.
-     *
-     * @return boolean returns true if the fields have equivalent database types.
-     */
-    public function isDatabaseEquivalent($field, $lookupTable)
-    {
-        $matches = false;
-        if ($this->dbName === $field->dbName && $this->type === $field->type && $this->size === $field->size) {
-            if ($this->usesLookup && $field->usesLookup) {
-                # If both fields use lookup, i.e., are multiple choice fields
-                # Compare choice values...
-                # Need the lookup table here
-                //$lt1 = $lookupTable->getValueLabelMap($tableName, $fieldName);
-            } elseif (!$this->usesLookup && !$field->usesLookup) {
-                # If both fields do NOT use lookup, i.e., are NOT multiple choice fields
-                $matches = true;
-            } else {
-            }
-        }
-        return $matches;
-    }
-
-    /**
      * Returns a merged field if possible, or throws an exception if not.
      * The merged field will have the greater of the 2 fields sizes, if the
      * fields ihave sizes set and match on values other than size.
@@ -143,9 +119,9 @@ class Field
 
         # Check that fields' database names match
         if ($this->dbName !== $field->dbName) {
-            $message = $errorMesssage . 'database field names "'.$this->dbName.'"'
-                .' and "'.$field->dbName.'" do not match.';
-            $code    = EtlException::INPUT_ERROR;
+            $message = $errorMessage .  $message = 'database field names "' . $this->dbName . '"'
+                . ' and "' . $field->dbName . '" do not match.';
+            $code = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
         }
         
