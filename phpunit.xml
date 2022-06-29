@@ -87,6 +87,10 @@ SPDX-License-Identifier: BSD-3-Clause
           a server
     -->
     <testsuite name="system">
+      <file>tests/system/BasicDemographyLfMysqlTest.php</file>
+      <file>tests/system/BasicDemographyLfPostgreSqlTest.php</file>
+      <file>tests/system/BasicDemographyLfSqliteTest.php</file>
+      <file>tests/system/BasicDemographyLfSqlServerTest.php</file>
       <file>tests/system/BasicDemographyMysqlTest.php</file>
       <file>tests/system/BasicDemographyPostgreSqlTest.php</file>
       <file>tests/system/BasicDemographySqliteTest.php</file>
