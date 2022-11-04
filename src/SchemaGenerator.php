@@ -442,6 +442,7 @@ class SchemaGenerator
         $schema->setLabelViews($this->taskConfig->getLabelViews());
         $schema->setLabelViewSuffix($this->taskConfig->getLabelViewSuffix());
         $schema->setLookupTable($this->lookupTable);
+        $schema->setCreateLookupTable($this->taskConfig->getCreateLookupTable());
         
         return array($schema, $messages);
     }
