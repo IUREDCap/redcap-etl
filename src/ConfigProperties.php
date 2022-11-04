@@ -82,6 +82,12 @@ class ConfigProperties
     const LOG_FILE                 = 'log_file';
     const LOOKUP_TABLE_NAME        = 'lookup_table_name';
 
+    const MEMORY_LIMIT             = 'memory_limit';  # Set memory limit used by REDCap-ETL.
+                                                      # Use an integer to specify bytes.
+                                                      # Use an integer followed by K (e.g., 128K) to specify kilobytes.
+                                                      # Use an integer followed by M (e.g., 128M) to specify megabytes.
+                                                      # Use an integer followed by G (e.g., 128G) to specify gigabytes.
+
     const PRE_PROCESSING_SQL       = 'pre_processing_sql';
     const PRE_PROCESSING_SQL_FILE  = 'pre_processing_sql_file';
     const POST_PROCESSING_SQL      = 'post_processing_sql';

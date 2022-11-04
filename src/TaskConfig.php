@@ -64,6 +64,8 @@ class TaskConfig
     const DEFAULT_LABEL_FIELD_SUFFIX = '_label';
     const DEFAULT_LABEL_VIEWS        = false;
     const DEFAULT_LABEL_VIEW_SUFFIX  = '_label_view';
+
+    const DEFAULT_MEMORY_LIMIT = '';
     
     const DEFAULT_PRINT_LOGGING = true;
     
@@ -126,6 +128,8 @@ class TaskConfig
     private $labelViews;
     private $labelViewSuffix;
     private $lookupTableName;
+
+    private $memoryLimit;
 
     private $preProcessingSql;
     private $preProcessingSqlFile;
@@ -199,6 +203,8 @@ class TaskConfig
         $this->labelViews       = self::DEFAULT_LABEL_VIEWS;
 
         $this->labelFieldSuffix = self::DEFAULT_LABEL_FIELD_SUFFIX;
+
+        $this->memoryLimit      = self::DEFAULT_MEMORY_LIMIT;
 
         $this->cronJob          = ''; # By default, make this blank
 
@@ -543,6 +549,21 @@ class TaskConfig
         $this->dataSourceApiToken = '';
         if (array_key_exists(ConfigProperties::DATA_SOURCE_API_TOKEN, $this->properties)) {
             $this->dataSourceApiToken = $this->properties[ConfigProperties::DATA_SOURCE_API_TOKEN];
+        }
+
+        #---------------------------------------------------
+        # Set the memory limit
+        #---------------------------------------------------
+        if (array_key_exists(ConfigProperties::MEMORY_LIMIT, $this->properties)) {
+            $this->memoryLimit = trim($this->properties[ConfigProperties::MEMORY_LIMIT]);
+            if (preg_match('/^[0-9]+[KMG]?$/', $this->memoryLimit) !== 1) {
+                $message = 'Invalid value "' . $this->memoryLimit . '" for property '
+                    . ConfigProperties::MEMORY_LIMIT
+                    . '. The value for this property must be an integer, or an integer'
+                    . ' followed by either "K", "M" or "G"'
+                    . ' (for Kilobytes, Megabytes, or Gigabytes).';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
         }
 
         #----------------------------------------------------------
@@ -1628,6 +1649,11 @@ class TaskConfig
     public function getLookupTableName()
     {
         return $this->lookupTableName;
+    }
+
+    public function getMemoryLimit()
+    {
+        return $this->memoryLimit;
     }
 
     public function getPreProcessingSql()
