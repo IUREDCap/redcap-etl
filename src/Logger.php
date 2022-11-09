@@ -403,12 +403,6 @@ class Logger
     private function logWithPrint($message)
     {
         if ($this->printLogging === true && $this->isOn) {
-            if (isset($this->taskConfig)) {
-                $taskName = $this->taskConfig->getTaskName();
-                if (!empty($taskName)) {
-                    $message = '[' . $taskName . '] ' . $message;
-                }
-            }
             print $message."\n";
         }
     }
