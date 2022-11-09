@@ -422,6 +422,8 @@ class Task
     {
         $startEtlTime = microtime(true);
 
+        $this->checkMemoryLimit();
+
         #--------------------------------------------------
         # Extract the record ID batches
         #--------------------------------------------------
@@ -451,6 +453,8 @@ class Task
         # For each batch of data, extract, transform, and load
         #-------------------------------------------------------
         foreach ($recordIdBatches as $recordIdBatch) {
+            $this->checkMemoryLimit();
+
             #---------------------------------
             # Extract the data from REDCap
             #---------------------------------
@@ -488,6 +492,9 @@ class Task
             #print "\n\n";
 
             foreach ($recordBatch as $recordId => $records) {
+                # Check the memory limit
+                $this->checkMemoryLimit();
+
                 $recordEventsCount += count($records);
 
                 #-----------------------------------
@@ -531,6 +538,24 @@ class Task
 
         $this->logger->log("Number of record events transformed: ". $recordEventsCount);
     
+        #-----------------------------------------------------
+        # Log memory usage, if configured
+        #-----------------------------------------------------
+        if ($this->taskConfig->getLogMemoryUsage()) {
+            $this->logger->log(
+                sprintf("%s %8.2f %s", "Memory allocated:", (memory_get_usage(true) / (1024 * 1024)), "MB")
+            );
+            $this->logger->log(
+                sprintf("%s %8.2f %s", "Memory used:     ", (memory_get_usage(false) / (1024 * 1024)), "MB")
+            );
+            $this->logger->log(
+                sprintf("%s %8.2f %s", "Peak memory allocated:", (memory_get_peak_usage(true) / (1024 * 1024)), "MB")
+            );
+            $this->logger->log(
+                sprintf("%s %8.2f %s", "Peak memory used:     ", (memory_get_peak_usage(false) / (1024 * 1024)), "MB")
+            );
+        }
+
         return $recordIdCount;
     }
 
@@ -835,6 +860,19 @@ class Task
                 } else {
                     $this->logger->log('Job type: on demand');
                 }
+            }
+        }
+    }
+
+    public function checkMemoryLimit()
+    {
+        $limit = $this->taskConfig->getMemoryLimit();
+        if ($limit != null && is_numeric($limit) && $limit > 0.0) {
+            $currentMemory = memory_get_usage();
+            if ($currentMemory > $limit) {
+                $message = "REDCap-ETL memory limit of " . number_format($limit) . " bytes exceeded"
+                   ." (current memory usage is " . number_format($currentMemory) . " bytes).";
+                throw new \Exception($message);
             }
         }
     }

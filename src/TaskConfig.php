@@ -65,6 +65,8 @@ class TaskConfig
     const DEFAULT_LABEL_VIEWS        = false;
     const DEFAULT_LABEL_VIEW_SUFFIX  = '_label_view';
 
+    const DEFAULT_LOG_MEMORY_USAGE = false;
+
     const DEFAULT_MEMORY_LIMIT = '';
     
     const DEFAULT_PRINT_LOGGING = true;
@@ -127,6 +129,10 @@ class TaskConfig
 
     private $labelViews;
     private $labelViewSuffix;
+
+    private $logFile;
+    private $logMemoryUsage;
+
     private $lookupTableName;
 
     private $memoryLimit;
@@ -203,6 +209,8 @@ class TaskConfig
         $this->labelViews       = self::DEFAULT_LABEL_VIEWS;
 
         $this->labelFieldSuffix = self::DEFAULT_LABEL_FIELD_SUFFIX;
+
+        $this->logMemoryUsage   = self::DEFAULT_LOG_MEMORY_USAGE;
 
         $this->memoryLimit      = self::DEFAULT_MEMORY_LIMIT;
 
@@ -555,15 +563,17 @@ class TaskConfig
         # Set the memory limit
         #---------------------------------------------------
         if (array_key_exists(ConfigProperties::MEMORY_LIMIT, $this->properties)) {
-            $this->memoryLimit = trim($this->properties[ConfigProperties::MEMORY_LIMIT]);
-            if (preg_match('/^[0-9]+[KMG]?$/', $this->memoryLimit) !== 1) {
+            $memoryLimit = trim($this->properties[ConfigProperties::MEMORY_LIMIT]);
+            $memoryLimit = $this->parseMemorySize($memoryLimit);
+            if ($memoryLimit === false) {
                 $message = 'Invalid value "' . $this->memoryLimit . '" for property '
                     . ConfigProperties::MEMORY_LIMIT
-                    . '. The value for this property must be an integer, or an integer'
-                    . ' followed by either "K", "M" or "G"'
-                    . ' (for Kilobytes, Megabytes, or Gigabytes).';
+                    . '. The value for this property must be a number (for bytes), or a number'
+                    . ' followed directly by either "KB", "MB" or "GB"'
+                    . ' (for kilobytes, megabytes, or Gigabytes).';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
+            $this->memoryLimit = $memoryLimit;
         }
 
         #----------------------------------------------------------
@@ -787,6 +797,16 @@ class TaskConfig
             $this->logger->setLogFile($this->logFile);
         }
  
+        #---------------------------------------------------
+        # Log memory usage
+        #---------------------------------------------------
+        if (array_key_exists(ConfigProperties::LOG_MEMORY_USAGE, $properties)) {
+            $logMemoryUsage = $properties[ConfigProperties::LOG_MEMORY_USAGE];
+            if ($logMemoryUsage === true || strcasecmp($logMemoryUsage, 'true') === 0 || $logMemoryUsage === '1') {
+                $this->logMemoryUsage  = true;
+            }
+        }
+        
         #-------------------------------------------------------------------
         # Database logging
         #-------------------------------------------------------------------
@@ -1381,6 +1401,35 @@ class TaskConfig
     }
 
     /**
+     * Parses a memory size that is a number followed by an optional 'KB', 'MB', or 'GB'
+     * for (kilobytes, megabytes or gigabytes).
+     *
+     * @param string $memorySize the memory size specification
+     *
+     * @return mixed if valid, an int representing the amount of memory
+     */
+    public function parseMemorySize($memorySize)
+    {
+        $value = false;
+        $matches = array();
+        $memorySize = trim($memorySize);
+        $matchValue = preg_match('/^([0-9]+\.?[0-9]*?)(KB|MB|GB)?$/', $memorySize, $matches);
+        if ($matchValue === 1) {
+            $value = $matches[1];
+            $unit = $matches[count($matches)-1]; // If a unit was specified, it will be the last match
+            if ($unit === 'KB') {
+                $value *= 1024;
+            } elseif ($unit === 'MB') {
+                $value *= 1024 * 1024;
+            } elseif ($unit === 'GB') {
+                $value *= 1024 * 1024 * 1024;
+            } // else: last match was part of number
+            $value = round($value);
+        }
+        return $value;
+    }
+
+    /**
      * Gets the MySQL connection information.
      *
      * @return array string array with (host, user, password, dbname),
@@ -1644,6 +1693,11 @@ class TaskConfig
     public function getLogFile()
     {
         return $this->logFile;
+    }
+
+    public function getLogMemoryUsage()
+    {
+        return $this->logMemoryUsage;
     }
 
     public function getLookupTableName()

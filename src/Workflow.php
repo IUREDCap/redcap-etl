@@ -159,26 +159,6 @@ class Workflow
         # For each task, log header information
         #-----------------------------------------
         foreach ($this->getTasks() as $task) {
-            #-------------------------------------------------
-            # Set memory limit for the task
-            #-------------------------------------------------
-            $getValue = ini_get('memory_limit');
-            print "Retrieved memory limit = {$getValue}\n";
-            $memoryLimit = $task->getTaskConfig()->getMemoryLimit();
-            if (!empty($memoryLimit)) {
-                $ival = ini_set('memory_limit', $memoryLimit);
-                print("ini_set return value: {$ival}\n");
-                print("MEMORY LIMIT SET TO: {$memoryLimit}\n");
-                $getValue = ini_get('memory_limit');
-                print "Retrieved memory limit = {$getValue}\n";
-                foreach (range(1,1000000) as $i) {
-                    $arr[] = $i;
-                }
-                # print_r($arr);
-                print "MEMORY USAGE: " . memory_get_usage() . "\n";
-            }
-            ini_set('memory_limit', '2K');
-
             $taskName = $task->getName();
             
             $logger = $task->getLogger();
@@ -211,11 +191,6 @@ class Workflow
             $logger->log("Starting processing.");
         }
 
-        $getValue = ini_get('memory_limit');
-        print "-----------------------------------------\n";
-        print "Retrieved memory limit = {$getValue}\n";
-        print "-----------------------------------------\n";
-
         #-----------------------------------------------------------------------------------
         # For each task, run pre-processing SQL.
         #
@@ -240,11 +215,6 @@ class Workflow
         # For each ETL task (i.e., non-SQL-only tasks) run ETL (Extract Transform Load)
         #---------------------------------------------------------------------------------
         foreach ($this->getTasks() as $task) {
-            $memoryLimit = $task->getTaskConfig()->getMemoryLimit();
-            if (!empty($memoryLimit)) {
-                ini_set('memory_limit', $memoryLimit);
-            }
-
             # ETL
             if (!$task->isSqlOnlyTask()) {
                 $numberOfRecordIds += $task->extractTransformLoad();
