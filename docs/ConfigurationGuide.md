@@ -603,14 +603,15 @@ database.
 <tr>
 <td>create_lookup_table</td>
 <td>A true/false property that indicates whether or not a lookup table
-should be created in the database.
+should be created in the database. The property defaults to "false" if
+not specified.
 </td>
 </tr>
 
 <tr>
 <td>lookup_table_name</td>
 <td>The name to use for the lookup table created in the database. The default table
-name is "Lookup".</td>
+name is "etl_lookup".</td>
 </tr>
 
 </tbody>

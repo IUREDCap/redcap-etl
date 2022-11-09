@@ -463,15 +463,15 @@ class Workflow
     }
 
     /**
-     * Indicates if the specified database needs to have label views. If any task has this flag set,
-     * label views will be generated.
+     * Indicates if the specified database needs to create a lookup table. If any task has this flag set,
+     * a lookup table will be created.
      */
     public function needsLookupTable($dbId)
     {
         $needsLookupTable = false;
 
         if (!empty($dbId) && array_key_exists($dbId, $this->dbSchemas)) {
-            $needsLookupTable = $this->dbSchemas[$dbId]->getLabelViews();
+            $needsLookupTable = $this->dbSchemas[$dbId]->getCreateLookupTable();
         }
 
         return $needsLookupTable;

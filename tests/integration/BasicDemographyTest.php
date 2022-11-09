@@ -13,6 +13,9 @@ class BasicDemographyTest extends TestCase
     private static $csvDir;
     private static $csvFile;
     private static $csvLabelFile;
+    private static $csvLookupFile;
+    private static $csvMetadataFile;
+    private static $csvProjectInfoFile;
     private static $logger;
     private static $properties;
 
@@ -23,7 +26,7 @@ class BasicDemographyTest extends TestCase
     }
 
 
-    public function testDemographyTable()
+    public function testTables()
     {
         try {
             $app = basename(__FILE__, '.php');
@@ -44,11 +47,28 @@ class BasicDemographyTest extends TestCase
                 self::$csvDir .= DIRECTORY_SEPARATOR;
             }
             
-            self::$csvFile      = self::$csvDir . 'basic_demography.csv';
-            self::$csvLabelFile = self::$csvDir . 'basic_demography'.$config->getlabelViewSuffix().'.csv';
-            # Try to delete the output file in case it exists from a previous run
+            self::$csvFile       = self::$csvDir . 'basic_demography.csv';
+            self::$csvLabelFile  = self::$csvDir . 'basic_demography'.$config->getlabelViewSuffix().'.csv';
+            self::$csvLookupFile = self::$csvDir . LookupTable::DEFAULT_NAME . '.csv';
+
+            self::$csvMetadataFile    = self::$csvDir . MetadataTable::DEFAULT_NAME . '.csv';
+            self::$csvProjectInfoFile = self::$csvDir . ProjectInfoTable::DEFAULT_NAME . '.csv';
+
+            # Try to delete the output files in case it exists from a previous run
             if (file_exists(self::$csvFile)) {
                 unlink(self::$csvFile);
+            }
+            if (file_exists(self::$csvLabelFile)) {
+                unlink(self::$csvLabelFile);
+            }
+            if (file_exists(self::$csvLookupFile)) {
+                unlink(self::$csvLookupFile);
+            }
+            if (file_exists(self::$csvMetadataFile)) {
+                unlink(self::$csvMetadataFile);
+            }
+            if (file_exists(self::$csvProjectInfoFile)) {
+                unlink(self::$csvProjectInfoFile);
             }
             
             #----------------------------------------------
@@ -97,5 +117,34 @@ class BasicDemographyTest extends TestCase
         );
         $expectedCsv = $parser2->parse();
         $this->assertEquals($expectedCsv, $csv, 'CSV label file check.');
+
+        #-------------------------------------
+        # Check Lookup Table File
+        #-------------------------------------
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvLookupFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
+            __DIR__ . '/../data/' . LookupTable::DEFAULT_NAME . '.csv'
+        );
+        $expectedCsv = $parser2->parse();
+        $this->assertEquals($expectedCsv, $csv, 'CSV lookup table file check.');
+
+        #-------------------------------------
+        # Check Metadata Table File
+        #-------------------------------------
+        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvMetadataFile);
+        $csv = $parser->parse();
+
+        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
+            __DIR__ . '/../data/' . MetadataTable::DEFAULT_NAME . '.csv'
+        );
+        $expectedCsv = $parser2->parse();
+        $this->assertEquals($expectedCsv, $csv, 'CSV metadata table file check.');
+
+        #-------------------------------------
+        # Check Project Info Table File
+        #-------------------------------------
+        $this->assertFileExists(self::$csvProjectInfoFile, 'CSV project info file check.');
     }
 }

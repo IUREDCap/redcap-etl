@@ -29,6 +29,9 @@ class Schema
     /** @var LookupTable table for mapping multiple choice fields from (table name, field name, value) to label */
     private $lookupTable;
 
+    /** @var boolean indicates if a lookup table should be created. */
+    private $createLookupTable;
+
     /** @var EtlLogTable parent log table that has one entry per ETL task; this table is NOT deleted after each run */
     private $dbLogTable;
 
@@ -143,6 +146,7 @@ class Schema
         #--------------------------------------
         # Merge lookup table(s)
         #--------------------------------------
+        $mergedSchema->createLookupTable = $this->createLookupTable || $schema->createLookupTable;
         $mergeData = false;
         $mergedSchema->lookupTable = $this->lookupTable->merge($schema->lookupTable, $mergeData, $task);
 
@@ -316,6 +320,16 @@ class Schema
         $this->lookupTable = $lookupTable;
     }
 
+
+    public function getCreateLookupTable()
+    {
+        return $this->createLookupTable;
+    }
+
+    public function setCreateLookupTable($createLookupTable)
+    {
+        $this->createLookupTable = $createLookupTable;
+    }
 
     public function getDbLogTable()
     {
