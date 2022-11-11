@@ -866,12 +866,22 @@ class Task
 
     public function checkMemoryLimit()
     {
-        $limit = $this->taskConfig->getMemoryLimit();
-        if ($limit != null && is_numeric($limit) && $limit > 0.0) {
+        $usageLimit = $this->taskConfig->getMemoryUsageLimit();
+        if ($usageLimit != null && is_numeric($usageLimit) && $usageLimit > 0.0) {
             $currentMemory = memory_get_usage();
-            if ($currentMemory > $limit) {
-                $message = "REDCap-ETL memory limit of " . number_format($limit) . " bytes exceeded"
+            if ($currentMemory > $usageLimit) {
+                $message = "REDCap-ETL memory usage limit of " . number_format($usageLimit) . " bytes exceeded"
                    ." (current memory usage is " . number_format($currentMemory) . " bytes).";
+                throw new \Exception($message);
+            }
+        }
+
+        $allocationLimit = $this->taskConfig->getMemoryAllocationLimit();
+        if ($allocationLimit != null && is_numeric($allocationLimit) && $allocationLimit > 0.0) {
+            $currentMemory = memory_get_usage(true);
+            if ($currentMemory > $allocationLimit) {
+                $message = "REDCap-ETL memory allocation limit of " . number_format($allocationLimit) . " bytes exceeded"
+                   ." (current memory allocation is " . number_format($currentMemory) . " bytes).";
                 throw new \Exception($message);
             }
         }

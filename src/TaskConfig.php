@@ -67,7 +67,8 @@ class TaskConfig
 
     const DEFAULT_LOG_MEMORY_USAGE = false;
 
-    const DEFAULT_MEMORY_LIMIT = '';
+    const DEFAULT_MEMORY_USAGE_LIMIT      = '';
+    const DEFAULT_MEMORY_ALLOCATION_LIMIT = '';
     
     const DEFAULT_PRINT_LOGGING = true;
     
@@ -135,7 +136,7 @@ class TaskConfig
 
     private $lookupTableName;
 
-    private $memoryLimit;
+    private $memoryUsageLimit;
 
     private $preProcessingSql;
     private $preProcessingSqlFile;
@@ -211,8 +212,10 @@ class TaskConfig
         $this->labelFieldSuffix = self::DEFAULT_LABEL_FIELD_SUFFIX;
 
         $this->logMemoryUsage   = self::DEFAULT_LOG_MEMORY_USAGE;
+        $this->logMemoryUsage   = self::DEFAULT_LOG_MEMORY_USAGE;
 
-        $this->memoryLimit      = self::DEFAULT_MEMORY_LIMIT;
+        $this->memoryUsageLimit      = self::DEFAULT_MEMORY_USAGE_LIMIT;
+        $this->memoryAllocationLimit = self::DEFAULT_MEMORY_ALLOCATION_LIMIT;
 
         $this->cronJob          = ''; # By default, make this blank
 
@@ -560,20 +563,37 @@ class TaskConfig
         }
 
         #---------------------------------------------------
-        # Set the memory limit
+        # Set the memory usage limit
         #---------------------------------------------------
-        if (array_key_exists(ConfigProperties::MEMORY_LIMIT, $this->properties)) {
-            $memoryLimit = trim($this->properties[ConfigProperties::MEMORY_LIMIT]);
-            $memoryLimit = $this->parseMemorySize($memoryLimit);
-            if ($memoryLimit === false) {
-                $message = 'Invalid value "' . $this->memoryLimit . '" for property '
-                    . ConfigProperties::MEMORY_LIMIT
+        if (array_key_exists(ConfigProperties::MEMORY_USAGE_LIMIT, $this->properties)) {
+            $memoryUsageLimit = trim($this->properties[ConfigProperties::MEMORY_USAGE_LIMIT]);
+            $memoryUsageLimit = $this->parseMemorySize($memoryUsageLimit);
+            if ($memoryUsageLimit === false) {
+                $message = 'Invalid value "' . $this->memoryUsageLimit . '" for property '
+                    . ConfigProperties::MEMORY_USAGE_LIMIT
                     . '. The value for this property must be a number (for bytes), or a number'
                     . ' followed directly by either "KB", "MB" or "GB"'
-                    . ' (for kilobytes, megabytes, or Gigabytes).';
+                    . ' (for kilobytes, megabytes, or gigabytes).';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }
-            $this->memoryLimit = $memoryLimit;
+            $this->memoryUsageLimit = $memoryUsageLimit;
+        }
+
+        #---------------------------------------------------
+        # Set the memory allocation limit
+        #---------------------------------------------------
+        if (array_key_exists(ConfigProperties::MEMORY_ALLOCATION_LIMIT, $this->properties)) {
+            $memoryAllocationLimit = trim($this->properties[ConfigProperties::MEMORY_ALLOCATION_LIMIT]);
+            $memoryAllocationLimit = $this->parseMemorySize($memoryAllocationLimit);
+            if ($memoryAllocationLimit === false) {
+                $message = 'Invalid value "' . $this->memoryAllocationLimit . '" for property '
+                    . ConfigProperties::MEMORY_ALLOCATION_LIMIT
+                    . '. The value for this property must be a number (for bytes), or a number'
+                    . ' followed directly by either "KB", "MB" or "GB"'
+                    . ' (for kilobytes, megabytes, or gigabytes).';
+                throw new EtlException($message, EtlException::INPUT_ERROR);
+            }
+            $this->memoryAllocationLimit = $memoryAllocationLimit;
         }
 
         #----------------------------------------------------------
@@ -1705,9 +1725,14 @@ class TaskConfig
         return $this->lookupTableName;
     }
 
-    public function getMemoryLimit()
+    public function getMemoryUsageLimit()
     {
-        return $this->memoryLimit;
+        return $this->memoryUsageLimit;
+    }
+
+    public function getMemoryAllocationLimit()
+    {
+        return $this->memoryAllocationLimit;
     }
 
     public function getPreProcessingSql()

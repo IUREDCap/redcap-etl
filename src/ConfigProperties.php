@@ -85,11 +85,13 @@ class ConfigProperties
 
     const LOOKUP_TABLE_NAME        = 'lookup_table_name';
 
-    const MEMORY_LIMIT             = 'memory_limit';  # Set memory limit used by REDCap-ETL.
-                                                      # Use an integer to specify bytes.
-                                                      # Use an integer followed by K (e.g., 128K) to specify kilobytes.
-                                                      # Use an integer followed by M (e.g., 128M) to specify megabytes.
-                                                      # Use an integer followed by G (e.g., 128G) to specify gigabytes.
+    const MEMORY_ALLOCATION_LIMIT  = 'memory_allocation_limit';  # Set memory allocation limit used by REDCap-ETL.
+                                                                 # In general, the allocated memory will be higher than
+                                                                 # the used memory.
+    const MEMORY_USAGE_LIMIT       = 'memory_usage_limit';  # Set memory usage limit used by REDCap-ETL.
+                                                            # Use an integer to specify bytes.
+                                                            # Use an integer followed by KB, MB, or GB to
+                                                            # to specify kilobytes, megabytes, or gigabytes.
 
     const PRE_PROCESSING_SQL       = 'pre_processing_sql';
     const PRE_PROCESSING_SQL_FILE  = 'pre_processing_sql_file';
