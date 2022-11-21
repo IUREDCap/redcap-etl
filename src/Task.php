@@ -880,7 +880,8 @@ class Task
         if ($allocationLimit != null && is_numeric($allocationLimit) && $allocationLimit > 0.0) {
             $currentMemory = memory_get_usage(true);
             if ($currentMemory > $allocationLimit) {
-                $message = "REDCap-ETL memory allocation limit of " . number_format($allocationLimit) . " bytes exceeded"
+                $message = "REDCap-ETL memory allocation limit of " . number_format($allocationLimit)
+                   . " bytes exceeded"
                    ." (current memory allocation is " . number_format($currentMemory) . " bytes).";
                 throw new \Exception($message);
             }
