@@ -234,6 +234,32 @@ class TaskConfig
      */
     public function set($logger, $properties, $taskName = '', $baseDir = null)
     {
+        if (is_string($properties)) {
+            # If the properties were specified as a file name,
+            # convert the contents of the file to an array of properties
+            $this->propertiesFile = trim($properties);
+            $properties = self::getPropertiesFromFile($this->propertiesFile);
+        }
+        $this->setWithArray($logger, $properties, $taskName, $baseDir);
+    }
+
+
+    /**
+     * Sets a TaskConfig object from an array of properties,
+     * and updates the logger based on the configuration information found.
+     *
+     * @param Logger $logger logger for information and errors
+     *
+     * @param array $properties a map from property names to values.
+     *
+     * @param string $baseDir the base directory to use for references to files
+     *     in the properties. For example, if the base directory was specified as
+     *     "/home/etluser/" and the post_sql_processing_file property was specified
+     *     as "post.sql", then the file "/home/etluser/post.sql" would be used
+     *     for the post-processing SQL commands.
+     */
+    public function setWithArray($logger, $properties, $taskName = '', $baseDir = null)
+    {
         # $this->logger = $logger;
         $this->logger = clone $logger;
         $this->logger->setTaskConfig($this);
@@ -248,14 +274,13 @@ class TaskConfig
             $message = 'No properties or properties file was specified.';
             $code    = EtlException::INPUT_ERROR;
             throw new EtlException($message, $code);
-        } elseif (is_array($properties)) {
-            # Properties specified as an array
-            $this->properties = $properties;
-        } elseif (is_string($properties)) {
-            # Properties specified in a file
-            $this->propertiesFile = trim($properties);
-            $this->properties = self::getPropertiesFromFile($this->propertiesFile);
+        } elseif (!is_array($properties)) {
+            $message = 'Properties in setWithArray method call is not an array.';
+            $code    = EtlException::INPUT_ERROR;
+            throw new EtlException($message, $code);
         }
+
+        $this->properties = $properties;
         
         #-----------------------------------------------------
         # Set the base directory, wich is used for properties
