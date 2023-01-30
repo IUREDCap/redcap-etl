@@ -29,7 +29,7 @@ Installation Steps
 
 **Install the System Requirements:**
 
-* PHP 5.6+ or 7+, with:
+* PHP 7.1+ or 8+, with:
     * curl extension
     * openssl extension
 * Subversion or Git, for retrieving the REDCap-ETL code

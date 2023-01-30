@@ -254,8 +254,8 @@ class Table
      */
     public function addField($field)
     {
-        // If the field being added has the same name as the primary key,
-        // do not add it again
+        # If the field being added has the same name as the primary key,
+        # do not add it again
         if ($this->primary->name != $field->dbName) {
             array_push($this->fields, $field);
         }
@@ -737,11 +737,13 @@ class Table
             }
         }
 
-        $string .= "{$in}Rows Suffixes:";
-        foreach ($this->rowsSuffixes as $suffix) {
-            $string .= " ".$suffix;
+        if (isset($this->rowSuffixes)) {
+            $string .= "{$in}Rows Suffixes:";
+            foreach ($this->rowsSuffixes as $suffix) {
+                $string .= " ".$suffix;
+            }
+            $string .= "\n";
         }
-        $string .= "\n";
 
         $string .= "{$in}Possible Suffixes:";
         foreach ($this->possibleSuffixes as $suffix) {

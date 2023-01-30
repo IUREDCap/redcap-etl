@@ -151,10 +151,17 @@ class SchemaGenerator
 
         $table = null;
         
+        #-------------------------------------------
+        # Parse the transformation rules
+        #-------------------------------------------
         $rulesParser = new RulesParser();
         $parsedRules = $rulesParser->parse($rulesText);
+
+        #------------------------------------------------
+        # Do semantic analysis check on the parsed rules
+        #------------------------------------------------
         $analyzer = new RulesSemanticAnalyzer();
-        $parsedRules = $analyzer->check($parsedRules);
+        $parsedRules = $analyzer->check($parsedRules, $metadata);
         
         # Log parsing errors, and add them to the errors string
         foreach ($parsedRules->getRules() as $rule) {
@@ -339,7 +346,9 @@ class SchemaGenerator
 
                         // If this field has category/label choices
                         if (array_key_exists($originalFieldName, $this->lookupChoices)) {
-                            # Add label field here???????????????
+                            #------------------------------------------------------------
+                            # Add label fields for multiple-choice fields
+                            #
                             # Need one label for each checkbox, because multiple values
                             # can be selected
                             # Types: dropdown, radio, checkbox (only checkbox can have multiple values)
@@ -348,9 +357,16 @@ class SchemaGenerator
                                 $labelField = clone $field;
                                 $labelFieldName = $field->getName() . $labelFieldSuffix;
 
+                                $valueToLabelMap = $this->lookupChoices[$originalFieldName];
+
                                 $labelField->dbName     = $labelFieldName;
                                 $labelField->type       = $this->taskConfig->getGeneratedLabelType()->getType();
-                                $labelField->size       = $this->taskConfig->getGeneratedLabelType()->getSize();
+
+                                # OLD:
+                                # $labelField->size       = $this->taskConfig->getGeneratedLabelType()->getSize();
+                                # NEW: set label size to minimum size needed to store longest label
+                                $labelField->size       = $this->getMaxLabelLength($valueToLabelMap);
+
                                 $labelField->setUsesLookup(false);
                                 $labelField->isLabel    = true;
 
@@ -637,14 +653,63 @@ class SchemaGenerator
         } else {  # Non-checkbox field
             // Process a single field
             $redcapFieldType = $this->dataProject->getFieldType($fieldName);
+
             $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName, $redcapFieldType);
+
             if (array_key_exists($fieldName, $this->lookupChoices)) {
+                # A single-choice multiple choice field (e.g., dropdown or radio)
                 $field->valueToLabelMap = $this->lookupChoices[$fieldName];
+
+                if ($fieldType === FieldType::DROPDOWN || $fieldType === FieldType::RADIO) {
+                    # if all values are integer, reset the field type to INT,
+                    # else set the field size to VARCHAR and set the field size to the
+                    # minimum possible needed to store the longest value
+                    if ($this->isIntValueType($field->valueToLabelMap)) {
+                        $field->setType(FieldType::INT);
+                        $field->setSize(null);
+                    } else {
+                        $field->setType(FieldType::VARCHAR);
+                        $updatedFieldSize = $this->getMaxValueLength($field->valueToLabelMap);
+                        $field->setSize($updatedFieldSize);
+                    }
+                }
             }
+
             $fields[$fieldName] = $field;
         }
 
         return $fields;
+    }
+
+    public function isIntValueType($valueToLabelMap)
+    {
+        $isInt = true;
+
+        $values = array_keys($valueToLabelMap);
+        foreach ($values as $value) {
+            if (strlen($value) > 9 || preg_match('/-?[1-9][0-9]*|0/', $value) !== 1) {
+                # Note: strlen condition added to prevent ints that are too big for the database
+                $isInt = false;
+                break;
+            }
+        }
+
+        return $isInt;
+    }
+
+    public function getMaxValueLength($valueToLabelMap)
+    {
+        $values = array_keys($valueToLabelMap);
+        $lengths = array_map('strlen', $values);
+        $maxLength = max($lengths);
+        return $maxLength;
+    }
+
+    public function getMaxLabelLength($valueToLabelMap)
+    {
+        $lengths = array_map('strlen', $valueToLabelMap);
+        $maxLength = max($lengths);
+        return $maxLength;
     }
 
     protected function log($message)

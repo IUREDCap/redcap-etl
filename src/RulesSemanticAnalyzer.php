@@ -8,7 +8,9 @@ namespace IU\REDCapETL;
 
 use IU\REDCapETL\Rules\Rule;
 use IU\REDCapETL\Rules\Rules;
+use IU\REDCapETL\Rules\FieldRule;
 use IU\REDCapETL\Rules\TableRule;
+use IU\REDCapETL\Schema\FieldType;
 use IU\REDCapETL\Schema\RowsType;
 
 /**
@@ -28,8 +30,9 @@ class RulesSemanticAnalyzer
      * Perform semantic analysis on parsed transformation rules.
      *
      * @param Rules $rules the rules to check.
+     * @param Rules $metadata REDCap project metadata with information about the project's fields.
      */
-    public function check(&$rules)
+    public function check(&$rules, $metadata = null)
     {
         #print "TRANSFORMATION RULES:\n";
         #print_r($rules);
@@ -59,6 +62,42 @@ class RulesSemanticAnalyzer
                         .'" on line '.$rule->getLineNumber()
                         .': "'.$rule->getLine().'"';
                     $rule->addError($error);
+                }
+            }
+        }
+
+        # Check for legal field types (e.g., can't use CHECKBOX type for non-checkbox field)
+        if (isset($metadata)) {
+            # create metadata map, so it's easier to look up metadata by field name
+            $metadataMap = array();
+            foreach ($metadata as $metadataItem) {
+                $fieldName = $metadataItem['field_name'];
+                $metadataMap[$fieldName] = $metadataItem;
+            }
+
+            foreach ($rules->getRules() as $rule) {
+                if ($rule instanceof FieldRule) {
+                    $redCapFieldName = $rule->getRedCapFieldName();
+                    if (array_key_exists($redCapFieldName, $metadataMap)) {
+                        $dbFieldType = $rule->getDbFieldType();
+
+                        $fieldInfo = $metadataMap[$redCapFieldName];
+                        $redcapFieldName = $fieldInfo['field_name'];
+                        $redcapFieldType = $fieldInfo['field_type'];
+
+                        if ($dbFieldType === FieldType::CHECKBOX
+                            || $dbFieldType === FieldType::DROPDOWN
+                            || $dbFieldType == FieldType::RADIO) {
+                            if ($redcapFieldType !== $dbFieldType) {
+                                $error = 'REDCap field "' . $redcapFieldName . '"'
+                                    . ' was defined with type "' . $dbFieldType . '"'
+                                    . ', but it is not a "' . $dbFieldType
+                                    . '" on line '.$rule->getLineNumber()
+                                    . ': "'.$rule->getLine().'"';
+                                $rule->addError($error);
+                            }
+                        }
+                    } // end array key exists
                 }
             }
         }

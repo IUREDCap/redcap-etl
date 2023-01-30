@@ -19,6 +19,8 @@ class FieldType
     const DATE     = 'date';
     const DATETIME = 'datetime';
     const CHECKBOX = 'checkbox';
+    const DROPDOWN = 'dropdown';
+    const RADIO    = 'radio';
     
     const AUTO_INCREMENT = 'auto_increment';
 
@@ -35,6 +37,8 @@ class FieldType
             case FieldType::DATE:
             case FieldType::DATETIME:
             case FieldType::CHECKBOX:
+            case FieldType::DROPDOWN:
+            case FieldType::RADIO:
             case FieldType::AUTO_INCREMENT:
                 $valid = true;
                 break;

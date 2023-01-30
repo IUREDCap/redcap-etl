@@ -88,6 +88,8 @@ class MysqlTest extends TestCase
             $this->suffixes,
             $this->recordIdFieldName
         );
+        $rootTable->setNeedsLabelView(true);
+
 
         #### Create fields in the Table object
         $field0 = new Field(
@@ -721,7 +723,6 @@ class MysqlTest extends TestCase
             $this->suffixes,
             $this->recordIdFieldName
         );
-        $rootTable->setNeedsLabelView(true);
 
         #create fields in the Table object
         $field0 = new Field(
@@ -793,6 +794,8 @@ class MysqlTest extends TestCase
             $this->tablePrefix,
             $labelViewSuffix
         );
+
+        $rootTable->setNeedsLabelView(true);
         $result1 = $mysqlDbConnection->replaceLookupView($rootTable, null);
         $expected = 1;
         $this->assertEquals(
@@ -970,6 +973,7 @@ class MysqlTest extends TestCase
         ###run the replaceLookupView method and verify it returns successfully
         $expected = 1;
 
+        $rootTable->setNeedsLabelView(true);
         $result = $mysqlDbConnection->replaceLookupView($rootTable, $lookupTable);
         $this->assertEquals(
             $expected,
@@ -977,7 +981,7 @@ class MysqlTest extends TestCase
             'DatabasesTest, mysqlDbConnection replaceLookupViewWithLookup return check'
         );
         
-        #Verify that the view was created as expected.
+        # Verify that the view was created as expected.
         $expectedColumns = 'test_id,record_id,full_name,marital_status';
         $expectedRows = [
             '1,1001,Ima Tester,single',
@@ -985,7 +989,12 @@ class MysqlTest extends TestCase
         ];
 
         $sql = "select * from $name$labelViewSuffix order by 1;";
+
         $contents = $this->processMysqli($dbString, $sql);
+        if ($contents == null) {
+            throw new \Exception("Could not process query \"{$sql}\" with connection \"{$dbString}\"\n");
+        }
+
         $i = 0;
         while ($row = $contents->fetch_assoc()) {
            #Make sure the columns are as expected

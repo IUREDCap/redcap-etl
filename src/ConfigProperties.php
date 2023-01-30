@@ -69,7 +69,8 @@ class ConfigProperties
     #---------------------------------------------------------------------------------------
     #const GENERATED_INSTANCE_TYPE  = 'generated_instance_type';   # for redcap_repeat_instance
     #const GENERATED_KEY_TYPE       = 'generated_key_type';        # for primary and foreign keys
-    const GENERATED_LABEL_TYPE     = 'generated_label_type';      # for label fields in label views
+    const GENERATED_LABEL_TYPE     = 'generated_label_type';      # for label fields in label views; labels for
+                                                                  # multiple-choice values
     const GENERATED_NAME_TYPE      = 'generated_name_type';       # for redcap_event_name, redcap_repeat_instrument
     const GENERATED_RECORD_ID_TYPE = 'generated_record_id_type';  # for generated REDCap record ID field
     const GENERATED_SUFFIX_TYPE    = 'generated_suffix_type';     # for redcap_suffix fields

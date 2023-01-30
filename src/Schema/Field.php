@@ -223,6 +223,26 @@ class Field
         $this->usesLookup = $usesLookup;
     }
 
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    public function setSize($size)
+    {
+        $this->size = $size;
+    }
+
     public function getName()
     {
         return $this->name;

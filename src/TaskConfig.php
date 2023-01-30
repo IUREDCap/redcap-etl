@@ -54,7 +54,7 @@ class TaskConfig
 
     const DEFAULT_GENERATED_INSTANCE_TYPE  = 'int';
     const DEFAULT_GENERATED_KEY_TYPE       = 'int';
-    const DEFAULT_GENERATED_LABEL_TYPE     = 'varchar(255)';
+    const DEFAULT_GENERATED_LABEL_TYPE     = 'varchar';
     const DEFAULT_GENERATED_NAME_TYPE      = 'varchar(255)';
     const DEFAULT_GENERATED_RECORD_ID_TYPE = 'varchar(255)';
     const DEFAULT_GENERATED_SUFFIX_TYPE    = 'varchar(255)';

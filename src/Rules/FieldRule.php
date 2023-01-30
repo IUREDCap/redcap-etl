@@ -18,4 +18,14 @@ class FieldRule extends Rule
     {
         parent::__construct($line, $lineNumber);
     }
+
+    public function getRedCapFieldName()
+    {
+        return $this->redCapFieldName;
+    }
+
+    public function getDbFieldType()
+    {
+        return $this->dbFieldType;
+    }
 }

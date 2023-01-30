@@ -410,22 +410,16 @@ class CsvDbConnectionTest extends TestCase
         $expectedRows = [
             '"insert_id","record_id","full_name","sex","exercises___0","exercises___1",'
             .'"exercises___2","employment_status"' .  chr(10),
-            '1,1000,"Ima Tester",female,0,0,swimming,"Full-time"' . chr(10),
-            '2,1001,"Spider Webb",male,aerobic,0,swimming,"Intern"' . chr(10)
+            '1,1000,"Ima Tester","female",0,0,"swimming","Full-time"' . chr(10),
+            '2,1001,"Spider Webb","male","aerobic",0,"swimming","Intern"' . chr(10)
         ];
         $fileContentsOK = true;
 
         $newFile = $this->dbString . $rootTable1->getName() . $labelViewSuffix . CsvDbConnection::FILE_EXTENSION;
-        $i = 0;
-        $lines = file($newFile);
-        foreach ($lines as $line) {
-            if ($expectedRows[$i] !== $line) {
-                $fileContentsOK = false;
-            }
-            $i++;
-        }
 
-        $this->assertTrue($fileContentsOK, 'CsvDbConnection insertRowsWithLookup File Contents check');
+        $actualRows = file($newFile);
+
+        $this->assertEquals($expectedRows, $actualRows, 'CsvDbConnection insertRowsWithLookup File Contents check');
     }
 
 

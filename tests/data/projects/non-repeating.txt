@@ -8,9 +8,9 @@ FIELD,telephone,string
 FIELD,email,string
 FIELD,dob,date
 FIELD,age,string
-FIELD,ethnicity,varchar(255)
-FIELD,race,varchar(255)
-FIELD,sex,varchar(255)
+FIELD,ethnicity,radio
+FIELD,race,dropdown
+FIELD,sex,radio
 FIELD,height,float
 FIELD,weight,int
 FIELD,bmi,string

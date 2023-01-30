@@ -6,17 +6,17 @@ FIELD,first_name,string
 FIELD,last_name,string
 FIELD,birthdate,date
 FIELD,registration_age,string
-FIELD,gender,varchar(255)
+FIELD,gender,radio
 FIELD,race,checkbox
 
 TABLE,contact_information,root,EVENTS
 FIELD,home_address,string
 FIELD,phone1,string
-FIELD,phone_type1,varchar(255)
+FIELD,phone_type1,dropdown
 FIELD,phone2,string
-FIELD,phone_type2,varchar(255)
+FIELD,phone_type2,dropdown
 FIELD,phone3,string
-FIELD,phone_type3,varchar(255)
+FIELD,phone_type3,dropdown
 FIELD,email,string
 
 TABLE,emergency_contacts,root,EVENTS

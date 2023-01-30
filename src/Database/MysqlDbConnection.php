@@ -230,13 +230,15 @@ class MysqlDbConnection extends DbConnection
             array_push($fieldDefs, $fieldDef);
         }
 
-        // Add field definitions to query
+        # Add field definitions to query
         $query .= join(', ', $fieldDefs);
 
-        // End query
+        # End query
         $query .= ')';
 
-        // Execute query
+        # print "\nQUERY: {$query}\n";
+
+        # Execute query
         $result = $this->mysqli->query($query);
         if ($result === false) {
             $message = 'MySQL error in query "'.$query.'"'

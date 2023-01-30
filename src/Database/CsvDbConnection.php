@@ -283,17 +283,19 @@ class CsvDbConnection extends DbConnection
                                 $field->usesLookup(),
                                 $checkboxValue
                             );
+                            $label = '"' . $label . '"';
                         } else {
                             $label = '0';
                         }
                     } else {    // Non-checkbox field
                         $label = $this->lookupTable->getLabel($table->getName(), $field->usesLookup(), $value);
+                        $label = '"' . $label . '"';
                     }
                 }
  
+
                 switch ($fieldType) {
                     case FieldType::CHECKBOX:
-                        //$label = null;
                         $this->fileWrite($fh, $lfh, $value, $label);
                         break;
                     case FieldType::DATE:
@@ -304,14 +306,13 @@ class CsvDbConnection extends DbConnection
                         $this->fileWrite($fh, $lfh, $value);
                         break;
                     case FieldType::INT:
-                        //$label = null;
                         $this->fileWrite($fh, $lfh, $value, $label);
                         break;
                     case FieldType::CHAR:
                     case FieldType::VARCHAR:
                     case FieldType::STRING:
                         if (isset($label)) {
-                            $this->fileWrite($fh, $lfh, '"'.$value.'"', '"'.$label.'"');
+                            $this->fileWrite($fh, $lfh, '"'.$value.'"', $label);
                         } else {
                             $this->fileWrite($fh, $lfh, '"'.$value.'"');
                         }
