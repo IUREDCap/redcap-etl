@@ -409,7 +409,7 @@ properties can be used to control the auto-generation of transformation rules:
 <td>autogen_include_complete_fields</td>
 <td>
 Set to 1 or 'true' to include form complete fields in the auto-generated transformation rules.
-By default, they wil not be included.
+By default, they will not be included.
 </td>
 </tr>
 
@@ -417,7 +417,7 @@ By default, they wil not be included.
 <td>autogen_include_dag_fields</td>
 <td>
 Set to 1 or 'true' to include DAG (Data Access Group) fields in the auto-generated transformation rules.
-By default, they wil not be included.
+By default, they will not be included.
 </td>
 </tr>
 
@@ -425,7 +425,7 @@ By default, they wil not be included.
 <td>autogen_include_file_fields</td>
 <td>
 Set to 1 or 'true' to include file fields in the auto-generated transformation rules.
-By default, they wil not be included.
+By default, they will not be included.
 </td>
 </tr>
 
@@ -433,7 +433,7 @@ By default, they wil not be included.
 <td>autogen_include_survey_fields</td>
 <td>
 Set to 1 or 'true' to include survey fields in the auto-generated transformation rules.
-By default, they wil not be included.
+By default, they will not be included.
 </td>
 </tr>
 
@@ -441,7 +441,7 @@ By default, they wil not be included.
 <td>autogen_remove_notes_fields</td>
 <td>
 Set to 1 or 'true' to remove REDCap notes fields in the auto-generated transformation rules.
-By default, they wil be included.
+By default, they will be included.
 </td>
 </tr>
 
@@ -450,7 +450,7 @@ By default, they wil be included.
 <td>
 Set to 1 or 'true' to remove REDCap fields that are marked as identifiers
 in the auto-generated transformation rules.
-By default, they wil be included.
+By default, they will be included.
 </td>
 
 <tr>
