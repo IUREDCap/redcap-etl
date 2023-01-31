@@ -16,7 +16,7 @@ FIELD,weight,int
 FIELD,bmi,string
 FIELD,comments,string
 FIELD,age_variable,float
-FIELD,fav_number_variable,float
+FIELD,fav_number_variable,int
 
 TABLE,test_form_repeating_instruments,root,REPEATING_INSTRUMENTS
 FIELD,number_fav_var,int

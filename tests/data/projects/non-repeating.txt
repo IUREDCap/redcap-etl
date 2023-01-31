@@ -16,5 +16,5 @@ FIELD,weight,int
 FIELD,bmi,string
 FIELD,comments,string
 FIELD,age_variable,float
-FIELD,fav_number_variable,float
+FIELD,fav_number_variable,int
 
