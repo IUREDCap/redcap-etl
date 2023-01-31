@@ -262,11 +262,21 @@ the database types used to store the different REDCap-ETL types.
 | **char(_size_)**    | char(_size_)    | char(_size_)    | char(_size_)    | char(_size_)    | text                   |
 | **varchar(_size_)** | varchar(_size_) | varchar(_size_) | varchar(_size_) | varchar(_size_) | text                   |
 | **string**          | text            | text            | text            | text            | text                   |
+| **dropdown**        | int/varchar     | int/varchar     | int/varchar     | int/varchar     | number/text            |
+| **radio**           | int/varchar     | int/varchar     | int/varchar     | int/varchar     | number/text            |
 | **date**            | date            | date            | date            | date            | datetime               |
 | **datetime**        | datetime        | timestamptz     | datetime        | datetime        | datetime               |
 | **checkbox**        | int             | int             | int             | int             | number                 |
 
-NOTE: `TABLE`, `FIELD`, `<rows_type>`, and `<field_type>`; are all case sensitive. So, for example, `TABLE`, `FIELD`, `ROOT`, and `EVENTS` must be uppercase, and `int`, `float`, `string`, `date`, and `checkbox` must be lowercase.
+NOTES: 
+
+* Field types 'dropdown' and 'radio' will have database type int/number if all values specified in REDCap for them are integer values,
+  otherwise they will have database type varchar/text. The size of the varchar will be the minimum size necessary to
+  store the longest dropdown/radio value.
+* Field types 'checkbox', 'dropdown', and 'radio' can only be used for their corresponding REDCap field types.
+* `TABLE`, `FIELD`, `<rows_type>`, and `<field_type>` are all case sensitive. So, for example,
+  `TABLE`, `FIELD`, `ROOT`, and `EVENTS` must be uppercase, and `int`, `float`, `string`, `date`, and
+  `checkbox` must be lowercase.
 
 ---
 
@@ -442,11 +452,15 @@ __Fifth__
 |        4 |         1 | evB               | b             | yellow1  |
 
 
-* NOTE: In this example, var3/var4 need to be put in one table while var7 needs to be put in a different table, despite the fact that all three variables have the same 1-many relationship with var1/var2.
+NOTES:
 
-* NOTE: This syntax assumes that Events will always be used to define 1-many relationships to the root parent table. Although we might envision a more complex situation in which events are named such that some events are considered children of other events, in practice that has not been done.
-
-* NOTE: This example does not include a situation in which a child table that uses suffixes has a parent table that also uses suffixes, but the transforming code can handle that situation.
+* In this example, var3/var4 need to be put in one table while var7 needs to be put in a different table,
+  despite the fact that all three variables have the same 1-many relationship with var1/var2.
+* This syntax assumes that Events will always be used to define 1-many relationships to the root parent table.
+  Although we might envision a more complex situation in which events are named such that some events are considered
+  children of other events, in practice that has not been done.
+* This example does not include a situation in which a child table that uses suffixes has a parent table that also uses
+  suffixes, but the transforming code can handle that situation.
 
 
 
