@@ -67,8 +67,11 @@ class Workflow
 
     private $workflowConfig;
 
-    /* Max batch size for metadata row insert; over 1,000 causes an error for SQL Server */
+    /* Max batch size for metadata table row insert; over 1,000 causes an error for SQL Server */
     const METADATA_BATCH_SIZE = 1000;
+
+    /* Max batch size for lookup table row insert; over 1,000 causes an error for SQL Server */
+    const LOOKUP_BATCH_SIZE = 1000;
 
     /**
      * Constructor.
@@ -386,7 +389,7 @@ class Workflow
         if ($this->needsLookupTable($dbId)) {
             $lookupTable = $schema->getLookupTable();
             $dbConnection->createTable($lookupTable, $ifNotExists);
-            $dbConnection->storeRows($lookupTable);
+            $dbConnection->storeRows($lookupTable, self::LOOKUP_BATCH_SIZE);
         }
 
         #-------------------------------------------------------------
