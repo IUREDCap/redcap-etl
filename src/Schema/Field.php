@@ -48,6 +48,12 @@ class Field
      *     (as opposed to the code/value) for a multiple choice field. */
     public $isLabel; // only set for label fields
 
+    /** @var string the original type of the field as declared in the transformation rules.
+     *              In some cases, a field in the rules may generate multiple database fields
+     *              (e.g., "checkbox") and/or have its type transformed (e.g., "dropdown", "radio").
+     */
+    private $originalType;
+
     /**
      * Creates a Field object that is used to describe a field in REDCap and
      * mapping information for that field to the database where the extraced
@@ -232,6 +238,17 @@ class Field
     {
         $this->type = $type;
     }
+
+    public function getOriginalType()
+    {
+        return $this->originalType;
+    }
+
+    public function setOriginalType($originalType)
+    {
+        $this->originalType = $originalType;
+    }
+
 
     public function getSize()
     {

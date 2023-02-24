@@ -565,6 +565,8 @@ class Table
                 // keep track of whether any data is found
                 $row->data[$field->dbName] = '';
                 $value = null;
+
+                # For checkboxlist, the name is not going to be in the data
                 if (array_key_exists($variableName, $data)) {
                     $value = $data[$variableName];
                     # print "\nAdded value {$value} to field {$field->dbName}\n";
@@ -586,7 +588,11 @@ class Table
                     } else {
                         $row->data[$field->dbName] = $value;
                     }
+                } elseif ($field->getOriginalType() === FieldType::CHECKBOXLIST) {
+                    print "\n\n*** CHECKBOX LIST {$field->getName()} FOUND\n";
                 }
+
+                //print "ORIGINAL FIELD TYPE: {$field->getOriginalType()}\n";
 
                 if (isset($value)) {
                     if (is_string($value)) {

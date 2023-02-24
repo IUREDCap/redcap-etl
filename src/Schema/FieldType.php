@@ -11,16 +11,17 @@ namespace IU\REDCapETL\Schema;
  */
 class FieldType
 {
-    const INT      = 'int';
-    const FLOAT    = 'float';
-    const STRING   = 'string';
-    const CHAR     = 'char';
-    const VARCHAR  = 'varchar';
-    const DATE     = 'date';
-    const DATETIME = 'datetime';
-    const CHECKBOX = 'checkbox';
-    const DROPDOWN = 'dropdown';
-    const RADIO    = 'radio';
+    const INT          = 'int';
+    const FLOAT        = 'float';
+    const STRING       = 'string';
+    const CHAR         = 'char';
+    const VARCHAR      = 'varchar';
+    const DATE         = 'date';
+    const DATETIME     = 'datetime';
+    const CHECKBOX     = 'checkbox';
+    const CHECKBOXLIST = 'checkboxlist';
+    const DROPDOWN     = 'dropdown';
+    const RADIO        = 'radio';
     
     const AUTO_INCREMENT = 'auto_increment';
 
@@ -37,6 +38,7 @@ class FieldType
             case FieldType::DATE:
             case FieldType::DATETIME:
             case FieldType::CHECKBOX:
+            case FieldType::CHECKBOXLIST:
             case FieldType::DROPDOWN:
             case FieldType::RADIO:
             case FieldType::AUTO_INCREMENT:

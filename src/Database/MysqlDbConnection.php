@@ -370,7 +370,7 @@ class MysqlDbConnection extends DbConnection
 
             $query .= $select.' '.$from;
 
-            ###print("QUERY: $query\n");
+            print("QUERY: $query\n");
 
             // Execute query
             $result = $this->mysqli->query($query);

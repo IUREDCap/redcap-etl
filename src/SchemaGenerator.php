@@ -352,6 +352,7 @@ class SchemaGenerator
                             # Need one label for each checkbox, because multiple values
                             # can be selected
                             # Types: dropdown, radio, checkbox (only checkbox can have multiple values)
+                            #------------------------------------------------------------
                             $labelFieldSuffix = $this->taskConfig->getLabelFieldSuffix();
                             if (isset($labelFieldSuffix) && trim($labelFieldSuffix) !== '') {
                                 $labelField = clone $field;
@@ -647,6 +648,7 @@ class SchemaGenerator
                 }
 
                 $field = new Field($checkBoxFieldName, FieldType::INT, null, $checkBoxDbFieldName, $redcapFieldType);
+                $field->setOriginalType(FieldType::CHECKBOX);
                 $field->checkboxLabel = $label;
                 $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value] = $field;
             }
@@ -674,6 +676,7 @@ class SchemaGenerator
                     }
                 }
             }
+            $field->setOriginalType($fieldType);
 
             $fields[$fieldName] = $field;
         }
