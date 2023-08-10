@@ -49,13 +49,19 @@ class FilesTest extends TestCase
         #--------------------------------------------------
         # Test exporting the file that was just imported
         #--------------------------------------------------
+        $fileInfo = array();
         $result = self::$longitudinalDataProject->exportFile(
             $recordId = '1001',
             $field = 'patient_document',
-            $event = 'enrollment_arm_1'
+            $event = 'enrollment_arm_1',
+            $repeatInstance = null,
+            $fileInfo
         );
         
         $this->assertEquals('test import', $result, 'Export file contents check.');
+        $this->assertEquals('text/plain', $fileInfo['mime_type'], 'File info mime type check');
+        $this->assertEquals('import-file.txt', $fileInfo['name'], 'File info name check');
+        $this->assertEquals('UTF-8', $fileInfo['charset'], 'File info charset check');
         
         #---------------------------------------------
         # Test deleting the file that was imported

@@ -1,0 +1,17 @@
+record_id,redcap_repeat_instrument,redcap_repeat_instance,first_name,last_name,email,height_feet,height_inches,birth_date,basic_information_complete,weight_date,weight_time,weight_pounds,weight_complete
+1001,,,Prince,Bogisich,prince.bogisich@mailinator.com,6,0,1924-10-20,2,,,,
+1001,weight,1,,,,,,,,01/21/2022,14:54,173.4,2
+1001,weight,2,,,,,,,,02/09/2022,11:28,172.4,2
+1001,weight,3,,,,,,,,03/14/2022,09:50,169.7,2
+1002,,,Mateo,Lueilwitz,mateo.lueilwitz@mailinator.com,5,8,1926-03-02,2,,,,
+1002,weight,1,,,,,,,,01/16/2022,15:09,208.4,0
+1002,weight,2,,,,,,,,02/11/2022,12:17,205.4,2
+1002,weight,3,,,,,,,,02/17/2022,09:30,203.7,2
+1002,weight,4,,,,,,,,03/11/2022,13:52,201.7,2
+1003,,,Braden,Turner,braden.turner@mailinator.com,5,9,1987-06-14,2,,,,
+1003,weight,1,,,,,,,,01/07/2022,10:35,161.6,1
+1003,weight,2,,,,,,,,01/11/2022,09:31,159.6,2
+1003,weight,3,,,,,,,,02/09/2022,11:19,156.8,2
+1003,weight,4,,,,,,,,03/25/2022,10:22,153.6,2
+1004,,,Sharon,Hand,sharon.hand@mailinator.com,5,7,1960-08-09,2,,,,
+1004,weight,1,,,,,,,,02/22/2022,16:49,169.2,1

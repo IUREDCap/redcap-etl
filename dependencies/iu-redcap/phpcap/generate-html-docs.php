@@ -281,4 +281,11 @@ foreach($files as $file)
     translateFile( $file, $files );
 }
 
+# Hack to fix problem with API documentation generated file
+# phpDocumentor generates both "Default.html" and "default.html"
+# in a dicrectory, which causes problems when you unzip
+# a zip file containing this on Windows.
+$problemFile = __DIR__ . '/docs/api/packages/Default.html';
+@unlink($problemFile);
+
 print "\nDone.\n";

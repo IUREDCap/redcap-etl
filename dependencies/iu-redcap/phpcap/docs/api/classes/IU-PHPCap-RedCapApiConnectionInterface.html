@@ -2,18 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>PHPCap API</title>
+            <title>PHPCap API</title>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
     <link rel="icon" href="images/favicon.ico"/>
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
-            <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/js/all.min.js" integrity="sha256-0vuk8LXoyrmCjp1f0O300qo1M75ZQyhH9X3J6d+scmk=" crossorigin="anonymous"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
@@ -48,16 +53,27 @@
     Menu
 </label>
 <aside class="phpdocumentor-column -four phpdocumentor-sidebar">
-    
-    <section class="phpdocumentor-sidebar__category">
-        <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
-                                                <h4 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/iu.html"><abbr title="\IU">IU</abbr></a></h4>
-                <ul class="phpdocumentor-list">
-                                            <li><a href="namespaces/iu-phpcap.html"><abbr title="\IU\PHPCap">PHPCap</abbr></a></li>
-                                    </ul>
-                        </section>
+                    <section class="phpdocumentor-sidebar__category">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/iu.html" class="">IU</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/iu-phpcap.html" class="">PHPCap</a>
+                
+            </li>
+            </ul>
 
-    
+                        </section>
+                <section class="phpdocumentor-sidebar__category">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                        </section>
+            
     <section class="phpdocumentor-sidebar__category">
         <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
                 <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
@@ -80,13 +96,20 @@
     <article class="phpdocumentor-element -interface">
         <h2 class="phpdocumentor-content__title">
     RedCapApiConnectionInterface
-        </h2>
+                <div class="phpdocumentor-element__package">
+            in
+            <ul class="phpdocumentor-breadcrumbs">
+                                    <li><a href="packages/Application.html">Application</a></li>
+                            </ul>
+        </div>
+    </h2>
 
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">18</span>
-</aside>
+
+    </aside>
 
             <p class="phpdocumentor-summary">Interface for connection to the API of a REDCap instance.</p>
 
@@ -107,10 +130,10 @@ access to the REDCap API.</p>
 </h3>
 
 <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -method -public">
+                        <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method___construct">__construct()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Constructor that creates a REDCap API connection for the specified URL, with the
 specified settings.</dd>
@@ -118,21 +141,21 @@ specified settings.</dd>
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method___destruct">__destruct()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Destructor for this class.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_call">call()</a>
     <span>
-                        &nbsp;: string    </span>
+                                &nbsp;: string    </span>
 </dt>
 <dd>Makes a call to REDCap&#039;s API and returns the results.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_callWithArray">callWithArray()</a>
     <span>
-                        &nbsp;: string    </span>
+                                &nbsp;: string    </span>
 </dt>
 <dd>Calls REDCap&#039;s API using a with a correctly formatted string version
 of the specified array and returns the results.</dd>
@@ -140,77 +163,77 @@ of the specified array and returns the results.</dd>
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_getCallInfo">getCallInfo()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Returns call information for the most recent call.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_getConnectionTimeoutInSeconds">getConnectionTimeoutInSeconds()</a>
     <span>
-                        &nbsp;: int    </span>
+                                &nbsp;: int    </span>
 </dt>
 <dd>Gets the timeout for time to make a connection in seconds.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_getErrorHandler">getErrorHandler()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Gets the error handler for the connection.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_getSslVerify">getSslVerify()</a>
     <span>
-                        &nbsp;: bool    </span>
+                                &nbsp;: bool    </span>
 </dt>
 <dd>Gets the status of SSL verification for the connection.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_getTimeoutInSeconds">getTimeoutInSeconds()</a>
     <span>
-                        &nbsp;: int    </span>
+                                &nbsp;: int    </span>
 </dt>
 <dd>Gets the timeout in seconds for calls to the connection.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_getUrl">getUrl()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Gets the URL of the connection.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_setConnectionTimeoutInSeconds">setConnectionTimeoutInSeconds()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Sets the timeout for time to make a connection in seconds.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_setErrorHandler">setErrorHandler()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Sets the error handler;</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_setSslVerify">setSslVerify()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Sets SSL verification for the connection.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_setTimeoutInSeconds">setTimeoutInSeconds()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Sets the timeout in seconds for calls to the connection.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapApiConnectionInterface.html#method_setUrl">setUrl()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                                &nbsp;: mixed    </span>
 </dt>
 <dd>Sets the URL of the connection.</dd>
 
@@ -239,17 +262,17 @@ of the specified array and returns the results.</dd>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">35</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Constructor that creates a REDCap API connection for the specified URL, with the
 specified settings.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sslVerify</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$caCertificateFile</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errorHandler</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sslVerify</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$caCertificateFile</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errorHandler</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -298,8 +321,7 @@ connected to is the one specified).</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -316,24 +338,23 @@ connected to is the one specified).</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">45</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Destructor for this class.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">__destruct</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__destruct</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -350,16 +371,16 @@ connected to is the one specified).</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">56</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Makes a call to REDCap&#039;s API and returns the results.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">call</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">call</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -385,8 +406,7 @@ connected to is the one specified).</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><a href="classes/IU-PHPCap-PhpCapException.html"><abbr title="\IU\PHPCap\PhpCapException">PhpCapException</abbr></a></span>
                                                             
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
@@ -413,17 +433,17 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">68</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Calls REDCap&#039;s API using a with a correctly formatted string version
 of the specified array and returns the results.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">callWithArray</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dataArray</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">callWithArray</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dataArray</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -450,8 +470,7 @@ string and then passed to the REDCap API.</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><a href="classes/IU-PHPCap-PhpCapException.html"><abbr title="\IU\PHPCap\PhpCapException">PhpCapException</abbr></a></span>
                                                             
-                                                 <section class="phpdocumentor-description"></section>
-
+                                             
                                     </dd>
                         </dl>
 
@@ -478,13 +497,14 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">74</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Returns call information for the most recent call.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">getCallInfo</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">getCallInfo</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
         <section class="phpdocumentor-description"><p>The format of the call information will be connection dependent.</p>
 </section>
@@ -495,8 +515,7 @@ See the REDCap API documentation for more information.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -513,16 +532,16 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">140</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Gets the timeout for time to make a connection in seconds.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">getConnectionTimeoutInSeconds</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+                    <span class="phpdocumentor-signature__name">getConnectionTimeoutInSeconds</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
     
 
@@ -548,13 +567,14 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">81</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Gets the error handler for the connection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">getErrorHandler</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">getErrorHandler</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
         <section class="phpdocumentor-description"><p>return ErrorHandlerInterface the error handler for the connection.</p>
 </section>
@@ -565,8 +585,7 @@ See the REDCap API documentation for more information.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -583,16 +602,16 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">109</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Gets the status of SSL verification for the connection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">getSslVerify</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+                    <span class="phpdocumentor-signature__name">getSslVerify</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
     
 
@@ -618,16 +637,16 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">125</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Gets the timeout in seconds for calls to the connection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">getTimeoutInSeconds</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+                    <span class="phpdocumentor-signature__name">getTimeoutInSeconds</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
     
 
@@ -653,13 +672,14 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">95</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Gets the URL of the connection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">getUrl</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">getUrl</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
         <section class="phpdocumentor-description"><p>return string the URL of the connection.</p>
 </section>
@@ -670,8 +690,7 @@ See the REDCap API documentation for more information.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -688,16 +707,16 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">147</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Sets the timeout for time to make a connection in seconds.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">setConnectionTimeoutInSeconds</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$connectionTimeoutInSeconds</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">setConnectionTimeoutInSeconds</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$connectionTimeoutInSeconds</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -705,7 +724,8 @@ See the REDCap API documentation for more information.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
+                    <section class="phpdocumentor-description"></section>
+
             </dd>
             </dl>
 
@@ -714,8 +734,7 @@ See the REDCap API documentation for more information.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -732,16 +751,16 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">88</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Sets the error handler;</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">setErrorHandler</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errorHandler</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">setErrorHandler</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/IU-PHPCap-ErrorHandlerInterface.html"><abbr title="\IU\PHPCap\ErrorHandlerInterface">ErrorHandlerInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errorHandler</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -760,8 +779,7 @@ See the REDCap API documentation for more information.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -778,16 +796,16 @@ See the REDCap API documentation for more information.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">117</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Sets SSL verification for the connection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">setSslVerify</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sslVerify</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">setSslVerify</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sslVerify</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -807,8 +825,7 @@ have its SSL certificate verified.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -825,16 +842,16 @@ have its SSL certificate verified.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">133</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Sets the timeout in seconds for calls to the connection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">setTimeoutInSeconds</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$timeoutInSeconds</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">setTimeoutInSeconds</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$timeoutInSeconds</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -853,8 +870,7 @@ have its SSL certificate verified.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
                     <article
@@ -871,16 +887,16 @@ have its SSL certificate verified.</p>
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapApiConnectionInterface.php"><a href="files/src-redcapapiconnectioninterface.html"><abbr title="src/RedCapApiConnectionInterface.php">RedCapApiConnectionInterface.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">102</span>
-</aside>
+
+    </aside>
 
         <p class="phpdocumentor-summary">Sets the URL of the connection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">setUrl</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">setUrl</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -899,11 +915,72 @@ have its SSL certificate verified.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
-
+        
     
 </article>
             </section>
+
+        
+    <script type="text/javascript">
+        function loadExternalCodeSnippets(line) {
+            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
+                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+                var language = 'php';
+
+                var code = document.createElement('code');
+                code.className = 'language-' + language;
+
+                pre.textContent = '';
+
+                pre.setAttribute('data-line', line)
+                code.textContent = 'Loading…';
+
+                pre.appendChild(code);
+
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('GET', src, true);
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+
+                            Prism.highlightElement(code);
+                        }
+                        else if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                        }
+                        else {
+                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
+                        }
+                    }
+                };
+
+                xhr.send(null);
+            });
+        }
+
+        var modals = document.querySelectorAll("[data-modal]");
+
+        modals.forEach(function (trigger) {
+            trigger.addEventListener("click", function (event) {
+                //event.preventDefault();
+                const modal = document.getElementById(trigger.dataset.modal);
+                modal.classList.add("phpdocumentor-modal__open");
+                loadExternalCodeSnippets(trigger.dataset.line)
+                const exits = modal.querySelectorAll("[data-exit-button]");
+                exits.forEach(function (exit) {
+                    exit.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        modal.classList.remove("phpdocumentor-modal__open");
+                    });
+                });
+            });
+        });
+    </script>
 
     </article>
                 <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
@@ -926,5 +1003,9 @@ have its SSL certificate verified.</p>
     <script>
         cssVars({});
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
 </body>
 </html>

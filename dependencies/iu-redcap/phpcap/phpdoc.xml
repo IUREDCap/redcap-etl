@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!-- =================================================
+Copyright (C) 2022 The Trustees of Indiana University
+SPDX-License-Identifier: BSD-3-Clause
+================================================== -->
 <phpdocumentor
         configVersion="3"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

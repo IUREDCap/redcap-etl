@@ -25,7 +25,7 @@
 <ul class="intraPage">
     <li class="active"><a href="#Setup">Setup</a></li>
 <ul class="intraPage">
-    <li class="active"><a href="#Example Setup on Ubuntu 16">Example Setup on Ubuntu 16</a></li>
+    <li class="active"><a href="#Example Setup on Ubuntu 20">Example Setup on Ubuntu 20</a></li>
 </ul>
     <li class="active"><a href="#Development">Development</a></li>
 <ul class="intraPage">
@@ -96,8 +96,8 @@ It should be set up so that it can be run from the command line using:</p>
 <div class="description"><pre><code>phpdoc</code></pre></div>
 </li>
 </ol>
-<h3 id="Example Setup on Ubuntu 16">Example Setup on Ubuntu 16</h3>
-<p>To set up PHPCap for development on Ubuntu 16, execute the following commands:</p>
+<h3 id="Example Setup on Ubuntu 20">Example Setup on Ubuntu 20</h3>
+<p>To set up PHPCap for development on Ubuntu 20, execute the following commands:</p>
 <div class="description"><pre><code>sudo apt-get install php php-curl php-xml php-mbstring
 sudo apt-get install php-xdebug
 sudo apt-get install git
@@ -139,13 +139,21 @@ following setup steps are completed:</p>
 <li>Log in to your REDCap site.</li>
 <li>Create an empty project in REDCap.</li>
 <li>Create a project in REDCap for the &quot;Basic Demography,&quot; &quot;DAG,&quot; and &quot;Longitudinal Data&quot; test projects in directory <strong>tests/projects/</strong>, and import each of those test project files into the REDCap project created for it.</li>
-<li>In REDCap, request API tokens for the empty project and the projects imported in the step above.</li>
+<li>In REDCap, request API tokens for the empty project and the projects imported in the step above. Make sure that user setting for each
+project allow API import and export.</li>
 <li>Once you have your tokens, copy the &quot;config-example.ini&quot; file to a file
 named &quot;config.ini&quot; and then set the URL in that file to be the
 URL for the API of your REDCap instance, and set the tokens to be
 the tokens requested in the previous step.</li>
+<li>In the Control Center in REDCap, download the &quot;Date Calculated Fields&quot; external module and then enable it.</li>
 <li>In REDCap, enable the &quot;Date Calculated Fields&quot; external module for the &quot;Basic Demography&quot; project.</li>
-<li>In REDCap, add a test user to the DAG project, assigning only default, basic permissions. Add that user to the 'group1' DAG.</li>
+<li>In REDCap, add a test user to the DAG project, assigning only default, basic permissions.
+<ol>
+<li>Add the test user to the 'group1' DAG</li>
+<li>Using the &quot;DAG Switcher&quot; in REDCap, assign the test user access to DAGs 'group1' and 'group2'</li>
+<li>Create an API token for the test user with export/import/update permission for the DAG project</li>
+<li>Set the <strong>dags.test.user.api.token</strong> property in your test config.ini file to the value for the API token created in the previous step</li>
+</ol></li>
 </ol>
 <h4>Setup for Optional CA Certificate File Integration Tests</h4>
 <p>To run the optional tests involving the CA certificate file, you will need to set up
@@ -240,6 +248,8 @@ survey.participant.identifier</code></pre></div>
 <strong>super.token</strong> to a valid super token value. Note that the tests for project creation
 have no way to delete the projects that are created, so they will need to be deleted
 manually.</p>
+<h4>Set the Timezone</h4>
+<p>Set the timezone property in the <strong>config.ini</strong> file.</p>
 <p>Note: the .gitignore file in PHPCap is set to ignore the <strong>tests/config.ini</strong> file, so that your
 personal API tokens will not be committed to Git. </p>
 <h4>Running the Automated Tests</h4>
@@ -312,7 +322,7 @@ PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
 <li>HTML versions of the Markdown documentation in the docs-md/ directory, which are generated programmatically, stored in the <strong>docs/</strong> directory.</li>
 </ul>
 <p>Since all documentation in the <strong>docs/</strong> directory (except for the README.md file) is automatically
-generated, these files should not be editied manually.</p>
+generated, these files should not be edited manually.</p>
 <h4>API Document Generation</h4>
 <p>To generate the API documentation (stored in <strong>./docs/api</strong>), execute the following command in PHPCap's root directory:</p>
 <div class="description"><pre><code>phpdoc</code></pre></div>
@@ -320,6 +330,9 @@ generated, these files should not be editied manually.</p>
 The configuration file used by this command is <strong>phpdoc.xml</strong> in the root directory of PHPCap.</p>
 <p>The API documentation <em>is</em> stored in Git to eliminate the need for non-developer users
 to install Composer and the developer dependencies.</p>
+<p>Unfortunately, phpDocumentor creates 2 files with the same name that only differ in how they are capitalized. This
+causes issues when a zip file download of PHPCap is done on some systems. Running the HTML document generation
+script below will fix this issue, so it should always be run after the phpdoc command is run.</p>
 <h4>HTML Document Generation</h4>
 <p>To generate an HTML version for the Markdown documents in the <strong>docs-md/</strong> directory,
 execute the following command in PHPCap's root directory:</p>

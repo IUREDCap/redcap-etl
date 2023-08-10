@@ -29,6 +29,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/ImportAndDeleteMetadataTest.php</file>
       <file>tests/integration/InstrumentEventMappingsTest.php</file>
       <file>tests/integration/InstrumentsTest.php</file>
+      <file>tests/integration/LoggingTest.php</file>
       <file>tests/integration/MetadataTest.php</file>
       <file>tests/integration/NextRecordNameTest.php</file>
       <file>tests/integration/PdfFormsTest.php</file>
@@ -43,6 +44,8 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/ReportsTest.php</file>
       <file>tests/integration/SurveyTest.php</file>
       <file>tests/integration/UsersTest.php</file>
+      <file>tests/integration/UserRolesTest.php</file>
+      <file>tests/integration/UserRoleAssignmentsTest.php</file>
     </testsuite>
   </testsuites>
 </phpunit>

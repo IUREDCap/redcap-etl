@@ -47,12 +47,18 @@ SPDX-License-Identifier: BSD-3-Clause
 <li><strong>exportReports</strong> - method that exports the records produced by a report that
 is defined for the project in REDCap.</li>
 </ol>
-<p>The detailed documentation for the RedCapProject class can be found in the PHPCap API documentation:
-<a href="api/classes/IU-PHPCap-RedCapProject.html">RedCapProject Class</a></p>
-<p><strong>Batch Processing</strong>. The methods above return all of their records at once, but
+<p><strong>Batch Processing.</strong> The methods above return all of their records at once, but
 the method <strong>getRecordIdBatches</strong> can be used with the first 2 methods above
 to export records in batches. This will cut down on the memory requirements of the export, which
 can be useful for exporting the records from very large projects.</p>
+<p><strong>Files.</strong> When records are exported, the contents of any files in those records will
+<em>not</em> be exported. To export files,
+you need to use the
+<a href="api/classes/IU-PHPCap-RedCapProject.html#method_exportFile">exportFile</a>
+method. This method can only export a single file, so if you want to
+export multiple files, you will need to call the method multiple times.</p>
+<p>The detailed documentation for the <strong>RedCapProject</strong> class can be found in the PHPCap API documentation:
+<a href="api/classes/IU-PHPCap-RedCapProject.html">RedCapProject Class</a></p>
 <h2 id="exportRecords">exportRecords</h2>
 <p>The exportRecords method is a standard PHP method that has 12 parameters that can
 be set to modify the records that are exported and their format.</p>

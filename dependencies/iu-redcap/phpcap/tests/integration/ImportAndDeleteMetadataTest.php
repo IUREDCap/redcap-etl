@@ -89,16 +89,27 @@ class ImportAndDeleteMetadataTest extends TestCase
         }
         $this->assertTrue($exceptionCaught, 'Non-boolean override exception caught.');
         
+        # Get the current events
         $events = self::$longitudinalDataProject->exportEvents();
         self::$emptyProject->importEvents($events, 'php', true);
         
+        # Import new events into empty project
         $mappings = self::$longitudinalDataProject->exportInstrumentEventMappings();
         self::$emptyProject->importInstrumentEventMappings($mappings);
         
         $newArms = self::$emptyProject->exportArms();
         $this->assertEquals($arms, $newArms, 'Arms check.');
-        
+
         $newEvents = self::$emptyProject->exportEvents();
+
+        # Remove event_id (which will not match), before comparison
+        for ($i = 0; $i < count($events); $i++) {
+            unset($events[$i]['event_id']);
+        }
+        for ($i = 0; $i < count($newEvents); $i++) {
+            unset($newEvents[$i]['event_id']);
+        }
+
         $this->assertEquals($events, $newEvents, 'Events check.');
         
         $newMappings = self::$emptyProject->exportInstrumentEventMappings();

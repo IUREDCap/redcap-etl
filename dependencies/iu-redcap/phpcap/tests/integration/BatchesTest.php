@@ -75,10 +75,10 @@ class BatchesTest extends TestCase
     public function testExportWithBatchesWithFilterLogic()
     {
         $expectedResult = self::$longitudinalDataProject->exportRecordsAp(
-            ['format' => 'csv', 'filterLogic' => '[age] >= 60']
+            ['format' => 'csv', 'filterLogic' => '[num_children] >= 2']
         );
         
-        $recordIdBatches = self::$longitudinalDataProject->getRecordIdBatches(10, '[age] >= 60');
+        $recordIdBatches = self::$longitudinalDataProject->getRecordIdBatches(10, '[num_children] >= 2');
         
         $result = '';
         $isFirst = true;
@@ -87,7 +87,7 @@ class BatchesTest extends TestCase
             # people with age >= 60 will be returned, instead of all
             # records with age (defined and) >= 60 being returned
             $records = self::$longitudinalDataProject->exportRecordsAp(
-                ['format' => 'csv', 'recordIds' => $recordIdBatch, 'filterLogic' => '[age] >= 60']
+                ['format' => 'csv', 'recordIds' => $recordIdBatch, 'filterLogic' => '[num_children] >= 2']
             );
             
             if ($isFirst) {

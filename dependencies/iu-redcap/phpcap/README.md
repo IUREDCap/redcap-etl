@@ -64,7 +64,7 @@ Documentation
 For more information, see:
 
 * PHPCap user documentation: [https://iuredcap.github.io/phpcap](https://iuredcap.github.io/phpcap/)
-* PHPCap API reference: [https://iuredcap.github.io/phpcap/api](https://iuredcap.github.io/phpcap/api/)
+* PHPCap API reference: [https://iuredcap.github.io/phpcap/api/namespaces/iu-phpcap.html](https://iuredcap.github.io/phpcap/api/namespaces/iu-phpcap.html)
 
 
 

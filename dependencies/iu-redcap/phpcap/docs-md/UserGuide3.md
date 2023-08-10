@@ -12,13 +12,21 @@ PHPCap's __RedCapProject__ class provides the following 3 methods for exporting 
 3. __exportReports__ - method that exports the records produced by a report that
                        is defined for the project in REDCap.
 
-The detailed documentation for the RedCapProject class can be found in the PHPCap API documentation:
-[RedCapProject Class](api/classes/IU-PHPCap-RedCapProject.html)
-
-__Batch Processing__. The methods above return all of their records at once, but
+**Batch Processing.** The methods above return all of their records at once, but
 the method __getRecordIdBatches__ can be used with the first 2 methods above
 to export records in batches. This will cut down on the memory requirements of the export, which
 can be useful for exporting the records from very large projects.
+
+**Files.** When records are exported, the contents of any files in those records will
+*not* be exported. To export files,
+you need to use the
+[exportFile](api/classes/IU-PHPCap-RedCapProject.html#method_exportFile)
+method. This method can only export a single file, so if you want to
+export multiple files, you will need to call the method multiple times.
+
+The detailed documentation for the **RedCapProject** class can be found in the PHPCap API documentation:
+[RedCapProject Class](api/classes/IU-PHPCap-RedCapProject.html)
+
 
 exportRecords
 ---------------------------
@@ -141,3 +149,4 @@ above might return, for example:
 ```
 
 API documentation: [getRecorIdBatches()](api/classes/IU-PHPCap-RedCapProject.html#method_getRecordIdBatches)
+

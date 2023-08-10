@@ -17,16 +17,11 @@ use IU\PHPCap\PhpCapException;
 class ArmsTest extends TestCase
 {
     private static $config;
-    private static $basicDemographyProject;
     private static $longitudinalDataProject;
     
     public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
-        self::$basicDemographyProject = new RedCapProject(
-            self::$config['api.url'],
-            self::$config['basic.demography.api.token']
-        );
         self::$longitudinalDataProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['longitudinal.data.api.token']

@@ -17,7 +17,6 @@ class ConnectionsTest extends TestCase
 {
     private static $config;
     private static $basicDemographyProject;
-    private static $longitudinalDataProject;
     private static $apiConnection;
     private static $caCertificateFile;
     
@@ -31,10 +30,6 @@ class ConnectionsTest extends TestCase
         self::$basicDemographyProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['basic.demography.api.token']
-        );
-        self::$longitudinalDataProject = new RedCapProject(
-            self::$config['api.url'],
-            self::$config['longitudinal.data.api.token']
         );
     }
     

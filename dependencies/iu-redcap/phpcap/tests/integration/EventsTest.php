@@ -16,16 +16,11 @@ use IU\PHPCap\RedCapProject;
 class EventsTest extends TestCase
 {
     private static $config;
-    private static $basicDemographyProject;
     private static $longitudinalDataProject;
     
     public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
-        self::$basicDemographyProject = new RedCapProject(
-            self::$config['api.url'],
-            self::$config['basic.demography.api.token']
-        );
         self::$longitudinalDataProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['longitudinal.data.api.token']
@@ -86,9 +81,12 @@ class EventsTest extends TestCase
         $this->assertEquals(15, count($csv), 'Correct number of rows');
         
         $expectedHeader = [
-            'event_name', 'arm_num', 'day_offset', 'offset_min', 'offset_max', 'unique_event_name', 'custom_event_label'
+            'event_name', 'arm_num',
+            'day_offset', 'offset_min', 'offset_max',
+            'unique_event_name', 'custom_event_label', 'event_id'
         ];
         $header = $csv[0];
+
         $this->assertEquals($expectedHeader, $header, 'CSV headers match.');
         
         $firstDataRow = $csv[1];

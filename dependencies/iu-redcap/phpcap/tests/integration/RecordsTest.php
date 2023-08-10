@@ -25,28 +25,122 @@ class RecordsTest extends TestCase
     private static $config;
     private static $basicDemographyProject;
     private static $longitudinalDataProject;
+    private static $repeatingFormsProject;
     
     public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(self::$configFile);
+
         self::$basicDemographyProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['basic.demography.api.token']
         );
+
         self::$longitudinalDataProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['longitudinal.data.api.token']
         );
 
-        $oldIds = [1101, 1200, 1201, 1202, 1203];
-        foreach ($oldIds as $id) {
+        self::$repeatingFormsProject = null;
+        if (array_key_exists('repeating.forms.api.token', self::$config)
+                && !empty(self::$config['repeating.forms.api.token'])) {
+            self::$repeatingFormsProject = new RedCapProject(
+                self::$config['api.url'],
+                self::$config['repeating.forms.api.token']
+            );
+        }
+
+        # Make sure that all the test records that can be added by this class are deleted,
+        # in case the test failed the last time it was run.
+        $testIds = [1101, 1200, 1201, 1202, 1203];
+        foreach ($testIds as $id) {
             $exists = self::$basicDemographyProject->exportRecordsAp(['recordIds' => [$id]]);
             if (count($exists) > 0) {
                 self::$basicDemographyProject->deleteRecords([$id]);
             }
+
+            $exists = self::$longitudinalDataProject->exportRecordsAp(['recordIds' => [$id]]);
+            if (count($exists) > 0) {
+                self::$longitudinalDataProject->deleteRecords([$id]);
+            }
         }
     }
     
+    public function testExportRecordsWithBlankForGrayFormStatus()
+    {
+        $callInfo = true;
+
+        # Import test records
+        $records = FileUtil::fileToString(__DIR__.'/../data/longitudinal-data-import-2.csv');
+        $result = self::$longitudinalDataProject->importRecords(
+            $records,
+            $format = 'csv',
+            null,
+            $overwriteBehavior = 'overwrite',
+            $dateFormat = 'MDY'
+        );
+
+        #------------------------------------------------------------
+        # Check for case WITHOUT returning blanks
+        #------------------------------------------------------------
+        $recordsWithoutBlanks = self::$longitudinalDataProject->exportRecordsAp(
+            [
+                'recordIds' => [1102],
+                'exportBlankForGrayFormStatus' => false
+            ]
+        );
+        $finalRecordWithoutBlanks = $recordsWithoutBlanks[6];
+        $this->assertTrue(
+            $finalRecordWithoutBlanks['patient_morale_questionnaire_complete'] === '0',
+            'Patient morale complete zero check.'
+        );
+        $this->assertTrue(
+            $finalRecordWithoutBlanks['completion_data_complete'] === '0',
+            'Completion data complete zero check.'
+        );
+
+        #------------------------------------------------------------
+        # Check for case WITH returning blanks
+        #------------------------------------------------------------
+        $recordsWithBlanks = self::$longitudinalDataProject->exportRecordsAp(
+            [
+                'recordIds' => [1102],
+                'exportBlankForGrayFormStatus' => true
+            ]
+        );
+        $finalRecordWithBlanks = $recordsWithBlanks[6];
+        $this->assertTrue(
+            $finalRecordWithBlanks['patient_morale_questionnaire_complete'] === '',
+            'Patient morale complete blank check.'
+        );
+        $this->assertTrue(
+            $finalRecordWithBlanks['completion_data_complete'] === '',
+            'Completion data complete blank check.'
+        );
+
+        #----------------------------------------------------
+        ## Delete the test records that were imported
+        #----------------------------------------------------
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1101, 1102]);
+        $this->assertEquals(2, $recordsDeleted, 'Records deleted check.');
+    }
+    
+    public function testExportRecordsWithBlankForGrayFormStatusWithInvalidType()
+    {
+        $caughtException = false;
+        try {
+            $recordsWithoutBlanks = self::$longitudinalDataProject->exportRecordsAp(
+                [
+                    'recordIds' => [1102],
+                    'exportBlankForGrayFormStatus' => 123 // illegal type
+                ]
+            );
+        } catch (\Exception $exception) {
+            $caughtException = true;
+        }
+
+        $this->assertTrue($caughtException, 'Exception caught check.');
+    }
 
     public function testExportRecordsWithNullFormat()
     {
@@ -425,19 +519,19 @@ class RecordsTest extends TestCase
     public function testExportRecordsApRecordIdsAsEav()
     {
         $result = self::$basicDemographyProject->exportRecordsAp(
-            ['recordIds' => [1001, 1010, 1100], 'fields' => ['age', 'bmi'], 'type' => 'eav']
+            ['recordIds' => [1001, 1010, 1100], 'fields' => ['bmi', 'weight'], 'type' => 'eav']
         );
         
         # 3 rows X 2 fields = 6 records (since EAV type is being used).
         $this->assertEquals(6, count($result), 'Correct number of records.');
         
         $expectedResult = [
-            ['record' => 1001, 'field_name' => 'age', 'value' => 51],
             ['record' => 1001, 'field_name' => 'bmi', 'value' => 27.7],
-            ['record' => 1010, 'field_name' => 'age', 'value' => 36],
+            ['record' => 1001, 'field_name' => 'weight', 'value' => 83],
             ['record' => 1010, 'field_name' => 'bmi', 'value' => 18.3],
-            ['record' => 1100, 'field_name' => 'age', 'value' => 75],
-            ['record' => 1100, 'field_name' => 'bmi', 'value' => 18.6]
+            ['record' => 1010, 'field_name' => 'weight', 'value' => 62],
+            ['record' => 1100, 'field_name' => 'bmi', 'value' => 18.6],
+            ['record' => 1100, 'field_name' => 'weight', 'value' => 68]
         ];
         
         $this->assertEquals($expectedResult, $result, 'Results check.');
@@ -1128,12 +1222,12 @@ class RecordsTest extends TestCase
         
         $this->assertEquals(102, count($records), 'Record count check after import.');
         
-        # delete the records that were just added that are in arm 1,
+        # delete the records that were just added that are in arm 1,$array = array_map('strtolower', $array);
         # which should be only records with ID 1102
-        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1101,1102], $arm = 1);
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1102], $arm = 1);
         
         # Note: as of May 10, 2017, this assertion fails (apparently) because of a REDCap API bug
-        #$this->assertEquals(1, $recordsDeleted, 'Records deleted check after first delete.');
+        $this->assertEquals(1, $recordsDeleted, 'Records deleted check after first delete.');
         
         $records = self::$longitudinalDataProject->exportRecordsAp(
             ['events' => ['enrollment_arm_1', 'enrollment_arm_2']]
@@ -1143,6 +1237,102 @@ class RecordsTest extends TestCase
         # delete remaining imported record
         $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1101]);
         $this->assertEquals(1, $recordsDeleted, 'Records deleted check after first delete.');
+    }
+    
+
+    public function testDeleteRecordsWithForm()
+    {
+        $records = FileUtil::fileToString(__DIR__.'/../data/longitudinal-data-import.csv');
+         
+        # Import the test records
+        $result = self::$longitudinalDataProject->importRecords(
+            $records,
+            $format = 'csv',
+            null,
+            null,
+            $dateFormat = 'MDY'
+        );
+        
+        $records = self::$longitudinalDataProject->exportRecordsAp(
+            ['events' => ['enrollment_arm_1', 'enrollment_arm_2']]
+        );
+
+        $this->assertEquals(102, count($records), 'Record count check after import.');
+        
+
+        $records = self::$longitudinalDataProject->exportRecordsAp(
+            ['format' => 'csv', 'recordIds' => [1101, 1102]]
+        );
+        $countBeforeDelete = count(preg_split("/\n/", $records));
+
+        # Delete the records for the forms for the visit event for 1102
+        $arm = null;
+        $form = 'lab_data';
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1102], $arm, $form, $event = 'visit_1_arm_1');
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1102], $arm, $form, $event = 'visit_2_arm_1');
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1102], $arm, $form, $event = 'visit_3_arm_1');
+        $form = 'patient_morale_questionnaire';
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1102], $arm, $form, $event = 'visit_1_arm_1');
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1102], $arm, $form, $event = 'visit_2_arm_1');
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1102], $arm, $form, $event = 'visit_3_arm_1');
+
+        $records = self::$longitudinalDataProject->exportRecordsAp(
+            ['format' => 'csv', 'recordIds' => [1101, 1102]]
+        );
+        $countAfterDelete = count(preg_split("/\n/", $records));
+
+        $this->assertEquals($countBeforeDelete - 3, $countAfterDelete, 'Record count after visit form delete for 1102');
+        
+        # delete remaining parts of records
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1101, 1102]);
+        $this->assertEquals(2, $recordsDeleted, 'Records deleted check after first delete.');
+    }
+    
+    public function testDeleteRecordsWithRepeatInstance()
+    {
+        if (self::$repeatingFormsProject == null) {
+            $this->markTestSkipped('testExportLoggingDag: No dag assignments found.');
+        } else {
+            $records = FileUtil::fileToString(__DIR__.'/../data/repeating-forms-import.csv');
+         
+            # Import the test records
+            $result = self::$repeatingFormsProject->importRecords(
+                $records,
+                $format = 'csv',
+                null,
+                null,
+                $dateFormat = 'MDY'
+            );
+        
+            $records = self::$repeatingFormsProject->exportRecordsAp();
+
+            $this->assertEquals(16, count($records), 'Record count check after import.');
+
+            $records = self::$repeatingFormsProject->exportRecordsAp(
+                ['format' => 'csv', 'recordIds' => [1002]]
+            );
+            $countBeforeDelete = count(preg_split("/\n/", $records));
+
+            # Delete the records for the forms for the visit event for 1102
+            $arm   = null;
+            $form  = 'weight';
+            $event = null;
+
+            # Delete repeating instances 1 and 3 for form weight for record ID 1002
+            $recordsDeleted = self::$repeatingFormsProject->deleteRecords([1002], $arm, $form, $event, 1);
+            $recordsDeleted = self::$repeatingFormsProject->deleteRecords([1002], $arm, $form, $event, 3);
+
+
+            $records = self::$repeatingFormsProject->exportRecordsAp(
+                ['format' => 'csv', 'recordIds' => [1002]]
+            );
+            $countAfterDelete = count(preg_split("/\n/", $records));
+            $this->assertEquals($countBeforeDelete - 2, $countAfterDelete, 'Record count after delete.');
+
+            # delete remaining imported records
+            $recordsDeleted = self::$repeatingFormsProject->deleteRecords([1001, 1002, 1003, 1004]);
+            $this->assertEquals(4, $recordsDeleted, 'Records deleted check after first delete.');
+        }
     }
     
     public function testDeleteRecordsWithNonNumericStringArm()
@@ -1186,6 +1376,47 @@ class RecordsTest extends TestCase
         }
     
         $this->assertTrue($exceptionCaught, 'Exception caught.');
+    }
+
+
+    public function testRenameRecord()
+    {
+        $records = FileUtil::fileToString(__DIR__.'/../data/longitudinal-data-import.csv');
+         
+        # Import the test records
+        $result = self::$longitudinalDataProject->importRecords(
+            $records,
+            $format = 'csv',
+            null,
+            null,
+            $dateFormat = 'MDY'
+        );
+
+        $this->assertEquals(2, $result, 'Record import results check.');
+
+        $result1101 = self::$longitudinalDataProject->exportRecordsAp(['recordIds' => ['1101']]);
+
+        self::$longitudinalDataProject->renameRecord('1101', '1201');
+
+        $result1201 = self::$longitudinalDataProject->exportRecordsAp(['recordIds' => ['1201']]);
+        $this->assertNotNull($result1201, 'Renamed record not null.');
+        $this->assertEquals(count($result1101), count($result1201), 'Renamed record matches original.');
+
+        # delete test records
+        $recordsDeleted = self::$longitudinalDataProject->deleteRecords([1201, 1102]);
+        $this->assertEquals(2, $recordsDeleted, 'Test record delete check.');
+    }
+
+    public function testRenameRecordWithInvalidRecordId()
+    {
+        $caughtException = false;
+        try {
+            self::$longitudinalDataProject->renameRecord('12345', '1201');
+        } catch (\Exception $exception) {
+            $caughtException = true;
+        }
+
+        $this->assertTrue($caughtException, 'Exception caught check.');
     }
 
     public function testExportRecordsWithDateRange()

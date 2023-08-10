@@ -20,17 +20,25 @@ class PdfFormsTest extends TestCase
     private static $config;
     private static $basicDemographyProject;
     private static $longitudinalDataProject;
+    private static $repeatingFormsProject;
     
     public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
+
         self::$basicDemographyProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['basic.demography.api.token']
         );
+
         self::$longitudinalDataProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['longitudinal.data.api.token']
+        );
+
+        self::$repeatingFormsProject = new RedCapProject(
+            self::$config['api.url'],
+            self::$config['repeating.forms.api.token']
         );
     }
     
@@ -142,5 +150,74 @@ class PdfFormsTest extends TestCase
             $exceptionCaught = true;
         }
         $this->assertTrue($exceptionCaught, 'Exception caught.');
+    }
+
+    public function testPdfFormsWithRepeatInstance()
+    {
+        $records = FileUtil::fileToString(__DIR__.'/../data/repeating-forms-import.csv');
+
+        # Import the test records
+        $result = self::$repeatingFormsProject->importRecords(
+            $records,
+            $format = 'csv',
+            null,
+            null,
+            $dateFormat = 'MDY'
+        );
+        $this->assertEquals(4, $result, 'Import record count check.');
+
+        $file = null;
+        $recordId = 1001;
+        $event = null;
+        $form = 'weight';
+        $allRecords = null;
+        $compactDisplay = true;
+        $repeatInstance = 1;
+        $result = self::$repeatingFormsProject->exportPdfFileOfInstruments(
+            $file,
+            $recordId,
+            $event,
+            $form,
+            $allRecords,
+            $compactDisplay,
+            $repeatInstance
+        );
+
+        $parser = new \Smalot\PdfParser\Parser();
+        $pdf = $parser->parseContent($result);
+
+        #----------------------------------------------
+        # Check PDF generated for repeat instance 1
+        #----------------------------------------------
+        $text = preg_split("/\n/", $pdf->getText());
+        $this->assertEquals(8, count($text));
+        $this->assertEquals('Record ID 1001', $text[1]);
+        $this->assertEquals('Weight (lbs.) 173.4', $text[7]);
+
+        $repeatInstance = 2;
+        $result = self::$repeatingFormsProject->exportPdfFileOfInstruments(
+            $file,
+            $recordId,
+            $event,
+            $form,
+            $allRecords,
+            $compactDisplay,
+            $repeatInstance
+        );
+
+        $parser = new \Smalot\PdfParser\Parser();
+        $pdf = $parser->parseContent($result);
+
+        #----------------------------------------------
+        # Check PDF generated for repeat instance 2
+        #----------------------------------------------
+        $text = preg_split("/\n/", $pdf->getText());
+        $this->assertEquals(8, count($text));
+        $this->assertEquals('Record ID 1001', $text[1]);
+        $this->assertEquals('Weight (lbs.) 172.4', $text[7]);
+
+        # delete imported test records
+        $recordsDeleted = self::$repeatingFormsProject->deleteRecords([1001, 1002, 1003, 1004]);
+        $this->assertEquals(4, $recordsDeleted, 'Records deleted check.');
     }
 }

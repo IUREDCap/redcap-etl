@@ -22,10 +22,12 @@ class UsersTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         self::$config = parse_ini_file(__DIR__.'/../config.ini');
+
         self::$basicDemographyProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['basic.demography.api.token']
         );
+
         self::$longitudinalDataProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['longitudinal.data.api.token']
@@ -49,7 +51,7 @@ class UsersTest extends TestCase
         $this->assertTrue(array_key_exists('username', $user1), 'Key username check.');
     }
     
-    public function testImportUsers()
+    public function testImportAndDeleteUsers()
     {
         $newUserData = array(
             [
@@ -75,7 +77,6 @@ class UsersTest extends TestCase
         
         $this->assertNotNull($newUser, 'New user found in export check.');
         $this->assertEquals($newUser['design'], 1, 'Design check 1.');
-        $this->assertEquals($newUser['data_export'], 1, 'Data export check 1.');
         $this->assertEquals($newUser['record_create'], 1, 'Record create check 1.');
         
         #------------------------------------------------------
@@ -100,9 +101,38 @@ class UsersTest extends TestCase
         
         $this->assertNotNull($newUser, 'New user found in export check.');
         $this->assertEquals($newUser['design'], 0, 'Design check 2.');
-        $this->assertEquals($newUser['data_export'], 0, 'Data export check 2.');
         $this->assertEquals($newUser['record_create'], 0, 'Record create check 2.');
         
-        # There's no way (as of June 2017) to delete the user that was added.
+        #------------------------------------
+        # Delete the imported user
+        #------------------------------------
+        $result = self::$basicDemographyProject->deleteUsers(['phpcap_import_test_user']);
+        $this->assertEquals(1, $result, 'Users after delete check.');
+
+        $users = self::$basicDemographyProject->exportUsers();
+        $this->assertFalse(in_array('phpcap_import_test_user', $users), 'User deleted check.');
+    }
+
+    
+    public function testDeleteUsersWithNonArray()
+    {
+        $exceptionCaught = false;
+        try {
+            self::$basicDemographyProject->deleteUsers(123);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'Exception caught check.');
+    }
+
+    public function testDeleteUsersWithNonStringArray()
+    {
+        $exceptionCaught = false;
+        try {
+            self::$basicDemographyProject->deleteUsers([1]);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+        }
+        $this->assertTrue($exceptionCaught, 'Exception caught check.');
     }
 }

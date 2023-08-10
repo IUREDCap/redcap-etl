@@ -44,8 +44,8 @@ Setup
 
         phpdoc
 
-### Example Setup on Ubuntu 16
-To set up PHPCap for development on Ubuntu 16, execute the following commands:
+### Example Setup on Ubuntu 20
+To set up PHPCap for development on Ubuntu 20, execute the following commands:
 
     sudo apt-get install php php-curl php-xml php-mbstring
     sudo apt-get install php-xdebug
@@ -94,13 +94,19 @@ following setup steps are completed:
 1. Log in to your REDCap site.
 2. Create an empty project in REDCap.
 3. Create a project in REDCap for the "Basic Demography," "DAG," and "Longitudinal Data" test projects in directory __tests/projects/__, and import each of those test project files into the REDCap project created for it.
-4. In REDCap, request API tokens for the empty project and the projects imported in the step above.
+4. In REDCap, request API tokens for the empty project and the projects imported in the step above. Make sure that user setting for each
+    project allow API import and export.
 5. Once you have your tokens, copy the "config-example.ini" file to a file
    named "config.ini" and then set the URL in that file to be the
    URL for the API of your REDCap instance, and set the tokens to be
    the tokens requested in the previous step.
-6. In REDCap, enable the "Date Calculated Fields" external module for the "Basic Demography" project.
-7. In REDCap, add a test user to the DAG project, assigning only default, basic permissions. Add that user to the 'group1' DAG.
+6. In the Control Center in REDCap, download the "Date Calculated Fields" external module and then enable it.
+7. In REDCap, enable the "Date Calculated Fields" external module for the "Basic Demography" project.
+8. In REDCap, add a test user to the DAG project, assigning only default, basic permissions.
+    1. Add the test user to the 'group1' DAG
+    2. Using the "DAG Switcher" in REDCap, assign the test user access to DAGs 'group1' and 'group2'
+    3. Create an API token for the test user with export/import/update permission for the DAG project
+    4. Set the **dags.test.user.api.token** property in your test config.ini file to the value for the API token created in the previous step
  
 #### Setup for Optional CA Certificate File Integration Tests
 To run the optional tests involving the CA certificate file, you will need to set up
@@ -189,6 +195,8 @@ __super.token__ to a valid super token value. Note that the tests for project cr
 have no way to delete the projects that are created, so they will need to be deleted
 manually.
 
+#### Set the Timezone
+Set the timezone property in the __config.ini__ file.
 
 Note: the .gitignore file in PHPCap is set to ignore the __tests/config.ini__ file, so that your
 personal API tokens will not be committed to Git. 
@@ -296,7 +304,7 @@ Documentation consists of the following:
 * HTML versions of the Markdown documentation in the docs-md/ directory, which are generated programmatically, stored in the __docs/__ directory.
 
 Since all documentation in the __docs/__ directory (except for the README.md file) is automatically
-generated, these files should not be editied manually.
+generated, these files should not be edited manually.
 
 #### API Document Generation
 To generate the API documentation (stored in **./docs/api**), execute the following command in PHPCap's root directory:
@@ -308,6 +316,10 @@ The configuration file used by this command is **phpdoc.xml** in the root direct
 
 The API documentation _is_ stored in Git to eliminate the need for non-developer users
 to install Composer and the developer dependencies.
+
+Unfortunately, phpDocumentor creates 2 files with the same name that only differ in how they are capitalized. This
+causes issues when a zip file download of PHPCap is done on some systems. Running the HTML document generation
+script below will fix this issue, so it should always be run after the phpdoc command is run.
 
 #### HTML Document Generation
 To generate an HTML version for the Markdown documents in the __docs-md/__ directory,

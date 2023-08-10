@@ -406,6 +406,36 @@ Search.appendIndex(
             "summary": "Deletes\u0020the\u0020specified\u0020arms\u0020from\u0020the\u0020project.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteArms"
         },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportDags\u0028\u0029",
+            "name": "exportDags",
+            "summary": "Exports\u0020the\u0020Data\u0020Access\u0020Groups\u0020for\u0020a\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportDags"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportDags\u0028\u0029",
+            "name": "importDags",
+            "summary": "Imports\u0020the\u0020specified\u0020dags\u0020into\u0020the\u0020project.\u0020Allows\u0020import\u0020of\u0020new\u0020DAGs\u0020or\u0020update\u0020of\u0020the\ndata_access_group_name\u0020of\u0020any\u0020existing\u0020DAGs.\u0020DAGs\u0020can\u0020be\u0020renamed\u0020by\u0020changing\nthe\u0020data_access_group_name.\u0020A\u0020DAG\u0020can\u0020be\u0020created\u0020by\u0020providing\u0020group\u0020name\u0020value\u0020with\n\u0020unique\u0020group\u0020name\u0020set\u0020to\u0020blank.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_importDags"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AdeleteDags\u0028\u0029",
+            "name": "deleteDags",
+            "summary": "Deletes\u0020the\u0020specified\u0020dags\u0020from\u0020the\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteDags"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AswitchDag\u0028\u0029",
+            "name": "switchDag",
+            "summary": "Switches\u0020the\u0020DAG\u0020\u0028Data\u0020Access\u0020Group\u0029\u0020to\u0020the\u0020specified\u0020DAG.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_switchDag"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportUserDagAssignment\u0028\u0029",
+            "name": "exportUserDagAssignment",
+            "summary": "Exports\u0020the\u0020User\u002DDataAccessGroup\u0020assignaments\u0020for\u0020a\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportUserDagAssignment"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportUserDagAssignment\u0028\u0029",
+            "name": "importUserDagAssignment",
+            "summary": "Imports\u0020User\u002DDAG\u0020assignments,\u0020allowing\u0020you\u0020to\u0020assign\u0020users\u0020to\u0020any\ndata\u0020access\u0020group.o\u0020the\u0020project.\u0020If\u0020you\u0020wish\u0020to\u0020modify\u0020an\u0020existing\nmapping,\u0020you\u0020must\u0020provide\u0020its\u0020unique\u0020username\u0020and\u0020group\u0020name.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_importUserDagAssignment"
+        },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportEvents\u0028\u0029",
             "name": "exportEvents",
             "summary": "Exports\u0020information\u0020about\u0020the\u0020specified\u0020events.",
@@ -428,7 +458,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportFile\u0028\u0029",
             "name": "exportFile",
-            "summary": "Exports\u0020the\u0020specified\u0020file.",
+            "summary": "Exports\u0020the\u0020specified\u0020file.\u0020The\u0020contents\u0020of\u0020the\u0020file\u0020are\u0020returned\u0020by\u0020the\u0020method.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_exportFile"
         },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportFile\u0028\u0029",
@@ -460,6 +490,11 @@ Search.appendIndex(
             "name": "importInstrumentEventMappings",
             "summary": "Imports\u0020the\u0020specified\u0020instrument\u002Devent\u0020mappings\u0020into\u0020the\u0020project.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_importInstrumentEventMappings"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportLogging\u0028\u0029",
+            "name": "exportLogging",
+            "summary": "Exports\u0020the\u0020logging\u0020\u0028audit\u0020trail\u0029\u0020of\u0020all\u0020changes\u0020made\u0020to\u0020this\u0020project,\nincluding\u0020data\u0020exports,\u0020data\u0020changes,\u0020project\u0020metadata\u0020changes,\nmodification\u0020of\u0020user\u0020rights,\u0020etc.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportLogging"
         },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportMetadata\u0028\u0029",
             "name": "exportMetadata",
@@ -511,6 +546,11 @@ Search.appendIndex(
             "summary": "Deletes\u0020the\u0020specified\u0020records\u0020from\u0020the\u0020project.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteRecords"
         },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003ArenameRecord\u0028\u0029",
+            "name": "renameRecord",
+            "summary": "Renames\u0020the\u0020specified\u0020record\u0020with\u0020the\u0020new\u0020specified\u0020record\u0020ID.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_renameRecord"
+        },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportRepeatingInstrumentsAndEvents\u0028\u0029",
             "name": "exportRepeatingInstrumentsAndEvents",
             "summary": "Exports\u0020the\u0020repeating\u0020instruments\u0020and\u0020events.",
@@ -561,6 +601,36 @@ Search.appendIndex(
             "summary": "Imports\u0020the\u0020specified\u0020users\u0020into\u0020the\u0020project.\u0020This\u0020method\ncan\u0020also\u0020be\u0020used\u0020to\u0020update\u0020user\u0020priveleges\u0020by\u0020importing\na\u0020users\u0020that\u0020already\u0020exist\u0020in\u0020the\u0020project\u0020and\nspecifying\u0020new\u0020privleges\u0020for\u0020that\u0020user\u0020in\u0020the\u0020user\ndata\u0020that\u0020is\u0020imported.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_importUsers"
         },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AdeleteUsers\u0028\u0029",
+            "name": "deleteUsers",
+            "summary": "Deletes\u0020the\u0020specified\u0020users.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteUsers"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportUserRoles\u0028\u0029",
+            "name": "exportUserRoles",
+            "summary": "Exports\u0020the\u0020user\u0020roles\u0020of\u0020the\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportUserRoles"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportUserRoles\u0028\u0029",
+            "name": "importUserRoles",
+            "summary": "Imports\u0020the\u0020specified\u0020user\u0020roles\u0020into\u0020the\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_importUserRoles"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AdeleteUserRoles\u0028\u0029",
+            "name": "deleteUserRoles",
+            "summary": "Deletes\u0020the\u0020specified\u0020user\u0020roles.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteUserRoles"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportUserRoleAssignments\u0028\u0029",
+            "name": "exportUserRoleAssignments",
+            "summary": "Exports\u0020the\u0020user\u0020role\u0020assignments\u0020of\u0020the\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportUserRoleAssignments"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportUserRoleAssignments\u0028\u0029",
+            "name": "importUserRoleAssignments",
+            "summary": "Imports\u0020the\u0020specified\u0020user\u0020role\u0020assignments\u0020into\u0020the\u0020project.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_importUserRoleAssignments"
+        },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AgetPhpCapVersion\u0028\u0029",
             "name": "getPhpCapVersion",
             "summary": "Gets\u0020the\u0020PHPCap\u0020version\u0020number.",
@@ -600,31 +670,6 @@ Search.appendIndex(
             "name": "setErrorHandler",
             "summary": "Sets\u0020the\u0020error\u0020handler\u0020used\u0020by\u0020the\u0020project.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_setErrorHandler"
-        },                {
-            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportDags\u0028\u0029",
-            "name": "exportDags",
-            "summary": "Exports\u0020the\u0020Data\u0020Access\u0020Groups\u0020for\u0020a\u0020project.",
-            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportDags"
-        },                {
-            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportDags\u0028\u0029",
-            "name": "importDags",
-            "summary": "Imports\u0020the\u0020specified\u0020dags\u0020into\u0020the\u0020project.\u0020Allows\u0020import\u0020of\u0020new\u0020DAGs\u0020or\u0020update\u0020of\u0020the\ndata_access_group_name\u0020of\u0020any\u0020existing\u0020DAGs.\u0020DAGs\u0020can\u0020be\u0020renamed\u0020by\u0020changing\nthe\u0020data_access_group_name.\u0020A\u0020DAG\u0020can\u0020be\u0020created\u0020by\u0020providing\u0020group\u0020name\u0020value\u0020with\n\u0020unique\u0020group\u0020name\u0020set\u0020to\u0020blank.",
-            "url": "classes/IU-PHPCap-RedCapProject.html#method_importDags"
-        },                {
-            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AdeleteDags\u0028\u0029",
-            "name": "deleteDags",
-            "summary": "Deletes\u0020the\u0020specified\u0020dags\u0020from\u0020the\u0020project.",
-            "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteDags"
-        },                {
-            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportUserDagAssignment\u0028\u0029",
-            "name": "exportUserDagAssignment",
-            "summary": "Exports\u0020the\u0020User\u002DDataAccessGroup\u0020assignaments\u0020for\u0020a\u0020project.",
-            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportUserDagAssignment"
-        },                {
-            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportUserDagAssignment\u0028\u0029",
-            "name": "importUserDagAssignment",
-            "summary": "Imports\u0020User\u002DDAG\u0020assignments,\u0020allowing\u0020you\u0020to\u0020assign\u0020users\u0020to\u0020any\ndata\u0020access\u0020group.o\u0020the\u0020project.\u0020If\u0020you\u0020wish\u0020to\u0020modify\u0020an\u0020existing\nmapping,\u0020you\u0020must\u0020provide\u0020its\u0020unique\u0020username\u0020and\u0020group\u0020name.",
-            "url": "classes/IU-PHPCap-RedCapProject.html#method_importUserDagAssignment"
         },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AJSON_RESULT_ERROR_PATTERN",
             "name": "JSON_RESULT_ERROR_PATTERN",
