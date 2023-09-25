@@ -699,16 +699,28 @@ class SchemaGenerator
 
     public function getMaxValueLength($valueToLabelMap)
     {
-        $values = array_keys($valueToLabelMap);
-        $lengths = array_map('strlen', $values);
-        $maxLength = max($lengths);
+        $maxLength = 1;
+
+        if (!empty($valueToLabelMap)) {
+            $values = array_keys($valueToLabelMap);
+            $lengths = array_map('strlen', $values);
+            $lengths[] = 1;
+            $maxLength = max($lengths);
+        }
+
         return $maxLength;
     }
 
     public function getMaxLabelLength($valueToLabelMap)
     {
-        $lengths = array_map('strlen', $valueToLabelMap);
-        $maxLength = max($lengths);
+        $maxLength = 1;
+
+        if (!empty($valueToLabelMap)) {
+            $lengths = array_map('strlen', $valueToLabelMap);
+            $lengths[] = 1;
+            $maxLength = max($lengths);
+        }
+
         return $maxLength;
     }
 
