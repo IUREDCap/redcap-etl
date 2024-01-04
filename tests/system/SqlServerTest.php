@@ -13,6 +13,7 @@ use IU\REDCapETL\TaskConfig;
 use IU\REDCapETL\EtlException;
 use IU\REDCapETL\Logger;
 use IU\REDCapETL\LookupTable;
+use IU\REDCapETL\Database\SqlServerDbConnection;
 use IU\REDCapETL\Schema\RowsType;
 use IU\REDCapETL\Schema\Row;
 use IU\REDCapETL\Schema\FieldTypeSpecifier;
@@ -104,34 +105,38 @@ class SqlServerTest extends TestCase
 
     public function testConnectorValidConnectionWithSsl()
     {
-        $configuration = new TaskConfig();
-        $configuration->set(self::$logger, self::CONFIG_FILE_SSL);
+        if (!file_exists(self::CONFIG_FILE_SSL)) {
+            $this->markTestSkipped("Required configuration not set for this test.");
+        } else {
+            $configuration = new TaskConfig();
+            $configuration->set(self::$logger, self::CONFIG_FILE_SSL);
 
-        $dbConnection = $configuration->getDbConnection();
-        list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
+            $dbConnection = $configuration->getDbConnection();
+            list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
  
-        #The configuration file should have db_ssl set to 1 so that the
-        #SQL Server encryption parameter will be to true and use the self-signed
-        #cert stored in the database instance.
-        $ssl = $configuration->getDbSsl();
+            #The configuration file should have db_ssl set to 1 so that the
+            #SQL Server encryption parameter will be to true and use the self-signed
+            #cert stored in the database instance.
+            $ssl = $configuration->getDbSsl();
 
-        #The configuration file should have db_ssl_verify set to 0 so that the
-        #SQL Server trustServerCertificate is set to true
-        $sslVerify = $configuration->getDbSslVerify();
+            #The configuration file should have db_ssl_verify set to 0 so that the
+            #SQL Server trustServerCertificate is set to true
+            $sslVerify = $configuration->getDbSslVerify();
          
-        $sqlServerDbConnection4 = new SqlServerDbConnection(
-            $dbString,
-            $ssl,
-            $sslVerify,
-            $this->caCertFile,
-            $this->tablePrefix,
-            $this->labelViewSuffix
-        );
+            $sqlServerDbConnection4 = new SqlServerDbConnection(
+                $dbString,
+                $ssl,
+                $sslVerify,
+                $this->caCertFile,
+                $this->tablePrefix,
+                $this->labelViewSuffix
+            );
   
-        $this->assertNotNull(
-            $sqlServerDbConnection4,
-            'SqlServerTest,testValidConnectionWithSssl object created check'
-        );
+            $this->assertNotNull(
+                $sqlServerDbConnection4,
+                'SqlServerTest,testValidConnectionWithSssl object created check'
+            );
+        }
     }
 
     /**
@@ -169,6 +174,10 @@ class SqlServerTest extends TestCase
         # create the table object
         #############################################################
         $name = 'test_etl_table';
+
+        #drop the table if it exsits
+        $this->processSqlSrv($dbString, "DROP TABLE IF EXISTS {$name};");
+
         $parent = 'test_etl_table_id';
         $keyType = new FieldTypeSpecifier(FieldType::INT, null);
 
@@ -208,7 +217,7 @@ class SqlServerTest extends TestCase
         # Execute the tests for this method
         #############################################################
         #first, drop the table, in case it wasn't dropped from a prior test.
-        $this->processSqlSrv($dbString, "DROP TABLE $name;");
+        $this->processSqlSrv($dbString, "DROP TABLE IF EXISTS {$name};");
 
         # run the createTable method to create the table in the database
         $createResult = $sqlServerDbConnection->createTable($rootTable, false);
@@ -285,7 +294,7 @@ class SqlServerTest extends TestCase
         );
 
         #drop the table
-        $this->processSqlSrv($dbString, "DROP TABLE $name;");
+        $this->processSqlSrv($dbString, "DROP TABLE IF EXISTS $name;");
     }
 
     public function testSqlServerDbConnectionInsertRow()
@@ -354,7 +363,7 @@ class SqlServerTest extends TestCase
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
         #first, drop the table, in case it wasn't dropped from a prior test.
-        $this->processSqlSrv($dbString, "DROP TABLE $name;");
+        $this->processSqlSrv($dbString, "DROP TABLE IF EXISTS $name;");
 
         # Create the SqlServerDbConnection
         $caCertFile = null;
@@ -435,7 +444,7 @@ class SqlServerTest extends TestCase
         );
 
         #drop the table
-        $this->processSqlSrv($dbString, "drop table $name;");
+        $this->processSqlSrv($dbString, "drop table if exists $name;");
     }
 
    /**
@@ -513,7 +522,7 @@ class SqlServerTest extends TestCase
             'redcap_data_source' => 1,
             'recordid' => 1002,
             'fullname' => 'Spider Webb',
-            'score' => 4.56,
+            'score' => 4.125,
             'updatedate' => '2017-Jan-31',
             'exercise___0' => '1'
         ];
@@ -529,7 +538,7 @@ class SqlServerTest extends TestCase
         list($dbType, $dbString) = DbConnectionFactory::parseConnectionString($dbConnection);
 
         #first, drop the table, in case it wasn't dropped from a prior test.
-        $this->processSqlSrv($dbString, "DROP TABLE $name;");
+        $this->processSqlSrv($dbString, "DROP TABLE IF EXISTS {$name};");
 
         # Create the SqlServerDbConnection
         $caCertFile = null;
@@ -553,18 +562,20 @@ class SqlServerTest extends TestCase
 
         #Verify that the rows were created as expected.
         $expectedRows = array(new \stdClass, new \stdClass);
+
         $expectedRows[0]->testid = 1;
         $expectedRows[0]->recordid = 1001;
         $expectedRows[0]->fullname = 'Ima Tester';
         $expectedRows[0]->score = 12.3;
         $expectedRows[0]->updatedate = null;
         $expectedRows[0]->exercise___0 = 0;
-        $expectedRows[1]->testid = 2;
-        $expectedRows[1]->recordid = 1002;
+
+        $expectedRows[1]->testid = '2';
+        $expectedRows[1]->recordid = '1002';
         $expectedRows[1]->fullname = 'Spider Webb';
-        $expectedRows[1]->score = 4.56;
+        $expectedRows[1]->score = '4.125';
         $expectedRows[1]->updatedate = '2017-Jan-31';
-        $expectedRows[1]->exercise___0 = 1;
+        $expectedRows[1]->exercise___0 = '1';
 
         $sql = "select * from $name order by testid;";
         $contents = $this->processSqlSrv($dbString, $sql);
@@ -572,12 +583,15 @@ class SqlServerTest extends TestCase
         foreach ($contents as $row) {
             $row->fullname = trim($row->fullname);
             if ($row->updatedate) {
-                 $row->updatedate = date_format($row->updatedate, 'Y-M-d');
+                $time = strtotime($row->updatedate);
+                $row->updatedate = date('Y-M-d', $time);
+                ###$row->updatedate = date_format(strtotime($row->updatedate), 'Y-M-d');
             }
+
             $this->assertEquals(
                 $expectedRows[$i],
                 $row,
-                "SqlServerTest, SqlServerDbConnection insertRows content check"
+                "SqlServerTest, SqlServerDbConnection insertRows content check " . $i
             );
             $i++;
         }
@@ -631,7 +645,7 @@ class SqlServerTest extends TestCase
 
         #create the table in the database
         #before creating the table, run the command to drop it
-        $this->processSqlSrv($dbString, "DROP TABLE $name2;");
+        $this->processSqlSrv($dbString, "DROP TABLE IF EXISTS $name2;");
         $sqlServerDbConnection->createTable($rootTable2, false);
 
         $exceptionCaught = false;
@@ -661,8 +675,8 @@ class SqlServerTest extends TestCase
         );
 
         #drop the table and view
-        $this->processSqlSrv($dbString, "drop table $name;");
-        $this->processSqlSrv($dbString, "drop table $name2;");
+        $this->processSqlSrv($dbString, "drop table if exists $name;");
+        $this->processSqlSrv($dbString, "drop table if exists $name2;");
     }
 
     /**
@@ -695,8 +709,8 @@ class SqlServerTest extends TestCase
 
         ###Test file with valid queries that create two tables
         #first, drop the table, in case it wasn't dropped from a prior test.
-        $this->processSqlSrv($dbString, "drop table queryTest01;");
-        $this->processSqlSrv($dbString, "drop table queryTest02;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest01;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest02;");
 
         #Create the file that contains the queries
         $sql = 'create table queryTest01 (rec_id int primary key, title varchar(255), start date);';
@@ -835,8 +849,10 @@ class SqlServerTest extends TestCase
         ###Test with an error condition in a query other than the first on by sending
         ###a bad third query
         #first, drop the table, in case it wasn't dropped from a prior test.
-        $this->processSqlSrv($dbString, "drop table queryTest03;");
-        $this->processSqlSrv($dbString, "drop table queryTest04;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest01;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest02;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest03;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest04;");
 
         #Create the file that contains the queries, with the third query misspelling 'table'
         $sql3 = 'create table queryTest03 (rec_id int primary key, title varchar(255), start date);';
@@ -874,10 +890,10 @@ class SqlServerTest extends TestCase
         );
 
         #drop the tables
-        $this->processSqlSrv($dbString, "drop table queryTest01;");
-        $this->processSqlSrv($dbString, "drop table queryTest02;");
-        $this->processSqlSrv($dbString, "drop table queryTest03;");
-        $this->processSqlSrv($dbString, "drop table queryTest04;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest01;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest02;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest03;");
+        $this->processSqlSrv($dbString, "drop table if exists queryTest04;");
 
         #delete the files
         unlink($qFile);
@@ -955,7 +971,7 @@ class SqlServerTest extends TestCase
         );
 
         #first, drop the table, in case it wasn't dropped from a prior test.
-        $this->processSqlSrv($dbString, "drop table $name;");
+        $this->processSqlSrv($dbString, "drop table if exists $name;");
 
         $sqlServerDbConnection1->createTable($rootTable, false);
         $sqlServerDbConnection1->storeRows($rootTable);
@@ -1041,8 +1057,8 @@ class SqlServerTest extends TestCase
         );
 
         #drop the table and view
-        $this->processSqlSrv($dbString, "drop table $name;");
-        $this->processSqlSrv($dbString, "drop view  $name$labelViewSuffix;");
+        $this->processSqlSrv($dbString, "drop table if exists $name;");
+        $this->processSqlSrv($dbString, "drop view  if exists $name$labelViewSuffix;");
     }
 
     public function testSqlServerDbConnectionReplaceLookupViewWithLookup()
@@ -1141,7 +1157,7 @@ class SqlServerTest extends TestCase
         );
 
         #first, drop the tables, in case it wasn't dropped from a prior test.
-        $this->processSqlSrv($dbString, "drop table $name;");
+        $this->processSqlSrv($dbString, "drop table if exists $name;");
 
         $sqlServerDbConnection->createTable($rootTable, false);
         $sqlServerDbConnection->storeRows($rootTable);
@@ -1165,10 +1181,12 @@ class SqlServerTest extends TestCase
         $contents = $this->processSqlSrv($dbString, $sql);
 
         $expectedRows = array(new \stdClass, new \stdClass);
+
         $expectedRows[0]->testid = 1;
         $expectedRows[0]->recordid = 1001;
         $expectedRows[0]->fullname = 'Ima Tester';
         $expectedRows[0]->maritalstatus = 'single';
+
         $expectedRows[1]->testid = 2;
         $expectedRows[1]->recordid = 1002;
         $expectedRows[1]->fullname = 'Spider Webb';
@@ -1187,7 +1205,7 @@ class SqlServerTest extends TestCase
         }
 
         #drop the table
-        $this->processSqlSrv($dbString, "drop table $name;");
+        $this->processSqlSrv($dbString, "drop table if exists $name;");
     }
 
    /* This tests the SqlServerDbConnection->dropTable protected function
@@ -1229,7 +1247,7 @@ class SqlServerTest extends TestCase
 
 
         #create the table in the database (drop it first, in case it already exists)
-        $sql = "drop table $name;";
+        $sql = "drop table if exists $name;";
         $this->processSqlSrv($dbString, $sql);
         $sql = "create table $name (pid int, title char(25));";
         $this->processSqlSrv($dbString, $sql);
@@ -1259,6 +1277,7 @@ class SqlServerTest extends TestCase
      */
     private function processSqlSrv($dbString, $sql)
     {
+        /*
         $dbValues = DbConnection::parseConnectionString($dbString);
         if (count($dbValues) == 4) {
             list($host,$username,$password,$database) = DbConnection::parseConnectionString($dbString);
@@ -1271,15 +1290,28 @@ class SqlServerTest extends TestCase
         }
 
         $connectionInfo = array( "Database"=>"$database", "UID"=>"$username", "PWD"=>"$password");
+
         $conn = sqlsrv_connect($host, $connectionInfo);
+        */
+
+        $ssl = false;
+        $sslVerify = false;
+        $caCertFile = null;
+
+        $conn = SqlServerDbConnection::getPdoConnection($dbString, $ssl, $sslVerify, $caCertFile);
 
         $queryResults = array();
         $i=0;
 
         if ($conn) {
-            $result = sqlsrv_query($conn, $sql);
-            if ($result !== false) {
-                while ($obj = sqlsrv_fetch_object($result)) {
+            // $result = sqlsrv_query($conn, $sql);
+            $result = $conn->query($sql);
+
+            if ($result !== false && !empty($result) && $result->columnCount() >= 1) {
+                //while ($obj = sqlsrv_fetch_object($result)) {
+
+                #while ($obj = $result->fetch(\PDO::FETCH_ASSOC)) {
+                while ($obj = $result->fetchObject()) {
                     $queryResults[$i] = $obj;
                     $i++;
                     #print PHP_EOL . "obj:" . PHP_EOL;

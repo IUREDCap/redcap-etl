@@ -29,7 +29,7 @@ class SqlServerAutoRulesTest extends TestCase
             $configuration->set(self::$logger, self::CONFIG_FILE);
 
             list($dbHost, $dbUser, $dbPassword, $dbName) = $configuration->getSqlServerConnectionInfo();
-            $dsn = 'sqlsrv:database='.$dbName.';server='.$dbHost;
+            $dsn = 'sqlsrv:database=' . $dbName . ';server=' . $dbHost . ';Encrypt=0';
             try {
                 self::$dbh = new \PDO($dsn, $dbUser, $dbPassword);
             } catch (Exception $exception) {

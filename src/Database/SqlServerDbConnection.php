@@ -95,6 +95,8 @@ class SqlServerDbConnection extends PdoDbConnection
                 #i.e., TrustServerCertificate is true.
                 $dataSourceName .= ";TrustServerCertificate=true";
             }
+        } else {
+            $dataSourceName .= ";Encrypt=0";
         }
 
         $options = [

@@ -123,6 +123,10 @@ class DbConnectionFactory
      */
     public static function parseConnectionString($connectionString)
     {
+        if (empty($connectionString)) {
+            throw new EtlException("Empty database connection string specified.", EtlException::INPUT_ERROR);
+        }
+
         list($dbType, $dbString) = explode(':', $connectionString, 2);
 
         return array($dbType, $dbString);
