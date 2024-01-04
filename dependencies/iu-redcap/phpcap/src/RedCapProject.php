@@ -80,7 +80,7 @@ class RedCapProject
         if (isset($connection)) {
             $this->connection = $this->processConnectionArgument($connection);
         } else {
-            $this->apiUrl      = $this->processApiUrlArgument($apiUrl);
+            $apiUrl            = $this->processApiUrlArgument($apiUrl);
             $sslVerify         = $this->processSslVerifyArgument($sslVerify);
             $caCertificateFile = $this->processCaCertificateFileArgument($caCertificateFile);
             
@@ -2647,6 +2647,16 @@ class RedCapProject
         return $recordIdFieldName;
     }
 
+    /**
+     * Gets the REDCap API URL specified to create the object.
+     *
+     * @return string the REDCap API URL for the project.
+     */
+    public function getApiUrl()
+    {
+        return $this->connection->getUrl();
+    }
+    
     /**
      * Gets the API token for the project.
      *

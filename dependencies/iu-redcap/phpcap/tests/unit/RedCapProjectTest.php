@@ -33,6 +33,18 @@ class RedCapProjectTest extends TestCase
             $this->connection
         );
     }
+
+    public function testCreateProject()
+    {
+        $project = new RedCapProject(
+            $this->apiUrl,
+            $this->apiToken,
+        );
+
+        $this->assertEquals($this->apiUrl, $project->getApiUrl(), 'API URL check');
+
+        $this->assertEquals($this->apiToken, $project->getApiToken(), 'API token check');
+    }
     
     
     public function testCreateProjectWithNullApiUrl()

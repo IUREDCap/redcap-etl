@@ -1712,6 +1712,20 @@ class RecordsTest extends TestCase
         $this->assertTrue($exceptionCaught, 'Exception caught check');
     }
     
+    public function testExportRecordsApWithInvalidFormatDateRange()
+    {
+        $exceptionCaught = false;
+        try {
+            $result = self::$basicDemographyProject->exportRecordsAp(['dateRangeBegin' => '12/01/2022']);
+        } catch (\Exception $exception) {
+            $exceptionCaught = true;
+            $expectedCode = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->assertEquals($expectedCode, $exception->getCode(), 'Exception code check');
+        }
+
+        $this->assertTrue($exceptionCaught, 'Exception caught check');
+    }
+    
     public function testExportRecordsWithCsvDelimiter()
     {
         #export records with default delimiter (comma)

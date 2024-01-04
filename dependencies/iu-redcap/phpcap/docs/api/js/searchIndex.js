@@ -646,6 +646,11 @@ Search.appendIndex(
             "summary": "Gets\u0020the\u0020record\u0020ID\u0020field\u0020name\u0020for\u0020the\u0020project.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_getRecordIdFieldName"
         },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AgetApiUrl\u0028\u0029",
+            "name": "getApiUrl",
+            "summary": "Gets\u0020the\u0020REDCap\u0020API\u0020URL\u0020specified\u0020to\u0020create\u0020the\u0020object.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_getApiUrl"
+        },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AgetApiToken\u0028\u0029",
             "name": "getApiToken",
             "summary": "Gets\u0020the\u0020API\u0020token\u0020for\u0020the\u0020project.",

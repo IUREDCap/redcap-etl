@@ -273,8 +273,10 @@ methods with 'Curl' in their name that belong to the PhpCapExceptionTest class:<
 <div class="description"><pre><code>./vendor/bin/phpunit tests/unit/PhpCapExceptionTest.php --filter 'Curl'</code></pre></div>
 <h5>Code Coverage</h5>
 <p>If XDebug has been installed (and PHP is configured to use it), code coverage for the automated tests can
-be calculated by running the following command in the root directory of PHPCap:</p>
-<div class="description"><pre><code>./vendor/bin/phpunit --coverage-html tests/coverage</code></pre></div>
+be calculated by running the following commands in the root directory of PHPCap:</p>
+<div class="description"><pre><code>XDEBUG_MODE=coverage
+export XDEBUG_MODE
+./vendor/bin/phpunit --coverage-html tests/coverage</code></pre></div>
 <p>To see the results, open the file <strong>tests/coverage/index.html</strong> with a web browser. The .gitignore file is set to
 ignore the tests/coverage directory.</p>
 <p>Note that when writing code, it is sometimes necessary to use the <strong>@codeCoverageIgnore</strong> annotation
