@@ -310,6 +310,8 @@ you can get more information by running the above command with the verbose optio
 To see test coverage information, you need to have XDebug installed, and
 then run the following command from the root directory of the project:
 
+    XDEBUG_MODE=coverage
+    export XDEBUG_MODE
     ./vendor/bin/phpunit --coverage-html tests/coverage
 
 Then with a browser, open the file:
