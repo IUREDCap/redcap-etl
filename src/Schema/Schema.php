@@ -427,8 +427,8 @@ class Schema
     {
         $in = str_repeat(' ', $indent);
         $string = '';
-        $string .= "${in}Number of tables: ".count($this->tables)."\n";
-        $string .= "${in}Number of root tables: ".count($this->rootTables)."\n";
+        $string .= "{$in}Number of tables: ".count($this->tables)."\n";
+        $string .= "{$in}Number of root tables: ".count($this->rootTables)."\n";
 
         $string .= "\nLookup Table\n";
         if (isset($this->lookupTable)) {
@@ -436,7 +436,7 @@ class Schema
         }
 
         $string .= "\n";
-        $string .= "\n${in}Root tables\n";
+        $string .= "\n{$in}Root tables\n";
         foreach ($this->rootTables as $table) {
             $string .= $table->toString($indent + 4)."\n";
         }
