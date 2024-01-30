@@ -60,8 +60,8 @@ class WorkflowBasicDemographyLabelFieldsTest extends TestCase
             $demographyLines = count(file($dbDirectory.'/basic_demography.csv'));
             $this->assertEquals(601, $demographyLines, 'Basic demography number of lines check');
 
-            $parser = \KzykHys\CsvParser\CsvParser::fromFile($dbDirectory . '/basic_demography.csv');
-            $csv = $parser->parse();
+            $csv = CsvUtil::csvFileToArray($dbDirectory . '/basic_demography.csv');
+
             $header = $csv[0];
             $this->assertContains('ethnicity_label', $header, 'Header check for ethnivity_label');
             $this->assertContains('race___5_label', $header, 'Header check for race___5_label');

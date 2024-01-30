@@ -153,12 +153,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
         #---------------------------------------------------------------------
         # Check standard table with (coded) values for multipl-choice answers
         #---------------------------------------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$enrollmentCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$enrollmentCsvFile);
 
         $file = self::TEST_DATA_DIR . self::TABLE_PREFIX . 're_enrollment.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals($header[2], 'record_id', 'Record id header test.');
@@ -179,12 +177,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
         #---------------------------------------------------------------------
         # Check standard table with (coded) values for multipl-choice answers
         #---------------------------------------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$baselineCsvFile);
 
         $file = self::TEST_DATA_DIR . 're_baseline.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals(101, count($csv), 'Row count check.');
@@ -198,12 +194,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
 
     public function testVisitsTable()
     {
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$visitsCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$visitsCsvFile);
 
         $file = self::TEST_DATA_DIR . 're_visits.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals(201, count($csv), 'Row count check.');
@@ -217,12 +211,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
 
     public function testHomeWeightVisitsTable()
     {
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$homeWeightVisitsCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$homeWeightVisitsCsvFile);
 
         $file = self::TEST_DATA_DIR . 're_home_weight_visits.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals(201, count($csv), 'Row count check.');
@@ -236,12 +228,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
 
     public function testHomeCardiovascularVisitsTable()
     {
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$homeCardiovascularVisitsCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$homeCardiovascularVisitsCsvFile);
 
         $file = self::TEST_DATA_DIR . 're_home_cardiovascular_visits.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals(201, count($csv), 'Row count check.');
@@ -252,12 +242,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
 
     public function testBaselineAndVisitsTable()
     {
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineAndVisitsCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$baselineAndVisitsCsvFile);
 
         $file = self::TEST_DATA_DIR . 're_baseline_and_visits.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals(301, count($csv), 'Row count check.');
@@ -271,12 +259,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
 
     public function testBaselineAndHomeVisitsTable()
     {
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$baselineAndHomeVisitsCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$baselineAndHomeVisitsCsvFile);
 
         $file = self::TEST_DATA_DIR . 're_baseline_and_home_visits.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals(501, count($csv), 'Row count check.');
@@ -290,12 +276,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
 
     public function testVisitsAndHomeVisitsTable()
     {
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$visitsAndHomeVisitsCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$visitsAndHomeVisitsCsvFile);
 
         $file = self::TEST_DATA_DIR . 're_visits_and_home_visits.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals(601, count($csv), 'Row count check.');
@@ -309,12 +293,10 @@ class RepeatingEventsLabelFieldsTest extends TestCase
 
     public function testAllVisitsTable()
     {
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$allVisitsCsvFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$allVisitsCsvFile);
 
         $file = self::TEST_DATA_DIR . 're_all_visits.csv';
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile($file);
-        $expectedCsv = $parser2->parse();
+        $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
         $this->assertEquals(701, count($csv), 're_all_visits row count check.');

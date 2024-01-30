@@ -68,13 +68,8 @@ class BasicDemographyJsonTest extends TestCase
         #---------------------------------------------------------------------
         # Check standard table with (coded) values for multipl-choice answers
         #---------------------------------------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvFile);
-        $csv = $parser->parse();
-
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/BasicDemography.csv'
-        );
-        $expectedCsv = $parser2->parse();
+        $csv = CsvUtil::csvFileToArray(self::$csvFile);
+        $expectedCsv = CsvUtil::csvFileToArray(__DIR__.'/../data/BasicDemography.csv');
 
         $header = $csv[0];
         $this->assertEquals($header[2], 'record_id', 'Record id header test.');
@@ -85,13 +80,9 @@ class BasicDemographyJsonTest extends TestCase
         #-------------------------------------
         # Check Label View
         #-------------------------------------
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvLabelFile);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvFileToArray(self::$csvLabelFile);
+        $expectedCsv = CsvUtil::csvFileToArray(__DIR__.'/../data/BasicDemographyLabelView.csv');
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/BasicDemographyLabelView.csv'
-        );
-        $expectedCsv = $parser2->parse();
         $this->assertEquals($expectedCsv, $csv, 'CSV label file check.');
     }
 }

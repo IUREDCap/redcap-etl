@@ -27,7 +27,8 @@
             "IU\\REDCapETL\\" : [
                 "tests/unit",
                 "tests/integration",
-                "tests/system"
+                "tests/system",
+                "tests/util"
             ]
         }
     }

@@ -51,13 +51,9 @@ class BasicDemography2Test extends TestCase
             self::$logger->logException($exception);
             self::$logger->log('Processing failed.');
         }
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile(self::$csvFile);
-        $csv = $parser->parse();
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(
-            __DIR__.'/../data/BasicDemography2.csv'
-        );
-        $expectedCsv = $parser2->parse();
+        $csv = CsvUtil::csvFileToArray(self::$csvFile);
+        $expectedCsv = CsvUtil::csvFileToArray(__DIR__.'/../data/BasicDemography2.csv');
 
         $header = $csv[0];
         $this->assertEquals($header[2], 'record_id', 'Record id header test.');
