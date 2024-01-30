@@ -96,8 +96,7 @@ class SqlServerAutoRulesTest extends TestCase
         $statement  = self::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_enrollment.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -115,8 +114,7 @@ class SqlServerAutoRulesTest extends TestCase
         $statement  = self::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment_label_view.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_enrollment_label_view.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 

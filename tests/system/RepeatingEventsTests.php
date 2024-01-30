@@ -105,8 +105,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_all_visits.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_all_visits.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -143,8 +142,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_baseline.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -184,8 +182,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_home_visits.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_baseline_and_home_visits.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -224,8 +221,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_baseline_and_visits.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_baseline_and_visits.csv');
 
         SystemTestsUtil::convertMapValues($expectedData);
         SystemTestsUtil::convertMapValues($actualData);
@@ -248,8 +244,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_enrollment.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -269,8 +264,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_enrollment_label_view.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_enrollment_label_view.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -303,8 +297,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_cardiovascular_visits.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_home_cardiovascular_visits.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -330,8 +323,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_home_weight_visits.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_home_weight_visits.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 
@@ -369,8 +361,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_visits.csv');
 
         SystemTestsUtil::convertMapValues($expectedData);
         SystemTestsUtil::convertMapValues($actualData);
@@ -412,8 +403,7 @@ abstract class RepeatingEventsTests extends TestCase
         $statement  = static::$dbh->query($sql);
         $actualData = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $parser2 = \KzykHys\CsvParser\CsvParser::fromFile(self::TEST_DATA_DIR.'re_visits_and_home_visits.csv');
-        $expectedData = $parser2->parse();
+        $expectedData = CsvUtil::csvFileToArray(self::TEST_DATA_DIR.'re_visits_and_home_visits.csv');
 
         $expectedData = SystemTestsUtil::convertCsvToMap($expectedData);
 

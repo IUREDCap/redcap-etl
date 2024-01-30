@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dd918db99eac6bad06c7380ce11a4b52",
+    "content-hash": "793ce3b1072748ecb31038e9a7f483f6",
     "packages": [
         {
             "name": "iu-redcap/phpcap",
@@ -123,46 +123,6 @@
                 }
             ],
             "time": "2022-12-30T00:23:10+00:00"
-        },
-        {
-            "name": "kzykhys/php-csv-parser",
-            "version": "1.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/kzykhys/PHPCsvParser.git",
-                "reference": "4f5b6db78c687d22b37a5d24542ae433b2fa48cf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kzykhys/PHPCsvParser/zipball/4f5b6db78c687d22b37a5d24542ae433b2fa48cf",
-                "reference": "4f5b6db78c687d22b37a5d24542ae433b2fa48cf",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Kazuyuki Hayashi",
-                    "email": "hayashi@valnur.net"
-                }
-            ],
-            "description": "Convert CSV to array (Excel style is fully suppoted!)",
-            "support": {
-                "issues": "https://github.com/kzykhys/PHPCsvParser/issues",
-                "source": "https://github.com/kzykhys/PHPCsvParser/tree/master"
-            },
-            "time": "2014-01-15T05:17:19+00:00"
         },
         {
             "name": "myclabs/deep-copy",

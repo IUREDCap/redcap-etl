@@ -22,8 +22,12 @@ class CsvUtil
      */
     public static function csvFileToArray($csvFile)
     {
-        $parser = \KzykHys\CsvParser\CsvParser::fromFile($csvFile);
-        $values = $parser->parse();
+        $values = [];
+        $file = fopen($csvFile, 'r');
+        while (($line = fgetcsv($file)) !== FALSE) {
+            $values[] = $line;
+        }
+        fclose($file);
 
         return $values;
     }
