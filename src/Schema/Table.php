@@ -470,7 +470,7 @@ class Table
         $row = new Row($this);
 
         // set foreign key of potential Row
-        if (strlen($foreignKey) != 0) {
+        if ($foreignKey != null && strlen($foreignKey) != 0) {
             $row->data[$this->foreign->name] = $foreignKey;
         }
 

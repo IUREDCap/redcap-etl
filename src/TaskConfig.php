@@ -125,6 +125,7 @@ class TaskConfig
 
     private $labelViews;
     private $labelViewSuffix;
+    private $logFile;
     private $lookupTableName;
 
     private $preProcessingSql;
@@ -154,7 +155,7 @@ class TaskConfig
 
     private $emailErrors;
     private $emailSummary;
-    private $emailFromAddres;
+    private $emailFromAddress;
     private $emailSubject;
     private $emailToList;
     

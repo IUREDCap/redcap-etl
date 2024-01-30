@@ -62,7 +62,10 @@ class RulesParser
         // separate lines (handle Windows and Linux end of
         // line conventions).
         //------------------------------------------------------
-        $lines = preg_split('/\r\n|\r|\n/', $rulesString);
+        $lines = [];
+        if (!empty($rulesString)) {
+            $lines = preg_split('/\r\n|\r|\n/', $rulesString);
+        }
         
         // Process line by line
         $lineNumber = 1;
@@ -251,7 +254,11 @@ class RulesParser
                 break;
 
             case self::EVENTS:
-                $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixesDef);
+                if (empty($suffixesDef)) {
+                    $suffixes = [''];
+                } else {
+                    $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixesDef);
+                }
                 $rowsType = (empty($suffixes[0])) ? RowsType::BY_EVENTS : RowsType::BY_EVENTS_SUFFIXES;
                 break;
 

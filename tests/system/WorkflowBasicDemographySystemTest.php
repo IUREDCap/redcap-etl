@@ -185,7 +185,12 @@ class WorkflowBasicDemographySystemTest extends TestCase
         ];
 
         $actual200thRow = $actualData[199];
-        $actual200thRow['phone'] = rtrim($actual200thRow['phone']);
+
+        if ($actual200thRow['phone'] == null) {
+            $actual200thRow['phone'] = '';
+        } else {
+            $actual200thRow['phone'] = rtrim($actual200thRow['phone']);
+        }
 
         if ($this instanceof WorkflowBasicDemographyCsvTest) {
             $expected200thRow['redcap_data_source'] = 2;
