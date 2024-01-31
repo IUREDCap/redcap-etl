@@ -6,12 +6,16 @@
 
 namespace IU\REDCapETL;
 
+use IU\REDCapETL\Schema\FieldType;
+
 /**
  * REDCap Project class for REDCap-ETL that extends PHPCap's RedCapProject class.
  * This class provides caching of results from REDCap and extended functionality.
  */
 class EtlRedCapProject extends \IU\PHPCap\RedCapProject
 {
+    const FORM_COMPLETE_SUFFIX = '_complete';
+
     /** @var string the name of the application */
     private $app;
     
@@ -54,11 +58,21 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
     {
         if (!isset($this->fieldTypeMap)) {
             $this->fieldTypeMap = array();
+
+            // Add user defined fields
             $fields = $this->getMetadata();
             foreach ($fields as $field) {
                 $this->fieldTypeMap[$field['field_name']] = $field['field_type'];
             }
+
+            // Add form complete fields
+            $instruments = $this->exportInstruments();
+            foreach ($instruments as $name => $label) {
+                $fieldName = $name . self::FORM_COMPLETE_SUFFIX;
+                $this->fieldTypeMap[$fieldName] = FieldType::DROPDOWN;
+            }
         }
+
         return $this->fieldTypeMap;
     }
     
@@ -119,14 +133,13 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
      */
     public function getLookupChoices()
     {
-
         $results = array();
 
         // Get all metadata
         $error = 'Unable to retrieve metadata while getting lookup choices';
         $fields = $this->getMetadata();
-     
-        // Foreach field
+
+        // Foreach (user-defined) field
         foreach ($fields as $field) {
             switch ($field['field_type']) {
                 // If it's a radio, dropdown, or checkbox field
@@ -167,6 +180,20 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
                     break;
             }  // end switch
         }  // end foreach
+
+        //----------------------------------------------------------------------
+        // Add form complete fields (which are not included in the metadata)
+        //----------------------------------------------------------------------
+        $instruments = $this->exportInstruments();
+        foreach ($instruments as $name => $label) {
+            $fieldName = $name . self::FORM_COMPLETE_SUFFIX;
+            $fieldResults = ['0' => 'Incomplete', '1' => 'Unverified', '2' => 'Complete'];
+            $results[$fieldName] = $fieldResults;
+        }
+     
+        #print "\nLookup choices:\n";
+        #print_r($results);
+        #print "\n\n";
 
         return $results;
     }

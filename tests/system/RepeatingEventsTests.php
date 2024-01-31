@@ -31,6 +31,7 @@ abstract class RepeatingEventsTests extends TestCase
         $dbh->exec("DROP TABLE IF EXISTS re_home_cardiovascular_visits");
         $dbh->exec("DROP TABLE IF EXISTS re_home_weight_visits");
         $dbh->exec("DROP TABLE IF EXISTS re_visits");
+        $dbh->exec("DROP VIEW IF EXISTS re_visits_and_home_visits_label_view");
         $dbh->exec("DROP TABLE IF EXISTS re_visits_and_home_visits");
         $dbh->exec("DROP VIEW  IF EXISTS re_enrollment_label_view");
         $dbh->exec("DROP TABLE IF EXISTS re_enrollment");

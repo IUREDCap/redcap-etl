@@ -564,7 +564,8 @@ class MysqlDbConnection extends DbConnection
                     }
                     break;
                 default:
-                    $message = 'Unrecognized database field type for MySQL: "'.print_r($fieldType, true).'".';
+                    $message = 'Unrecognized database field type for MySQL: "'
+                        . print_r($fieldType, true) . '" for database field "' . $fieldDbName . '".';
                     $code = EtlException::DATABASE_ERROR;
                     throw new EtlException($message, $code);
                     break;

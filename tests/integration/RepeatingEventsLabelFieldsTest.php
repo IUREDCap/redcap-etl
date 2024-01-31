@@ -278,7 +278,7 @@ class RepeatingEventsLabelFieldsTest extends TestCase
     {
         $csv = CsvUtil::csvFileToArray(self::$visitsAndHomeVisitsCsvFile);
 
-        $file = self::TEST_DATA_DIR . 're_visits_and_home_visits.csv';
+        $file = self::TEST_DATA_DIR . 're_visits_and_home_visits_label_fields.csv';
         $expectedCsv = CsvUtil::csvFileToArray($file);
 
         $header = $csv[0];
