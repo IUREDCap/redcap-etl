@@ -45,23 +45,23 @@ class RulesGeneratorTest extends TestCase
         // exportProjectInfo() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportProjectInfo')
-            ->will($this->returnValue($projectInfo));
+            ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportInstruments')
-            ->will($this->returnValue($instruments));
+            ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
         $dataProject->expects($this->any())
         ->method('exportMetadata')
-        ->will($this->returnValue($metadata));
+        ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
         $dataProject->expects($this->any())
         ->method('exportProjectXml')
-        ->will($this->returnValue($projectXml));
+        ->willReturn($projectXml);
 
 
         $rulesGenerator = new RulesGenerator();
@@ -105,27 +105,27 @@ class RulesGeneratorTest extends TestCase
         // exportProjectInfo() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportProjectInfo')
-            ->will($this->returnValue($projectInfo));
+            ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportInstruments')
-            ->will($this->returnValue($instruments));
+            ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
         $dataProject->expects($this->any())
         ->method('exportMetadata')
-        ->will($this->returnValue($metadata));
+        ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
         $dataProject->expects($this->any())
         ->method('exportProjectXml')
-        ->will($this->returnValue($projectXml));
+        ->willReturn($projectXml);
     
         $dataProject->expects($this->any())
         ->method('exportInstrumentEventMappings')
-        ->will($this->returnValue($eventMappings));
+        ->willReturn($eventMappings);
 
         $rulesGenerator = new RulesGenerator();
         $rulesText = $rulesGenerator->generate($dataProject);
@@ -167,27 +167,27 @@ class RulesGeneratorTest extends TestCase
         // exportProjectInfo() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportProjectInfo')
-            ->will($this->returnValue($projectInfo));
+            ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportInstruments')
-            ->will($this->returnValue($instruments));
+            ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
         $dataProject->expects($this->any())
         ->method('exportMetadata')
-        ->will($this->returnValue($metadata));
+        ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
         $dataProject->expects($this->any())
         ->method('exportProjectXml')
-        ->will($this->returnValue($projectXml));
+        ->willReturn($projectXml);
     
         $dataProject->expects($this->any())
         ->method('exportInstrumentEventMappings')
-        ->will($this->returnValue($eventMappings));
+        ->willReturn($eventMappings);
 
         $rulesGenerator = new RulesGenerator();
         $rulesText = $rulesGenerator->generate($dataProject);
@@ -229,27 +229,27 @@ class RulesGeneratorTest extends TestCase
         // exportProjectInfo() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportProjectInfo')
-            ->will($this->returnValue($projectInfo));
+            ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportInstruments')
-            ->will($this->returnValue($instruments));
+            ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
         $dataProject->expects($this->any())
         ->method('exportMetadata')
-        ->will($this->returnValue($metadata));
+        ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
         $dataProject->expects($this->any())
         ->method('exportProjectXml')
-        ->will($this->returnValue($projectXml));
+        ->willReturn($projectXml);
     
         $dataProject->expects($this->any())
         ->method('exportInstrumentEventMappings')
-        ->will($this->returnValue($eventMappings));
+        ->willReturn($eventMappings);
 
         $rulesGenerator = new RulesGenerator();
         $rulesText = $rulesGenerator->generate($dataProject);
@@ -291,27 +291,27 @@ class RulesGeneratorTest extends TestCase
         // exportProjectInfo() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportProjectInfo')
-            ->will($this->returnValue($projectInfo));
+            ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
         $dataProject->expects($this->any())
             ->method('exportInstruments')
-            ->will($this->returnValue($instruments));
+            ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
         $dataProject->expects($this->any())
         ->method('exportMetadata')
-        ->will($this->returnValue($metadata));
+        ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
         $dataProject->expects($this->any())
         ->method('exportProjectXml')
-        ->will($this->returnValue($projectXml));
+        ->willReturn($projectXml);
     
         $dataProject->expects($this->any())
         ->method('exportInstrumentEventMappings')
-        ->will($this->returnValue($eventMappings));
+        ->willReturn($eventMappings);
 
         $rulesGenerator = new RulesGenerator();
         $rulesText = $rulesGenerator->generate($dataProject);
