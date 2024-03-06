@@ -128,7 +128,7 @@ class WorkflowConfig
 
         $configurationFileContents = false;
         try {
-            $configurationFileContents = file_get_contents($configurationFile);
+            @ $configurationFileContents = file_get_contents($configurationFile);
         } catch (\Exception $exception) {
             $configurationFileContents = false;
         }
@@ -527,7 +527,7 @@ class WorkflowConfig
         $fp = false;
         $errorMessage = null;
         try {
-            $fp = fopen($iniFile, "r");
+            @ $fp = fopen($iniFile, "r");
         } catch (\Exception $exception) {
             ;
         }

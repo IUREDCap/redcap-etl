@@ -471,6 +471,31 @@ Search.appendIndex(
             "summary": "Deletes\u0020the\u0020specified\u0020file.",
             "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteFile"
         },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AcreateFileRepositoryFolder\u0028\u0029",
+            "name": "createFileRepositoryFolder",
+            "summary": "Creates\u0020the\u0020specified\u0020folder\u0020in\u0020the\u0020file\u0020repository.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_createFileRepositoryFolder"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportFileRepositoryList\u0028\u0029",
+            "name": "exportFileRepositoryList",
+            "summary": "Exports\u0020a\u0020list\u0020of\u0020the\u0020files\u0020and\u0020folders\u0020contained\u0020within\u0020the\u0020specified\u0020folder.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportFileRepositoryList"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportFileRepositoryFile\u0028\u0029",
+            "name": "exportFileRepositoryFile",
+            "summary": "Exports\u0020the\u0020specified\u0020file\u0020from\u0020the\u0020file\u0020repository.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_exportFileRepositoryFile"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AimportFileRepositoryFile\u0028\u0029",
+            "name": "importFileRepositoryFile",
+            "summary": "Imports\u0020the\u0020specified\u0020file\u0020from\u0020the\u0020file\u0020repository.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_importFileRepositoryFile"
+        },                {
+            "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AdeleteFileRepositoryFile\u0028\u0029",
+            "name": "deleteFileRepositoryFile",
+            "summary": "Deletes\u0020the\u0020specified\u0020file\u0020repository\u0020file.",
+            "url": "classes/IU-PHPCap-RedCapProject.html#method_deleteFileRepositoryFile"
+        },                {
             "fqsen": "\\IU\\PHPCap\\RedCapProject\u003A\u003AexportInstruments\u0028\u0029",
             "name": "exportInstruments",
             "summary": "Exports\u0020information\u0020about\u0020the\u0020instruments\u0020\u0028data\u0020entry\u0020forms\u0029\u0020for\u0020the\u0020project.",

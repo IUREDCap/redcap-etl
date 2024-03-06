@@ -3,7 +3,12 @@
 Copyright (C) 2019 The Trustees of Indiana University
 SPDX-License-Identifier: BSD-3-Clause
 ================================================== -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" bootstrap="vendor/autoload.php">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
+    >
   <coverage>
     <include>
       <directory suffix=".php">src</directory>

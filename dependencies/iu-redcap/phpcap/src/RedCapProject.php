@@ -661,27 +661,8 @@ class RedCapProject
         $file = $this->processExportResult($file, $format = 'file');
 
         if (is_array($fileInfo)) {
-            $fileInfo = array();
             $callInfo = $this->connection->getCallInfo();
-            if (isset($callInfo) && is_array($callInfo) && array_key_exists('content_type', $callInfo)) {
-                if (!empty($callInfo)) {
-                    $contentType = $callInfo = explode(';', $callInfo['content_type']);
-                    if (count($contentType) >= 1) {
-                        $fileInfo['mime_type'] = trim($contentType[0]);
-                    }
-                    if (count($contentType) >= 2) {
-                        $fileName = trim($contentType[1]);
-                        # remove starting 'name="' and ending '"'
-                        $fileName = substr($fileName, 6, strlen($fileName) - 7);
-                        $fileInfo['name'] = $fileName;
-                    }
-                    if (count($contentType) >= 3) {
-                        $charset = trim($contentType[2]);
-                        $charset = substr($charset, 8);
-                        $fileInfo['charset'] = $charset;
-                    }
-                }
-            }
+            $fileInfo = $this->getFileInfo($callInfo);
         }
         
         return $file;
@@ -779,6 +760,167 @@ class RedCapProject
         
         $this->processNonExportResult($result);
         
+        return $result;
+    }
+
+
+    /**
+     * Creates the specified folder in the file repository.
+     *
+     * @param string $name the name of the folder to be created.
+     * @param integer $parentFolderId the id of the folder where the new folder should be created. If
+     *     this is unset, then the folder will be created in the top-level folder.
+     * @param integer $dagId the DAG (Data Access Group) ID that should be used to restrict access
+     *     to this folder.
+     * @param integer $roleId the role ID that should be used to restrict access to this folder.
+     *
+     * @return integer the folder ID of the folder that was created.
+     */
+    public function createFileRepositoryFolder($name, $parentFolderId = null, $dagId = null, $roleId = null)
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'fileRepository',
+                'action'       => 'createFolder',
+                'format'       => 'json',
+                'returnFormat' => 'json'
+        );
+
+        $data['name']      = $name;
+        $data['folder_id'] = $this->processFolderIdArgument($parentFolderId);
+        $data['dag_id']    = $this->processDagIdArgument($dagId);
+        $data['role_id']   = $this->processRoleIdArgument($roleId);
+
+        $jsonResult = $this->connection->callWithArray($data);
+
+        $this->processNonExportResult($result);
+
+        $folderId = null;
+        $result = json_decode($jsonResult, true);
+        if (is_array($result) && count($result) === 1 && array_key_exists('folder_id', $result[0])) {
+            $folderId = (integer) $result[0]['folder_id'];
+        }
+
+        return $folderId;
+    }
+
+    /**
+     * Exports a list of the files and folders contained within the specified folder.
+     *
+     * @param string $format the format for the export.
+     *     <ul>
+     *       <li> 'php' - [default] array of maps of values</li>
+     *       <li> 'csv' - string of CSV (comma-separated values)</li>
+     *       <li> 'json' - string of JSON encoded values</li>
+     *       <li> 'xml' - string of XML encoded data</li>
+     *     </ul>
+     * @param integer $folderId the folder ID of the folder to list. If no
+     *     folder ID is specified, then a list of the top-level folder is returned.
+     *
+     * @return array an array of maps that include 'name' and 'doc_id' (for files) or 'folder_id' (for folders).
+     */
+    public function exportFileRepositoryList($format = 'php', $folderId = null)
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'fileRepository',
+                'action'       => 'list',
+                'returnFormat' => 'json'
+        );
+
+        $legalFormats = array('csv', 'json', 'php', 'xml');
+        $data['format']    = $this->processFormatArgument($format, $legalFormats);
+        $data['folder_id'] = $this->processFolderIdArgument($folderId);
+
+        $list = $this->connection->callWithArray($data);
+
+        $this->processExportResult($list, $format);
+        
+        return $list;
+    }
+
+
+    /**
+     * Exports the specified file from the file repository.
+     *
+     * @param integer $docId the doc ID of the file to export.
+     * @param array $fileInfo output array for getting file information. $fileInfo must be set
+     *     to an array before calling this method, and on successful return it will include
+     *     elements with the following keys:
+     *     'name', 'mime_type', and 'charset' (if the file is a text file).
+     *
+     * @return string the contents of the file that was exported.
+     */
+    public function exportFileRepositoryFile($docId, &$fileInfo = null)
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'fileRepository',
+                'action'       => 'export',
+                'returnFormat' => 'json'
+        );
+
+        $data['doc_id'] = $this->processDocIdArgument($docId);
+
+        $file = $this->connection->callWithArray($data);
+
+        $format = 'file';
+        $this->processExportResult($file, $format);
+
+        if (is_array($fileInfo)) {
+            $callInfo = $this->connection->getCallInfo();
+            $fileInfo = $this->getFileInfo($callInfo);
+        }
+
+        return $file;
+    }
+
+
+    /**
+     * Imports the specified file from the file repository.
+     *
+     * @param string $filename the name of the file to import.
+     * @param integer $folderId the ID of the folder in the file repositoryt from which the
+     *     file should be imported. If no folder ID is specified, then the top-level
+     *     folder of the file repository is used.
+     */
+    public function importFileRepositoryFile($filename, $folderId = null)
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'fileRepository',
+                'action'       => 'import',
+                'returnFormat' => 'json'
+        );
+
+        $data['file']      = $this->processFilenameArgument($filename);
+        $data['folder_id'] = $this->processFolderIdArgument($folderId);
+
+        $result = $this->connection->call($data);
+        $this->processNonExportResult($result);
+    }
+
+
+    /**
+     * Deletes the specified file repository file.
+     *
+     * @param integer $docId the doc ID for the file to delete from the file repository.
+     */
+    public function deleteFileRepositoryFile($docId)
+    {
+        $data = array(
+                'token'        => $this->apiToken,
+                'content'      => 'fileRepository',
+                'action'       => 'delete',
+                'returnFormat' => 'json'
+        );
+
+        $data['doc_id'] = $this->processDocIdArgument($docId);
+
+        $result = $this->connection->callWithArray($data);
+
+        $this->processNonExportResult($result);
+
         return $result;
     }
     
@@ -1810,13 +1952,26 @@ class RedCapProject
      *     (must be spefied for longitudinal studies if an event is spcified).
      * @param integer $repeatInstance for repeating events and forms, the instance for
      *     which fields should be deleted.
+     * @param integer $deleteLogging flag that indicates if the logging associated
+     *     with the records being deleted should also be deleted. This is only applicable
+     *     for projects where the setting to delete logging for deleted records
+     *     has been enabled by an admin.
+     *     For these projects, set $deleteLogging to 1 (or leave it unset) to delete the
+     *     logging for the deleted records,
+     *     and set $deleteLogging to 0 to keep the logging for the deleted records.
      *
      * @throws PhpCapException
      *
      * @return integer the number of records deleted.
      */
-    public function deleteRecords($recordIds, $arm = null, $form = null, $event = null, $repeatInstance = null)
-    {
+    public function deleteRecords(
+        $recordIds,
+        $arm = null,
+        $form = null,
+        $event = null,
+        $repeatInstance = null,
+        $deleteLogging = null
+    ) {
         $data = array (
                 'token'        => $this->apiToken,
                 'content'      => 'record',
@@ -1827,11 +1982,15 @@ class RedCapProject
         $data['records'] = $this->processRecordIdsArgument($recordIds);
         $data['arm']     = $this->processArmArgument($arm);
 
-        $data['instrument']      = $this->ProcessFormArgument($form, $required = false);
-        $data['event']           = $this->ProcessEventArgument($event);
-        $data['repeat_instance'] = $this->ProcessRepeatInstanceArgument($repeatInstance);
+        $data['instrument']      = $this->processFormArgument($form, $required = false);
+        $data['event']           = $this->processEventArgument($event);
+        $data['repeat_instance'] = $this->processRepeatInstanceArgument($repeatInstance);
 
-        
+        $deleteLogging = $this->processDeleteLoggingArgument($deleteLogging);
+        if ($deleteLogging !== null) {
+            $data['delete_logging']  = $deleteLogging;
+        }
+
         $result = $this->connection->callWithArray($data);
         
         $this->processNonExportResult($result);
@@ -2099,9 +2258,9 @@ class RedCapProject
         # Process arguments
         #----------------------------------------------
         $data['record']          = $this->processRecordIdArgument($recordId, $required = true);
-        $data['instrument']      = $this->ProcessFormArgument($form, $required = true);
-        $data['event']           = $this->ProcessEventArgument($event);
-        $data['repeat_instance'] = $this->ProcessRepeatInstanceArgument($repeatInstance);
+        $data['instrument']      = $this->processFormArgument($form, $required = true);
+        $data['event']           = $this->processEventArgument($event);
+        $data['repeat_instance'] = $this->processRepeatInstanceArgument($repeatInstance);
         
         $surveyLink = $this->connection->callWithArray($data);
         $surveyLink = $this->processExportResult($surveyLink, 'string');
@@ -2141,8 +2300,8 @@ class RedCapProject
         #----------------------------------------------
         $legalFormats = array('csv', 'json', 'php', 'xml');
         $data['format']     = $this->processFormatArgument($format, $legalFormats);
-        $data['instrument'] = $this->ProcessFormArgument($form, $required = true);
-        $data['event']      = $this->ProcessEventArgument($event);
+        $data['instrument'] = $this->processFormArgument($form, $required = true);
+        $data['event']      = $this->processEventArgument($event);
         
         $surveyParticipants = $this->connection->callWithArray($data);
         $surveyParticipants = $this->processExportResult($surveyParticipants, $format);
@@ -2198,9 +2357,9 @@ class RedCapProject
         # Process arguments
         #----------------------------------------------
         $data['record']          = $this->processRecordIdArgument($recordId, $required = true);
-        $data['instrument']      = $this->ProcessFormArgument($form, $required = true);
-        $data['event']           = $this->ProcessEventArgument($event);
-        $data['repeat_instance'] = $this->ProcessRepeatInstanceArgument($repeatInstance);
+        $data['instrument']      = $this->processFormArgument($form, $required = true);
+        $data['event']           = $this->processEventArgument($event);
+        $data['repeat_instance'] = $this->processRepeatInstanceArgument($repeatInstance);
         
         $surveyReturnCode = $this->connection->callWithArray($data);
         $surveyReturnCode = $this->processExportResult($surveyReturnCode, 'string');
@@ -2713,6 +2872,31 @@ class RedCapProject
     }
 
 
+    protected function getFileInfo($callInfo)
+    {
+        $fileInfo = array();
+        if (isset($callInfo) && is_array($callInfo) && array_key_exists('content_type', $callInfo)) {
+            if (!empty($callInfo)) {
+                $contentType = $callInfo = explode(';', $callInfo['content_type']);
+                if (count($contentType) >= 1) {
+                    $fileInfo['mime_type'] = trim($contentType[0]);
+                }
+                if (count($contentType) >= 2) {
+                    $fileName = trim($contentType[1]);
+                    # remove starting 'name="' and ending '"'
+                    $fileName = substr($fileName, 6, strlen($fileName) - 7);
+                    $fileInfo['name'] = $fileName;
+                }
+                if (count($contentType) >= 3) {
+                    $charset = trim($contentType[2]);
+                    $charset = substr($charset, 8);
+                    $fileInfo['charset'] = $charset;
+                }
+            }
+        }
+        return $fileInfo;
+    }
+
     protected function processAllRecordsArgument($allRecords)
     {
         if (!isset($allRecords)) {
@@ -2971,6 +3155,21 @@ class RedCapProject
         return $dags;
     }
 
+    
+    protected function processDagIdArgument($dagId)
+    {
+        if (!isset($dagId)) {
+            $dagId = '';
+        } elseif (!is_int($dagId)) {
+            $message = 'The DAG ID has type "'.gettype($dagId)
+                .'", but it should be an integer.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        }
+        
+        return $dagId;
+    }
+    
 
     protected function processDateFormatArgument($dateFormat)
     {
@@ -3026,6 +3225,21 @@ class RedCapProject
         return $date;
     }
 
+    protected function processDocIdArgument($docId)
+    {
+        if (!isset($docId)) {
+            $message = 'No doc ID specified';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        } elseif (!is_int($docId)) {
+            $message = 'The doc ID has type "'.gettype($docId)
+                .'", but it should be an integer.';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        }
+        
+        return $docId;
+    }
 
     protected function processDecimalCharacterArgument($decimalCharacter)
     {
@@ -3040,6 +3254,18 @@ class RedCapProject
             } // @codeCoverageIgnore
         }
         return $decimalCharacter;
+    }
+
+    protected function processDeleteLoggingArgument($deleteLogging)
+    {
+        if ($deleteLogging == null) {
+            ; // OK
+        } elseif (!is_int($deleteLogging) || ($deleteLogging != 0 && $deleteLogging != 1)) {
+            $message = 'Invalid delete logging value. The delete logging value must be 0 or 1';
+            $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        }
+        return $deleteLogging;
     }
 
     protected function processErrorHandlerArgument($errorHandler)
@@ -3318,6 +3544,20 @@ class RedCapProject
             } // @codeCoverageIgnore
         }
         return $filterLogic;
+    }
+    
+    protected function processFolderIdArgument($folderId)
+    {
+        if (!isset($folderId)) {
+            $folderId = '';
+        } elseif (!is_int($folderId)) {
+            $message = 'The folder ID has type "'.gettype($folderId)
+                .'", but it should be an integer.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        }
+        
+        return $folderId;
     }
     
     protected function processForceAutoNumberArgument($forceAutoNumber)
@@ -3699,6 +3939,20 @@ class RedCapProject
             } // @codeCoverageIgnore
         }
         return $returnMetadataOnly;
+    }
+    
+    protected function processRoleIdArgument($roleId)
+    {
+        if (!isset($roleId)) {
+            $roleId = '';
+        } elseif (!is_int($roleId)) {
+            $message = 'The role ID has type "'.gettype($roleId)
+                .'", but it should be an integer.';
+                $code = ErrorHandlerInterface::INVALID_ARGUMENT;
+            $this->errorHandler->throwException($message, $code);
+        }
+        
+        return $roleId;
     }
     
     protected function processSslVerifyArgument($sslVerify)

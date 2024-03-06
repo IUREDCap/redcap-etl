@@ -35,9 +35,11 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
-            ->setMethods(['exportProjectInfo', 'exportInstruments', 'exportMetadata', 'exportProjectXml'])
-            ->getMock();
+        //$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
+            //->setMethods(['exportProjectInfo', 'exportInstruments', 'exportMetadata', 'exportProjectXml'])
+            //->getMock();
+
+        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
 
 
         // exportProjectInfo() - stub method returning mock data
@@ -86,17 +88,18 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
-            ->setMethods(
-                [
-                    'exportProjectInfo',
-                    'exportInstruments',
-                    'exportMetadata',
-                    'exportProjectXml',
-                    'exportInstrumentEventMappings'
-                ]
-            )
-            ->getMock();
+        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        #$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
+        #    ->setMethods(
+        #        [
+        #            'exportProjectInfo',
+        #            'exportInstruments',
+        #            'exportMetadata',
+        #            'exportProjectXml',
+        #            'exportInstrumentEventMappings'
+        #        ]
+        #    )
+        #    ->getMock();
 
 
         // exportProjectInfo() - stub method returning mock data
@@ -147,17 +150,18 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
-            ->setMethods(
-                [
-                    'exportProjectInfo',
-                    'exportInstruments',
-                    'exportMetadata',
-                    'exportProjectXml',
-                    'exportInstrumentEventMappings'
-                ]
-            )
-            ->getMock();
+        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        #$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
+        #    ->setMethods(
+        #        [
+        #            'exportProjectInfo',
+        #            'exportInstruments',
+        #            'exportMetadata',
+        #            'exportProjectXml',
+        #            'exportInstrumentEventMappings'
+        #        ]
+        #    )
+        #    ->getMock();
 
 
         // exportProjectInfo() - stub method returning mock data
@@ -208,17 +212,18 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
-            ->setMethods(
-                [
-                    'exportProjectInfo',
-                    'exportInstruments',
-                    'exportMetadata',
-                    'exportProjectXml',
-                    'exportInstrumentEventMappings'
-                ]
-            )
-            ->getMock();
+        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        #$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
+        #    ->setMethods(
+        #        [
+        #            'exportProjectInfo',
+        #            'exportInstruments',
+        #            'exportMetadata',
+        #            'exportProjectXml',
+        #            'exportInstrumentEventMappings'
+        #        ]
+        #    )
+        #    ->getMock();
 
 
         // exportProjectInfo() - stub method returning mock data
@@ -269,17 +274,18 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
-            ->setMethods(
-                [
-                    'exportProjectInfo',
-                    'exportInstruments',
-                    'exportMetadata',
-                    'exportProjectXml',
-                    'exportInstrumentEventMappings'
-                ]
-            )
-            ->getMock();
+        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        #$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
+        #    ->setMethods(
+        #        [
+        #            'exportProjectInfo',
+        #            'exportInstruments',
+        #            'exportMetadata',
+        #            'exportProjectXml',
+        #            'exportInstrumentEventMappings'
+        #        ]
+        #    )
+        #    ->getMock();
 
 
         // exportProjectInfo() - stub method returning mock data

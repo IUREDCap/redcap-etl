@@ -132,6 +132,190 @@ class RedCapIntegrationTest extends TestCase
                 $projectInfo['record_autonumbering_enabled'],
                 'Record autonumbering check.'
             );
+
+            #-------------------------------------------------------
+            # Test import and export of DAGs (Data Access Groups)
+            #-------------------------------------------------------
+            $dags = [
+                'data_access_group_name'  => 'group1',
+                'unique_group_name' => ""
+            ];
+
+            $dags = [$dags];
+            $project->importDags($dags, $format='php');
+
+            $dagInfo = $project->exportDags();
+            $this->assertEquals(1, count($dagInfo), 'DAG count check');
+
+            $dagId = $dagInfo[0]['data_access_group_id'];
+            $this->assertNotNull($dagId, 'DAG ID not null check');
+
+            $dagName = $dagInfo[0]['data_access_group_name'];
+            $this->assertEquals('group1', $dagName, 'DAG name check');
+
+            #-------------------------------------------------------
+            # Test import and export of User Roles
+            #-------------------------------------------------------
+            $userRoles = [
+                [
+                    'role_label' => 'Project Manager',
+                    'user_rights' => 0
+                ]
+            ];
+
+            $project->importUserRoles($userRoles);
+
+            $userRoles = $project->exportUserRoles();
+            $uniqueRoleName = $userRoles[0]['unique_role_name'];
+
+            $userRoleAssignments = $project->exportUserRoleAssignments();
+
+            $userRoleLabel = $userRoles[0]['role_label'];
+            $this->assertEquals('Project Manager', $userRoleLabel, 'User role label check');
+
+            #-----------------------------------------------------------------------------
+            # Test file repository methods
+            #
+            # Tested here because there is no way to delete a folder,
+            # so instead of having folders build up in a fixed test project,
+            # they will be in created test projects that already need to be
+            # deleted manually anyway.
+            #-----------------------------------------------------------------------------
+            $name           = 'test';
+            $parentFolderId = null;
+            $dagId          = null;
+            $roleId         = null;
+
+            #--------------------
+            # Create basic folder
+            #--------------------
+            $createFolderId = $project->createFileRepositoryFolder($name, $parentFolderId, $dagId, $roleId);
+            $this->assertTrue(is_int($createFolderId), 'Int create folder ID check');
+
+            $list = $project->exportFileRepositoryList();
+            $this->assertEquals(1, count($list), 'File repository list check');
+
+            $folderId = $list[0]['folder_id'];
+            $this->assertNotNull($folderId, 'Folder ID not null check 1');
+            $this->assertEquals($createFolderId, $folderId, 'Folder ID march check');
+
+            #--------------
+            # Import a file
+            #--------------
+            $filename = 'import-file.txt';
+            $filepath = __DIR__ .'/../data/' . $filename;
+            $fileContents = file_get_contents($filepath);
+            $result = $project->importFileRepositoryFile($filepath);
+            $list = $project->exportFileRepositoryList();
+            $this->assertEquals(2, count($list), 'File import list check');
+
+            $fileDocId      = $list[1]['doc_id'];
+            $exportFilename = $list[1]['name'];
+            $this->assertEquals($filename, $exportFilename, 'Imported file name check');
+
+            #---------------------------------------
+            # Export the file that was just imported
+            #---------------------------------------
+            $fileInfo = array();
+            $exportFileContents = $project->exportFileRepositoryFile($fileDocId, $fileInfo);
+            $this->assertEquals($fileContents, $exportFileContents, 'File export contents check');
+            $this->assertEquals($filename, $fileInfo['name'], 'Export file name check');
+
+            // This check won't work due to a bug in REDCap
+            //$this->assertEquals('text/plain', $fileInfo['mime_type'], 'Export file mime-type check');
+
+            #---------------------------------------------
+            # Delete the file that was previously imported
+            #---------------------------------------------
+            $list = $project->exportFileRepositoryList();
+            $fileNames = array_column($list, 'name');
+            $this->assertTrue(in_array($filename, $fileNames));
+
+            $project->deleteFileRepositoryFile($fileDocId);
+
+            $list = $project->exportFileRepositoryList();
+            $fileNames = array_column($list, 'name');
+            $this->assertFalse(in_array($filename, $fileNames));
+
+            #----------------------------------
+            # Export a file with a unset doc ID
+            #----------------------------------
+            $docId = null;
+            $exceptionCaught = false;
+            try {
+                $exportFileContents = $project->exportFileRepositoryFile($docId);
+            } catch (\Exception $exception) {
+                $exceptionCaught = true;
+            }
+            $this->assertTrue($exceptionCaught, 'Unset doc ID exception check');
+
+            #-------------------------------------
+            # Export a file with an invalid doc ID
+            #-------------------------------------
+            $docId = 'invalid';
+            $exceptionCaught = false;
+            try {
+                $exportFileContents = $project->exportFileRepositoryFile($docId);
+            } catch (\Exception $exception) {
+                $exceptionCaught = true;
+            }
+            $this->assertTrue($exceptionCaught, 'Invalid doc ID exception check');
+
+            #--------------------------------------------
+            # Create folder with invalid parent folder ID
+            #--------------------------------------------
+            $parentFolderId = 'invalid';
+            $exceptionCaught = false;
+            try {
+                $project->createFileRepositoryFolder($name, $parentFolderId, $dagId, $roleId);
+            } catch (\Exception $exception) {
+                $exceptionCaught = true;
+            }
+            $this->assertTrue($exceptionCaught, 'Invalid parent folder ID exception check');
+            $parentFolderId = null;
+
+            #----------------------------------
+            # Create folder with invalid DAG ID
+            #----------------------------------
+            $dagId = 'invalid';
+            $exceptionCaught = false;
+            try {
+                $project->createFileRepositoryFolder($name, $parentFolderId, $dagId, $roleId);
+            } catch (\Exception $exception) {
+                $exceptionCaught = true;
+            }
+            $this->assertTrue($exceptionCaught, 'Invalid DAG ID exception check');
+            $dagId = null;
+
+            #-----------------------------------
+            # Create folder with invalid role ID
+            #-----------------------------------
+            $roleId = 'invalid';
+            $exceptionCaught = false;
+            try {
+                $project->createFileRepositoryFolder($name, $parentFolderId, $dagId, $roleId);
+            } catch (\Exception $exception) {
+                $exceptionCaught = true;
+            }
+            $this->assertTrue($exceptionCaught, 'Invalid role ID exception check');
+            $roleId = null;
+
+            #---------------------------
+            # Create folder with role ID
+            #---------------------------
+            $name   = 'test2';
+            $roleId = $uniqueRoleName;
+            $roleId = 48;
+            $project->createFileRepositoryFolder($name, $parentFolderId, $dagId, $roleId);
+
+            #-----------------
+            # Create subfolder
+            #-----------------
+            $name = 'subfolder';
+            $parentFolderId = $folderId;
+            $project->createFileRepositoryFolder($name, $parentFolderId, $dagId, $roleId);
+            $list = $project->exportFileRepositoryList('php', null);
+            # $this->assertEquals(1, count($list), 'File repository list check');
         }
     }
     

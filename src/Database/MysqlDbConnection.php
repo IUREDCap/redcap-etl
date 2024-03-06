@@ -67,7 +67,7 @@ class MysqlDbConnection extends DbConnection
             $port = null;
         }
         
-        $flags = null;
+        $flags = 0;
         if ($ssl) {
             $flags = MYSQLI_CLIENT_SSL;
         }
