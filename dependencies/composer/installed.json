@@ -2,17 +2,17 @@
     "packages": [
         {
             "name": "iu-redcap/phpcap",
-            "version": "1.5.0",
-            "version_normalized": "1.5.0.0",
+            "version": "1.5.1",
+            "version_normalized": "1.5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IUREDCap/phpcap.git",
-                "reference": "c8ec96479451ee8f20d178a94ebd48177a02e542"
+                "reference": "86a0e0cb738601f9e926aac9115a421273b5950e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/c8ec96479451ee8f20d178a94ebd48177a02e542",
-                "reference": "c8ec96479451ee8f20d178a94ebd48177a02e542",
+                "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/86a0e0cb738601f9e926aac9115a421273b5950e",
+                "reference": "86a0e0cb738601f9e926aac9115a421273b5950e",
                 "shasum": ""
             },
             "require": {
@@ -22,12 +22,11 @@
             },
             "require-dev": {
                 "erusev/parsedown": "1.7.4",
-                "kzykhys/php-csv-parser": "1.4.1",
-                "phpunit/phpunit": "9.6.10",
-                "smalot/pdfparser": "2.5.0",
-                "squizlabs/php_codesniffer": "3.7.2"
+                "phpunit/phpunit": "11.0.4",
+                "smalot/pdfparser": "2.9.0",
+                "squizlabs/php_codesniffer": "3.9.0"
             },
-            "time": "2024-03-05T17:36:02+00:00",
+            "time": "2024-03-08T16:31:03+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -45,7 +44,7 @@
             ],
             "support": {
                 "issues": "https://github.com/IUREDCap/phpcap/issues",
-                "source": "https://github.com/IUREDCap/phpcap/tree/1.5.0"
+                "source": "https://github.com/IUREDCap/phpcap/tree/1.5.1"
             },
             "install-path": "../iu-redcap/phpcap"
         }

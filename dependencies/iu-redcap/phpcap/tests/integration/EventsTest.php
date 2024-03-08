@@ -74,8 +74,7 @@ class EventsTest extends TestCase
     {
         $result = self::$longitudinalDataProject->exportEvents($format = 'csv');
         
-        $parser = \KzykHys\CsvParser\CsvParser::fromString($result);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvStringToArray($result);
         
         # csv should have 15 rows (1 header row, and 14 data rows)
         $this->assertEquals(15, count($csv), 'Correct number of rows');

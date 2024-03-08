@@ -33,7 +33,7 @@ class RedCapTest extends TestCase
             ->getMock();
         
         $redCapProject = $this->getMockBuilder(__NAMESPACE__.'\RedCapProject')
-            ->setMethods(['__construct'])
+            //->setMethods(['__construct'])
             ->setConstructorArgs(
                 [$apiUrl, $apiToken, $sslVerify = null,
                 $caCertificateFile = null, $errorHandler = null, $connection = null]
