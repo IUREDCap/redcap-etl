@@ -55,8 +55,7 @@ class InstrumentsTest extends TestCase
     {
         $result = self::$basicDemographyProject->exportInstruments($format = 'csv');
         
-        $parser = \KzykHys\CsvParser\CsvParser::fromString($result);
-        $csv = $parser->parse();
+        $csv = CsvUtil::csvStringToArray($result);
         
         $firstDataRow = $csv[1];
         

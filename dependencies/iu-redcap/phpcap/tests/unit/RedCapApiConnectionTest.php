@@ -12,6 +12,7 @@ use IU\PHPCap\PhpCapException;
 class RedCapApiConnectionTest extends TestCase
 {
     private $apiUrl;
+    private $connection;
     
     public function setUp(): void
     {

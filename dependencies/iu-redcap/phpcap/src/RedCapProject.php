@@ -3423,7 +3423,7 @@ class RedCapProject
             // If this is a format other than 'php', look for a JSON error, because
             // all formats return errors as JSON
             $matches = array();
-            $hasMatch = preg_match(self::JSON_RESULT_ERROR_PATTERN, $result, $matches);
+            $hasMatch = preg_match(self::JSON_RESULT_ERROR_PATTERN, $result ?? '', $matches);
             if ($hasMatch === 1) {
                 // note: $matches[0] is the complete string that matched
                 //       $matches[1] is just the error message part
@@ -3729,8 +3729,7 @@ class RedCapProject
     protected function processNonExportResult(&$result)
     {
         $matches = array();
-        #$hasMatch = preg_match('/^[\s]*{"error":[\s]*"(.*)"}[\s]*$/', $result, $matches);
-        $hasMatch = preg_match(self::JSON_RESULT_ERROR_PATTERN, $result, $matches);
+        $hasMatch = preg_match(self::JSON_RESULT_ERROR_PATTERN, $result ?? '', $matches);
         if ($hasMatch === 1) {
             // note: $matches[0] is the complete string that matched
             //       $matches[1] is just the error message part
