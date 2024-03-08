@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba80f39a5d143831b3652397f909319e",
+    "content-hash": "81a2cdfeb8e05bb6e452960f84669a64",
     "packages": [
         {
             "name": "iu-redcap/phpcap",
@@ -1771,7 +1771,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.0",
+        "php": ">=7.2.0",
         "ext-curl": "*",
         "ext-dom": "*",
         "ext-openssl": "*"
