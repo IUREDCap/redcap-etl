@@ -93,7 +93,7 @@ class WorkflowConfig
             # Configuration is in a file (properties is the name/path of the file)
             $this->configurationFile = trim($properties);
 
-            $baseDir = realpath(dirname($this->configurationFile));
+            $this->baseDir = realpath(dirname($this->configurationFile));
 
             if (preg_match('/\.ini$/i', $this->configurationFile) === 1) {
                 #---------------------------
