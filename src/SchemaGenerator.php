@@ -162,7 +162,7 @@ class SchemaGenerator
         #------------------------------------------------
         $analyzer = new RulesSemanticAnalyzer();
         $parsedRules = $analyzer->check($parsedRules, $metadata);
-        
+
         # Log parsing errors, and add them to the errors string
         foreach ($parsedRules->getRules() as $rule) {
             foreach ($rule->getErrors() as $error) {

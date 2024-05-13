@@ -102,11 +102,15 @@ class Workflow1Test extends TestCase
             'ssl_verify'    => 1,
             'db_connection' => 'CSV:../output/workflow1/',
             'log_file'      => '../logs/workflow1.log',
-            'print_logging' => false,
             'transform_rules_source' => 3,
+
             'batch_size'    => 10,
+            'create_lookup_table' => 1,
+
+            'print_logging' => false,
 
             'basic-demography' => [
+                'create_lookup_table' => 1,
                 'redcap_api_url'        => $properties['basic-demography']['redcap_api_url'],
                 'data_source_api_token' => $properties['basic-demography']['data_source_api_token']
             ],
@@ -123,14 +127,14 @@ class Workflow1Test extends TestCase
             ]
         ];
 
+        # print_r($configurationArray);
+
         try {
             $app = 'array_test';
             self::$logger = new Logger($app);
 
             $baseDir = __DIR__;
             $redCapEtl = new RedCapEtl(self::$logger, $configurationArray, null, $baseDir);
-
-            $workflowConfig = $redCapEtl->getWorkflowConfig();
 
             $this->assertNotNull($redCapEtl, 'redCapEtl not null');
 
