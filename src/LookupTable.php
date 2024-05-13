@@ -204,7 +204,7 @@ class LookupTable extends Table
                     );
 
                     // Add the row, using no foreign key or suffix
-                    $this->createRow($data, '', '', $this->rowsType);
+                    $mergedLookup->createRow($data, '', '', $this->rowsType);
                 }
                 $mergedLookup->addLookupField($table, $field);
             }
