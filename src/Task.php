@@ -324,7 +324,7 @@ class Task
         # If auto-generated rules were specified, generate the rules,
         # otherwise, get the from the task configuration
         #-----------------------------------------------------------------------------
-        if ($this->taskConfig->getTransformRulesSource() === TaskConfig::TRANSFORM_RULES_DEFAULT) {
+        if ($this->taskConfig->getTransformRulesSource() == TaskConfig::TRANSFORM_RULES_DEFAULT) {
             $rulesText = $this->autoGenerateRules();
         } else {
             $rulesText = $this->taskConfig->getTransformationRules();
