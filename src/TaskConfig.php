@@ -359,7 +359,8 @@ class TaskConfig
         #---------------------------------------------------------------
         if (array_key_exists(ConfigProperties::SSL_VERIFY, $this->properties)) {
             $sslVerify = $this->properties[ConfigProperties::SSL_VERIFY];
-            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0' || $sslVerify === 0) {
+            if (strcasecmp($sslVerify, 'false') === 0 || $sslVerify === '0'
+                    || $sslVerify === 0 || $sslVerify === false) {
                 $this->sslVerify = false;
             } elseif (!isset($sslVerify) || $sslVerify === '' || $sslVerify === '1'
                 || strcasecmp($sslVerify, 'true') === 0
@@ -391,7 +392,8 @@ class TaskConfig
         if (array_key_exists(ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK, $this->properties)) {
             $countCheck = $this->properties[ConfigProperties::EXTRACTED_RECORD_COUNT_CHECK];
 
-            if (strcasecmp($countCheck, 'false') === 0 || $countCheck === '0' || $countCheck === '') {
+            if (strcasecmp($countCheck, 'false') === 0 || $countCheck === '0'
+                    || $countCheck === '' || $countCheck === false) {
                 $this->extractedRecordCountCheck = false;
             } elseif (!isset($countCheck) || $countCheck === true
                 || strcasecmp($countCheck, 'true') === 0
@@ -522,14 +524,15 @@ class TaskConfig
         $this->createLookupTable = self::DEFAULT_CREATE_LOOKUP_TABLE;
         if (array_key_exists(ConfigProperties::CREATE_LOOKUP_TABLE, $this->properties)) {
             $createLookup = $this->properties[ConfigProperties::CREATE_LOOKUP_TABLE];
-            if (strcasecmp($createLookup, 'false') === 0 || $createLookup === '0' || $createLookup === 0) {
+            if (!isset($createLookup) || strcasecmp($createLookup, 'false') === 0 || $createLookup === '0'
+                    || $createLookup === '' || $createLookup === 0 || $createLookup === false) {
                 $this->createLookupTable = false;
-            } elseif (!isset($createLookup) || $createLookup === '' || $createLookup === '1'
-                || strcasecmp($createLookup, 'true') === 0
-                || $createLookup === 1 || $createLookup === true) {
+            } elseif ($createLookup === '1' || strcasecmp($createLookup, 'true') === 0
+                    || $createLookup === 1 || $createLookup === true) {
                 $this->createLookupTable = true;
             } else {
-                $message = 'Unrecognized value "'.$createLookup.'" for '.ConfigProperties::CREATE_LOOKUP_TABLE
+                $message = 'Unrecognized value "'.$createLookup.'" with type "' . gettype($createLookup)
+                    . '" for '.ConfigProperties::CREATE_LOOKUP_TABLE
                     .' property; a true or false value should be specified.';
                 throw new EtlException($message, EtlException::INPUT_ERROR);
             }

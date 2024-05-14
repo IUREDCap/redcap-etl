@@ -52,6 +52,11 @@ class Workflow1Test extends TestCase
         $expectedFile = self::DATA_DIR . 'redcap_project_info.csv';
         $actualFile = self::OUTPUT_DIR . 'redcap_project_info.csv';
         $this->assertFileEquals($expectedFile, $actualFile, 'REDCap project info file content check');
+
+        # Check that the cardiovascular file has the expected contents
+        $expectedFile = self::DATA_DIR . 'cardiovascular.csv';
+        $actualFile = self::OUTPUT_DIR . 'cardiovascular.csv';
+        $this->assertFileEquals($expectedFile, $actualFile, 'REDCap cardiovascular file content check');
     }
 
     public function testConfigAndSomeMethods()
