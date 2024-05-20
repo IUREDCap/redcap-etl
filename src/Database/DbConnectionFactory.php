@@ -60,6 +60,13 @@ class DbConnectionFactory
                 break;
 
             case DbConnectionFactory::DBTYPE_POSTGRESQL:
+                if (!extension_loaded('pgsql') || !extension_loaded('pdo_pgsql')) {
+                    $message = 'Attempt to use a PostgreSQL database without required PHP extentions'
+                        . ' "pgsql" and/or "pdo_pgsql". These PHP extensions will need to be installed'
+                        . ' before a PostgreSQL database can be used with REDCap-ETL';
+                    throw new \Exception($message);
+                }
+
                 $dbcon = new PostgreSqlDbConnection(
                     $dbString,
                     $ssl,
@@ -71,6 +78,13 @@ class DbConnectionFactory
                 break;
 
             case DbConnectionFactory::DBTYPE_SQLITE:
+                if (!extension_loaded('sqlite3') || !extension_loaded('pdo_sqlite')) {
+                    $message = 'Attempt to use a SQLite database without required PHP extentions'
+                        . ' "sqlite3" and/or "pdo_sqlite". These PHP extensions will need to be installed'
+                        . ' before a SQLite database can be used with REDCap-ETL';
+                    throw new \Exception($message);
+                }
+
                 $dbcon = new SqliteDbConnection(
                     $dbString,
                     $ssl,
@@ -93,6 +107,12 @@ class DbConnectionFactory
                 break;
 
             case DbConnectionFactory::DBTYPE_SQLSERVER:
+                if (!extension_loaded('sqlsrv') || !extension_loaded('pdo_sqlsrv')) {
+                    $message = 'Attempt to use a SQL Server database without required PHP extentions'
+                        . ' "sqlsrv" and/or "pdo_sqlsrv". These PHP extensions will need to be installed'
+                        . ' before a SQL Server database can be used with REDCap-ETL';
+                    throw new \Exception($message);
+                }
                 $dbcon = new SqlServerDbConnection(
                     $dbString,
                     $ssl,
