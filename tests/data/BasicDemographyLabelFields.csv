@@ -1,4 +1,4 @@
-"basic_demography_id","redcap_data_source","record_id","first_name","last_name","address","phone","email","birthdate","ethnicity","ethnicity_label","race___0","race___0_label","race___1","race___1_label","race___2","race___2_label","race___3","race___3_label","race___4","race___4_label","race___5","race___5_label","sex","sex_label","height","weight","bmi","comments"
+"basic_demography_id","redcap_data_source","record_id","first_name","last_name","address","phone","email","birthdate","ethnicity","ethnicity_label","patient_race___0","patient_race___0_label","patient_race___1","patient_race___1_label","patient_race___2","patient_race___2_label","patient_race___3","patient_race___3_label","patient_race___4","patient_race___4_label","patient_race___5","patient_race___5_label","sex","sex_label","height","weight","bmi","comments"
 1,1,"1001","Katherine","Huels","316 Goodwin Lights Suite 463
 Port Marietta, NV 35323-5627","(759) 257-3524","katherine.huels@mailinator.com","1955-05-07",0,"Hispanic or Latino",0,"",0,"",0,"",0,"",1,"White",0,"",0,"Female",174,57,18.8,""
 2,1,"1002","Sienna","Howe","2345 Jaquelin Ways

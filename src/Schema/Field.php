@@ -253,6 +253,11 @@ class Field
         $this->name = $name;
     }
 
+    public function getDbName()
+    {
+        return $this->dbName;
+    }
+
     /**
      * Indicates if this field is a label for a REDCAp mutliple choice (radio, checkbox, dropdown) field.
      * If this is a label field, its redcapType should have "_label" appended to it.

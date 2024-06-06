@@ -359,8 +359,8 @@ class SchemaGenerator
 
                                 $valueToLabelMap = $this->lookupChoices[$originalFieldName];
 
-                                $labelField->dbName     = $labelFieldName;
-                                $labelField->type       = $this->taskConfig->getGeneratedLabelType()->getType();
+                                $labelField->dbName = $field->getDbName() . $labelFieldSuffix;
+                                $labelField->type   = $this->taskConfig->getGeneratedLabelType()->getType();
 
                                 # OLD:
                                 # $labelField->size       = $this->taskConfig->getGeneratedLabelType()->getSize();

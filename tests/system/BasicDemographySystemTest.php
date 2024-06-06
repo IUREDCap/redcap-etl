@@ -77,12 +77,12 @@ class BasicDemographySystemTest extends TestCase
             'email',
             'birthdate',
             'ethnicity',
-            'race___0',
-            'race___1',
-            'race___2',
-            'race___3',
-            'race___4',
-            'race___5',
+            'patient_race___0',
+            'patient_race___1',
+            'patient_race___2',
+            'patient_race___3',
+            'patient_race___4',
+            'patient_race___5',
             'sex',
             'height',
             'weight',
@@ -119,12 +119,12 @@ class BasicDemographySystemTest extends TestCase
             'email'               => "katherine.huels@mailinator.com",
             'birthdate'           => "1955-05-07",
             'ethnicity'           => '0',
-            'race___0'            => '0',
-            'race___1'            => '0',
-            'race___2'            => '0',
-            'race___3'            => '0',
-            'race___4'            => '1',
-            'race___5'            => '0',
+            'patient_race___0'    => '0',
+            'patient_race___1'    => '0',
+            'patient_race___2'    => '0',
+            'patient_race___3'    => '0',
+            'patient_race___4'    => '1',
+            'patient_race___5'    => '0',
             'sex'                 => '0',
             'height'              => '174.0',
             'weight'              => '57.0',
@@ -152,12 +152,12 @@ class BasicDemographySystemTest extends TestCase
             'email'               => "ella.kunze@mailinator.com",
             'birthdate'           => "1988-01-19",
             'ethnicity'           => '1',
-            'race___0'            => '0',
-            'race___1'            => '0',
-            'race___2'            => '0',
-            'race___3'            => '0',
-            'race___4'            => '1',
-            'race___5'            => '0',
+            'patient_race___0'    => '0',
+            'patient_race___1'    => '0',
+            'patient_race___2'    => '0',
+            'patient_race___3'    => '0',
+            'patient_race___4'    => '1',
+            'patient_race___5'    => '0',
             'sex'                 => '0',
             'height'              => '172',
             'weight'              => '64',
@@ -207,12 +207,12 @@ class BasicDemographySystemTest extends TestCase
         # First row check
         $expectedFirstRow['sex']       = 'Female';
         $expectedFirstRow['ethnicity'] = 'Hispanic or Latino';
-        $expectedFirstRow['race___0']  = '0';
-        $expectedFirstRow['race___1']  = '0';
-        $expectedFirstRow['race___2']  = '0';
-        $expectedFirstRow['race___3']  = '0';
-        $expectedFirstRow['race___4']  = 'White';
-        $expectedFirstRow['race___5']  = '0';
+        $expectedFirstRow['patient_race___0']  = '0';
+        $expectedFirstRow['patient_race___1']  = '0';
+        $expectedFirstRow['patient_race___2']  = '0';
+        $expectedFirstRow['patient_race___3']  = '0';
+        $expectedFirstRow['patient_race___4']  = 'White';
+        $expectedFirstRow['patient_race___5']  = '0';
 
         $firstRow = $data[0];
         # rtrim phone because it has type char, and some databases right pad with blanks
@@ -223,12 +223,12 @@ class BasicDemographySystemTest extends TestCase
         # Last row check
         $expectedLastRow['sex']       = 'Female';
         $expectedLastRow['ethnicity'] = 'NOT Hispanic or Latino';
-        $expectedLastRow['race___0']  = '0';
-        $expectedLastRow['race___1']  = '0';
-        $expectedLastRow['race___2']  = '0';
-        $expectedLastRow['race___3']  = '0';
-        $expectedLastRow['race___4']  = 'White';
-        $expectedLastRow['race___5']  = '0';
+        $expectedLastRow['patient_race___0']  = '0';
+        $expectedLastRow['patient_race___1']  = '0';
+        $expectedLastRow['patient_race___2']  = '0';
+        $expectedLastRow['patient_race___3']  = '0';
+        $expectedLastRow['patient_race___4']  = 'White';
+        $expectedLastRow['patient_race___5']  = '0';
 
         $lastRow = $data[count($data) - 1];
         # rtrim phone because it has type char, and some databases right pad with blanks
