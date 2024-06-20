@@ -638,17 +638,17 @@ class SchemaGenerator
             foreach ($this->lookupChoices[$lookupFieldName] as $value => $label) {
                 # It looks like REDCap uses the lower-case version of the
                 # value for making the field name
-                $value = strtolower($value);
+                $lowerCaseValue = strtolower($value);
                 // Form the field names for this value
-                $checkBoxFieldName = $fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value;
+                $checkBoxFieldName = $fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$lowerCaseValue;
                 $checkBoxDbFieldName = '';
                 if (!empty($dbFieldName)) {
-                    $checkBoxDbFieldName = $dbFieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value;
+                    $checkBoxDbFieldName = $dbFieldName.RedCapEtl::CHECKBOX_SEPARATOR.$lowerCaseValue;
                 }
 
                 $field = new Field($checkBoxFieldName, FieldType::INT, null, $checkBoxDbFieldName, $redcapFieldType);
                 $field->checkboxLabel = $label;
-                $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$value] = $field;
+                $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$lowerCaseValue] = $field;
             }
         } else {  # Non-checkbox field
             // Process a single field

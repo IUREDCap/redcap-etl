@@ -135,8 +135,31 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
     {
         $results = array();
 
+        #-------------------------------------------------------------------
+        # Get the missing data codes, if any, from the REDCap project info.
+        # These need to be added as multiple-choice options.
+        #-------------------------------------------------------------------
+        $missingDataCodes = [];
+        $projectInfo = $this->getProjectInfo();
+
+        if (array_key_exists('missing_data_codes', $projectInfo)) {
+            $codesString = trim($projectInfo['missing_data_codes']);
+            if (!empty($codesString)) {
+                $codes = explode("|", $codesString);
+                if (count($codes) > 0) {
+                    foreach ($codes as $code) {
+                        $codeMap = explode(",", $code);
+                        if (count($codeMap) === 2) {
+                            $value = trim($codeMap[0]);
+                            $label = trim($codeMap[1]);
+                            $missingDataCodes[$value] = $label;
+                        }
+                    }
+                }
+            }
+        }
+
         // Get all metadata
-        $error = 'Unable to retrieve metadata while getting lookup choices';
         $fields = $this->getMetadata();
 
         // Foreach (user-defined) field
@@ -146,13 +169,13 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
                 case 'radio':
                 case 'dropdown':
                 case 'checkbox':
-                      // Get the choices
-                      $choicesString = $field['select_choices_or_calculations'];
-                      $choices = array_map('trim', explode("|", $choicesString));
+                    // Get the choices
+                    $choicesString = $field['select_choices_or_calculations'];
+                    $choices = array_map('trim', explode("|", $choicesString));
 
-                      $fieldResults = array();
+                    $fieldResults = array();
 
-                      // Foreach choice
+                    // Foreach choice
                     foreach ($choices as $choice) {
                         if ($choice === "") {
                              continue;
@@ -171,8 +194,15 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
                         $fieldResults[$category] = $label;
                     }
 
-                      // Add this field to the overall results
-                      $results[$field['field_name']] = $fieldResults;
+                    #-------------------------------------------
+                    # Add in missing data codes, if any
+                    #-------------------------------------------
+                    foreach ($missingDataCodes as $value => $label) {
+                        $fieldResults[$value] = $label;
+                    }
+
+                    // Add this field to the overall results
+                    $results[$field['field_name']] = $fieldResults;
 
                     break;
 

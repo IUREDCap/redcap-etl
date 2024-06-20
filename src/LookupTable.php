@@ -91,8 +91,9 @@ class LookupTable extends Table
 
         if (!(array_key_exists($tableName, $this->map) && array_key_exists($dbFieldName, $this->map[$tableName]))) {
             foreach ($this->lookupChoices[$redcapFieldName] as $value => $label) {
-                # REDCap apparently converts all field names to lower-case
-                $value = strtolower($value);
+                # REDCap apparently converts all checkbox field names based on value to lower-case
+                $lowerCaseValue = strtolower($value);
+
                 #--------------------------------------------------------
                 # Set up the table/fieldcategory/label for this choice
                 # The primary key will be set automatically
@@ -118,7 +119,8 @@ class LookupTable extends Table
                     $this->map[$tableName][$dbFieldName] = array();
                 }
                 
-                $this->map[$tableName][$dbFieldName][$value] = $label;
+                # Use the lower-case value for the map
+                $this->map[$tableName][$dbFieldName][$lowerCaseValue] = $label;
             }
         }
     }
@@ -143,7 +145,7 @@ class LookupTable extends Table
             if (is_string($value)) {
                 $value = trim($value);
                 if ($value !== '') {
-                    $value = strtolower($value);
+                    $value = strtolower($value); # Map uses lower-case values
                     $label = $this->map[$tableName][$fieldName][$value];
                 }
             } else {
