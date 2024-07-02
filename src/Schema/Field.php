@@ -32,7 +32,7 @@ class Field
     public $dbName = '';
 
     /** @var mixed the lookup field name (string) if this field uses the lookup table,
-             i.e., it is a multiple-choice field, and as a results will
+             i.e., it is a multiple-choice field, and as a result will
              have a value to label mapping entry in the lookup table. And false, if
              this field is not a multiple-choice field.
     */

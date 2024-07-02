@@ -373,6 +373,17 @@ class SchemaGenerator
                                 $table->addField($labelField);
                             }
 
+                            # print "\n";
+                            # print "TABLE NAME: {$table->getName()}\n";
+                            # print "ORIGINAL FIELD NAME: {$originalFieldName}\n";
+                            # print "DB FIELD NAME: {$rule->dbFieldName}\n";
+
+                            #if (RowsType::hasSuffixes($table->rowsType)) {
+                            #    $dbLookupFieldName = $fname;
+                            #} else {
+                            #    $dbLookupFieldName = $rule->dbFieldName;
+                            #}
+
                             $this->lookupTable->addLookupField(
                                 $table->getName(),
                                 $originalFieldName,
@@ -546,12 +557,27 @@ class SchemaGenerator
             if (in_array(RowsType::BY_EVENTS_SUFFIXES, $rowsType)) {
                 $hasEvent      = true;
                 $hasSuffixes   = true;
+            } elseif (in_array(RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES, $rowsType)) {
+                $hasEvent      = true;
+                $hasInstrument = true;
+                $hasInstance   = true;
+                $hasSuffixes   = true;
+            } elseif (in_array(RowsType::BY_REPEATING_EVENTS_SUFFIXES, $rowsType)) {
+                $hasEvent      = true;
+                $hasInstance   = true;
+                $hasSuffixes   = true;
             }
         } else {
             # Classic (non-longitudinal) study
             if (in_array(RowsType::BY_REPEATING_INSTRUMENTS, $rowsType)) {
                 $hasInstrument = true;
                 $hasInstance   = true;
+            }
+
+            if (in_array(RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES, $rowsType)) {
+                $hasInstrument = true;
+                $hasInstance   = true;
+                $hasSuffixes   = true;
             }
         }
 
@@ -654,6 +680,7 @@ class SchemaGenerator
             // Process a single field
             $redcapFieldType = $this->dataProject->getFieldType($fieldName);
 
+            # print "NEW FIELD: {$fieldName} {$fieldType} {$fieldSize} {$dbFieldName} {$redcapFieldType}\n";
             $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName, $redcapFieldType);
 
             if (array_key_exists($fieldName, $this->lookupChoices)) {

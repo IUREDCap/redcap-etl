@@ -413,7 +413,8 @@ class Table
         # there is no value for redcap_event_name, redcap_repeat_instance
         # or redcap_repeat_instrument
         #---------------------------------------------------------------
-        if ($rowType === RowsType::BY_REPEATING_INSTRUMENTS) {
+        if ($rowType === RowsType::BY_REPEATING_INSTRUMENTS
+                || $rowType === RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES) {
             if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 return false;
             } elseif (array_key_exists(RedCapEtl::COLUMN_EVENT, $data) &&
@@ -424,7 +425,7 @@ class Table
                         return false;
                 }
             }
-        } elseif ($rowType === RowsType::BY_EVENTS) {
+        } elseif ($rowType === RowsType::BY_EVENTS || $rowType === RowsType::BY_EVENTS_SUFFIXES) {
             #---------------------------------------------------------------
             # If a row is being created for an EVENT table, don't include
             # the data if it contains a value for redcap_repeat_instrument/
@@ -441,7 +442,7 @@ class Table
                     return false;
                 }
             }
-        } elseif ($rowType === RowsType::BY_REPEATING_EVENTS) {
+        } elseif ($rowType === RowsType::BY_REPEATING_EVENTS || $rowType === RowsType::BY_REPEATING_EVENTS_SUFFIXES) {
             #---------------------------------------------------------------
             # If a row is being created for a REPEATING_EVENTS table, only
             # include data if redcap_event_name and redcap_repeat_instance
@@ -557,6 +558,7 @@ class Table
                     }
                 }
 
+                # print "\n";
                 # print "TABLE: ".($this->name)." \n";
                 # print "FIELD: ".($field->name)."\n";
     
@@ -569,6 +571,7 @@ class Table
                     $value = $data[$variableName];
                     # print "\nAdded value {$value} to field {$field->dbName}\n";
                     if ($field->isLabel) {
+                        # print "    IS LABEL\n";
                         if ($isCheckbox) {
                             if ($value == 1) {
                                 $labelValue = $field->checkboxLabel;
@@ -620,6 +623,21 @@ class Table
 
 
         if ($dataFound) {
+            #if ($this->getName() == 'weight_all_suffixes' && array_key_exists('record_id', $data)
+            #    && $data['record_id'] == 1001 && !empty($suffix)) {
+            #    print "\n------------------------------------------------------------------------------------\n";
+            #    print "TABLE: {$this->getName()}\n";
+            #    print "record_id: {$data['record_id']}\n";
+            #    # print "DATA (row type = {$rowType}, suffix = {$suffix}):\n";
+            #    print "DATA (row type = {$rowType}):\n";
+            #    print("SUFFIX: {$suffix}\n");
+            #    print "{$data['redcap_event_name']} - {$data['redcap_repeat_instrument']} - "
+            #        ." {$data['redcap_repeat_instance']}\n";
+            #    # print_r($data);
+            #    print "*** DATA FOUND!\n";
+            #    print_r($data);
+            #}
+
             // Get and set primary key
             if (empty($dbId)) {
                 $primaryKeyValue = $this->nextPrimaryKey();
@@ -643,9 +661,12 @@ class Table
     {
         // If this table is BY_SUFFIXES and doesn't yet have its possible
         // suffixes set
-        if ((in_array(RowsType::BY_SUFFIXES, $this->rowsType, true) ||
-            in_array(RowsType::BY_EVENTS_SUFFIXES, $this->rowsType, true)) &&
-            (empty($this->possibleSuffixes))) {
+        if ((in_array(RowsType::BY_SUFFIXES, $this->rowsType, true)
+            || in_array(RowsType::BY_EVENTS_SUFFIXES, $this->rowsType, true)
+            || in_array(RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES, $this->rowsType, true)
+            || in_array(RowsType::BY_REPEATING_EVENTS_SUFFIXES, $this->rowsType, true)
+            )
+            && (empty($this->possibleSuffixes))) {
             // If there are no parent suffixes, use an empty string
             $parentSuffixes = $this->parent->getPossibleSuffixes();
             if (empty($parentSuffixes)) {

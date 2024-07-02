@@ -67,6 +67,8 @@ class RulesParser
             $lines = preg_split('/\r\n|\r|\n/', $rulesString);
         }
         
+        $lastTableRule = null;
+
         // Process line by line
         $lineNumber = 1;
         $tableRulesCount = 0;
@@ -85,10 +87,11 @@ class RulesParser
                 switch ($ruleType) {
                     case self::ELEMENT_TABLE:
                         $rule = $this->parseTableRule($values, $line, $lineNumber);
+                        $lastTableRule = $rule;
                         $tableRulesCount++;
                         break;
                     case self::ELEMENT_FIELD:
-                        $rule = $this->parseFieldRule($values, $line, $lineNumber);
+                        $rule = $this->parseFieldRule($values, $lastTableRule, $line, $lineNumber);
                         if ($tableRulesCount === 0) {
                             $rule->addError('Field rule specified before any Table rule on line '
                                 . $lineNumber . ': "'.$line.'"');
@@ -137,13 +140,20 @@ class RulesParser
                 $error = 'Missing table rows type on line '.$lineNumber.': "'.$line.'"';
                 $tableRule->addError($error);
             } else {
-                list($rowsType, $suffixes) = $this->parseRowsDef($tableRule->tableRowsType);
-                if ($rowsType === false) {
-                    $tableRule->addError('Unrecognized rows type on line '.$lineNumber.': '.$line);
-                } else {
-                    # No errors found
-                    $tableRule->rowsType = $rowsType;
-                    $tableRule->suffixes = $suffixes;
+                try {
+                    list($rowsType, $suffixes) = $this->parseRowsDef($tableRule->tableRowsType);
+                    if ($rowsType === false) {
+                        $tableRule->addError('Unrecognized rows type on line '.$lineNumber.': '.$line);
+                    } else {
+                        # No errors found
+                        $tableRule->rowsType = $rowsType;
+                        $tableRule->suffixes = $suffixes;
+                        # print "\n==============================================\nROWS TYPE AND SUFFIXES:\n";
+                        # print_r($rowsType);
+                        # print_r($suffixes);
+                    }
+                } catch (\Exception $exception) {
+                    $tableRule->addError($exception->getMessage() . ' on line '.$lineNumber.': '.$line);
                 }
             }
         }
@@ -157,13 +167,14 @@ class RulesParser
      *
      * @param array $values array of string values from
      *     the line that has the rule to be parsed.
+     * @param TableRule $tableRule the table rule for this field
      * @param string $line the original line containing the rule; used
      *     for error messages.
      * @param int $lineNumber the line number of the rule in the original
      *     transformation rules text.
      * @return FieldRule
      */
-    private function parseFieldRule($values, $line, $lineNumber)
+    private function parseFieldRule($values, $tableRule, $line, $lineNumber)
     {
         $fieldRule = new FieldRule($line, $lineNumber);
            
@@ -216,6 +227,17 @@ class RulesParser
         if (array_key_exists(self::FIELD_DB_NAME_POS, $values)) {
             # it's OK if this ends up being empty; it's optional
             $fieldRule->dbFieldName = $this->cleanFieldName($values[self::FIELD_DB_NAME_POS]);
+        } elseif ($tableRule->hasSuffixes()) {
+            # If this is a suffixes table and the database field name was not explicitly defined,
+            # remove suffix from the database field name
+            $dbFieldName = $fieldRule->redCapFieldName;
+            foreach ($tableRule->getSuffixes() as $suffix) {
+                $matches = array();
+                if (preg_match("/(.*){$suffix}$/", $dbFieldName, $matches) === 1) {
+                    $dbFieldName = $matches[1];
+                }
+            }
+            $fieldRule->dbFieldName = $dbFieldName;
         }
 
         return $fieldRule;
@@ -228,19 +250,39 @@ class RulesParser
 
         $rowsType = array();
         $suffixes = array();
+        $firstSuffixes = array();
         $rowsTypeSuffixes = array();
 
         $rowsEncode = explode(self::ROWSTYPE_SEPARATOR, $rowsDef);
+        $isFirstRowsType = true;
+
         foreach ($rowsEncode as $rowType) {
+            $suffixes = array();
+
             $rowsTypeSuffixes = $this->assignRowsType($rowType);
             array_push($rowsType, $rowsTypeSuffixes[0]);
+
             foreach ($rowsTypeSuffixes[1] as $rowsTypeSuffix) {
                 array_push($suffixes, $rowsTypeSuffix);
             }
+
+            if ($isFirstRowsType) {
+                $firstSuffixes = $suffixes;
+            } else {
+                if ($suffixes != $firstSuffixes) {
+                    throw new \Exception('Suffixes for rows types do not match');
+                }
+            }
+
+            $isFirstRowsType = false;
         }
-        return (array($rowsType,$suffixes));
+        return (array($rowsType,$firstSuffixes));
     }
 
+    /**
+     * Returns an array where the first element contains the rows type and the second element contains
+     * an array of suffixes.
+     */
     private function assignRowsType($rowType)
     {
         $suffixes = array();
@@ -263,11 +305,31 @@ class RulesParser
                 break;
 
             case self::REPEATING_INSTRUMENTS:
-                $rowsType = RowsType::BY_REPEATING_INSTRUMENTS;
+                if (empty($suffixesDef)) {
+                    $suffixes = [''];
+                } else {
+                    $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixesDef);
+                }
+
+                if (empty($suffixes[0])) {
+                    $rowsType = RowsType::BY_REPEATING_INSTRUMENTS;
+                } else {
+                    $rowsType = RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES;
+                }
                 break;
 
             case self::REPEATING_EVENTS:
-                $rowsType = RowsType::BY_REPEATING_EVENTS;
+                if (empty($suffixesDef)) {
+                    $suffixes = [''];
+                } else {
+                    $suffixes = explode(self::SUFFIXES_SEPARATOR, $suffixesDef);
+                }
+
+                if (empty($suffixes[0])) {
+                    $rowsType = RowsType::BY_REPEATING_EVENTS;
+                } else {
+                    $rowsType = RowsType::BY_REPEATING_EVENTS_SUFFIXES;
+                }
                 break;
 
             case self::SUFFIXES:

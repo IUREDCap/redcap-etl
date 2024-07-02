@@ -19,6 +19,9 @@ class RowsType
     const BY_REPEATING_INSTRUMENTS   = 4;
     const BY_REPEATING_EVENTS        = 5;
 
+    const BY_REPEATING_INSTRUMENTS_SUFFIXES = 6;
+    const BY_REPEATING_EVENTS_SUFFIXES      = 7;
+
     public static function isValid($rowsType)
     {
         $valid = false;
@@ -30,6 +33,8 @@ class RowsType
             case RowsType::BY_EVENTS_SUFFIXES:
             case RowsType::BY_REPEATING_INSTRUMENTS:
             case RowsType::BY_REPEATING_EVENTS:
+            case RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES:
+            case RowsType::BY_REPEATING_EVENTS_SUFFIXES:
                 $valid = true;
                 break;
 
@@ -52,6 +57,8 @@ class RowsType
         switch ($rowsType) {
             case in_array(RowsType::BY_SUFFIXES, $rowsType, true):
             case in_array(RowsType::BY_EVENTS_SUFFIXES, $rowsType, true):
+            case in_array(RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES, $rowsType, true):
+            case in_array(RowsType::BY_REPEATING_EVENTS_SUFFIXES, $rowsType, true):
                 $valid = true;
                 break;
 

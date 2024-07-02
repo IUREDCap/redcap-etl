@@ -669,6 +669,8 @@ class Task
 
                 // If events and suffix
                 case RowsType::BY_EVENTS_SUFFIXES:
+                case RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES:
+                case RowsType::BY_REPEATING_EVENTS_SUFFIXES:
                     // Foreach Record (i.e., foreach event)
                     foreach ($records as $record) {
                         // Foreach Suffix

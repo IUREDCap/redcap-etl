@@ -48,4 +48,14 @@ class TableRule extends Rule
     {
         return $this->tableName;
     }
+
+    public function getSuffixes()
+    {
+        return $this->suffixes;
+    }
+
+    public function hasSuffixes()
+    {
+        return (!empty($this->suffixes));
+    }
 }
