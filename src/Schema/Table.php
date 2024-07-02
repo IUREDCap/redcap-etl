@@ -405,16 +405,16 @@ class Table
         $ignoreEmptyIncompleteForms = false,
         $dbId = null
     ) {
-        #---------------------------------------------------------------
-        # If a row is being created for a repeating instrument, don't
-        # include the data if it doesn't contain a repeating instrument
-        # field. For longitudinal studies (where redcap_event_name and
-        # redcap_repeat_instrument fields exist), don't include data if
-        # there is no value for redcap_event_name, redcap_repeat_instance
-        # or redcap_repeat_instrument
-        #---------------------------------------------------------------
         if ($rowType === RowsType::BY_REPEATING_INSTRUMENTS
                 || $rowType === RowsType::BY_REPEATING_INSTRUMENTS_SUFFIXES) {
+            #---------------------------------------------------------------
+            # If a row is being created for a repeating instrument, don't
+            # include the data if it doesn't contain a repeating instrument
+            # field. For longitudinal studies (where redcap_event_name and
+            # redcap_repeat_instrument fields exist), don't include data if
+            # there is no value for redcap_event_name, redcap_repeat_instance
+            # or redcap_repeat_instrument
+            #---------------------------------------------------------------
             if (!array_key_exists(RedCapEtl::COLUMN_REPEATING_INSTRUMENT, $data)) {
                 return false;
             } elseif (array_key_exists(RedCapEtl::COLUMN_EVENT, $data) &&
@@ -562,7 +562,6 @@ class Table
                 # print "TABLE: ".($this->name)." \n";
                 # print "FIELD: ".($field->name)."\n";
     
-
                 // Add field and value to row and
                 // keep track of whether any data is found
                 $row->data[$field->dbName] = '';
@@ -588,6 +587,15 @@ class Table
                         $row->data[$field->dbName] = $labelValue;
                     } else {
                         $row->data[$field->dbName] = $value;
+                    }
+                }
+
+                # DEBUG
+                if ($field->getName() === 'dropdown') {
+                    # print "\n\n{$field->toString()}\n\n";
+                    # print_r($field->valueToLabelMap);
+                    if ($field->isLabel) {
+                        # print "    IS LABEL\n";
                     }
                 }
 
