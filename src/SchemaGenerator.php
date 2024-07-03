@@ -122,10 +122,6 @@ class SchemaGenerator
         #----------------------------------------------------------------
         $this->lookupChoices = $this->dataProject->getLookupChoices();
 
-        # print "\n\n";
-        # print_r($this->lookupChoices);
-        # print "\n\n";
-
         $keyType = $this->taskConfig->getGeneratedKeyType();
         $lookupTableName = $this->taskConfig->getLookupTableName();
         $this->lookupTable = new LookupTable($this->lookupChoices, $keyType, $lookupTableName);
@@ -228,7 +224,6 @@ class SchemaGenerator
                 }
                 
                 $fields = $this->generateFields($rule, $table);
-
 
                 # For a single checkbox, one field will be generated for each option.
                 # These generated fields will have type INT and an original field
@@ -362,8 +357,6 @@ class SchemaGenerator
                                 $labelFieldName = $field->getName() . $labelFieldSuffix;
 
                                 $valueToLabelMap = $this->lookupChoices[$originalFieldName];
-                                # print "map for {$originalFieldName}:\n";
-                                # print_r($valueToLabelMap);
 
                                 $labelField->dbName = $field->getDbName() . $labelFieldSuffix;
                                 $labelField->type   = $this->taskConfig->getGeneratedLabelType()->getType();
@@ -378,17 +371,6 @@ class SchemaGenerator
 
                                 $table->addField($labelField);
                             }
-
-                            # print "\n";
-                            # print "TABLE NAME: {$table->getName()}\n";
-                            # print "ORIGINAL FIELD NAME: {$originalFieldName}\n";
-                            # print "DB FIELD NAME: {$rule->dbFieldName}\n";
-
-                            #if (RowsType::hasSuffixes($table->rowsType)) {
-                            #    $dbLookupFieldName = $fname;
-                            #} else {
-                            #    $dbLookupFieldName = $rule->dbFieldName;
-                            #}
 
                             $this->lookupTable->addLookupField(
                                 $table->getName(),
@@ -648,8 +630,6 @@ class SchemaGenerator
         $fieldSize   = $rule->dbFieldSize;
         $dbFieldName = $rule->dbFieldName;
 
-        # print "FIELD INFO: {$fieldName} {$fieldType} {$fieldSize} {$dbFieldName}\n";
-
         $fields = array();
                 
         # For a field in a Suffix table, append a valid suffix to
@@ -664,15 +644,16 @@ class SchemaGenerator
             $lookupFieldName = $fieldName;
         }
 
+        $redcapFieldType = $this->dataProject->getFieldType($lookupFieldName);
+
         // If this is a checkbox field
         if ($fieldType === FieldType::CHECKBOX) {
-            $redcapFieldType = $this->dataProject->getFieldType($lookupFieldName);
-            
             # Process each value of the checkbox
             foreach ($this->lookupChoices[$lookupFieldName] as $value => $label) {
                 # It looks like REDCap uses the lower-case version of the
                 # value for making the field name
                 $lowerCaseValue = strtolower($value);
+
                 // Form the field names for this value
                 $checkBoxFieldName = $fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$lowerCaseValue;
                 $checkBoxDbFieldName = '';
@@ -686,15 +667,11 @@ class SchemaGenerator
             }
         } else {  # Non-checkbox field
             // Process a single field
-            $redcapFieldType = $this->dataProject->getFieldType($lookupFieldName);
 
-            # print "NEW FIELD: {$fieldName} {$fieldType} {$fieldSize} {$dbFieldName} {$redcapFieldType}\n";
             $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName, $redcapFieldType);
 
-            # print "MAP PROCESS FOR FIELD {$fieldName}\n";
             if (array_key_exists($lookupFieldName, $this->lookupChoices)) {
                 # A single-choice multiple choice field (e.g., dropdown or radio)
-                # print "FIELD MAP SET: field name: {$field->getName()} - lookup field name: {$fieldName}\n";
                 $field->valueToLabelMap = $this->lookupChoices[$lookupFieldName];
 
                 if ($fieldType === FieldType::DROPDOWN || $fieldType === FieldType::RADIO) {

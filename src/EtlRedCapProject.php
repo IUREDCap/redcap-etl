@@ -41,6 +41,10 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
         return $this->metadata;
     }
 
+    /**
+     * Gets the REDCap project info, and saves the result on the first call,
+     * and uses the saved project info for subsequent calls.
+     */
     public function getProjectInfo()
     {
         if (!isset($this->projectInfo)) {
@@ -122,23 +126,14 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
         return $this->primaryKey;
     }
 
-
     /**
-     * Gets information on multiple choice options in a project.
+     * Gets the missing data codes for the project, if any.
      *
-     * @return array a map of field names to a map of values to labels
-     *     for that field name.
-     *
-     *     array($fieldName1 => array($value1 => $label1, ...), ...)
+     * @return array map from missing data code value to missing data code label;
+     *     an empty array is returned if there are no missing data codes.
      */
-    public function getLookupChoices()
+    public function getMissingDataCodes()
     {
-        $results = array();
-
-        #-------------------------------------------------------------------
-        # Get the missing data codes, if any, from the REDCap project info.
-        # These need to be added as multiple-choice options.
-        #-------------------------------------------------------------------
         $missingDataCodes = [];
         $projectInfo = $this->getProjectInfo();
 
@@ -158,6 +153,27 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
                 }
             }
         }
+
+        return $missingDataCodes;
+    }
+
+    /**
+     * Gets information on multiple choice options in a project.
+     *
+     * @return array a map of field names to a map of values to labels
+     *     for that field name.
+     *
+     *     array($fieldName1 => array($value1 => $label1, ...), ...)
+     */
+    public function getLookupChoices()
+    {
+        $results = array();
+
+        #-------------------------------------------------------------------
+        # Get the missing data codes, if any, from the REDCap project info.
+        # These need to be added as multiple-choice options.
+        #-------------------------------------------------------------------
+        $missingDataCodes = $this->getMissingDataCodes();
 
         // Get all metadata
         $fields = $this->getMetadata();

@@ -24,6 +24,11 @@ class FieldRule extends Rule
         return $this->redCapFieldName;
     }
 
+    public function getDbFieldName()
+    {
+        return $this->dbFieldName;
+    }
+
     public function getDbFieldType()
     {
         return $this->dbFieldType;
