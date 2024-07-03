@@ -136,7 +136,6 @@ what is listed below. The main directories and files are as follows:
 * __config/__ - default configuration directory for REDCap-ETL
 * __dependencies/__ - static dependencies used for production installation
 * __docs/__ - documentation
-* __projects/__ - REDCap-ETL project templates for configuration and logging
 * __src/__ - the REDCap-ETL source code directory
 * __tests/__ - automated tests directory
     * __config/__ - directory for test configuration files that have been
