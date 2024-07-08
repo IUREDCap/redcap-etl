@@ -1,0 +1,4 @@
+"weight_repeating_instruments_suffixes_id","root_id","redcap_data_source","record_id","redcap_event_name","redcap_repeat_instrument","redcap_repeat_instance","redcap_suffix","data","dropdown","dropdown_label","radio","radio_label"
+1,1,1,"1001","home_visit_arm_1","weight",1,"_1","101","2","Good","",""
+2,1,1,"1001","home_visit_arm_1","weight",1,"_2","202","1","Fair","",""
+3,1,1,"1001","home_visit_arm_1","weight",1,"_3","303","0","Poor","",""

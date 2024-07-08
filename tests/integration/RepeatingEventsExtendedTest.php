@@ -22,6 +22,7 @@ class RepeatingEventsExtendedTest extends TestCase
 
     private static $enrollmentCsvFile;
     private static $weightEventsSuffixesCsvFile;
+    private static $weightRepeatingInstrumentsSuffixesCsvFile;
     private static $weightAllSuffixesCsvFile;
 
     private static $etlLookupCsvFile;
@@ -63,8 +64,9 @@ class RepeatingEventsExtendedTest extends TestCase
         #-------------------------------------------
         self::$enrollmentCsvFile      = self::$csvDir . 'enrollment.csv';
 
-        self::$weightEventsSuffixesCsvFile = self::$csvDir . 'weight_events_suffixes.csv';
-        self::$weightAllSuffixesCsvFile    = self::$csvDir . 'weight_all_suffixes.csv';
+        self::$weightEventsSuffixesCsvFile               = self::$csvDir . 'weight_events_suffixes.csv';
+        self::$weightRepeatingInstrumentsSuffixesCsvFile = self::$csvDir . 'weight_repeating_instruments_suffixes.csv';
+        self::$weightAllSuffixesCsvFile                  = self::$csvDir . 'weight_all_suffixes.csv';
 
         self::$etlLookupCsvFile = self::$csvDir . 'etl_lookup.csv';
 
@@ -138,6 +140,22 @@ class RepeatingEventsExtendedTest extends TestCase
         #---------------------------------------------------------------------
         $csv = CsvUtil::csvFileToArray(self::$weightEventsSuffixesCsvFile);
         $expectedCsv = CsvUtil::csvFileToArray(self::TEST_DATA_DIR . 'weight_events_suffixes.csv');
+
+        $header = $csv[0];
+        $this->assertEquals($header[3], 'record_id', 'Record id header test.');
+        $this->assertEquals(4, count($csv), 'Row count check.');
+
+        
+        $this->assertEquals($expectedCsv, $csv, 'CSV file check.');
+    }
+
+    public function testWeightRepeatingInstrumentsSuffixesTable()
+    {
+        #---------------------------------------------------------------------
+        # Check standard table with (coded) values for multipl-choice answers
+        #---------------------------------------------------------------------
+        $csv = CsvUtil::csvFileToArray(self::$weightRepeatingInstrumentsSuffixesCsvFile);
+        $expectedCsv = CsvUtil::csvFileToArray(self::TEST_DATA_DIR . 'weight_repeating_instruments_suffixes.csv');
 
         $header = $csv[0];
         $this->assertEquals($header[3], 'record_id', 'Record id header test.');
