@@ -455,7 +455,7 @@ abstract class PdoDbConnection extends DbConnection
                     }
                     break;
                 default:
-                    $message = 'Unrecognized database field type for MySQL: "'
+                    $message = 'Unrecognized database field type: "'
                         . print_r($fieldType, true) . '" for database field "' . $fieldDbName . '".';
                     $code = EtlException::DATABASE_ERROR;
                     throw new EtlException($message, $code);
