@@ -177,9 +177,13 @@ The possible `<rows_type>` values are shown in the table below:
       </td>
     </tr>
     <tr>
-      <td>EVENTS:&lt;suffixes&gt;</td>
       <td>
-      This is typically used for a table that stores related REDCap fields that have
+          EVENTS:&lt;suffixes&gt; <br/>
+          REPEATING_EVENTS:&lt;suffixes&gt; <br/>
+          REPEATING_INSTRUMENTS:&lt;suffixes&gt;
+      </td>
+      <td>
+      These are typically used for tables that store related REDCap fields that have
       the same prefix, but different suffixes, that occur in multiple events in
       a longitudinal study. For example, you might specify
       suffixes of "1;2;3" for fields "heart_rate1",
