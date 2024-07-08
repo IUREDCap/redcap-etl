@@ -54,6 +54,9 @@ $multipleRootInstrumentsApiToken = $properties['multiple-root-instruments']['dat
 $repeatingEventsApiUrl    = $properties['repeating-events']['redcap_api_url'];
 $repeatingEventsApiToken  = $properties['repeating-events']['data_source_api_token'];
 
+$repeatingEventsExtendedApiUrl    = $properties['repeating-events-extended']['redcap_api_url'];
+$repeatingEventsExtendedApiToken  = $properties['repeating-events-extended']['data_source_api_token'];
+
 $repeatingFormsApiUrl    = $properties['repeating-forms']['redcap_api_url'];
 $repeatingFormsApiToken  = $properties['repeating-forms']['data_source_api_token'];
 
@@ -277,7 +280,8 @@ foreach ($configFiles as $configFile) {
                 "data_source_api_token = {$multipleRootInstrumentsApiToken}",
                 $contents
             );
-        } elseif (preg_match('/repeating-events.*\.ini/', $toPath) === 1) {
+        } elseif (preg_match('/repeating-events.*\.ini/', $toPath) === 1
+                && preg_match('/repeating-events-extended\.ini/', $toPath) !== 1) {
             #-------------------------------------
             # Repeating events files
             #-------------------------------------
@@ -289,6 +293,20 @@ foreach ($configFiles as $configFile) {
             $contents = preg_replace(
                 '/data_source_api_token\s*=.*/',
                 "data_source_api_token = {$repeatingEventsApiToken}",
+                $contents
+            );
+        } elseif (preg_match('/repeating-events-extended\.ini/', $toPath) === 1) {
+            #-------------------------------------
+            # Repeating events files
+            #-------------------------------------
+            $contents = preg_replace(
+                '/redcap_api_url\s*=.*/',
+                "redcap_api_url = {$repeatingEventsExtendedApiUrl}",
+                $contents
+            );
+            $contents = preg_replace(
+                '/data_source_api_token\s*=.*/',
+                "data_source_api_token = {$repeatingEventsExtendedApiToken}",
                 $contents
             );
         } elseif (preg_match('/repeating-forms.*\.ini/', $toPath) === 1) {

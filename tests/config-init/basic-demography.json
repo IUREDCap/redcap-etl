@@ -37,7 +37,7 @@
         "FIELD,email,varchar(80)",
         "FIELD,dob,string,birthdate",
         "FIELD,ethnicity,int",
-        "FIELD,race,checkbox",
+        "FIELD,race,checkbox,patient_race",
         "FIELD,sex,int",
         "FIELD,height,float",
         "FIELD,weight,float",
