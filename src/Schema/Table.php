@@ -590,15 +590,6 @@ class Table
                     }
                 }
 
-                # DEBUG
-                if ($field->getName() === 'dropdown') {
-                    # print "\n\n{$field->toString()}\n\n";
-                    # print_r($field->valueToLabelMap);
-                    if ($field->isLabel) {
-                        # print "    IS LABEL\n";
-                    }
-                }
-
                 if (isset($value)) {
                     if (is_string($value)) {
                         $value = trim($value);
