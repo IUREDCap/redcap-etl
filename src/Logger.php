@@ -673,15 +673,15 @@ class Logger
         }
         */
 
-        $faliedSendTos = array();
-        foreach ($mailToAddresses as $mailto) {
-            $sent = mail($mailto, $subjectString, $message, $headers, $sendmailOpts);
+        $failedSendTos = array();
+        foreach ($mailToAddresses as $mailTo) {
+            $sent = mail($mailTo, $subjectString, $message, $headers, $sendmailOpts);
             if ($sent === false) {
-                array_push($failedSentTos, $mailTo);
+                array_push($failedSendTos, $mailTo);
             }
         }
 
-        return $faliedSendTos;
+        return $failedSendTos;
     }
 
     public function emailLogArray()
