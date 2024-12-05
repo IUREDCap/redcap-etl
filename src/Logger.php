@@ -564,11 +564,11 @@ class Logger
                     $this->logFromEmail
                 );
 
-                if (count($failedSendTos) > 0) {
+                if ($failedSendTos !== null && count($failedSendTos) > 0) {
                     $message = 'Logging to e-mail failed for the following e-mail addreses: '
                             .(implode(', ', $failedSendTos));
-                    $this->logLoggingError($message);
                     $logged = false;
+                    throw new \Exception($message);
                 } else {
                     $logged = true;
                 }
