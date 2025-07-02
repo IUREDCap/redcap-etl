@@ -372,6 +372,7 @@ class SchemaGenerator
                                 $table->addField($labelField);
                             }
 
+                            # if ($originalFieldType === FieldType::CHECKBOX) {
                             $this->lookupTable->addLookupField(
                                 $table->getName(),
                                 $originalFieldName,
@@ -646,27 +647,32 @@ class SchemaGenerator
 
         $redcapFieldType = $this->dataProject->getFieldType($lookupFieldName);
 
-        // If this is a checkbox field
         if ($fieldType === FieldType::CHECKBOX) {
+            #-------------------------------------
+            # Checkbox field
+            #-------------------------------------
+
             # Process each value of the checkbox
             foreach ($this->lookupChoices[$lookupFieldName] as $value => $label) {
-                # It looks like REDCap uses the lower-case version of the
-                # value for making the field name
-                $lowerCaseValue = strtolower($value);
+                # It looks like REDCap converts the user-specified checkbox value
+                # for use as a field name.
+                $checkBoxValue = self::convertCheckboxValue($value);
 
                 // Form the field names for this value
-                $checkBoxFieldName = $fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$lowerCaseValue;
+                $checkBoxFieldName = $fieldName . RedCapEtl::CHECKBOX_SEPARATOR . $checkBoxValue;
                 $checkBoxDbFieldName = '';
                 if (!empty($dbFieldName)) {
-                    $checkBoxDbFieldName = $dbFieldName.RedCapEtl::CHECKBOX_SEPARATOR.$lowerCaseValue;
+                    $checkBoxDbFieldName = $dbFieldName . RedCapEtl::CHECKBOX_SEPARATOR . $checkBoxValue;
                 }
 
                 $field = new Field($checkBoxFieldName, FieldType::INT, null, $checkBoxDbFieldName, $redcapFieldType);
                 $field->checkboxLabel = $label;
-                $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$lowerCaseValue] = $field;
+                $fields[$fieldName.RedCapEtl::CHECKBOX_SEPARATOR.$checkBoxValue] = $field;
             }
         } else {  # Non-checkbox field
-            // Process a single field
+            #-------------------------------------
+            # Non-checkbox (single) field
+            #-------------------------------------
 
             $field = new Field($fieldName, $fieldType, $fieldSize, $dbFieldName, $redcapFieldType);
 
@@ -741,5 +747,18 @@ class SchemaGenerator
     protected function log($message)
     {
         $this->logger->log($message);
+    }
+
+    /**
+     * Converts the user-specified checkbox value to the value
+     * used for the field name in REDCap.
+     */
+    public static function convertCheckboxValue($value)
+    {
+        # Convert to lower-case and replace '.' and '-' with '_'.
+        $convertedValue = strtolower($value);
+        $convertedValue = str_replace('.', '_', $convertedValue);
+        $convertedValue = str_replace('-', '_', $convertedValue);
+        return $convertedValue;
     }
 }

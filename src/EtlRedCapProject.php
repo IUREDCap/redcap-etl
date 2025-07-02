@@ -202,12 +202,16 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
                             throw new EtlException($message, $code);
                         }
 
-                        // Get the category and label
-                        list ($category, $label) =
-                          array_map('trim', explode(",", $choice, 2));
+                        # Get the value and label
+                        list ($value, $label) = array_map('trim', explode(",", $choice, 2));
 
-                        // Add them to the results for this field
-                        $fieldResults[$category] = $label;
+                        # If this is a checkbox, modify the value
+                        if ($field['field_type'] === 'checkbox') {
+                            $value = SchemaGenerator::convertCheckboxValue($value);
+                        }
+
+                        # Add the value and label to the results for this field
+                        $fieldResults[$value] = $label;
                     }
 
                     #-------------------------------------------
@@ -314,6 +318,7 @@ class EtlRedCapProject extends \IU\PHPCap\RedCapProject
             }
             array_push($batch[$recordId], $result);
         }
+
         return($batch);
     }
 

@@ -205,6 +205,7 @@ the data for the tests:
    following files from REDCap-ETL:
 
         tests/projects/BasicDemography.REDCap.xml
+        tests/projects/MultipleChoice.REDCap.xml
         tests/projects/MultipleRootInstruments.REDCap.xml
         tests/projects/RepeatingEvents.REDCap.xml
         tests/projects/RepeatingForms.REDCap.xml

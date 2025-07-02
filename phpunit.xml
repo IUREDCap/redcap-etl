@@ -59,6 +59,7 @@ SPDX-License-Identifier: BSD-3-Clause
       <file>tests/integration/DynamicRulesTest.php</file>
       <file>tests/integration/DynamicRulesLongitudinalTest.php</file>
       <file>tests/integration/DynamicRulesMultipleRootFormTest.php</file>
+      <file>tests/integration/MultipleChoiceTest.php</file>
       <file>tests/integration/RedCapEtlTest.php</file>
       <file>tests/integration/RepeatingEventsTest.php</file>
       <file>tests/integration/RepeatingEventsExtendedTest.php</file>

@@ -95,7 +95,7 @@ class LookupTable extends Table
                 $lowerCaseValue = strtolower($value);
 
                 #--------------------------------------------------------
-                # Set up the table/fieldcategory/label for this choice
+                # Set up the table/field/value/label for this choice
                 # The primary key will be set automatically
                 #--------------------------------------------------------
                 $data = array(

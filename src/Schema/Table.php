@@ -8,6 +8,7 @@ namespace IU\REDCapETL\Schema;
 
 use IU\REDCapETL\RedCapEtl;
 use IU\REDCapETL\KeyValueDb;
+use IU\REDCapETL\SchemaGenerator;
 
 /**
  * Table is used to store information about a relational table
@@ -543,8 +544,12 @@ class Table
                 if ($field->isCheckbox()) {
                     $isCheckbox = true;
                     list($rootName,$choiceValue) = explode(RedCapEtl::CHECKBOX_SEPARATOR, $field->name);
-                    $choiceValue = str_replace('-', '_', $choiceValue);
+                    # $choiceValue = str_replace('-', '_', $choiceValue);
+                    $choiceValue = SchemaGenerator::convertCheckboxValue($choiceValue);
                     $variableName = $rootName.$suffix.RedCapEtl::CHECKBOX_SEPARATOR.$choiceValue;
+                    # print "CHECKBOX VARIABLE NAME: {$variableName}\n";
+                    # print_r($data);
+                    # print "\n\n";
                 } else {
                     // Otherwise, just append suffix (if any))
                     $variableName = $field->name.$suffix;

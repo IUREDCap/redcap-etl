@@ -45,14 +45,17 @@ for ($i = 0; $i < count($sqlFiles); $i++) {
 #----------------------------------------------
 $properties = parse_ini_file(__DIR__.'/../tests/config.ini', true);
 
-$basicDemographyApiUrl    = $properties['basic-demography']['redcap_api_url'];
-$basicDemographyApiToken  = $properties['basic-demography']['data_source_api_token'];
+$basicDemographyApiUrl   = $properties['basic-demography']['redcap_api_url'];
+$basicDemographyApiToken = $properties['basic-demography']['data_source_api_token'];
 
-$multipleRootInstrumentsApiUrl = $properties['multiple-root-instruments']['redcap_api_url'];
+$multipleChoiceApiUrl   = $properties['multiple-choice']['redcap_api_url'];
+$multipleChoiceApiToken = $properties['multiple-choice']['data_source_api_token'];
+
+$multipleRootInstrumentsApiUrl   = $properties['multiple-root-instruments']['redcap_api_url'];
 $multipleRootInstrumentsApiToken = $properties['multiple-root-instruments']['data_source_api_token'];
 
-$repeatingEventsApiUrl    = $properties['repeating-events']['redcap_api_url'];
-$repeatingEventsApiToken  = $properties['repeating-events']['data_source_api_token'];
+$repeatingEventsApiUrl   = $properties['repeating-events']['redcap_api_url'];
+$repeatingEventsApiToken = $properties['repeating-events']['data_source_api_token'];
 
 $repeatingEventsExtendedApiUrl    = $properties['repeating-events-extended']['redcap_api_url'];
 $repeatingEventsExtendedApiToken  = $properties['repeating-events-extended']['data_source_api_token'];
@@ -264,6 +267,20 @@ foreach ($configFiles as $configFile) {
             $contents = preg_replace(
                 '/"data_source_api_token"\s*:.*/',
                 '"data_source_api_token" : "'.$basicDemographyApiToken.'",',
+                $contents
+            );
+        } elseif (preg_match('/multiple-choice.*\.ini/', $toPath) === 1) {
+            #-------------------------------------
+            # Multiple choice files
+            #-------------------------------------
+            $contents = preg_replace(
+                '/redcap_api_url\s*=.*/',
+                "redcap_api_url = {$multipleChoiceApiUrl}",
+                $contents
+            );
+            $contents = preg_replace(
+                '/data_source_api_token\s*=.*/',
+                "data_source_api_token = {$multipleChoiceApiToken}",
                 $contents
             );
         } elseif (preg_match('/multiple-root-instruments.*\.ini/', $toPath) === 1) {
