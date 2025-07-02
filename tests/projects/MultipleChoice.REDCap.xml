@@ -1,0 +1,1579 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="REDCap-ETL Multiple Choice" AsOfDateTime="2025-07-02T09:18:36" CreationDateTime="2025-07-02T09:18:36" SourceSystem="REDCap" SourceSystemVersion="15.0.22">
+<Study OID="Project.REDCapETLMultipleChoice">
+<GlobalVariables>
+	<StudyName>REDCap-ETL Multiple Choice</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "REDCap-ETL Multiple Choice".</StudyDescription>
+	<ProtocolName>REDCap-ETL Multiple Choice</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>0</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SecondaryUniqueFieldDisplayValue>1</redcap:SecondaryUniqueFieldDisplayValue>
+	<redcap:SecondaryUniqueFieldDisplayLabel>1</redcap:SecondaryUniqueFieldDisplayLabel>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:SurveysEnabled>0</redcap:SurveysEnabled>
+	<redcap:SurveyInvitationEmailField></redcap:SurveyInvitationEmailField>
+	<redcap:RandomizationEnabled>0</redcap:RandomizationEnabled>
+	<redcap:DisplayTodayNowButton>1</redcap:DisplayTodayNowButton>
+	<redcap:PreventBranchingEraseValues>0</redcap:PreventBranchingEraseValues>
+	<redcap:RequireChangeReason>0</redcap:RequireChangeReason>
+	<redcap:DataHistoryPopup>1</redcap:DataHistoryPopup>
+	<redcap:OrderRecordsByField></redcap:OrderRecordsByField>
+	<redcap:taskCompleteStatus>0</redcap:taskCompleteStatus>
+	<redcap:DataResolutionWorkflowEnabled>1</redcap:DataResolutionWorkflowEnabled>
+	<redcap:FieldCommentLogOptionEditDelete>1</redcap:FieldCommentLogOptionEditDelete>
+	<redcap:DataResolutionWorkflowHideClosedQueries>1</redcap:DataResolutionWorkflowHideClosedQueries>
+	<redcap:MyCapEnabled>0</redcap:MyCapEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:MissingDataCodes></redcap:MissingDataCodes>
+	<redcap:ProtectedEmailMode>0</redcap:ProtectedEmailMode>
+	<redcap:ProtectedEmailModeCustomText></redcap:ProtectedEmailModeCustomText>
+	<redcap:ProtectedEmailModeTrigger>ALL</redcap:ProtectedEmailModeTrigger>
+	<redcap:ProtectedEmailModeLogo></redcap:ProtectedEmailModeLogo>
+	<redcap:ReportsGroup>
+		<redcap:Reports title="emails" unique_report_name="R-878ET9HTRT" report_order="1" user_access="ALL" user_edit_access="ALL" description="" combine_checkbox_values="0" output_dags="0" output_survey_fields="0" output_missing_data_codes="0" remove_line_breaks_in_values="1" orderby_field1="record_id" orderby_sort1="ASC" orderby_field2="" orderby_sort2="" orderby_field3="" orderby_sort3="" advanced_logic="([dob] &lt;= &quot;2014-11-01&quot; OR [race(1)] = &quot;1&quot;)" filter_type="EVENT" dynamic_filter1="" dynamic_filter2="" dynamic_filter3="" hash="73P79JXMN7LPNMFN" short_url="" is_public="0" report_display_include_repeating_fields="1" report_display_header="BOTH" report_display_data="BOTH" limiter_logic="([dob] &lt;= &quot;2014-11-01&quot; OR [race(1)] = &quot;1&quot;)" redcap_reports_fields="email" redcap_reports_filter_dags="" redcap_reports_filter_events="" ID="f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59"/>
+	</redcap:ReportsGroup>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.REDCapETLMultipleChoice_2025-07-02_0918" Name="REDCap-ETL Multiple Choice" redcap:RecordIdField="record_id">
+	<FormDef OID="Form.demographics" Name="Basic Demography Form" Repeating="No" redcap:FormName="demographics">
+		<ItemGroupRef ItemGroupOID="demographics.record_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="demographics.first_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="demographics.last_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="demographics.demographics_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="demographics.record_id" Name="Basic Demography Form" Repeating="No">
+		<ItemRef ItemOID="record_id" Mandatory="No" redcap:Variable="record_id"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="demographics.first_name" Name="Contact Information" Repeating="No">
+		<ItemRef ItemOID="first_name" Mandatory="No" redcap:Variable="first_name"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="demographics.last_name" Name="Basic Demography Form" Repeating="No">
+		<ItemRef ItemOID="last_name" Mandatory="No" redcap:Variable="last_name"/>
+		<ItemRef ItemOID="email" Mandatory="No" redcap:Variable="email"/>
+		<ItemRef ItemOID="dob" Mandatory="No" redcap:Variable="dob"/>
+		<ItemRef ItemOID="ethnicity" Mandatory="No" redcap:Variable="ethnicity"/>
+		<ItemRef ItemOID="race___0_zero" Mandatory="No" redcap:Variable="race"/>
+		<ItemRef ItemOID="race___1" Mandatory="No" redcap:Variable="race"/>
+		<ItemRef ItemOID="race___2" Mandatory="No" redcap:Variable="race"/>
+		<ItemRef ItemOID="race___3" Mandatory="No" redcap:Variable="race"/>
+		<ItemRef ItemOID="race___4_4" Mandatory="No" redcap:Variable="race"/>
+		<ItemRef ItemOID="race___five_5" Mandatory="No" redcap:Variable="race"/>
+		<ItemRef ItemOID="sex" Mandatory="No" redcap:Variable="sex"/>
+		<ItemRef ItemOID="diabetic" Mandatory="No" redcap:Variable="diabetic"/>
+		<ItemRef ItemOID="hypertension" Mandatory="No" redcap:Variable="hypertension"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="demographics.demographics_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="demographics_complete" Mandatory="No" redcap:Variable="demographics_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="record_id" Name="record_id" DataType="text" Length="999" redcap:Variable="record_id" redcap:FieldType="text">
+		<Question><TranslatedText>Study ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="first_name" Name="first_name" DataType="text" Length="999" redcap:Variable="first_name" redcap:FieldType="text" redcap:SectionHeader="Contact Information" redcap:Identifier="y">
+		<Question><TranslatedText>First Name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="last_name" Name="last_name" DataType="text" Length="999" redcap:Variable="last_name" redcap:FieldType="text" redcap:Identifier="y">
+		<Question><TranslatedText>Last Name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="email" Name="email" DataType="text" Length="999" redcap:Variable="email" redcap:FieldType="text" redcap:TextValidationType="email" redcap:Identifier="y">
+		<Question><TranslatedText>E-mail</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_ymd" redcap:Identifier="y">
+		<Question><TranslatedText>Date of birth</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="ethnicity" Name="ethnicity" DataType="text" Length="1" redcap:Variable="ethnicity" redcap:FieldType="radio" redcap:CustomAlignment="LH">
+		<Question><TranslatedText>Ethnicity</TranslatedText></Question>
+		<CodeListRef CodeListOID="ethnicity.choices"/>
+	</ItemDef>
+	<ItemDef OID="race___0_zero" Name="race___0_zero" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Race</TranslatedText></Question>
+		<CodeListRef CodeListOID="race___0_zero.choices"/>
+	</ItemDef>
+	<ItemDef OID="race___1" Name="race___1" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Race</TranslatedText></Question>
+		<CodeListRef CodeListOID="race___1.choices"/>
+	</ItemDef>
+	<ItemDef OID="race___2" Name="race___2" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Race</TranslatedText></Question>
+		<CodeListRef CodeListOID="race___2.choices"/>
+	</ItemDef>
+	<ItemDef OID="race___3" Name="race___3" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Race</TranslatedText></Question>
+		<CodeListRef CodeListOID="race___3.choices"/>
+	</ItemDef>
+	<ItemDef OID="race___4_4" Name="race___4_4" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Race</TranslatedText></Question>
+		<CodeListRef CodeListOID="race___4_4.choices"/>
+	</ItemDef>
+	<ItemDef OID="race___five_5" Name="race___five_5" DataType="boolean" Length="1" redcap:Variable="race" redcap:FieldType="checkbox">
+		<Question><TranslatedText>Race</TranslatedText></Question>
+		<CodeListRef CodeListOID="race___five_5.choices"/>
+	</ItemDef>
+	<ItemDef OID="sex" Name="sex" DataType="text" Length="3" redcap:Variable="sex" redcap:FieldType="radio">
+		<Question><TranslatedText>Sex</TranslatedText></Question>
+		<CodeListRef CodeListOID="sex.choices"/>
+	</ItemDef>
+	<ItemDef OID="diabetic" Name="diabetic" DataType="boolean" Length="1" redcap:Variable="diabetic" redcap:FieldType="yesno">
+		<Question><TranslatedText>Diabetic</TranslatedText></Question>
+		<CodeListRef CodeListOID="diabetic.choices"/>
+	</ItemDef>
+	<ItemDef OID="hypertension" Name="hypertension" DataType="boolean" Length="1" redcap:Variable="hypertension" redcap:FieldType="truefalse">
+		<Question><TranslatedText>Hypertension</TranslatedText></Question>
+		<CodeListRef CodeListOID="hypertension.choices"/>
+	</ItemDef>
+	<ItemDef OID="demographics_complete" Name="demographics_complete" DataType="text" Length="1" redcap:Variable="demographics_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="demographics_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="ethnicity.choices" Name="ethnicity" DataType="text" redcap:Variable="ethnicity">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Hispanic or Latino</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>NOT Hispanic or Latino</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Unknown / Not Reported</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="race___0_zero.choices" Name="race___0_zero" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0-zero, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4.4, White | Five.5, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="race___1.choices" Name="race___1" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0-zero, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4.4, White | Five.5, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="race___2.choices" Name="race___2" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0-zero, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4.4, White | Five.5, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="race___3.choices" Name="race___3" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0-zero, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4.4, White | Five.5, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="race___4_4.choices" Name="race___4_4" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0-zero, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4.4, White | Five.5, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="race___five_5.choices" Name="race___five_5" DataType="boolean" redcap:Variable="race" redcap:CheckboxChoices="0-zero, American Indian/Alaska Native | 1, Asian | 2, Native Hawaiian or Other Pacific Islander | 3, Black or African American | 4.4, White | Five.5, Other">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="sex.choices" Name="sex" DataType="text" redcap:Variable="sex">
+		<CodeListItem CodedValue="0-1"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1.2"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="diabetic.choices" Name="diabetic" DataType="boolean" redcap:Variable="diabetic">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="hypertension.choices" Name="hypertension" DataType="boolean" redcap:Variable="hypertension">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>True</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>False</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="demographics_complete.choices" Name="demographics_complete" DataType="text" redcap:Variable="demographics_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+<ClinicalData StudyOID="Project.REDCapETLMultipleChoice" MetaDataVersionOID="Metadata.REDCapETLMultipleChoice_2025-07-02_0918">
+	<SubjectData SubjectKey="1001" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1001"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Katherine"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Huels"/>
+					<ItemData ItemOID="email" Value="katherine.huels@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1955-05-07"/>
+					<ItemData ItemOID="ethnicity" Value="0"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1002" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1002"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Sienna"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Howe"/>
+					<ItemData ItemOID="email" Value="sienna.howe@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1939-06-28"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1003" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1003"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Shanna"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Fritsch"/>
+					<ItemData ItemOID="email" Value="shanna.fritsch@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1940-01-01"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1004" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1004"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Brett"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Schuppe"/>
+					<ItemData ItemOID="email" Value="brett.schuppe@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1929-12-09"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="1"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1005" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1005"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Cecelia"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Stoltenberg"/>
+					<ItemData ItemOID="email" Value="cecelia.stoltenberg@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1957-12-18"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="1"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1006" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1006"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Maybell"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Gleason"/>
+					<ItemData ItemOID="email" Value="maybell.gleason@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1933-10-25"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="1"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1007" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1007"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Bill"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Zieme"/>
+					<ItemData ItemOID="email" Value="bill.zieme@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1922-06-16"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1008" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1008"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Vada"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Reynolds"/>
+					<ItemData ItemOID="email" Value="vada.reynolds@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1988-01-19"/>
+					<ItemData ItemOID="ethnicity" Value="0"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="1"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1009" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1009"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Marilie"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Keeling"/>
+					<ItemData ItemOID="email" Value="marilie.keeling@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1968-04-08"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1010" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1010"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Keeley"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="O&#039;Hara"/>
+					<ItemData ItemOID="email" Value="keeley.o.hara@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1920-05-23"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1011" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1011"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Monty"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Lockman"/>
+					<ItemData ItemOID="email" Value="monty.lockman@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1977-12-28"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1012" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1012"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Shanelle"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Mann"/>
+					<ItemData ItemOID="email" Value="shanelle.mann@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1931-10-01"/>
+					<ItemData ItemOID="ethnicity" Value="0"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="1"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1013" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1013"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Keely"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Harber"/>
+					<ItemData ItemOID="email" Value="keely.harber@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1953-11-17"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="1"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1014" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1014"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Destin"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Will"/>
+					<ItemData ItemOID="email" Value="destin.will@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1970-12-14"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1015" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1015"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Alva"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Langworth"/>
+					<ItemData ItemOID="email" Value="alva.langworth@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1977-09-09"/>
+					<ItemData ItemOID="ethnicity" Value="0"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1016" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1016"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Virginia"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hilpert"/>
+					<ItemData ItemOID="email" Value="virginia.hilpert@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1932-09-18"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1017" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1017"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Mckenzie"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Runolfsdottir"/>
+					<ItemData ItemOID="email" Value="mckenzie.runolfsdottir@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1971-01-24"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="1"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1018" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1018"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Millie"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hackett"/>
+					<ItemData ItemOID="email" Value="millie.hackett@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1941-09-28"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="1"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1019" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1019"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Rylee"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hoppe"/>
+					<ItemData ItemOID="email" Value="rylee.hoppe@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1940-06-23"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1020" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1020"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Jacques"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Abshire"/>
+					<ItemData ItemOID="email" Value="jacques.abshire@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1942-03-31"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1021" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1021"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Herta"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Beahan"/>
+					<ItemData ItemOID="email" Value="herta.beahan@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1948-12-14"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1022" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1022"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Iva"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Kshlerin"/>
+					<ItemData ItemOID="email" Value="iva.kshlerin@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1929-05-15"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1023" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1023"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Melyssa"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Spencer"/>
+					<ItemData ItemOID="email" Value="melyssa.spencer@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1978-12-04"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1024" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1024"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Chris"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Tillman"/>
+					<ItemData ItemOID="email" Value="chris.tillman@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1983-02-10"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1025" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1025"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Elisabeth"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Rempel"/>
+					<ItemData ItemOID="email" Value="elisabeth.rempel@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1988-01-19"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1026" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1026"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Olga"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Beatty"/>
+					<ItemData ItemOID="email" Value="olga.beatty@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1976-07-10"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="1"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1027" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1027"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Jace"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Dickinson"/>
+					<ItemData ItemOID="email" Value="jace.dickinson@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1983-11-12"/>
+					<ItemData ItemOID="ethnicity" Value="0"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1028" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1028"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Rosalind"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Thompson"/>
+					<ItemData ItemOID="email" Value="rosalind.thompson@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1970-12-26"/>
+					<ItemData ItemOID="ethnicity" Value="2"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1029" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1029"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Caroline"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Welch"/>
+					<ItemData ItemOID="email" Value="caroline.welch@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1988-01-19"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1030" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1030"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Elisa"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Okuneva"/>
+					<ItemData ItemOID="email" Value="elisa.okuneva@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1980-12-16"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1031" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1031"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Salvatore"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hilpert"/>
+					<ItemData ItemOID="email" Value="salvatore.hilpert@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1965-02-26"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1032" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1032"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Favian"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Simonis"/>
+					<ItemData ItemOID="email" Value="favian.simonis@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1980-11-06"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="1"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1033" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1033"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Kristy"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Keebler"/>
+					<ItemData ItemOID="email" Value="kristy.keebler@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1984-04-22"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1034" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1034"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Laverna"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hilll"/>
+					<ItemData ItemOID="email" Value="laverna.hilll@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1944-12-02"/>
+					<ItemData ItemOID="ethnicity" Value="0"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1035" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1035"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Carlee"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Spencer"/>
+					<ItemData ItemOID="email" Value="carlee.spencer@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1951-07-27"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1036" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1036"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Kaitlyn"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Leannon"/>
+					<ItemData ItemOID="email" Value="kaitlyn.leannon@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1926-02-24"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1037" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1037"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Arnoldo"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Kertzmann"/>
+					<ItemData ItemOID="email" Value="arnoldo.kertzmann@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1949-10-28"/>
+					<ItemData ItemOID="ethnicity" Value="2"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1038" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1038"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Mable"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Beahan"/>
+					<ItemData ItemOID="email" Value="mable.beahan@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1975-06-06"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1039" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1039"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Carmela"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hoppe"/>
+					<ItemData ItemOID="email" Value="carmela.hoppe@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1975-10-31"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1040" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1040"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Monte"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Bradtke"/>
+					<ItemData ItemOID="email" Value="monte.bradtke@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1921-04-24"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1041" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1041"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Jadyn"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Wiegand"/>
+					<ItemData ItemOID="email" Value="jadyn.wiegand@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1924-12-03"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1042" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1042"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Leone"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Barrows"/>
+					<ItemData ItemOID="email" Value="leone.barrows@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1936-09-10"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1043" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1043"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Kayli"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Marvin"/>
+					<ItemData ItemOID="email" Value="kayli.marvin@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1928-11-07"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1044" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1044"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Fermin"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Kreiger"/>
+					<ItemData ItemOID="email" Value="fermin.kreiger@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1974-05-14"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1045" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1045"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Henry"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Feest"/>
+					<ItemData ItemOID="email" Value="henry.feest@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1957-06-12"/>
+					<ItemData ItemOID="ethnicity" Value="0"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1046" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1046"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Shaniya"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Roob"/>
+					<ItemData ItemOID="email" Value="shaniya.roob@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1966-09-13"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="1"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="1"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1047" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1047"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Jefferey"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Goodwin"/>
+					<ItemData ItemOID="email" Value="jefferey.goodwin@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1978-08-23"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="1"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1048" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1048"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Winifred"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Hayes"/>
+					<ItemData ItemOID="email" Value="winifred.hayes@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1950-04-26"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1049" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1049"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Arnulfo"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Mann"/>
+					<ItemData ItemOID="email" Value="arnulfo.mann@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1970-04-16"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="1"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="1"/>
+					<ItemData ItemOID="race___five_5" Value="0"/>
+					<ItemData ItemOID="sex" Value="1.2"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+	<SubjectData SubjectKey="1050" redcap:RecordIdField="record_id">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1050"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Stacey"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Zulauf"/>
+					<ItemData ItemOID="email" Value="stacey.zulauf@mailinator.com"/>
+					<ItemData ItemOID="dob" Value="1955-11-29"/>
+					<ItemData ItemOID="ethnicity" Value="1"/>
+					<ItemData ItemOID="race___0_zero" Value="0"/>
+					<ItemData ItemOID="race___1" Value="0"/>
+					<ItemData ItemOID="race___2" Value="0"/>
+					<ItemData ItemOID="race___3" Value="0"/>
+					<ItemData ItemOID="race___4_4" Value="0"/>
+					<ItemData ItemOID="race___five_5" Value="1"/>
+					<ItemData ItemOID="sex" Value="0-1"/>
+					<ItemData ItemOID="diabetic" Value="0"/>
+					<ItemData ItemOID="hypertension" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+</ClinicalData>
+</ODM>
