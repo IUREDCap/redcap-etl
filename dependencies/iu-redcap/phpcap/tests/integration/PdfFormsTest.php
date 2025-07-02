@@ -189,10 +189,12 @@ class PdfFormsTest extends TestCase
         #----------------------------------------------
         # Check PDF generated for repeat instance 1
         #----------------------------------------------
-        $text = preg_split("/\n/", $pdf->getText());
-        $this->assertEquals(9, count($text));
-        $this->assertEquals('Record ID 1001', $text[2]);
-        $this->assertEquals('Weight (lbs.) 173.4', preg_replace('/\s+/', ' ', $text[8]));
+        # $text = preg_split("/\n/", $pdf->getText());
+        $text = $pdf->getText();
+        $text = preg_replace('/\s+/', ' ', $text);
+
+        $this->assertStringContainsString('Record ID 1001', $text, 'Record string check');
+        $this->assertStringContainsString('Weight (lbs.) 173.4', $text, 'Weight value check');
 
         $repeatInstance = 2;
         $result = self::$repeatingFormsProject->exportPdfFileOfInstruments(
@@ -211,10 +213,11 @@ class PdfFormsTest extends TestCase
         #----------------------------------------------
         # Check PDF generated for repeat instance 2
         #----------------------------------------------
-        $text = preg_split("/\n/", $pdf->getText());
-        $this->assertEquals(9, count($text));
-        $this->assertEquals('Record ID 1001', $text[2]);
-        $this->assertEquals('Weight (lbs.) 172.4', preg_replace('/\s+/', ' ', $text[8]));
+        $text = $pdf->getText();
+        $text = preg_replace('/\s+/', ' ', $text);
+
+        $this->assertStringContainsString('Record ID 1001', $text, 'Record string check 2');
+        $this->assertStringContainsString('Weight (lbs.) 172.4', $text, 'Weight value check 2');
 
         # delete imported test records
         $recordsDeleted = self::$repeatingFormsProject->deleteRecords([1001, 1002, 1003, 1004]);

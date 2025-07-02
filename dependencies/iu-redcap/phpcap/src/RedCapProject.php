@@ -1066,7 +1066,7 @@ class RedCapProject
      *     for which instrument/event mapping infomation should be exported.
      *     If no arms are specified, then information for all arms will be exported.
      *
-     * @return arrray an array of arrays that have the following keys:
+     * @return array an array of arrays that have the following keys:
      *     <ul>
      *       <li>'arm_num'</li>
      *       <li>'unique_event_name'</li>
@@ -1693,7 +1693,8 @@ class RedCapProject
      *
      * @see exportRecords()
      *
-     * @param array $argumentArray array of arguments.
+     * @param array $arrayParameter parameter array.
+     *
      * @return mixed the specified records.
      */
     public function exportRecordsAp($arrayParameter = [])
@@ -1861,6 +1862,9 @@ class RedCapProject
      *           <li> '^' - caret </li>
      *         </ul>
      *
+     * @param boolean $backgroundProcess if true, indicates that the records import
+     *         should be done in the background.
+     *
      * @return mixed if 'count' was specified for 'returnContent', then an integer will
      *         be returned that is the number of records imported.
      *         If 'ids' was specified, then an array of record IDs that were imported will
@@ -1875,7 +1879,8 @@ class RedCapProject
         $dateFormat = 'YMD',
         $returnContent = 'count',
         $forceAutoNumber = false,
-        $csvDelimiter = ','
+        $csvDelimiter = ',',
+        $backgroundProcess = false
     ) {
             
         $data = array (
@@ -1899,6 +1904,8 @@ class RedCapProject
         $data['forceAutoNumber']   = $this->processForceAutoNumberArgument($forceAutoNumber);
         $data['returnContent']     = $this->processReturnContentArgument($returnContent, $forceAutoNumber);
         $data['dateFormat']        = $this->processDateFormatArgument($dateFormat);
+
+        $data['backgroundProcess'] = $this->processBackgroundProcessArgument($backgroundProcess);
         
         $result = $this->connection->callWithArray($data);
 
@@ -2876,22 +2883,20 @@ class RedCapProject
     {
         $fileInfo = array();
         if (isset($callInfo) && is_array($callInfo) && array_key_exists('content_type', $callInfo)) {
-            if (!empty($callInfo)) {
-                $contentType = $callInfo = explode(';', $callInfo['content_type']);
-                if (count($contentType) >= 1) {
-                    $fileInfo['mime_type'] = trim($contentType[0]);
-                }
-                if (count($contentType) >= 2) {
-                    $fileName = trim($contentType[1]);
-                    # remove starting 'name="' and ending '"'
-                    $fileName = substr($fileName, 6, strlen($fileName) - 7);
-                    $fileInfo['name'] = $fileName;
-                }
-                if (count($contentType) >= 3) {
-                    $charset = trim($contentType[2]);
-                    $charset = substr($charset, 8);
-                    $fileInfo['charset'] = $charset;
-                }
+            $contentType = $callInfo = explode(';', $callInfo['content_type']);
+            if (count($contentType) >= 1) {
+                $fileInfo['mime_type'] = trim($contentType[0]);
+            }
+            if (count($contentType) >= 2) {
+                $fileName = trim($contentType[1]);
+                # remove starting 'name="' and ending '"'
+                $fileName = substr($fileName, 6, strlen($fileName) - 7);
+                $fileInfo['name'] = $fileName;
+            }
+            if (count($contentType) >= 3) {
+                $charset = trim($contentType[2]);
+                $charset = substr($charset, 8);
+                $fileInfo['charset'] = $charset;
             }
         }
         return $fileInfo;
@@ -3031,6 +3036,22 @@ class RedCapProject
         }
         
         return $arms;
+    }
+    
+    protected function processBackgroundProcessArgument($backgroundProcess)
+    {
+        if ($backgroundProcess == null) {
+            $backgroundProcess = false;
+        } else {
+            if (gettype($backgroundProcess) !== 'boolean') {
+                $message = 'Invalid type for backgroundProcess.'
+                    .' It should be a boolean (true or false),'
+                    .' but has type: '.gettype($backgroundProcess).'.';
+                $code    = ErrorHandlerInterface::INVALID_ARGUMENT;
+                $this->errorHandler->throwException($message, $code);
+            } // @codeCoverageIgnore
+        }
+        return $backgroundProcess;
     }
     
     protected function processCaCertificateFileArgument($caCertificateFile)

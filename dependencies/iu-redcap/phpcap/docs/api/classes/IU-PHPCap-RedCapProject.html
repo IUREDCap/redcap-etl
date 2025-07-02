@@ -260,7 +260,7 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/IU-PHPCap-RedCapProject.html#method_exportInstrumentEventMappings">exportInstrumentEventMappings()</a>
     <span>
-                                &nbsp;: <abbr title="\IU\PHPCap\arrray">arrray</abbr>    </span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
 <dd>Gets the instrument to event mapping for the project.</dd>
 
@@ -1171,7 +1171,7 @@ and/or instruments).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1967</span>
+    <span class="phpdocumentor-element-found-in__line">1974</span>
 
     </aside>
 
@@ -1288,7 +1288,7 @@ and set $deleteLogging to 0 to keep the logging for the deleted records.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2607</span>
+    <span class="phpdocumentor-element-found-in__line">2614</span>
 
     </aside>
 
@@ -1335,7 +1335,7 @@ and set $deleteLogging to 0 to keep the logging for the deleted records.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2486</span>
+    <span class="phpdocumentor-element-found-in__line">2493</span>
 
     </aside>
 
@@ -1906,7 +1906,7 @@ folder ID is specified, then a list of the top-level folder is returned.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">exportInstrumentEventMappings</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$arms</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\IU\PHPCap\arrray">arrray</abbr></span></code>
+                    <span class="phpdocumentor-signature__name">exportInstrumentEventMappings</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$arms</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
         <section class="phpdocumentor-description"><p>For example, the following code:</p>
 <pre class="prettyprint">
@@ -1959,7 +1959,7 @@ If no arms are specified, then information for all arms will be exported.</p>
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><abbr title="\IU\PHPCap\arrray">arrray</abbr></span>
+    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
             &mdash;
             <section class="phpdocumentor-description"><p>an array of arrays that have the following keys:</p>
 <ul>
@@ -2844,7 +2844,7 @@ formats, a string is returned that contains the records in the specified format.
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1699</span>
+    <span class="phpdocumentor-element-found-in__line">1700</span>
 
     </aside>
 
@@ -2855,7 +2855,7 @@ names in the exportRecords method.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">exportRecordsAp</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$arrayParameter</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">exportRecordsAp</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$arrayParameter</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
         <section class="phpdocumentor-description"><p>Example usage:</p>
 <pre class="prettyprint">
@@ -2876,10 +2876,11 @@ $records = $project->exportRecordsAp(['forms' => ['lab_data'], 'fields' => ['stu
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$arrayParameter</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                  = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>parameter array.</p>
+</section>
 
             </dd>
             </dl>
@@ -2921,7 +2922,7 @@ $records = $project->exportRecordsAp(['forms' => ['lab_data'], 'fields' => ['stu
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2130</span>
+    <span class="phpdocumentor-element-found-in__line">2137</span>
 
     </aside>
 
@@ -2956,7 +2957,7 @@ $records = $project->exportRecordsAp(['forms' => ['lab_data'], 'fields' => ['stu
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2056</span>
+    <span class="phpdocumentor-element-found-in__line">2063</span>
 
     </aside>
 
@@ -3016,7 +3017,7 @@ value will be returned for the 'custom form label' if it is not defined.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2197</span>
+    <span class="phpdocumentor-element-found-in__line">2204</span>
 
     </aside>
 
@@ -3156,7 +3157,7 @@ numeric values being returned. Options are:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2249</span>
+    <span class="phpdocumentor-element-found-in__line">2256</span>
 
     </aside>
 
@@ -3231,7 +3232,7 @@ to return a link for.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2290</span>
+    <span class="phpdocumentor-element-found-in__line">2297</span>
 
     </aside>
 
@@ -3306,7 +3307,7 @@ in the specified format as a string.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2319</span>
+    <span class="phpdocumentor-element-found-in__line">2326</span>
 
     </aside>
 
@@ -3353,7 +3354,7 @@ in the specified format as a string.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2348</span>
+    <span class="phpdocumentor-element-found-in__line">2355</span>
 
     </aside>
 
@@ -3485,7 +3486,7 @@ to return to.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2640</span>
+    <span class="phpdocumentor-element-found-in__line">2647</span>
 
     </aside>
 
@@ -3542,7 +3543,7 @@ the data in the specified format.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2518</span>
+    <span class="phpdocumentor-element-found-in__line">2525</span>
 
     </aside>
 
@@ -3598,7 +3599,7 @@ the data in the specified format.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2387</span>
+    <span class="phpdocumentor-element-found-in__line">2394</span>
 
     </aside>
 
@@ -3694,7 +3695,7 @@ where Data Access Groups are being used).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2824</span>
+    <span class="phpdocumentor-element-found-in__line">2831</span>
 
     </aside>
 
@@ -3729,7 +3730,7 @@ where Data Access Groups are being used).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2814</span>
+    <span class="phpdocumentor-element-found-in__line">2821</span>
 
     </aside>
 
@@ -3764,7 +3765,7 @@ where Data Access Groups are being used).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2838</span>
+    <span class="phpdocumentor-element-found-in__line">2845</span>
 
     </aside>
 
@@ -3803,7 +3804,7 @@ used by the project.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2859</span>
+    <span class="phpdocumentor-element-found-in__line">2866</span>
 
     </aside>
 
@@ -3838,7 +3839,7 @@ used by the project.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2715</span>
+    <span class="phpdocumentor-element-found-in__line">2722</span>
 
     </aside>
 
@@ -3871,7 +3872,7 @@ used by the project.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2752</span>
+    <span class="phpdocumentor-element-found-in__line">2759</span>
 
     </aside>
 
@@ -3960,7 +3961,7 @@ for the records IDs parameter for an export records method.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2802</span>
+    <span class="phpdocumentor-element-found-in__line">2809</span>
 
     </aside>
 
@@ -4701,7 +4702,7 @@ from the existing value before the method call).</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1870</span>
+    <span class="phpdocumentor-element-found-in__line">1874</span>
 
     </aside>
 
@@ -4709,7 +4710,7 @@ from the existing value before the method call).</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">importRecords</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$records</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;flat&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$overwriteBehavior</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;normal&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dateFormat</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;YMD&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnContent</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;count&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$forceAutoNumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$csvDelimiter</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;,&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">importRecords</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$records</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;php&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;flat&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$overwriteBehavior</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;normal&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dateFormat</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;YMD&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnContent</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;count&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$forceAutoNumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$csvDelimiter</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;,&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$backgroundProcess</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -4826,6 +4827,16 @@ data file (for CSV format only).</p>
 </section>
 
             </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$backgroundProcess</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>if true, indicates that the records import
+should be done in the background.</p>
+</section>
+
+            </dd>
             </dl>
 
     
@@ -4855,7 +4866,7 @@ to sent IDs will be returned.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2095</span>
+    <span class="phpdocumentor-element-found-in__line">2102</span>
 
     </aside>
 
@@ -5006,7 +5017,7 @@ used in both cases are: username, recap_data_access_group</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2686</span>
+    <span class="phpdocumentor-element-found-in__line">2693</span>
 
     </aside>
 
@@ -5077,7 +5088,7 @@ should be used that has the data in the correct format.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2576</span>
+    <span class="phpdocumentor-element-found-in__line">2583</span>
 
     </aside>
 
@@ -5160,7 +5171,7 @@ should be used that has the data in the correct format.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2454</span>
+    <span class="phpdocumentor-element-found-in__line">2461</span>
 
     </aside>
 
@@ -5252,7 +5263,7 @@ should be used that has the data in the correct format.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2012</span>
+    <span class="phpdocumentor-element-found-in__line">2019</span>
 
     </aside>
 
@@ -5318,7 +5329,7 @@ in that arm.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2849</span>
+    <span class="phpdocumentor-element-found-in__line">2856</span>
 
     </aside>
 
@@ -5364,7 +5375,7 @@ for calls to the REDCap API.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/RedCapProject.php"><a href="files/src-redcapproject.html"><abbr title="src/RedCapProject.php">RedCapProject.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2869</span>
+    <span class="phpdocumentor-element-found-in__line">2876</span>
 
     </aside>
 

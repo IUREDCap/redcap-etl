@@ -362,7 +362,7 @@ class RecordsTest extends TestCase
         }
         $this->assertTrue($exceptionCaught, 'Exception caught.');
     }
- 
+
     
     public function testExportRecords()
     {
@@ -1165,6 +1165,33 @@ class RecordsTest extends TestCase
                 $dateFormat = null,
                 $returnContent = 'ids',
                 $forceAutoNumber = 100   # invalid type
+            );
+        } catch (PhpCapException $exception) {
+            $exceptionCaught = true;
+            $code = $exception->getCode();
+            $this->assertEquals(ErrorHandlerInterface::INVALID_ARGUMENT, $code, 'Exception code check.');
+        }
+        $this->assertTrue($exceptionCaught, 'Exception caught.');
+    }
+
+    public function testImportRecordsWithInvalidBackgroundProcess()
+    {
+        $records = 'record_id,first_name,last_name,address,telephone,email,dob,'
+            .'ethnicity,race,sex,height,weight,comments,demographics_complete'."\n"
+            .'1101,Joe,Schmidt,"72133 Joelle Grove Suite 055 Hayesburgh, AZ 84047-5437",'
+            .'(753) 406-4137,joe.schmidt@mailinator.com,1945-07-15,0,4,1,191,88,,2';
+        $exceptionCaught = false;
+        try {
+            $result = self::$basicDemographyProject->importRecords(
+                $records,
+                $format = 'csv',
+                $type = null,
+                $overwriteBehavior = null,
+                $dateFormat = null,
+                $returnContent = 'ids',
+                $forceAutoNumber = false,
+                $csvDelimiter = ',',
+                $backgroundProcess = 100   # invalid type
             );
         } catch (PhpCapException $exception) {
             $exceptionCaught = true;

@@ -255,6 +255,16 @@ if ($required) {
 } // @codeCoverageIgnore
 ```
 
+### Static Analysis
+
+PHPStan can be used to run a static analysis of the PHPCap code. Use the following command in the top-level directory:
+
+    ./vendor/bin/phpstan
+
+The configuration for PHPStan is in the following file in the top-level directory:
+
+    phpstan.neon
+
 ### Local Tests
 The directory __tests/local/__ has been set up so that all files in it, except for the README file, will be ignored by Git.
 This directory is intended as a place for developers to places tests for changes they are working on.

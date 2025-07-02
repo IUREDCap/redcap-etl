@@ -30,6 +30,7 @@
     <li class="active"><a href="#Development">Development</a></li>
 <ul class="intraPage">
     <li class="active"><a href="#Automated Tests">Automated Tests</a></li>
+    <li class="active"><a href="#Static Analysis">Static Analysis</a></li>
     <li class="active"><a href="#Local Tests">Local Tests</a></li>
     <li class="active"><a href="#Coding Standard Compliance">Coding Standard Compliance</a></li>
     <li class="active"><a href="#Documentation">Documentation</a></li>
@@ -286,6 +287,11 @@ mark the closing bracket after a method that throws an exception as a line that 
     $message = 'No field was specified.';
     $this-&gt;errorHandler-&gt;throwException($message, ErrorHandlerInterface::INVALID_ARGUMENT);
 } // @codeCoverageIgnore</code></pre></div>
+<h3 id="Static Analysis">Static Analysis</h3>
+<p>PHPStan can be used to run a static analysis of the PHPCap code. Use the following command in the top-level directory:</p>
+<div class="description"><pre><code>./vendor/bin/phpstan</code></pre></div>
+<p>The configuration for PHPStan is in the following file in the top-level directory:</p>
+<div class="description"><pre><code>phpstan.neon</code></pre></div>
 <h3 id="Local Tests">Local Tests</h3>
 <p>The directory <strong>tests/local/</strong> has been set up so that all files in it, except for the README file, will be ignored by Git.
 This directory is intended as a place for developers to places tests for changes they are working on.</p>

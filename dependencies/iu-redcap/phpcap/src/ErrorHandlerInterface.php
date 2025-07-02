@@ -65,5 +65,11 @@ interface ErrorHandlerInterface
      * @param \Throwable $previousException the previous exception that occurred that
      *     caused this exception, if any.
      */
-    public function throwException($message, $code, $connectionErrorNumber, $httpStatusCode, $previousException);
+    public function throwException(
+        $message,
+        $code,
+        $connectionErrorNumber = null,
+        $httpStatusCode = null,
+        $previousException = null
+    );
 }

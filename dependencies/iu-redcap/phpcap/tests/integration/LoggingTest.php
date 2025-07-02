@@ -18,6 +18,7 @@ use IU\PHPCap\PhpCapException;
 class LoggingTest extends TestCase
 {
     private static $config;
+    private static $configFile;
     private static $basicDemographyProject;
     private static $dagsProject;
     private static $redCapVersion;
@@ -28,7 +29,8 @@ class LoggingTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$config = parse_ini_file(__DIR__.'/../config.ini');
+        self::$configFile = __DIR__.'/../config.ini';
+        self::$config = parse_ini_file(self::$configFile);
         self::$basicDemographyProject = new RedCapProject(
             self::$config['api.url'],
             self::$config['basic.demography.api.token']

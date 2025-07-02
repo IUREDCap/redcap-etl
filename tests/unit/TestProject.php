@@ -24,7 +24,8 @@ class TestProject extends EtlRedCapProject
         $dateFormat = 'YMD',
         $returnContent = 'count',
         $forceAutoNumber = false,
-        $csvDelimiter = ','
+        $csvDelimiter = ',',
+        $backgroundProcess = false
     ) {
         # This check added so that there is
         # an easy way to cause this method to
