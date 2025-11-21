@@ -77,7 +77,7 @@ works.
     To create the a database, schema and user that match the values in the test configuration file, use:
 
         create database etl_test;
-        \connection etl_test
+        \connect etl_test
         create schema etl_test;
 
         create user etl_user with password 'etlPassword';
@@ -103,6 +103,9 @@ works.
         # Add e-mail and name information, for example:
         git config --global user.email "jsmith@someuniversity.edu"
         git config --global user.name "J Smith"
+
+        # Check
+        git config --global --list
 
 10. **Get REDCap-ETL Code**
 
@@ -208,6 +211,7 @@ the data for the tests:
         tests/projects/MultipleChoice.REDCap.xml
         tests/projects/MultipleRootInstruments.REDCap.xml
         tests/projects/RepeatingEvents.REDCap.xml
+        tests/projects/RepeatingEventsExtended.REDCap.xml
         tests/projects/RepeatingForms.REDCap.xml
         tests/projects/Visits.REDCap.xml
 
@@ -219,6 +223,8 @@ the data for the tests:
 3. Request API tokens for the projects you just created (or
    create tokens if you are an admin). The tokens needs to have export
    permission.
+
+4. You may need to run Data Quality Rule H on some of the projects to fix calculated field values.
 
 The next thing you need to do is to create the configuration files
 for the tests:

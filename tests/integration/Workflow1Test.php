@@ -50,8 +50,21 @@ class Workflow1Test extends TestCase
 
         # Check that the redcap project info file has the expected contents
         $expectedFile = self::DATA_DIR . 'redcap_project_info.csv';
-        $actualFile = self::OUTPUT_DIR . 'redcap_project_info.csv';
-        $this->assertFileEquals($expectedFile, $actualFile, 'REDCap project info file content check');
+        $actualFile   = self::OUTPUT_DIR . 'redcap_project_info.csv';
+
+        $expectedCsv = CsvUtil::csvFileToArray($expectedFile);
+        $actualCsv   = CsvUtil::csvFileToArray($actualFile);
+
+        foreach ($expectedCsv as &$row) {
+            unset($row[2]); // Remove the Project ID column, the value of which will vary
+        }
+
+        foreach ($actualCsv as &$row) {
+            unset($row[2]); // Remove the Project ID column, the value of which will vary
+        }
+
+        // $this->assertFileEquals($expectedFile, $actualFile, 'REDCap project info file content check');
+        $this->assertEquals($expectedCsv, $actualCsv, 'REDCap project info file content check');
 
         # Check that the cardiovascular file has the expected contents
         $expectedFile = self::DATA_DIR . 'cardiovascular.csv';

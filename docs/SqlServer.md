@@ -90,7 +90,7 @@ Add /opt/mssql-tools/bin/ to your PATH environment variable in a bash shell.
 
 At the time of this document, there is an issue with TCP, but the issue might be resolved by the time you are doing the installation, so try logging in at the unix prompt:
 
-    sqlcmd -S localhost -U SA
+    sqlcmd -C -S localhost -U SA
 
 If you get the error “Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : TCP Provider: Error code 0x2746”, see the section 6. Troubleshooting below.
 
@@ -194,7 +194,7 @@ and then Install the package that is displayed. For example if the output from t
 
 then run the command to install php-pear:
 
-    sudo apt-get install php7.2-dev
+    sudo apt install php7.2-dev
 
 
 After phpize and PECL are available, install the PHP drivers for SQL server:
@@ -222,7 +222,7 @@ Run the following commands, replacing the version number in the /etc/php directo
 
 Login into SQL Server:
 
-    sqlcmd -S localhost -U SA
+    sqlcmd -C -S localhost -U SA
 
 Create a database and verify it was created:
 
