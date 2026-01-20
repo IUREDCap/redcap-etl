@@ -23,10 +23,12 @@ class WorkflowTest extends TestCase
         $workflow = new Workflow();
         $this->assertNotNull($workflow, 'Workflow not null check');
 
-        $loggerMock = $this->createMock(Logger::class);
+        $loggerMock = $this->createStub(Logger::class);
+        #$loggerMock = $this->createMock(Logger::class);
         $properties = array();
 
-        $workflowConfigMock = $this->createMock(WorkflowConfig::class);
+        $workflowConfigMock = $this->createStub(WorkflowConfig::class);
+        #$workflowConfigMock = $this->createMock(WorkflowConfig::class);
 
         #$workflowConfigMock = $this->getMockBuilder(WorkflowConfig::class)
         #    ->setMethods(array())

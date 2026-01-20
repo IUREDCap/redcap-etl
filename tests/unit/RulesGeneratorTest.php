@@ -39,27 +39,29 @@ class RulesGeneratorTest extends TestCase
             //->setMethods(['exportProjectInfo', 'exportInstruments', 'exportMetadata', 'exportProjectXml'])
             //->getMock();
 
-        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        //$dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        //$dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        $dataProject = $this->createStub(__NAMESPACE__.'\EtlRedCapProject');
 
 
         // exportProjectInfo() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportProjectInfo')
             ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportInstruments')
             ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportMetadata')
         ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportProjectXml')
         ->willReturn($projectXml);
 
@@ -88,7 +90,8 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        $dataProject = $this->createStub(__NAMESPACE__.'\EtlRedCapProject');
+        #$dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
         #$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
         #    ->setMethods(
         #        [
@@ -103,27 +106,27 @@ class RulesGeneratorTest extends TestCase
 
 
         // exportProjectInfo() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportProjectInfo')
             ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportInstruments')
             ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportMetadata')
         ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportProjectXml')
         ->willReturn($projectXml);
     
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportInstrumentEventMappings')
         ->willReturn($eventMappings);
 
@@ -150,7 +153,8 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        $dataProject = $this->createStub(__NAMESPACE__.'\EtlRedCapProject');
+        #$dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
         #$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
         #    ->setMethods(
         #        [
@@ -165,27 +169,27 @@ class RulesGeneratorTest extends TestCase
 
 
         // exportProjectInfo() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportProjectInfo')
             ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportInstruments')
             ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportMetadata')
         ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportProjectXml')
         ->willReturn($projectXml);
     
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportInstrumentEventMappings')
         ->willReturn($eventMappings);
 
@@ -212,7 +216,9 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        $dataProject = $this->createStub(__NAMESPACE__.'\EtlRedCapProject');
+        #$dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+
         #$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
         #    ->setMethods(
         #        [
@@ -227,27 +233,27 @@ class RulesGeneratorTest extends TestCase
 
 
         // exportProjectInfo() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportProjectInfo')
             ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportInstruments')
             ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportMetadata')
         ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportProjectXml')
         ->willReturn($projectXml);
     
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportInstrumentEventMappings')
         ->willReturn($eventMappings);
 
@@ -274,7 +280,8 @@ class RulesGeneratorTest extends TestCase
 
         $expectedResult = $projectData->getRulesText();
 
-        $dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
+        $dataProject = $this->createStub(__NAMESPACE__.'\EtlRedCapProject');
+        #$dataProject = $this->createMock(__NAMESPACE__.'\EtlRedCapProject');
         #$dataProject = $this->getMockBuilder(__NAMESPACE__.'EtlRedCapProject')
         #    ->setMethods(
         #        [
@@ -289,27 +296,27 @@ class RulesGeneratorTest extends TestCase
 
 
         // exportProjectInfo() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportProjectInfo')
             ->willReturn($projectInfo);
 
         // exportInstruments() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
             ->method('exportInstruments')
             ->willReturn($instruments);
 
         // exportMetadata() - stub method returning mock data
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportMetadata')
         ->willReturn($metadata);
 
         // exportProjectXml() - stub method returning mock data
 
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportProjectXml')
         ->willReturn($projectXml);
     
-        $dataProject->expects($this->any())
+        $dataProject#->expects($this->any())
         ->method('exportInstrumentEventMappings')
         ->willReturn($eventMappings);
 
