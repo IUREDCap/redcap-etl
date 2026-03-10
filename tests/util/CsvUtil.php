@@ -23,8 +23,14 @@ class CsvUtil
     public static function csvFileToArray($csvFile)
     {
         $values = [];
+
         $file = fopen($csvFile, 'r');
-        while (($line = fgetcsv($file)) !== FALSE) {
+        $length = null;
+        $separator = ",";
+        $enclosure = "\"";
+        $escape = "\\";
+
+        while (($line = fgetcsv($file, $length, $separator, $enclosure, $escape)) !== FALSE) {
             $values[] = $line;
         }
         fclose($file);

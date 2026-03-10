@@ -1111,7 +1111,7 @@ class MysqlTest extends TestCase
         #execute the method to drop the table
         $reflection = new \ReflectionClass(get_class($mysqlDbConnection));
         $method = $reflection->getMethod('dropTable');
-        $method->setAccessible(true);
+        // DEPRECATED: $method->setAccessible(true);
         $ifExists = false;
         $parameters[0] = $rootTable;
         $parameters[1] = $ifExists;

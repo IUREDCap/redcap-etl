@@ -357,7 +357,12 @@ class CsvDbConnection extends DbConnection
 
             @$fh = fopen($tableFile, 'r');
             if ($fh) {
-                $columnNames = fgetcsv($fh);
+                $length = null;
+                $separator = ",";
+                $enclosure = "\"";
+                $escape = "\\";
+
+                $columnNames = fgetcsv($fh, $length, $separator, $enclosure, $escape);
                 fclose($fh);
             }
             if (!empty($columnNames)) {
@@ -395,9 +400,14 @@ class CsvDbConnection extends DbConnection
         $fh = fopen($tableFile, "r");
 
         if (isset($fh) && !feof($fh)) {
-            $columnNames = fgetcsv($fh);   # The first row is the column names
+            $length = null;
+            $separator = ",";
+            $enclosure = "\"";
+            $escape = "\\";
+
+            $columnNames = fgetcsv($fh, $length, $separator, $enclosure, $escape);   # The first row is the column names
             while (!feof($fh)) {
-                $row = fgetcsv($fh);
+                $row = fgetcsv($fh, $length, $separator, $enclosure, $escape);
                 if (!empty($row)) {
                     # Change row from array of data values to map from column name to data value
                     $row = array_combine($columnNames, $row);
