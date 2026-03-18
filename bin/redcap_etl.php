@@ -11,6 +11,10 @@
 # Options:
 #    -c <configuration-file>
 #
+# Exit Codes:
+#     0: OK
+#     1: Syntax error
+#     2: Execution exception
 #-------------------------------------------------------------
 
 require(__DIR__.'/../dependencies/autoload.php');
@@ -50,4 +54,5 @@ try {
 } catch (\Exception $exception) {
     $logger->logException($exception);
     $logger->log('Processing failed.');
+    exit(2);
 }
