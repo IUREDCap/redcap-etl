@@ -14,7 +14,7 @@
 # Exit Codes:
 #     0: OK
 #     1: Syntax error
-#     2: Execution exception
+#     2: Execution exception or error
 #-------------------------------------------------------------
 
 require(__DIR__.'/../dependencies/autoload.php');
@@ -51,8 +51,8 @@ if (array_key_exists('c', $options)) {
 try {
     $redCapEtl = new RedCapEtl($logger, $configFile);
     $redCapEtl->run();
-} catch (\Exception $exception) {
-    $logger->logException($exception);
+} catch (\Throwable $throwable) {
+    $logger->logException($throwable);
     $logger->log('Processing failed.');
     exit(2);
 }
